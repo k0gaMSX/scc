@@ -471,7 +471,7 @@ include(void)
 
 	switch (*yytext) {
 	case '<':
-		if ((p = strchr(input->begin, '>')) == NULL)
+		if ((p = strchr(input->begin, '>')) == NULL || p == yytext + 1)
 			goto bad_include;
 		*p = '\0';
 		file = input->begin;
@@ -479,7 +479,7 @@ include(void)
 		input->begin = input->p = p+1;
 		break;
 	case '"':
-		if ((p = strchr(yytext + 1, '"')) == NULL)
+		if ((p = strchr(yytext + 1, '"')) == NULL || p == yytext + 1)
 			goto bad_include;
 		*p = '\0';
 		file = yytext+1;
