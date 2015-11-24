@@ -20,5 +20,5 @@ test:
 
 clean:
 	rm -f $(OBJS)
-	rm -f cc1
+	rm -f cc1 cpp
 
