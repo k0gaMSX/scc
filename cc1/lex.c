@@ -398,31 +398,43 @@ escape(void)
 	int c, base;
 
 	switch (*++input->p) {
-	case '\\': c = '\\'; goto escape_letter;
-	case 'a':  c = '\a'; goto escape_letter;
-	case 'f':  c = '\f'; goto escape_letter;
-	case 'n':  c = '\n'; goto escape_letter;
-	case 'r':  c = '\r'; goto escape_letter;
-	case 't':  c = '\t'; goto escape_letter;
-	case 'v':  c = '\v'; goto escape_letter;
-	case '\'': c = '\\'; goto escape_letter;
-	case '"':  c = '"'; goto escape_letter;
-	case '?':  c = '?'; goto escape_letter;
-	case 'u':  base = 10; break;
-	case 'x':  base = 16; break;
-	case '0':  base = 8; break;
+	case '\\': c = '\\'; return c;
+	case 'a':  c = '\a'; return c;
+	case 'f':  c = '\f'; return c;
+	case 'n':  c = '\n'; return c;
+	case 'r':  c = '\r'; return c;
+	case 't':  c = '\t'; return c;
+	case 'v':  c = '\v'; return c;
+	case '\'': c = '\\'; return c;
+	case '"':  c = '"';  return c;
+	case '?':  c = '?';  return c;
+	case 'u':
+		/*
+		 * FIXME: universal constants are not correctly handled
+		 */
+		if (!isdigit(*++input->p))
+			warn("incorrect digit for numerical character constant");
+		base = 10;
+		break;
+	case 'x':
+		if (!isxdigit(*++input->p))
+			warn("\\x used with no following hex digits");
+		base = 16;
+		break;
+	case '0':
+		if (!strchr("01234567", *++input->p))
+			warn("\\0 used with no following octal digits");
+		base = 8;
+		break;
 	default:
 		warn("unknown escape sequence");
 		return ' ';
 	}
 	errno = 0;
-	c = strtoul(++input->p, &input->p, base);
+	c = strtoul(input->p, &input->p, base);
 	if (errno || c > 255)
 		warn("character constant out of range");
-	return c;
-
-escape_letter:
-	++input->p;
+	--input->p;
 	return c;
 }
 
@@ -435,7 +447,8 @@ character(void)
 	if ((c = *++input->p) == '\\')
 		c = escape();
 	else
-		c = *input->p++;
+		c = *input->p;
+	++input->p;
 	if (*input->p != '\'')
 		error("invalid character constant");
 	else
