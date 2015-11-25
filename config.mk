@@ -13,6 +13,5 @@ LD = $(CC)
 AR = ar
 
 # for Plan9 add -D_SUSV2_SOURCE -DNBOOL
-CFLAGS   = -O2 -std=c99
+CFLAGS   = -DNDEBUG -Iarch/$(ARCH) -O2 -std=c99
 LDFLAGS  = -s
-CPPFLAGS = -DNDEBUG -Iarch/$(ARCH)
