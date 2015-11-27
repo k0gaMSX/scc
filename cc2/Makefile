@@ -1,10 +1,11 @@
+.POSIX:
+
 include ../config.mk
 
 OBJS = main.o parser.o cgen.o code.o optm.o peep.o
 
 all: cc2
 
-.POSIX:
 
 $(OBJS): ../inc/cc.h ../inc/sizes.h cc2.h
 main.o: error.h
