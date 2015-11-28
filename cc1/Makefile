@@ -1,3 +1,5 @@
+.POSIX:
+
 include ../config.mk
 
 OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
@@ -5,7 +7,6 @@ OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 
 all: cc1
 
-.POSIX:
 
 $(OBJS) : cc1.h ../inc/cc.h ../inc/sizes.h arch/$(ARCH)/arch.h
 

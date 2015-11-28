@@ -1186,7 +1186,7 @@ initializer(Symbol *sym, Type *tp, int nelem)
 
 	np = assignop(OINIT, varnode(sym), np);
 
-	if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
+	if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
 		if (!np->right->constant)
 			errorp("initializer element is not constant");
 		emit(OINIT, np);
@@ -1196,5 +1196,5 @@ initializer(Symbol *sym, Type *tp, int nelem)
 	} else {
 		np->op = OASSIGN;
 		emit(OEXPR, np);
-	}	
+	}
 }

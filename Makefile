@@ -1,4 +1,5 @@
 # scc - Suckless C Compiler
+.POSIX:
 
 include config.mk
 
@@ -16,4 +17,3 @@ all clean:
 		(cd $$i; ${MAKE} $(MAKEFLAGS) $@ || exit); \
 	done;
 
-.POSIX:
