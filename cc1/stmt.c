@@ -163,20 +163,24 @@ static void
 Break(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 {
 	expect(BREAK);
-	if (!lbreak)
-		error("break statement not within loop or switch");
-	emit(OJUMP, lbreak);
-	expect(';');
+	if (!lbreak) {
+		errorp("break statement not within loop or switch");
+	} else {
+		emit(OJUMP, lbreak);
+		expect(';');
+	}
 }
 
 static void
 Continue(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 {
 	expect(CONTINUE);
-	if (!lcont)
-		error("continue statement not within loop");
-	emit(OJUMP, lcont);
-	expect(';');
+	if (!lcont) {
+		errorp("continue statement not within loop");
+	} else {
+		emit(OJUMP, lcont);
+		expect(';');
+	}
 }
 
 static void
