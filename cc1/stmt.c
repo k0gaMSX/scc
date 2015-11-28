@@ -242,15 +242,17 @@ Case(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 	if ((np = iconstexpr()) == NULL)
 		errorp("case label does not reduce to an integer constant");
 	expect(':');
-	if (lswitch) {
-		pcase = xmalloc(sizeof(*pcase));
-		pcase->expr = np;
-		pcase->next = lswitch->head;
-		emit(OLABEL, pcase->label = newlabel());
-		lswitch->head = pcase;
-		if (++lswitch->nr == NR_SWITCH)
+	if (lswitch && lswitch->nr >= 0) {
+		if (++lswitch->nr == NR_SWITCH) {
 			errorp("too case labels for a switch statement");
-		/* TODO: Avoid repetion of this error for the same switch */
+			lswitch->nr = -1;
+		} else {
+			pcase = xmalloc(sizeof(*pcase));
+			pcase->expr = np;
+			pcase->next = lswitch->head;
+			emit(OLABEL, pcase->label = newlabel());
+			lswitch->head = pcase;
+		}
 	}
 	stmt(lbreak, lcont, lswitch);
 }
