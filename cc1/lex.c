@@ -395,19 +395,19 @@ number(void)
 static char
 escape(void)
 {
-	int c, base;
+	int n, base;
 
 	switch (*++input->p) {
-	case '\\': c = '\\'; return c;
-	case 'a':  c = '\a'; return c;
-	case 'f':  c = '\f'; return c;
-	case 'n':  c = '\n'; return c;
-	case 'r':  c = '\r'; return c;
-	case 't':  c = '\t'; return c;
-	case 'v':  c = '\v'; return c;
-	case '\'': c = '\\'; return c;
-	case '"':  c = '"';  return c;
-	case '?':  c = '?';  return c;
+	case 'a':  return '\a';
+	case 'f':  return '\f';
+	case 'n':  return '\n';
+	case 'r':  return '\r';
+	case 't':  return '\t';
+	case 'v':  return '\v';
+	case '"':  return '"';
+	case '\'': return '\'';
+	case '\\': return '\\';
+	case '\?': return '\?';
 	case 'u':
 		/*
 		 * FIXME: universal constants are not correctly handled
