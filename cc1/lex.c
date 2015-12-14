@@ -395,7 +395,7 @@ number(void)
 static char
 escape(void)
 {
-	int n, base;
+	int c, base;
 
 	switch (*++input->p) {
 	case 'a':  return '\a';
