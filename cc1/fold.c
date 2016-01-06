@@ -21,7 +21,7 @@ static bool
 addi(TINT l, TINT r, Type *tp)
 {
 	struct limits *lim = getlimits(tp);
-	TINT max = lim->max.i, min = lim->min.i;
+	TINT max = lim->max.i, min = -lim->min.i;
 
 	if (l < 0 && r < 0 && l >= min - r ||
 	    l == 0 ||
@@ -69,7 +69,7 @@ static bool
 muli(TINT l, TINT r, Type *tp)
 {
 	struct limits *lim = getlimits(tp);
-	TINT max = lim->max.i, min = lim->min.i;
+	TINT max = lim->max.i, min = -lim->min.i;
 
 	if (l > -1 && l <= 1 ||
 	    r > -1 && r <= 1 ||
@@ -106,7 +106,7 @@ divi(TINT l, TINT r,  Type *tp)
 {
 	struct limits *lim = getlimits(tp);
 
-	if (r == 0 || l == lim->min.i && r == -1) {
+	if (r == 0 || l == -lim->min.i && r == -1) {
 		warn("overflow in constant expression");
 		return 0;
 	}

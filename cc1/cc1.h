@@ -35,13 +35,11 @@ typedef struct input Input;
 
 struct limits {
 	union {
-		TINT i;
-		TUINT u;
+		TUINT i;
 		TFLOAT f;
 	} max;
 	union {
-		TINT i;
-		TUINT u;
+		TUINT i;
 		TFLOAT f;
 	} min;
 };

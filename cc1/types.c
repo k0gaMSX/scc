@@ -19,20 +19,20 @@
 static struct limits limits[][4] = {
 	{
 		{	/* 0 = unsigned 1 byte */
-			.min.u = 0,
-			.max.u = 255
+			.min.i = 0,
+			.max.i = 255
 		},
 		{	/* 1 = unsigned 2 bytes */
-			.min.u = 0,
-			.max.u = 65535u
+			.min.i = 0,
+			.max.i = 65535u
 		},
 		{	/* 2 = unsigned 4 bytes */
-			.min.u = 0,
-			.max.u = 4294967295u
+			.min.i = 0,
+			.max.i = 4294967295u
 		},
 		{	/* 3 = unsigned 8 bytes */
-			.min.u = 0,
-			.max.u = 18446744073709551615u
+			.min.i = 0,
+			.max.i = 18446744073709551615u
 		}
 	},
 	{

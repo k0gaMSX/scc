@@ -266,7 +266,7 @@ readint(char *s, int base, int sign, Symbol *sym)
 	int c;
 
 	lim = getlimits(tp);
-	max = (tp->sign) ? lim->max.u : lim->max.i;
+	max = lim->max.i;
 	if (*s == '0')
 		++s;
 	if (toupper(*s) == 'X')
@@ -295,7 +295,7 @@ readint(char *s, int base, int sign, Symbol *sym)
 		}
 		sym->type = tp;
 		lim = getlimits(tp);
-		max = (tp->sign) ? lim->max.u : lim->max.i;
+		max = lim->max.i;
 		goto repeat;
 	}
 
