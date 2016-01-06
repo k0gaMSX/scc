@@ -87,7 +87,7 @@ static bool
 mulf(TFLOAT l, TFLOAT r, Type *tp)
 {
 	struct limits *lim = getlimits(tp);
-	TFLOAT max = lim->max.i, min = lim->min.i;
+	TFLOAT max = lim->max.f, min = lim->min.f;
 
 	if (l > -1 && l <= 1 ||
 	    r > -1 && r <= 1 ||
