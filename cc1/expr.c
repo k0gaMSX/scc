@@ -54,13 +54,25 @@ promote(Node *np)
 {
 	Type *tp;
 	Node *new;
-	unsigned r, ur = uinttype->n.rank;
+	unsigned r;
+	struct limits *lim, *ilim;
 
 	tp = np->type;
-	r = tp->n.rank;
-	if  (r > ur || tp == inttype || tp == uinttype)
-		return np;
-	tp = (r == ur) ? uinttype : inttype;
+
+	switch (tp->op) {
+	case INT:
+		if (tp->n.rank >= inttype->n.rank)
+			return np;
+		lim = getlimits(tp);
+		ilim = getlimits(inttype);
+		tp = (lim->max.i <= ilim->max.i) ? inttype : uinttype;
+		break;
+	case FLOAT:
+		tp = doubletype;
+		break;
+	default:
+		abort();
+	}
 	if ((new = convert(np, tp, 1)) != NULL)
 		return new;
 	return np;
