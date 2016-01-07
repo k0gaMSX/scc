@@ -513,17 +513,14 @@ incdec(Node *np, char op)
 
 	chklvalue(np);
 
-	switch (BTYPE(np)) {
-	case PTR:
-		if (!tp->defined)
-			error("invalid use of undefined type");
-		inc = sizeofnode(tp->type);
-		break;
-	case INT:
-	case FLOAT:
+	if (!tp->defined) {
+		errorp("invalid use of undefined type");
+		return np;
+	} else if (tp->arith) {
 		inc = constnode(one);
-		break;
-	default:
+	} else if (tp->op == PTR) {
+		inc = sizeofnode(tp->type);
+	} else {
 		errorp("wrong type argument to increment or decrement");
 		return np;
 	}
