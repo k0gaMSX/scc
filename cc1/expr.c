@@ -126,51 +126,48 @@ set_p1_p2:
 }
 
 static Node *
-chkternary(Node *ifyes, Node *ifno)
+chkternary(Node *yes, Node *no)
 {
-	int arithy = 0, aithn = 0;
-	Type *tyes, *tno;
+	yes = decay(yes);
+	no = decay(no);
 
-	tyes = ifyes->type, tno = ifno->type;
+	/*
+	 * FIXME:
+	 * We are ignoring type qualifiers here,
+	 * but the standard has strong rules about this.
+	 * take a look to 6.5.15
+	 */
 
-	switch (tyes->op) {
-	case ENUM:
-	case INT:
-	case FLOAT:
-		switch (tno->op) {
-		case ENUM:
-		case INT:
-		case FLOAT:
-			arithconv(&ifyes, &ifno);
-			break;
-		default:
+	if (!eqtype(yes->type, no->type)) {
+		if (yes->type->arith && no->type->arith) {
+			arithconv(&yes, &no);
+		} else if (yes->type->op != PTR && no->type->op != PTR) {
 			goto wrong_type;
+		} else {
+			if (yes->type->integer && cmpnode(yes, 0))
+				yes = convert(yes, no->type, 0);
+			if (no->type->integer && cmpnode(no, 0))
+				no = convert(no, no->type, 0);
+
+			if (yes->type->op != PTR || no->type->op != PTR)
+				goto wrong_type;
+
+			if (yes->type == pvoidtype)
+				yes = convert(yes, no->type, 0);
+			if (no->type == pvoidtype)
+				no = convert(no, no->type, 0);
+
+			if (!eqtype(yes->type, no->type))
+				goto wrong_type;
 		}
-		break;
-	case ARY:
-	case FTN:
-			ifyes = decay(ifyes);
-			tyes = ifyes->type;
-			ifno = decay(ifno);
-			tno = ifno->type;
-	case PTR:
-		if ((ifno = convert(ifno, tyes, 0)) == NULL)
-			goto wrong_type;
-		break;
-	case VOID:
-	case STRUCT:
-	case UNION:
-		if (!eqtype(tyes, tno))
-			goto wrong_type;
-		break;
-	default:
-		abort();
 	}
-	return node(OCOLON, ifyes->type, ifyes, ifno);
+	return node(OCOLON, yes->type, yes, yes);
 
 wrong_type:
 	errorp("type mismatch in conditional expression");
-	return node(OCOLON, ifyes->type, ifyes, ifyes);
+	freetree(yes);
+	freetree(no);
+	return constnode(zero);
 }
 
 static void
