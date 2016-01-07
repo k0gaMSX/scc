@@ -357,31 +357,24 @@ pcompare(char op, Node *lp, Node *rp)
 static Node *
 compare(char op, Node *lp, Node *rp)
 {
+	Type *ltp, *rtp;
+
 	lp = decay(lp);
 	rp = decay(rp);
+	ltp = lp->type;
+	rtp = rtp->type;
 
-	switch (BTYPE(lp)) {
-	case INT:
-	case FLOAT:
-		switch (BTYPE(rp)) {
-		case INT:
-		case FLOAT:
-			arithconv(&lp, &rp);
-			break;
-		case PTR:
-			return pcompare(op, rp, lp);
-		default:
-			goto nocompat;
-		}
-		break;
-	case PTR:
-		return pcompare(op, lp, rp);
-	default:
-	nocompat:
+	if (ltp->op == PTR || rtp->op == PTR) {
+		return pcompare(op, rp, lp);
+	} else if (ltp->arith && rtp->arith) {
+		arithconv(&lp, &rp);
+		return simplify(op, inttype, lp, rp);
+	} else {
 		errorp("incompatibles type in comparision");
+		freetree(lp);
+		freetree(rp);
+		return constnode(zero);
 	}
-
-	return simplify(op, inttype, lp, rp);
 }
 
 int
