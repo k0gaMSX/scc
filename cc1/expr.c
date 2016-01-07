@@ -320,28 +320,16 @@ incorrect:
 static Node *
 arithmetic(char op, Node *lp, Node *rp)
 {
-	switch (BTYPE(lp)) {
-	case INT:
-	case FLOAT:
-		switch (BTYPE(rp)) {
-		case INT:
-		case FLOAT:
-			arithconv(&lp, &rp);
-			break;
-		case PTR:
-			if (op == OADD || op == OSUB)
-				return parithmetic(op, rp, lp);
-		default:
-			goto incorrect;
-		}
-		break;
-	case PTR:
-		return parithmetic(op, lp, rp);
-	default:
-	incorrect:
+	Type *ltp = lp->type, *rtp = rp->type;
+
+	if (ltp->arith && rtp->arith) {
+		arithconv(&lp, &rp);
+	} else if ((ltp->op == PTR || rtp->op == PTR) &&
+	           op == OADD || op == OSUB) {
+		return parithmetic(op, rp, lp);
+	} else {
 		errorp("incorrect arithmetic operands");
 	}
-
 	return simplify(op, lp->type, lp, rp);
 }
 
