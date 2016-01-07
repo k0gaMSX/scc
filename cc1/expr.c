@@ -336,18 +336,21 @@ arithmetic(char op, Node *lp, Node *rp)
 static Node *
 pcompare(char op, Node *lp, Node *rp)
 {
-	switch (BTYPE(rp)) {
-	case INT:
-		if (cmpnode(rp, 0))
-			rp = convert(rp, pvoidtype, 1);
-		break;
-	case PTR:
-		if (lp->type != rp->type)
-			warn("comparision between different pointer types");
-		break;
-	default:
-		errorp("incompatibles type in comparision");
+	Node *np;
+	int err = 0;
+
+	if (rp->type->integer) {
+		if (!cmpnode(rp, 0))
+			err = 1;
+		rp = convert(rp, pvoidtype, 1);
+	} else if (rp->type->op == PTR) {
+		if (!eqtype(lp->type, rp->type))
+			err = 1;
+	} else {
+		err = 1;
 	}
+	if (err)
+		errorp("incompatibles type in comparision");
 	return simplify(op, inttype, lp, rp);
 }
 
