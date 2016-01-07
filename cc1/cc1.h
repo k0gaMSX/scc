@@ -42,6 +42,8 @@ struct type {
 	bool defined : 1;           /* type defined */
 	bool sign : 1;              /* signess of the type */
 	bool printed : 1;           /* the type already was printed */
+	bool integer : 1;           /* this type is INT or enum */
+	bool arith : 1;             /* this type is INT, ENUM, FLOAT */
 	size_t size;                /* sizeof the type */
 	size_t align;               /* align of the type */
 	Type *type;                 /* base type */
