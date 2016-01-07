@@ -79,25 +79,96 @@ promote(Node *np)
 }
 
 static void
-typeconv(Node **p1, Node **p2)
+arithconv(Node **p1, Node **p2)
 {
+	int n, to = 0, s1, s2;
+	unsigned r1, r2;
 	Type *tp1, *tp2;
 	Node *np1, *np2;
-	int n;
+	struct limits *lp1, *lp2;
 
 	np1 = promote(*p1);
 	np2 = promote(*p2);
 
 	tp1 = np1->type;
 	tp2 = np2->type;
-	if (tp1 != tp2) {
-		if ((n = tp1->n.rank - tp2->n.rank) > 0)
-			np2 = convert(np2, tp1, 1);
-		else if (n < 0)
-			np1 = convert(np1, tp2, 1);
+
+	if (tp1 == tp2)
+		goto set_p1_p2;
+
+	s1 = tp1->sign, r1 = tp1->n.rank, lp1 = getlimits(tp1);
+	s2 = tp2->sign, r2 = tp2->n.rank, lp2 = getlimits(tp2);
+
+	if (s1 == s2 || tp1->op == FLOAT || tp2->op == FLOAT) {
+		to = r1 - r2;
+	} else if (!s1) {
+		if (r1 >= r2 || lp1->max.i >= lp2->max.i)
+			to = 1;
+		else
+			to = -1;
+	} else {
+		if (r2 >= r1 || lp2->max.i >= lp1->max.i)
+			to = -1;
+		else
+			to = 1;
 	}
+
+	if (to > 0)
+		np2 = convert(np2, tp1, 1);
+	else if (to < 0)
+		np1 = convert(np1, tp2, 1);
+		
+set_p1_p2:
 	*p1 = np1;
 	*p2 = np2;
+}
+
+static Node *
+chkternary(Node *ifyes, Node *ifno)
+{
+	int arithy = 0, aithn = 0;
+	Type *tyes, *tno;
+
+	tyes = ifyes->type, tno = ifno->type;
+
+	switch (tyes->op) {
+	case ENUM:
+	case INT:
+	case FLOAT:
+		switch (tno->op) {
+		case ENUM:
+		case INT:
+		case FLOAT:
+			arithconv(&ifyes, &ifno);
+			break;
+		default:
+			goto wrong_type;
+		}
+		break;
+	case ARY:
+	case FTN:
+			ifyes = decay(ifyes);
+			tyes = ifyes->type;
+			ifno = decay(ifno);
+			tno = ifno->type;
+	case PTR:
+		if ((ifno = convert(ifno, tyes, 0)) == NULL)
+			goto wrong_type;
+		break;
+	case VOID:
+	case STRUCT:
+	case UNION:
+		if (!eqtype(tyes, tno))
+			goto wrong_type;
+		break;
+	default:
+		abort();
+	}
+	return node(OCOLON, ifyes->type, ifyes, ifno);
+
+wrong_type:
+	errorp("type mismatch in conditional expression");
+	return node(OCOLON, ifyes->type, ifyes, ifyes);
 }
 
 static void
@@ -135,7 +206,7 @@ integerop(char op, Node *lp, Node *rp)
 {
 	if (BTYPE(lp) != INT || BTYPE(rp) != INT)
 		error("operator requires integer operands");
-	typeconv(&lp, &rp);
+	arithconv(&lp, &rp);
 	return simplify(op, lp->type, lp, rp);
 }
 
@@ -181,7 +252,7 @@ convert(Node *np, Type *newtp, char iscast)
 	case FLOAT:
 		switch (newtp->op) {
 		case PTR:
-			if (!iscast || oldtp->op == FLOAT)
+			if (oldtp->op == FLOAT || !cmpnode(np, 0) && !iscast)
 				return NULL;
 			/* PASSTHROUGH */
 		case INT:
@@ -203,8 +274,7 @@ convert(Node *np, Type *newtp, char iscast)
 			break;
 		case PTR:
 			if (iscast ||
-			    newtp == pvoidtype ||
-			    oldtp == pvoidtype) {
+			    newtp == pvoidtype || oldtp == pvoidtype) {
 				/* TODO:
 				 * we assume conversion between pointers
 				 * do not need any operation, but due to
@@ -260,7 +330,7 @@ arithmetic(char op, Node *lp, Node *rp)
 		switch (BTYPE(rp)) {
 		case INT:
 		case FLOAT:
-			typeconv(&lp, &rp);
+			arithconv(&lp, &rp);
 			break;
 		case PTR:
 			if (op == OADD || op == OSUB)
@@ -309,7 +379,7 @@ compare(char op, Node *lp, Node *rp)
 		switch (BTYPE(rp)) {
 		case INT:
 		case FLOAT:
-			typeconv(&lp, &rp);
+			arithconv(&lp, &rp);
 			break;
 		case PTR:
 			return pcompare(op, rp, lp);
@@ -436,15 +506,7 @@ array(Node *lp, Node *rp)
 static Node *
 assignop(char op, Node *lp, Node *rp)
 {
-	int force = 0;
-	Type *tp = lp->type;
-
-	rp = decay(rp);
-	if (BTYPE(rp) == INT && tp->op == PTR && cmpnode(rp, 0)) {
-		tp = pvoidtype;
-		force = 1;
-	}
-	if ((rp = convert(rp, tp, force)) == NULL) {
+	if ((rp = convert(decay(rp), lp->type, 0)) == NULL) {
 		errorp((op == OINIT) ?
 		        "incorrect initiliazer" :
 		        "incompatible types when assigning");
@@ -937,23 +999,10 @@ ternary(void)
 		Node *ifyes, *ifno, *np;
 
 		cond = exp2cond(cond, 0);
-		ifyes = promote(expr());
+		ifyes = expr();
 		expect(':');
-		ifno = promote(ternary());
-		typeconv(&ifyes, &ifno);
-		if (cond->constant) {
-			TINT i = cond->sym->u.i;
-
-			freetree(cond);
-			if (i == 0) {
-				freetree(ifyes);
-				return ifno;
-			} else {
-				freetree(ifno);
-				return ifyes;
-			}
-		}
-		np = node(OCOLON, ifyes->type, ifyes, ifno);
+		ifno = ternary();
+		np = chkternary(ifyes, ifno);
 		cond = node(OASK, np->type, cond, np);
 	}
 	return cond;
