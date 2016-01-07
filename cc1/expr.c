@@ -147,7 +147,7 @@ chkternary(Node *yes, Node *no)
 			if (yes->type->integer && cmpnode(yes, 0))
 				yes = convert(yes, no->type, 0);
 			if (no->type->integer && cmpnode(no, 0))
-				no = convert(no, no->type, 0);
+				no = convert(no, yes->type, 0);
 
 			if (yes->type->op != PTR || no->type->op != PTR)
 				goto wrong_type;
@@ -161,7 +161,7 @@ chkternary(Node *yes, Node *no)
 				goto wrong_type;
 		}
 	}
-	return node(OCOLON, yes->type, yes, yes);
+	return node(OCOLON, yes->type, yes, no);
 
 wrong_type:
 	errorp("type mismatch in conditional expression");
