@@ -630,10 +630,10 @@ arguments(Node *np)
 	} while (accept(','));
 
 no_pars:
+	expect(')');
 	if (n > 0 && *targs != ellipsistype)
 		errorp("too few arguments in function call");
 
-	expect(')');
 	return node(OCALL, rettype, np, par);
 }
 
