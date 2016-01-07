@@ -211,6 +211,17 @@ integerop(char op, Node *lp, Node *rp)
 }
 
 static Node *
+integeruop(char op, Node *np)
+{
+	if (!np->type->integer)
+		error("unary operator requires integer operand");
+	np = promote(np);
+	if (op == OCPL && np->op == OCPL)
+		return np->left;
+	return simplify(op, np->type, np, NULL);
+}
+
+static Node *
 numericaluop(char op, Node *np)
 {
 	if (!np->type->arith)
@@ -220,17 +231,6 @@ numericaluop(char op, Node *np)
 		return np->left;
 	if (op == OADD)
 		return np;
-	return simplify(op, np->type, np, NULL);
-}
-
-static Node *
-integeruop(char op, Node *np)
-{
-	if (!np->type->integer)
-		error("unary operator requires integer operand");
-	np = promote(np);
-	if (op == OCPL && np->op == OCPL)
-		return np->left;
 	return simplify(op, np->type, np, NULL);
 }
 
