@@ -303,7 +303,7 @@ parithmetic(char op, Node *lp, Node *rp)
 		lp = node(OSUB, inttype, lp, rp);
 		return node(ODIV, inttype, lp, size);
 	}
-	if (BTYPE(rp) != INT)
+	if (!rp->type->integer)
 		goto incorrect;
 
 	rp = convert(promote(rp), sizettype, 0);
