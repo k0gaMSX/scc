@@ -344,6 +344,9 @@ pcompare(char op, Node *lp, Node *rp)
 	Node *np;
 	int err = 0;
 
+	if (lp->type->integer)
+		XCHG(lp, rp, np);
+
 	if (rp->type->integer) {
 		if (!cmpnode(rp, 0))
 			err = 1;
@@ -366,8 +369,9 @@ compare(char op, Node *lp, Node *rp)
 
 	lp = decay(lp);
 	rp = decay(rp);
+
 	ltp = lp->type;
-	rtp = rtp->type;
+	rtp = rp->type;
 
 	if (ltp->op == PTR || rtp->op == PTR) {
 		return pcompare(op, rp, lp);
