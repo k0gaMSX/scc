@@ -204,7 +204,7 @@ decay(Node *np)
 static Node *
 integerop(char op, Node *lp, Node *rp)
 {
-	if (BTYPE(lp) != INT || BTYPE(rp) != INT)
+	if (!lp->type->integer || !rp->type->integer)
 		error("operator requires integer operands");
 	arithconv(&lp, &rp);
 	return simplify(op, lp->type, lp, rp);
@@ -213,24 +213,20 @@ integerop(char op, Node *lp, Node *rp)
 static Node *
 numericaluop(char op, Node *np)
 {
-	switch (BTYPE(np)) {
-	case INT:
-		np = promote(np);
-	case FLOAT:
-		if (op == ONEG && np->op == ONEG)
-			return np->left;
-		if (op == OADD)
-			return np;
-		return simplify(op, np->type, np, NULL);
-	default:
+	if (!np->type->arith)
 		error("unary operator requires numerical operand");
-	}
+	np = promote(np);
+	if (op == ONEG && np->op == ONEG)
+		return np->left;
+	if (op == OADD)
+		return np;
+	return simplify(op, np->type, np, NULL);
 }
 
 static Node *
 integeruop(char op, Node *np)
 {
-	if (BTYPE(np) != INT)
+	if (!np->type->integer)
 		error("unary operator requires integer operand");
 	np = promote(np);
 	if (op == OCPL && np->op == OCPL)
