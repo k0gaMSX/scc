@@ -15,6 +15,7 @@ do
 	     copyon==1   {print > "'$chk'"}' $i
 
 	../cc1 -I. -w $i > $out 2>&1
+	echo $i >> test.log
 	if diff -c $chk $out >> test.log
 	then
 		echo [OK]
