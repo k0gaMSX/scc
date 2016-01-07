@@ -7,6 +7,8 @@
 #include "../inc/sizes.h"
 #include "cc1.h"
 
+#define XCHG(lp, rp, np) (np = lp, lp = rp, rp = np)
+
 Node *expr(void);
 
 bool
@@ -287,8 +289,6 @@ convert(Node *np, Type *newtp, char iscast)
 	}
 	return castcode(np, newtp);
 }
-
-#define XCHG(lp, rp, np) (np = lp, lp = rp, rp = np)
 
 static Node *
 parithmetic(char op, Node *lp, Node *rp)
