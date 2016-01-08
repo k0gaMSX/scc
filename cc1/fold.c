@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../inc/cc.h"
 #include "cc1.h"
@@ -480,6 +481,25 @@ change_to_comma:
 	return NULL;
 }
 
+static Node *
+foldternary(int op, Type *tp, Node *cond, Node *body)
+{
+	Node *np;
+
+	if (!cond->constant)
+		return node(op, tp, cond, body);
+	if (cmpnode(cond, 0)) {
+		np = body->right;
+		freetree(body->left);
+	} else {
+		np = body->left;
+		freetree(body->right);
+	}
+	freetree(cond);
+	free(body);
+	return np;
+}
+
 /*
  * TODO: transform simplify in a recursivity
  * function, because we are losing optimization
@@ -490,6 +510,8 @@ simplify(int op, Type *tp, Node *lp, Node *rp)
 {
 	Node *np;
 
+	if (op == OASK)
+		return foldternary(op, tp, lp, rp);
 	commutative(&op, &lp, &rp);
 	if ((np = fold(op, tp, lp, rp)) != NULL)
 		return np;

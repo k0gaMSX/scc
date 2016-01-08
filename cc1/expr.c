@@ -990,7 +990,7 @@ ternary(void)
 		expect(':');
 		ifno = ternary();
 		np = chkternary(ifyes, ifno);
-		cond = node(OASK, np->type, cond, np);
+		cond = simplify(OASK, np->type, cond, np);
 	}
 	return cond;
 }
