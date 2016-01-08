@@ -6,8 +6,6 @@
 #include "cc1.h"
 
 
-/* TODO: Add ENUM in the cases */
-
 TUINT
 ones(int nbytes)
 {
@@ -325,6 +323,7 @@ fold(int op, Type *tp, Node *lp, Node *rp)
 	rs = (rp) ? rp->sym : NULL;
 
 	switch (type = optype->op) {
+	case ENUM:
 	case INT:
 		if (!optype->sign)
 			type = UNSIGNED;
