@@ -287,11 +287,6 @@ convert(Node *np, Type *newtp, char iscast)
 		case PTR:
 			if (iscast ||
 			    newtp == pvoidtype || oldtp == pvoidtype) {
-				/* TODO:
-				 * we assume conversion between pointers
-				 * do not need any operation, but due to
-				 * alignment problems that may be false
-				 */
 				np->type = newtp;
 				return np;
 			}
@@ -299,7 +294,7 @@ convert(Node *np, Type *newtp, char iscast)
 			return NULL;
 		}
 	default:
-			return NULL;
+		return NULL;
 	}
 	return castcode(np, newtp);
 }
