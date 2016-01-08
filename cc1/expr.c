@@ -488,7 +488,7 @@ array(Node *lp, Node *rp)
 	Type *tp;
 	Node *np;
 
-	if (BTYPE(lp) != INT && BTYPE(rp) != INT)
+	if (!lp->type->integer && !rp->type->integer)
 		error("array subscript is not an integer");
 	np = arithmetic(OADD, decay(lp), decay(rp));
 	tp = np->type;
