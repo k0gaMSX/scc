@@ -79,6 +79,10 @@ static struct limits limits[][4] = {
  * syntax, so I have switched it to this ugly form
  * I hope I will change it again in the future
  */
+/*
+ * TODO: There are fields here that depends of the
+ *       architecture
+ */
 static Type types[] = {
 	{       /* 0 = voidtype */
 		.op = VOID,
