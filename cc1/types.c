@@ -303,6 +303,7 @@ getlimits(Type *tp)
 	int ntable, ntype;
 
 	switch (tp->op) {
+	case ENUM:
 	case INT:
 		ntable = tp->sign;
 		switch (tp->size) {
