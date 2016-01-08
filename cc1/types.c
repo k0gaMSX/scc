@@ -474,6 +474,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		type.printed = 1;
 		type.integer = 1;
 		type.arith = 1;
+		type.sign = 0;
+		type.n.rank = RANK_INT;
 		goto no_defined;
 	case STRUCT:
 	case UNION:
