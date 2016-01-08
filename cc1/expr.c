@@ -62,6 +62,7 @@ promote(Node *np)
 	tp = np->type;
 
 	switch (tp->op) {
+	case ENUM:
 	case INT:
 		if (tp->n.rank >= inttype->n.rank)
 			return np;
