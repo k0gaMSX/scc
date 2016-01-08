@@ -551,16 +551,13 @@ address(char op, Node *np)
 static Node *
 negation(char op, Node *np)
 {
-	switch (BTYPE(np)) {
-	case FTN:
-	case ARY:
-	case INT:
-	case FLOAT:
-	case PTR:
-		return exp2cond(np, 1);
-	default:
-		error("invalid argument of unary '!'");
+	np = decay(np);
+	if (!np->type->arith && np->type->op != PTR) {
+		errorp("invalid argument of unary '!'");
+		freetree(np);
+		return constnode(zero);
 	}
+	return exp2cond(np, 1);
 }
 
 static Symbol *
