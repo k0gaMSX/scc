@@ -44,6 +44,7 @@ struct type {
 	bool printed : 1;           /* the type already was printed */
 	bool integer : 1;           /* this type is INT or enum */
 	bool arith : 1;             /* this type is INT, ENUM, FLOAT */
+	bool aggreg : 1;            /* this type is struct or union */
 	size_t size;                /* sizeof the type */
 	size_t align;               /* align of the type */
 	Type *type;                 /* base type */

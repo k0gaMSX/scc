@@ -465,9 +465,10 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		type.printed = 1;
 		type.integer = 1;
 		type.arith = 1;
-		/* PASSTROUGH */
+		goto no_defined;
 	case STRUCT:
 	case UNION:
+		type.aggreg = 1;
 	no_defined:
 		type.defined = 0;
 		break;

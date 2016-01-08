@@ -410,6 +410,10 @@ static Node *
 exp2cond(Node *np, char neg)
 {
 	np = decay(np);
+	if (np->type->aggreg) {
+		errorp("used struct/union type value where scalar is required");
+		np = constnode(zero);
+	}
 	if (isnodecmp(np->op))
 		return (neg) ? negate(np) : np;
 	return compare((neg) ?  OEQ : ONE, np, constnode(zero));
