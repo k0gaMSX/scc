@@ -441,18 +441,22 @@ field(Node *np)
 		unexpected();
 	next();
 
-	switch (BTYPE(np)) {
-	case STRUCT:
-	case UNION:
-		if ((sym->flags & ISDECLARED) == 0)
-			error("incorrect field in struct/union");
-		np = node(OFIELD, sym->type, np, varnode(sym));
-		np->lvalue = 1;
-		return np;
-	default:
-		error("request for member '%s' in something not a structure or union",
+	if (!np->type->aggreg) {
+		errorp("request for member '%s' in something not a structure or union",
 		      yylval.sym->name);
+		goto free_np;
 	}
+	if ((sym->flags & ISDECLARED) == 0) {
+		errorp("incorrect field in struct/union");
+		goto free_np;
+	}
+	np = node(OFIELD, sym->type, np, varnode(sym));
+	np->lvalue = 1;
+	return np;
+
+free_np:
+	freetree(np);
+	return constnode(zero);
 }
 
 static Node *
@@ -1105,7 +1109,7 @@ fielddesig(Type *tp)
 	int ons;
 	Symbol *sym, **p;
 
-	if (tp->op != STRUCT || tp->op != UNION)
+	if (!tp->aggreg)
 		errorp("field name not in record or union initializer");
 	ons = namespace;
 	namespace = tp->ns;
