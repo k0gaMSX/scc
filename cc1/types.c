@@ -90,7 +90,8 @@ static Type types[] = {
 		.letter = L_POINTER,
 		.size = 2,
 		.align = 2,
-		.printed = 1
+		.printed = 1,
+		.defined = 1,
 	},
 	{      /* 2 = booltype */
 		.op = INT,
