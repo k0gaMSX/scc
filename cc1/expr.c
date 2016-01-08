@@ -255,7 +255,6 @@ convert(Node *np, Type *newtp, char iscast)
 		case INT:
 		case FLOAT:
 		case ENUM:
-		case VOID:
 			break;
 		default:
 			return NULL;
