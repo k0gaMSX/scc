@@ -2,30 +2,38 @@
 name: TEST041
 description: Test for bug parsing ternary operators
 output:
-test041.c:36: error: type mismatch in conditional expression
+test041.c:48: error: type mismatch in conditional expression
 F1	I
 G2	F1	main
 {
 \
 A3	I	i
-A4	P	p
-S6	foo
-M7	I	i
-A8	S6	foo
+A5	P	q
+A7	P	s
+A8	P	p
+S10	foo
+M11	I	i
+A12	S10	foo
 	A3	A3	#I0	!I	#W0	#W0	?W	gI	:I
-	A4	A3	#I0	!I	#P0	#P0	?P	:P
-	A4	A3	#I0	!I	#P0	#P0	?P	:P
-	A4	A3	#I0	!I	#P0	#P0	?P	:P
-test041.c:36: error: incompatible types when assigning
-test041.c:37: error: used struct/union type value where scalar is required
-test041.c:38: warning: 'i' defined but not used
-test041.c:38: warning: 'foo' defined but not used
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A5	A3	#I0	!I	#P0	A8	?P	:P
+	A5	A3	#I0	!I	A8	#P0	?P	:P
+	A5	A3	#I0	!I	A5	#P0	?P	:P
+	A5	A3	#I0	!I	#P0	A5	?P	:P
+test041.c:48: error: incompatible types when assigning
+test041.c:49: error: used struct/union type value where scalar is required
+test041.c:50: warning: 'i' defined but not used
+test041.c:50: warning: 'foo' defined but not used
+test041.c:50: warning: 's' defined but not used
 */
-
+   
 int
 main(void)
 {
-	int i;
+	int i, *q;
+	char *s;
 	void *p;
 	struct foo {int i;} foo;
 
@@ -33,6 +41,10 @@ main(void)
 	p = i ? (void *) 0 : 0;
 	p = i ? 0 : (void *) 0;
 	p = i ? 0 : (const void *) 0;
+	q = i ? 0 : p;
+	q = i ? p : 0;
+	q = i ? q : 0;
+	q = i ? 0 : q;
 	p = i ? 2 : p;
 	foo ? 1 : 2;
 }
