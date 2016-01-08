@@ -446,7 +446,10 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	type.type = tp;
 	type.op = op;
+	type.arith = 0;
+	type.integer = 0;
 	type.printed = 0;
+	type.aggreg = 0;
 	type.letter = c;
 	type.p.pars = pars;
 	type.n.elem = nelem;
