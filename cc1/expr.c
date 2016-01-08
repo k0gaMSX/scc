@@ -71,6 +71,7 @@ promote(Node *np)
 		tp = (lim->max.i <= ilim->max.i) ? inttype : uinttype;
 		break;
 	case FLOAT:
+		/* TODO: Add support for C99 float math */
 		tp = doubletype;
 		break;
 	default:
