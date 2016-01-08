@@ -127,6 +127,14 @@ set_p1_p2:
 	*p2 = np2;
 }
 
+static int
+isnull(Node *np)
+{
+	if (!np->constant || np->type != pvoidtype)
+		return 0;
+	return cmpnode(np, 0);
+}
+
 static Node *
 chkternary(Node *yes, Node *no)
 {
@@ -146,18 +154,26 @@ chkternary(Node *yes, Node *no)
 		} else if (yes->type->op != PTR && no->type->op != PTR) {
 			goto wrong_type;
 		} else {
+			/* convert integer 0 to NULL */
 			if (yes->type->integer && cmpnode(yes, 0))
-				yes = convert(yes, no->type, 0);
+				yes = convert(yes, pvoidtype, 0);
 			if (no->type->integer && cmpnode(no, 0))
-				no = convert(no, yes->type, 0);
-
+				no = convert(no, pvoidtype, 0);
+			/*
+			 * At this point the type of both should be
+			 * a pointer to something, or we have don't
+			 * compatible types
+			 */
 			if (yes->type->op != PTR || no->type->op != PTR)
 				goto wrong_type;
-
-			if (yes->type == pvoidtype)
+			/*
+			 * If we have a null pointer constant then
+			 * convert to the another type
+			 */
+			if (isnull(yes))
 				yes = convert(yes, no->type, 0);
-			if (no->type == pvoidtype)
-				no = convert(no, no->type, 0);
+			if (isnull(no))
+				no = convert(no, yes->type, 0);
 
 			if (!eqtype(yes->type, no->type))
 				goto wrong_type;
