@@ -1247,10 +1247,13 @@ initializer(Symbol *sym, Type *tp, int nelem)
 
 	np = assignop(OINIT, varnode(sym), np);
 
-	if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
+	if (flags & ISDEFINED) {
+		errorp("redeclaration of '%s'", sym->name);
+	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
 		if (!np->right->constant)
 			errorp("initializer element is not constant");
 		emit(OINIT, np);
+		sym->flags |= ISDEFINED;
 	} else if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
 		errorp("'%s' has both '%s' and initializer",
 		       sym->name, (flags&ISEXTERN) ? "extern" : "typedef");
