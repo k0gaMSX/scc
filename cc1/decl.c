@@ -615,7 +615,7 @@ identifier(struct decl *dcl)
 		 * Ugly workaround to solve function declarations.
 		 * A new context is added for the parameters,
 		 * so at this point curctx is incremented by
-		 * one when sym was parsed.
+		 * one since sym was parsed.
 		 */
 		--curctx;
 		sym = install(NS_IDEN, sym);
