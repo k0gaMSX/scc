@@ -535,6 +535,23 @@ type(struct decl *dcl)
 	return sym;
 }
 
+static int
+empty(Symbol *sym, Type *tp)
+{
+	if (!sym->name) {
+		sym->type = tp;
+		switch (tp->op) {
+		default:
+			warn("empty declaration");
+		case STRUCT:
+		case UNION:
+		case ENUM:
+			return 1;
+		}
+	}
+	return 0;
+}
+
 static Symbol *
 field(struct decl *dcl)
 {
@@ -543,11 +560,8 @@ field(struct decl *dcl)
 	Type *structp = dcl->parent, *tp = dcl->type;
 	TINT n = structp->n.elem;
 
-	if (!name) {
-		sym->type = tp;
-		warn("empty declaration");
+	if (empty(sym, tp))
 		return sym;
-	}
 	if (dcl->sclass)
 		error("storage class in struct/union field");
 	if (tp->op == FTN)
@@ -587,17 +601,8 @@ identifier(struct decl *dcl)
 	short flags;
 	int sclass = dcl->sclass;
 
-	if (!name) {
-		sym->type = tp;
-		switch (tp->op) {
-		default:
-			warn("empty declaration");
-		case STRUCT:
-		case UNION:
-		case ENUM:
-			return sym;
-		}
-	}
+	if (empty(sym, tp))
+		return sym;
 
 	/* TODO: Add warning about ANSI limits */
 	if (!tp->defined && sclass != EXTERN && sclass != TYPEDEF)
