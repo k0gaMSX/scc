@@ -716,7 +716,7 @@ identifier(struct decl *dcl)
 			break;
 		case TYPEDEF:
 			flags |= ISTYPEDEF;
-			sym->token = TYPEIDEN;
+			sym->u.token = sym->token = TYPEIDEN;
 			break;
 		}
 		sym->flags = flags;
