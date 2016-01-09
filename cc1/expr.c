@@ -128,7 +128,7 @@ set_p1_p2:
 }
 
 static int
-isnull(Node *np)
+null(Node *np)
 {
 	if (!np->constant || np->type != pvoidtype)
 		return 0;
@@ -170,9 +170,9 @@ chkternary(Node *yes, Node *no)
 			 * If we have a null pointer constant then
 			 * convert to the another type
 			 */
-			if (isnull(yes))
+			if (null(yes))
 				yes = convert(yes, no->type, 0);
-			if (isnull(no))
+			if (null(no))
 				no = convert(no, yes->type, 0);
 
 			if (!eqtype(yes->type, no->type))
