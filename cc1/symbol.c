@@ -243,8 +243,24 @@ lookup(int ns, char *name)
 		if (*t != c || strcmp(t, name))
 			continue;
 		sns = sym->ns;
-		if (sns == NS_KEYWORD || sns == NS_CPP || sns == ns)
+		/*
+		 * CPP namespace has a total priority over the another
+		 * namespaces, because it is a previous pass,
+		 * If we are looking in the CPP namespace,
+		 * we don't want symbols related to keywords or types.
+		 * When a lookup is done in a namespace associated
+		 * to a struct we also want symbols of NS_IDEN which
+		 * are typedef, because in other case we cannot declare
+		 * fields of such types.
+		 */
+		if (sns == NS_CPP || sns == ns)
 			return sym;
+		if (ns == NS_CPP)
+			continue;
+		if (sns == NS_KEYWORD ||
+		    (sym->flags & ISTYPEDEF) && ns >= NS_STRUCTS) {
+			return sym;
+		}
 	}
 	return allocsym(ns, name);
 }
