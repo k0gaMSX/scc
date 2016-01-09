@@ -593,13 +593,72 @@ bad_storage(Type *tp, char *name)
 }
 
 static Symbol *
+redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
+{
+	int flags;
+	char *name = sym->name;
+
+	if (!eqtype(sym->type, tp)) {
+		errorp("conflicting types for '%s'", name);
+		return sym;
+	}
+
+	if (sym->token == TYPEIDEN && sclass != TYPEDEF ||
+	    sym->token != TYPEIDEN && sclass == TYPEDEF) {
+		goto redeclaration;
+	}
+	if (curctx != GLOBALCTX && tp->op != FTN) {
+		/* is it the redeclaration of a local variable? */
+		if ((sym->flags & ISEXTERN) && sclass == EXTERN)
+			return sym;
+		goto redeclaration;
+	}
+
+	sym->u.pars = pars;
+
+	flags = sym->flags;
+	switch (sclass) {
+	case REGISTER:
+	case AUTO:
+		bad_storage(tp, name);
+		break;
+	case NOSCLASS:
+		if ((flags & ISPRIVATE) == 0) {
+			flags &= ~ISEXTERN;
+			flags |= ISGLOBAL;
+			break;
+		}
+		errorp("non-static declaration of '%s' follows static declaration",
+		       name);
+		break;
+	case TYPEDEF:
+	case EXTERN:
+		break;
+	case STATIC:
+		if ((flags & (ISGLOBAL|ISEXTERN)) == 0) {
+			flags |= ISPRIVATE;
+			break;
+		}
+		errorp("static declaration of '%s' follows non-static declaration",
+		       name);
+		break;
+	}
+	sym->flags = flags;
+
+	return sym;
+
+redeclaration:
+	errorp("redeclaration of '%s'", name);
+	return sym;
+}
+
+static Symbol *
 identifier(struct decl *dcl)
 {
 	Symbol *sym = dcl->sym;
 	Type *tp = dcl->type;
-	char *name = sym->name;
-	short flags;
 	int sclass = dcl->sclass;
+	char *name = sym->name;
 
 	if (empty(sym, tp))
 		return sym;
@@ -608,7 +667,9 @@ identifier(struct decl *dcl)
 	if (!tp->defined && sclass != EXTERN && sclass != TYPEDEF)
 		errorp("declared variable '%s' of incomplete type", name);
 
-	if (tp->op == FTN) {
+	if (tp->op != FTN) {
+		sym = install(NS_IDEN, sym);
+	} else {
 		if (sclass == NOSCLASS)
 			sclass = EXTERN;
 		/*
@@ -622,57 +683,15 @@ identifier(struct decl *dcl)
 		++curctx;
 		if (!strcmp(name, "main") && tp->type != inttype)
 			errorp("please contact __20h__ on irc.oftc.net (#suckless) via IRC");
-	} else {
-		sym = install(NS_IDEN, sym);
 	}
 
 	if (sym == NULL) {
-		sym = dcl->sym;
-		if (!eqtype(sym->type, tp))
-			error("conflicting types for '%s'", name);
-		if (sym->token == TYPEIDEN && sclass != TYPEDEF ||
-		    sym->token != TYPEIDEN && sclass == TYPEDEF)
-				goto redeclaration;
-
-		if (curctx != GLOBALCTX && tp->op != FTN) {
-			if (!(sym->flags & ISEXTERN) || sclass != EXTERN)
-				goto redeclaration;
-		} else {
-			sym->u.pars = dcl->pars;
-			flags = sym->flags;
-
-			switch (sclass) {
-			case REGISTER:
-			case AUTO:
-				bad_storage(tp, name);
-				break;
-			case NOSCLASS:
-				if ((flags & ISPRIVATE) == 0) {
-					flags &= ~ISEXTERN;
-					flags |= ISGLOBAL;
-					break;
-				}
-				errorp("non-static declaration of '%s' follows static declaration",
-				       name);
-				break;
-			case TYPEDEF:
-			case EXTERN:
-				break;
-			case STATIC:
-				if ((flags & (ISGLOBAL|ISEXTERN)) == 0) {
-					flags |= ISPRIVATE;
-					break;
-				}
-				errorp("static declaration of '%s' follows non-static declaration",
-				       name);
-				break;
-			}
-		}
-		sym->flags = flags;
+		sym = redcl(dcl->sym, tp, dcl->pars, sclass);
 	} else {
+		short flags = sym->flags;
+
 		sym->type = tp;
 		sym->u.pars = dcl->pars;
-		flags = sym->flags;
 
 		switch (sclass) {
 		case REGISTER:
@@ -704,10 +723,6 @@ identifier(struct decl *dcl)
 		emit(ODECL, sym);
 	if (accept('='))
 		initializer(sym, sym->type, -1);
-	return sym;
-
-redeclaration:
-	errorp("redeclaration of '%s'", name);
 	return sym;
 }
 
