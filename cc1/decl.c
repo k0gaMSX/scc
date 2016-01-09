@@ -703,7 +703,10 @@ identifier(struct decl *dcl)
 			flags |= (sclass == REGISTER) ? ISREGISTER : ISAUTO;
 			break;
 		case NOSCLASS:
-			flags |= (curctx == GLOBALCTX) ? ISGLOBAL : ISAUTO;
+			if (tp->op == FTN)
+				flags |= ISEXTERN;
+			else
+				flags |= (curctx == GLOBALCTX) ? ISGLOBAL : ISAUTO;
 			break;
 		case EXTERN:
 			flags |= ISEXTERN;
