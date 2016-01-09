@@ -726,6 +726,8 @@ identifier(struct decl *dcl)
 		emit(ODECL, sym);
 	if (accept('='))
 		initializer(sym, sym->type, -1);
+	if (!(sym->flags & (ISGLOBAL|ISEXTERN)) && tp->op != FTN)
+		sym->flags |= ISDEFINED;
 	return sym;
 }
 
