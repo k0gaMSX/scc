@@ -2,11 +2,17 @@
 name: TEST040
 description: Test for bug parsing typenames in struct definition
 output:
-test040.c:24: error: unexpected 'List'
 F8	I
 G9	F8	main
 {
 \
+S2	List
+M4	I	len
+M6	P	head
+M7	P	back
+A10	S2	List
+	r	A10	M4	.I
+}
 */
 
 typedef struct List List;
