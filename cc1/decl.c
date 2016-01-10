@@ -116,6 +116,23 @@ arydcl(struct declarators *dp)
 	push(dp, ARY, n);
 }
 
+static int
+empty(Symbol *sym, Type *tp)
+{
+	if (!sym->name) {
+		sym->type = tp;
+		switch (tp->op) {
+		default:
+			warn("empty declaration");
+		case STRUCT:
+		case UNION:
+		case ENUM:
+			return 1;
+		}
+	}
+	return 0;
+}
+
 static Symbol *
 parameter(struct decl *dcl)
 {
@@ -123,8 +140,6 @@ parameter(struct decl *dcl)
 	Type *funtp = dcl->parent, *tp = dcl->type;
 	TINT n = funtp->n.elem;
 	char *name = sym->name;
-
-	sym->type = tp;
 
 	switch (dcl->sclass) {
 	case STATIC:
@@ -157,16 +172,15 @@ parameter(struct decl *dcl)
 		errorp("incorrect function type for a function parameter");
 		return NULL;
 	}
-
-	if (name) {
+	if (!empty(sym, tp)) {
 		if ((sym = install(NS_IDEN, sym)) == NULL) {
 			errorp("redefinition of parameter '%s'", name);
 			return NULL;
 		}
 	}
+
 	sym->type = tp;
 	sym->flags |= ISUSED;    /* avoid non used warnings in prototypes */
-
 	return sym;
 }
 
@@ -533,23 +547,6 @@ type(struct decl *dcl)
 	sym->type = dcl->type;
 
 	return sym;
-}
-
-static int
-empty(Symbol *sym, Type *tp)
-{
-	if (!sym->name) {
-		sym->type = tp;
-		switch (tp->op) {
-		default:
-			warn("empty declaration");
-		case STRUCT:
-		case UNION:
-		case ENUM:
-			return 1;
-		}
-	}
-	return 0;
 }
 
 static Symbol *
