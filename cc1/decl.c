@@ -769,42 +769,37 @@ decl(void)
 	 * but due to parameter context, we have to check
 	 * against GLOBALCTX+1
 	 */
-	if (sym->type->op == FTN) {
-		if (curctx != GLOBALCTX+1)
-			goto prototype;
-
-		switch (yytoken) {
-		case '{':
-		case TYPEIDEN:
-		case TYPE:
-		case TQUALIFIER:
-		case SCLASS:
-			if (sym->flags & ISTYPEDEF)
-				errorp("function definition declared 'typedef'");
-			if (sym->flags & ISDEFINED)
-				errorp("redefinition of '%s'", sym->name);
-			if (sym->flags & ISEXTERN) {
-				sym->flags &= ~ISEXTERN;
-				sym->flags |= ISGLOBAL;
-			}
-			sym->flags |= ISDEFINED;
-			sym->flags &= ~ISEMITTED;
-			curfun = sym;
-			emit(OFUN, sym);
-			free(sym->u.pars);
-			compound(NULL, NULL, NULL);
-			emit(OEFUN, NULL);
-			curfun = NULL;
-			return;
-		default:
-		prototype:
-			emit(ODECL, sym);
-			free(sym->u.pars);
-			sym->u.pars = NULL;
-			popctx();
-		}
+	if (sym->type->op != FTN) {
+		expect(';');
+		return;
 	}
-	expect(';');
+
+	if (curctx != GLOBALCTX+1 || yytoken == ';') {
+		/* it is a prototype */
+		emit(ODECL, sym);
+		free(sym->u.pars);
+		sym->u.pars = NULL;
+		popctx();
+		expect(';');
+		return;
+	}
+
+	if (sym->flags & ISTYPEDEF)
+		errorp("function definition declared 'typedef'");
+	if (sym->flags & ISDEFINED)
+		errorp("redefinition of '%s'", sym->name);
+	if (sym->flags & ISEXTERN) {
+		sym->flags &= ~ISEXTERN;
+		sym->flags |= ISGLOBAL;
+	}
+	sym->flags |= ISDEFINED;
+	sym->flags &= ~ISEMITTED;
+	curfun = sym;
+	emit(OFUN, sym);
+	free(sym->u.pars);
+	compound(NULL, NULL, NULL);
+	emit(OEFUN, NULL);
+	curfun = NULL;
 }
 
 static void
