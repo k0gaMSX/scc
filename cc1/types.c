@@ -452,7 +452,9 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	type.type = tp;
 	type.op = op;
+	type.defined = 0;
 	type.arith = 0;
+	type.sign = 0;
 	type.integer = 0;
 	type.printed = 0;
 	type.aggreg = 0;
@@ -465,7 +467,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	switch (op) {
 	case ARY:
 		if (nelem == 0)
-			goto no_defined;
+			break;
 		/* PASSTROUGH */
 	case FTN:
 	case PTR:
@@ -475,14 +477,11 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		type.printed = 1;
 		type.integer = 1;
 		type.arith = 1;
-		type.sign = 0;
 		type.n.rank = RANK_INT;
-		goto no_defined;
+		break;
 	case STRUCT:
 	case UNION:
 		type.aggreg = 1;
-	no_defined:
-		type.defined = 0;
 		break;
 	}
 
