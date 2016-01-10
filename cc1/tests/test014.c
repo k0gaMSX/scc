@@ -42,6 +42,7 @@ test014.c:32: error: bad storage class in function parameter
 test014.c:33: error: invalid storage class for function 'func4'
 test014.c:34: error: invalid type specification
 test014.c:35: warning: 'f' defined but not used
+test014.c:35: warning: 'par' defined but not used
 test014.c:38: error: conflicting types for 'd'
 */
 

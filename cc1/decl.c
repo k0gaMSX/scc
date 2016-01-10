@@ -140,7 +140,9 @@ parameter(struct decl *dcl)
 	Type *funtp = dcl->parent, *tp = dcl->type;
 	TINT n = funtp->n.elem;
 	char *name = sym->name;
+	int flags;
 
+	flags = 0;
 	switch (dcl->sclass) {
 	case STATIC:
 	case EXTERN:
@@ -148,10 +150,10 @@ parameter(struct decl *dcl)
 		errorp("bad storage class in function parameter");
 		break;
 	case REGISTER:
-		sym->flags |= ISREGISTER;
+		flags |= ISREGISTER;
 		break;
 	case NOSCLASS:
-		sym->flags |= ISAUTO;
+		flags |= ISAUTO;
 		break;
 	}
 
@@ -180,7 +182,7 @@ parameter(struct decl *dcl)
 	}
 
 	sym->type = tp;
-	sym->flags |= ISUSED;    /* avoid non used warnings in prototypes */
+	sym->flags |= flags;
 	return sym;
 }
 
@@ -755,6 +757,27 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 	return sym;
 }
 
+static void
+prototype(Symbol *sym)
+{
+	int n;
+	Symbol **p;
+
+	emit(ODECL, sym);
+	/*
+	 * avoid non used warnings in prototypes
+	 */
+	n = sym->type->n.elem;
+	for (p = sym->u.pars;  n-- > 0; ++p) {
+		if (*p == NULL)
+			continue;
+		(*p)->flags |= ISUSED;
+	}
+	free(sym->u.pars);
+	sym->u.pars = NULL;
+	popctx();
+}
+
 void
 decl(void)
 {
@@ -775,11 +798,7 @@ decl(void)
 	}
 
 	if (curctx != GLOBALCTX+1 || yytoken == ';') {
-		/* it is a prototype */
-		emit(ODECL, sym);
-		free(sym->u.pars);
-		sym->u.pars = NULL;
-		popctx();
+		prototype(sym);
 		expect(';');
 		return;
 	}
