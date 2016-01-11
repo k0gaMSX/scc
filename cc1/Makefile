@@ -17,7 +17,7 @@ cpp: cc1
 	ln -f cc1 cpp
 
 test:
-	cd tests && ./chktest.sh
+	cd tests && ./chktest.sh *.c
 
 clean:
 	rm -f $(OBJS)

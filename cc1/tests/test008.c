@@ -1,6 +1,8 @@
 /*
 name: TEST008
 description: Basic do while loop
+error:
+
 output:
 F1	I	E
 G2	F1	main
@@ -22,6 +24,7 @@ L6
 L7
 	r	A3	#I14	-I
 }
+
 */
 
 int 

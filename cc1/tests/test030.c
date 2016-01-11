@@ -2,6 +2,8 @@
 /*
 name: TEST030
 description: Basic test for vararg functions
+error:
+
 output:
 F13	I	S2	P	I	E
 G14	F13	f1
@@ -31,6 +33,7 @@ A18	S2	f
 	G14	A18	pS2	A18	'P	pP	#I2	pI	#I1	pI	A18	pS2	A18	'P	pP	cI
 	r	#I0
 }
+
 */
 
 struct foo {

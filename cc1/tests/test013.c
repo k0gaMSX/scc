@@ -4,6 +4,8 @@ description: Basic test of integer types and integer conversions
 comments: This test depends of the configuration in the type system.
           With the current configuration char is equal to unsigned char,
           short is equal to int, and unsigned short is equal to unsigned.
+error:
+
 output:
 G1	I	a
 G2	N	b
@@ -131,6 +133,7 @@ G13	F12	main
 	G11	G10	gN	:N
 	G11	G9	gN	:N
 }
+
 */
 
 int a;

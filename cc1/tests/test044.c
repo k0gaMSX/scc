@@ -1,12 +1,15 @@
 /*
 name: TEST044
 description: Test of corner cases in #if
+error:
+test044.c:17: warning: division by 0
+test044.c:21: warning: division by 0
+test044.c:25: warning: division by 0
+test044.c:31: error: parameter of #if is not an integer constant expression
+test044.c:32: error: #error  3 != (1,2,3)
+
 output:
-test044.c:14: warning: division by 0
-test044.c:18: warning: division by 0
-test044.c:22: warning: division by 0
-test044.c:28: error: parameter of #if is not an integer constant expression
-test044.c:29: error: #error  3 != (1,2,3)
+
 */
 
 /* These should be accepted */

@@ -1,6 +1,8 @@
 /*
 name: TEST009
 description: Basic test for loops
+error:
+
 output:
 F1	I	E
 G2	F1	main
@@ -21,6 +23,7 @@ L5
 L7
 	r	#I0
 }
+
 */
 
 int 

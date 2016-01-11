@@ -1,10 +1,12 @@
 /*
 name: TEST010
 description: Test for continue and break statements
-output:
+error:
 test010.c:9: warning: conditional expression is constant
 test010.c:11: warning: conditional expression is constant
 test010.c:31: warning: conditional expression is constant
+
+output:
 F1	I	E
 G2	F1	main
 {
@@ -57,6 +59,7 @@ L17
 L16
 	r	A3	#IF	-I
 }
+
 */
 
 #line 1

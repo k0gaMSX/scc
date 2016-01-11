@@ -1,6 +1,8 @@
 /*
 name: TEST018
 description: Basic test for arrays
+error:
+
 output:
 F1	I	E
 G2	F1	main
@@ -31,6 +33,7 @@ L15
 L16
 	r	#I0
 }
+
 */
 
 #line 1

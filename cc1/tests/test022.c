@@ -3,6 +3,8 @@
 name: TEST022
 description: Basic test for int constants
 comments: This test is done for z80 data types
+error:
+
 output:
 F1	I
 G2	F1	main
@@ -28,6 +30,7 @@ A4	N	u
 	A4	#N0	:N
 	r	#I0
 }
+
 */
 
 int

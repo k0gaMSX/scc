@@ -2,8 +2,10 @@
 /*
 name: TEST038
 description: Basic test for tentative definitions
+error:
+test038.c:48: error: redeclaration of 'x'
+
 output:
-test038.c:45: error: redeclaration of 'x'
 G1	I	x
 (
 	#I0
@@ -22,6 +24,7 @@ G3	F2	main
 	G1	#I0	:I
 	r	G1
 }
+
 */
 
 int x;

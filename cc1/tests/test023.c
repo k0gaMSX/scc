@@ -3,6 +3,8 @@
 name: TEST023
 description: Basic test for long constants
 comments: This test is done for z80 data types
+error:
+
 output:
 F1	I
 G2	F1	main
@@ -28,6 +30,7 @@ A4	Z	u
 	A4	#Z0	:Z
 	r	#I0
 }
+
 */
 
 int

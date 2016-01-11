@@ -1,6 +1,8 @@
 /*
 name: TEST007
 description: basic while test
+error:
+
 output:
 F1	I	E
 G2	F1	main
@@ -18,6 +20,7 @@ L6
 L5
 	r	A3
 }
+
 */
 
 int

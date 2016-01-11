@@ -1,8 +1,11 @@
 /*
 name: TEST016
 description: Basic pointer test
-output:
+error:
 test016.c:43: error: redefinition of 'func2'
+test016.c:47: error: incompatible types when assigning
+
+output:
 G1	I	g
 F2	I
 G3	F2	func1
@@ -39,7 +42,7 @@ L14
 	A11	#P0	:P
 	r	A10
 }
-test016.c:47: error: incompatible types when assigning
+
 */
 
 #line 1

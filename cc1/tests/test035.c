@@ -2,6 +2,8 @@
 /*
 name: TEST035
 description: Basic test for enumerations
+error:
+
 output:
 F6	I	E
 G7	F6	main
@@ -23,6 +25,7 @@ L11
 L12
 	r	#I0
 }
+
 */
 
 enum E {

@@ -1,7 +1,7 @@
 /*
 name: TEST014
 description: Basic storage class test
-output:
+error:
 test014.c:16: warning: 'a' defined but not used
 test014.c:16: warning: 'k' defined but not used
 test014.c:16: warning: 'j' defined but not used
@@ -11,6 +11,15 @@ test014.c:22: warning: 'par' defined but not used
 test014.c:22: warning: 'par' defined but not used
 test014.c:27: warning: 'par' defined but not used
 test014.c:29: error: incorrect storage class for file-scope declaration
+test014.c:29: error: invalid storage class for function 'd'
+test014.c:32: error: bad storage class in function parameter
+test014.c:33: error: invalid storage class for function 'func4'
+test014.c:34: error: invalid type specification
+test014.c:35: warning: 'f' defined but not used
+test014.c:35: warning: 'par' defined but not used
+test014.c:38: error: conflicting types for 'd'
+
+output:
 G1	I	a
 Y2	K	b
 X3	I	c
@@ -37,13 +46,7 @@ T17	F13	func3
 R16	I	par
 \
 }
-test014.c:29: error: invalid storage class for function 'd'
-test014.c:32: error: bad storage class in function parameter
-test014.c:33: error: invalid storage class for function 'func4'
-test014.c:34: error: invalid type specification
-test014.c:35: warning: 'f' defined but not used
-test014.c:35: warning: 'par' defined but not used
-test014.c:38: error: conflicting types for 'd'
+
 */
 
 #line 1

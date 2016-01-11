@@ -2,6 +2,8 @@
 /*
 name: TEST025
 descritpion: Test of ifdef and ifndef
+error:
+
 output:
 G1	I	a
 G2	I	b
@@ -13,6 +15,7 @@ G7	I	e_
 G8	I	f_
 G9	I	h
 G10	I	i
+
 */
 
 #define FOO

@@ -1,6 +1,8 @@
 /*
 name: TEST003
 description: Select function to call inside ternary operator
+error:
+
 output:
 F1	I
 G2	F1	foo
@@ -18,6 +20,7 @@ G4	F1	main
 \
 	r	G2	cI
 }
+
 */
 
 int
