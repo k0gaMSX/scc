@@ -243,9 +243,8 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 	int toomany = 0, toovoid = 0;
 
 	do {
-		if (n == -1) {
-			if (!toovoid)
-				errorp("'void' must be the only parameter");
+		if (n == -1 && !toovoid) {
+			errorp("'void' must be the only parameter");
 			toovoid = 1;
 		}
 		if (accept(ELLIPSIS)) {
