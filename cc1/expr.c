@@ -339,9 +339,9 @@ arithmetic(char op, Node *lp, Node *rp)
 	if (ltp->arith && rtp->arith) {
 		arithconv(&lp, &rp);
 	} else if ((ltp->op == PTR || rtp->op == PTR) &&
-	           op == OADD || op == OSUB) {
+	           (op == OADD || op == OSUB)) {
 		return parithmetic(op, rp, lp);
-	} else {
+	} else if (op != OINC && op != ODEC) {
 		errorp("incorrect arithmetic operands");
 	}
 	return simplify(op, lp->type, lp, rp);

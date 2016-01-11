@@ -436,11 +436,15 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	Type **tbl, type;
 	unsigned t;
 	Type *bp;
-	int c;
+	int c, k_r = 0;
 
 	if (op == PTR && tp == voidtype)
 		return pvoidtype;
 
+	if (op == KRFTN) {
+		k_r = 1;
+		op = FTN;
+	}
 	switch (op) {
 	case PTR:     c = L_POINTER;  break;
 	case ARY:     c = L_ARRAY;    break;
@@ -458,6 +462,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	type.integer = 0;
 	type.printed = 0;
 	type.aggreg = 0;
+	type.k_r = k_r;
 	type.letter = c;
 	type.p.pars = pars;
 	type.n.elem = nelem;

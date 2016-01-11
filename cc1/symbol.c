@@ -111,6 +111,10 @@ popctx(void)
 			killsym(sym);
 		}
 		labels = NULL;
+		if (curfun) {
+			free(curfun->u.pars);
+			curfun->u.pars = NULL;
+		}
 	}
 
 	for (sym = head; sym && sym->ctx > curctx; sym = next) {

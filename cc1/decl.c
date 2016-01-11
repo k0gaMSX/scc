@@ -52,6 +52,7 @@ push(struct declarators *dp, int op, ...)
 	case ARY:
 		p->nelem = va_arg(va, TINT);
 		break;
+	case KRFTN:
 	case FTN:
 		p->nelem = va_arg(va, TINT);
 		p->tpars = va_arg(va, Type **);
@@ -87,7 +88,7 @@ pop(struct declarators *dp, struct decl *dcl)
 		popctx();
 		dcl->pars = NULL;
 	}
-	if (p->op == FTN)
+	if (p->op == FTN || p->op == KRFTN)
 		dcl->pars = p->pars;
 	dcl->type = mktype(dcl->type, p->op, p->nelem, p->tpars);
 	return 1;
@@ -159,7 +160,7 @@ parameter(struct decl *dcl)
 
 	switch (tp->op) {
 	case VOID:
-		if (n != 0) {
+		if (n != 0 || funtp->k_r) {
 			errorp("incorrect void parameter");
 			return NULL;
 		}
@@ -175,13 +176,22 @@ parameter(struct decl *dcl)
 		return NULL;
 	}
 	if (!empty(sym, tp)) {
-		if ((sym = install(NS_IDEN, sym)) == NULL) {
+		Symbol *p = install(NS_IDEN, sym);
+		if (!p && !funtp->k_r) {
 			errorp("redefinition of parameter '%s'", name);
 			return NULL;
 		}
+		if (p && funtp->k_r) {
+			errorp("declaration for parameter ‘%s’ but no such parameter",
+			       sym->name);
+			return NULL;
+		}
+		if (p)
+			sym = p;
 	}
 
 	sym->type = tp;
+	sym->flags &= ~(ISAUTO|ISREGISTER);
 	sym->flags |= flags;
 	return sym;
 }
@@ -192,66 +202,114 @@ static Symbol *dodcl(int rep,
                      Type *type);
 
 static void
-fundcl(struct declarators *dp)
+krfun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 {
-	Type type, *types[NR_FUNPARAM], *tp;
-	Symbol *syms[NR_FUNPARAM], *sym;
-	TINT size;
-	Symbol *pars;
+	int n = 0;
+	Symbol *sym;
+	int toomany = 0;
+
+	if (yytoken != ')') {
+		do {
+			sym = yylval.sym;
+			expect(IDEN);
+			sym->type = inttype;
+			sym->flags |= ISAUTO;
+			if ((sym = install(NS_IDEN, sym)) == NULL) {
+				errorp("redefinition of parameter '%s'",
+				       sym->name);
+				continue;
+			}
+			if (n < NR_FUNPARAM) {
+				++n;
+				*syms++ = sym;
+				continue;
+			}
+			if (!toomany)
+				errorp("too much parameters in function definition");
+			toomany = 1;
+		} while (accept(','));
+	}
+
+	*nsyms = n;
+	*ntypes = 1;
+	types[0] = ellipsistype;
+}
+
+static void
+ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
+{
+	int n = 0;
+	Symbol *sym;
 	int toomany = 0, toovoid = 0;
 
-	pushctx();
-	expect('(');
-	type.n.elem = 0;
-
-	if (yytoken == ')') {
-		++type.n.elem;
-		syms[0] = NULL;
-		types[0] = ellipsistype;
-		goto end_params;
-	}
 	do {
-		if (type.n.elem == -1) {
+		if (n == -1) {
 			if (!toovoid)
 				errorp("'void' must be the only parameter");
 			toovoid = 1;
 		}
-		if (!accept(ELLIPSIS)) {
-			sym = dodcl(0, parameter, NS_IDEN, &type);
-			if (!sym)
-				continue;
-			tp = sym->type;
-		} else {
-			if (type.n.elem == 0)
+		if (accept(ELLIPSIS)) {
+			if (n == 0)
 				errorp("a named argument is requiered before '...'");
-			tp = ellipsistype;
-			sym = NULL;
+			++n;
+			*syms = NULL;
+			*types++ = ellipsistype;
+			break;
 		}
-		if (type.n.elem == NR_FUNPARAM) {
-			if (toomany)
-				continue;
+		if ((sym = dodcl(0, parameter, NS_IDEN, tp)) == NULL)
+			continue;
+		if (tp->n.elem == -1) {
+			n = -1;
+			continue;
+		}
+		if (n < NR_FUNPARAM) {
+			*syms++ = sym;
+			*types++ = sym->type;
+			++n;
+			continue;
+		}
+		if (!toomany)
 			errorp("too much parameters in function definition");
-			toomany = 1;
-		} else if (type.n.elem >= 0) {
-			syms[type.n.elem] = sym;
-			types[type.n.elem] = tp;
-			++type.n.elem;
-		}
-	} while (tp != ellipsistype && accept(','));
+		toomany = 1;
+	} while (accept(','));
 
-end_params:
+	*nsyms = n;
+	*ntypes = n;
+}
+
+static void
+fundcl(struct declarators *dp)
+{
+	Type *types[NR_FUNPARAM], type;
+	Symbol *syms[NR_FUNPARAM+1], **pars;
+	int k_r, ntypes, nsyms;
+	size_t size;
+	void (*fp)(Type **, Symbol **, int *, int *);
+
+	pushctx();
+	expect('(');
+	type.n.elem = 0;
+	type.k_r = 0;
+
+	k_r = (yytoken == ')' || yytoken == IDEN);
+	(*(k_r ? krfun : ansifun))(&type, types, syms, &ntypes, &nsyms);
 	expect(')');
 
-	if (type.n.elem > 0) {
-		size = type.n.elem * sizeof(Symbol *);
-		pars = memcpy(xmalloc(size), syms, size);
-		size = type.n.elem * sizeof(Type *);
-		type.p.pars = memcpy(xmalloc(size), types, size);
-	} else {
-		pars = NULL;
+	type.n.elem = ntypes;
+	if (ntypes <= 0) {
 		type.p.pars = NULL;
+	} else {
+		size = ntypes * sizeof(Type *);
+		type.p.pars = memcpy(xmalloc(size), types, size);
 	}
-	push(dp, FTN, type.n.elem, type.p.pars, pars);
+	if (nsyms <= 0) {
+		pars = NULL;
+	} else {
+		size = (nsyms + 1) * sizeof(Symbol *);
+		pars = memcpy(xmalloc(size), syms, size);
+		pars[nsyms] = NULL;
+	}
+	push(dp, (k_r) ? KRFTN : FTN, type.n.elem, type.p.pars, pars);
 }
 
 static void declarator(struct declarators *dp, unsigned ns);
@@ -757,50 +815,46 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 	return sym;
 }
 
-static void
-prototype(Symbol *sym)
-{
-	int n;
-	Symbol **p;
-
-	emit(ODECL, sym);
-	/*
-	 * avoid non used warnings in prototypes
-	 */
-	n = sym->type->n.elem;
-	for (p = sym->u.pars;  n-- > 0; ++p) {
-		if (*p == NULL)
-			continue;
-		(*p)->flags |= ISUSED;
-	}
-	free(sym->u.pars);
-	sym->u.pars = NULL;
-	popctx();
-}
-
 void
 decl(void)
 {
-	Symbol *sym;
+	Symbol **p, *par, *sym, *ocurfun;
 
 	if (accept(';'))
 		return;
 	sym = dodcl(1, identifier, NS_IDEN, NULL);
 
-	/*
-	 * Functions only can appear at global context,
-	 * but due to parameter context, we have to check
-	 * against GLOBALCTX+1
-	 */
 	if (sym->type->op != FTN) {
 		expect(';');
 		return;
 	}
 
+	ocurfun = curfun;
+	curfun = sym;
+	/*
+	 * Functions only can appear at global context,
+	 * but due to parameter context, we have to check
+	 * against GLOBALCTX+1
+	 */
 	if (curctx != GLOBALCTX+1 || yytoken == ';') {
-		prototype(sym);
+		emit(ODECL, sym);
+		/*
+		 * avoid non used warnings in prototypes
+		 */
+		for (p = sym->u.pars;  p && *p; ++p)
+			(*p)->flags |= ISUSED;
+		popctx();
 		expect(';');
+		free(sym->u.pars);
+		sym->u.pars = NULL;
+		curfun = ocurfun;
 		return;
+	}
+	if (sym->type->k_r) {
+		while (yytoken != '{') {
+			par = dodcl(1, parameter, NS_IDEN, sym->type);
+			expect(';');
+		}
 	}
 
 	if (sym->flags & ISTYPEDEF)
@@ -811,14 +865,13 @@ decl(void)
 		sym->flags &= ~ISEXTERN;
 		sym->flags |= ISGLOBAL;
 	}
+
 	sym->flags |= ISDEFINED;
 	sym->flags &= ~ISEMITTED;
-	curfun = sym;
 	emit(OFUN, sym);
-	free(sym->u.pars);
 	compound(NULL, NULL, NULL);
 	emit(OEFUN, NULL);
-	curfun = NULL;
+	curfun = ocurfun;
 }
 
 static void

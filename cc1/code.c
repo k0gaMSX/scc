@@ -355,20 +355,15 @@ static void
 emitfun(unsigned op, void *arg)
 {
 	Symbol *sym = arg, **sp;
-	TINT n;
 
 	emitdcl(op, arg);
 	puts("\n{");
 
-	n = sym->type->n.elem;
-	for (sp = sym->u.pars; n-- > 0; ++sp) {
-		if ((sym = *sp) == NULL)
-			continue;
-		/* enable non used warnings in parameters */
-		sym->flags &= ~ISUSED;
-		emit(ODECL, sym);
-	}
+	for (sp = sym->u.pars; sp && *sp; ++sp)
+		emit(ODECL, *sp);
 	puts("\\");
+	free(sym->u.pars);
+	sym->u.pars = NULL;
 }
 
 static void
