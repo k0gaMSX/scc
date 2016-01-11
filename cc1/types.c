@@ -270,6 +270,7 @@ static Type types[] = {
 		.letter = L_UINT,
 		.defined = 1,
 		.size = 2,
+		.integer = 1,
 		.arith = 1,
 		.align = 1,
 		.n.rank = RANK_UINT,
