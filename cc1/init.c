@@ -79,7 +79,7 @@ designation(Init *ip)
 	default:  return ip;
 	}
 
-	dp->pos  = (*fun)(ip);
+	ip->curpos  = (*fun)(ip);
 	expect('=');
 	return ip;
 }
@@ -88,6 +88,7 @@ static Node *
 initlist(Symbol *sym, Type *tp)
 {
 	struct inititlizer *ip;
+	struct designator *dp;
 	int toomany = 0;
 	TINT n;
 	Type *newtp;
@@ -131,9 +132,10 @@ initlist(Symbol *sym, Type *tp)
 			sym = NULL;
 			break;
 		}
-		if (accept('{'))
-			return initlist(sym, tp);
-		ip->head->expr = assign(NULL);
+		dp = ip->head;
+		dp->pos = ip->curpos;
+		/* TODO: pass the correct parameters to initlist */
+		dp->expr = (accept('{')) ? initlist(sym, tp) : assign(NULL);
 
 		if (!accept(','))
 			break;
