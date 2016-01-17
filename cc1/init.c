@@ -11,6 +11,12 @@ struct designator {
 	struct designator *next;
 };
 
+struct inititlizer {
+	Node *expr;
+	struct designator *dp;
+	struct inititalizer *next;
+};
+
 static TINT
 arydesig(Type *tp)
 {
@@ -56,7 +62,7 @@ fielddesig(Type *tp)
 static struct designator *
 designation(Type *tp)
 {
-	struct designator *des = NULL, *d;
+	struct designator *dp, *d, *head;
 	TINT (*fun)(Type *);
 
 	for (;;) {
@@ -64,37 +70,38 @@ designation(Type *tp)
 		case '[': fun = arydesig;   break;
 		case '.': fun = fielddesig; break;
 		default:
-			if (des)
+			if (head)
 				expect('=');
-			return des;
+			return head;
 		}
 		d = xmalloc(sizeof(*d));
 		d->next = NULL;
 
-		if (!des) {
-			des = d;
+		if (!head) {
+			head = dp = d;
 		} else {
-			des->next = d;
-			des = d;
+			dp->next = d;
+			dp = d;
 		}
-		des->pos  = (*fun)(tp);
+		dp->pos  = (*fun)(tp);
 	}
 }
 
-static void
+static struct designator *
 initlist(Symbol *sym, Type *tp)
 {
-	struct designator *des;
+	struct designator *dp;
+	struct inititlizer *ip;
 	int toomany = 0;
 	TINT n;
 	Type *newtp;
 
 	for (n = 0; ; ++n) {
-		if ((des = designation(tp)) == NULL) {
-			des = xmalloc(sizeof(*des));
-			des->pos = n;
+		if ((dp = designation(tp)) == NULL) {
+			dp = xmalloc(sizeof(*dp));
+			dp->pos = n;
 		} else {
-			n = des->pos;
+			n = dp->pos;
 		}
 		switch (tp->op) {
 		case ARY:
@@ -128,7 +135,10 @@ initlist(Symbol *sym, Type *tp)
 			}
 			break;
 		}
-		initializer(sym, newtp, n);
+		if (accept('{'))
+			return initlist(sym, tp);
+		ip->expr = assign(NULL);
+
 		if (!accept(','))
 			break;
 	}
@@ -138,9 +148,8 @@ initlist(Symbol *sym, Type *tp)
 		tp->n.elem = n + 1;
 		tp->defined = 1;
 	}
+	return dp;
 }
-
-extern Node *assign(Node *np);
 
 void
 initializer(Symbol *sym, Type *tp, int nelem)
@@ -153,19 +162,12 @@ initializer(Symbol *sym, Type *tp, int nelem)
 
 	switch (yytoken) {
 	case '{':
-		initlist(sym, tp); /* FIXME: This code is not complete */
+		initlist(sym, tp);
 		return;
 	case '=':
 		np = assign(varnode(sym));
 		break;
 	}
-
-	/* FIXME: old code used in the recursive call
-	 * if (!sym)
-	 *	return;
-	 * if (nelem >= 0)
-	 *	return;
-	 */
 
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
