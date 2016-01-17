@@ -6,24 +6,26 @@
 #include "../inc/sizes.h"
 #include "cc1.h"
 
+typedef struct inititlizer Init;
+
 struct designator {
 	TINT pos;
+	Node *expr;
 	struct designator *next;
 };
 
 struct inititlizer {
-	Node *expr;
-	struct designator *dp;
-	struct inititalizer *next;
+	Type *type;
+	struct designator *head;
 };
 
 static TINT
-arydesig(Type *tp)
+arydesig(Init *ip)
 {
 	TINT npos;
 	Node *np;
 
-	if (tp->op != ARY)
+	if (ip->type->op != ARY)
 		errorp("array index in non-array initializer");
 	next();
 	np = iconstexpr();
@@ -34,11 +36,12 @@ arydesig(Type *tp)
 }
 
 static TINT
-fielddesig(Type *tp)
+fielddesig(Init *ip)
 {
 	TINT npos;
 	int ons;
 	Symbol *sym, **p;
+	Type *tp = ip->type;
 
 	if (!tp->aggreg)
 		errorp("field name not in record or union initializer");
@@ -59,50 +62,38 @@ fielddesig(Type *tp)
 	return p - tp->p.fields;
 }
 
-static struct designator *
-designation(Type *tp)
-{
-	struct designator *dp, *d, *head;
-	TINT (*fun)(Type *);
-
-	for (;;) {
-		switch (yytoken) {
-		case '[': fun = arydesig;   break;
-		case '.': fun = fielddesig; break;
-		default:
-			if (head)
-				expect('=');
-			return head;
-		}
-		d = xmalloc(sizeof(*d));
-		d->next = NULL;
-
-		if (!head) {
-			head = dp = d;
-		} else {
-			dp->next = d;
-			dp = d;
-		}
-		dp->pos  = (*fun)(tp);
-	}
-}
-
-static struct designator *
-initlist(Symbol *sym, Type *tp)
+static Init *
+designation(Init *ip)
 {
 	struct designator *dp;
+	TINT (*fun)(Init *);
+
+	dp = xmalloc(sizeof(*dp));
+	dp->next = ip->head;
+	ip->head = dp;
+
+	switch (yytoken) {
+	case '[': fun = arydesig;   break;
+	case '.': fun = fielddesig; break;
+	default:  return ip;
+	}
+
+	dp->pos  = (*fun)(ip);
+	expect('=');
+	return ip;
+}
+
+static Node *
+initlist(Symbol *sym, Type *tp)
+{
 	struct inititlizer *ip;
 	int toomany = 0;
 	TINT n;
 	Type *newtp;
 
+	/* TODO: catch the case of empty list */
 	for (n = 0; ; ++n) {
-		if ((dp = designation(tp)) == NULL) {
-			dp = xmalloc(sizeof(*dp));
-			dp->pos = n;
-		} else {
-			n = dp->pos;
-		}
+		designation(ip);
 		switch (tp->op) {
 		case ARY:
 			newtp = tp->type;
@@ -137,7 +128,7 @@ initlist(Symbol *sym, Type *tp)
 		}
 		if (accept('{'))
 			return initlist(sym, tp);
-		ip->expr = assign(NULL);
+		ip->head->expr = assign(NULL);
 
 		if (!accept(','))
 			break;
@@ -148,7 +139,7 @@ initlist(Symbol *sym, Type *tp)
 		tp->n.elem = n + 1;
 		tp->defined = 1;
 	}
-	return dp;
+	return NULL;
 }
 
 void
