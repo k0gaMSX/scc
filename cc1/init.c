@@ -16,6 +16,7 @@ struct designator {
 
 struct inititlizer {
 	Type *type;
+	TUINT curpos;
 	struct designator *head;
 };
 
@@ -91,8 +92,12 @@ initlist(Symbol *sym, Type *tp)
 	TINT n;
 	Type *newtp;
 
-	/* TODO: catch the case of empty list */
-	for (n = 0; ; ++n) {
+	ip = xmalloc(sizeof(*ip));
+	ip->head = NULL;
+	if (accept('}'))
+		return NULL;
+
+	for (ip->curpos = 0; ; ++ip->curpos) {
 		designation(ip);
 		switch (tp->op) {
 		case ARY:
