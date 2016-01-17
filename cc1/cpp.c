@@ -1,6 +1,5 @@
 
 #include <ctype.h>
-#include <inttypes.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -680,7 +679,7 @@ bool
 cpp(void)
 {
 	static struct {
-		uint8_t token;
+		unsigned char token;
 		void (*fun)(void);
 	} *bp, clauses [] = {
 		{DEFINE, define},
