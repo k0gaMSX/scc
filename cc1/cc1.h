@@ -374,13 +374,14 @@ extern Node *castcode(Node *np, Type *newtp);
 extern TUINT ones(int nbytes);
 
 /* expr.c */
-extern Node *expr(void), *negate(Node *np), *constexpr(void);
+extern Node *decay(Node *), *negate(Node *np), *assign(Node *np);;
 extern Node *convert(Node *np, Type *tp1, char iscast);
-extern Node *iconstexpr(void), *condexpr(void);
+extern Node *iconstexpr(void), *condexpr(void), *expr(void);
 extern bool isnodecmp(int op);
 extern int negop(int op);
 extern bool cmpnode(Node *np, TUINT val);
-extern Node *decay(Node *np);
+
+/* init.c */
 extern void initializer(Symbol *sym, Type *tp, int nelem);
 
 /* cpp.c */

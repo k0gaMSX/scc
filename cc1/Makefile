@@ -3,7 +3,7 @@
 include ../config.mk
 
 OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
-	code.o stmt.o cpp.o fold.o
+	code.o stmt.o cpp.o fold.o init.o
 
 all: cc1
 

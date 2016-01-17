@@ -779,7 +779,7 @@ identifier(struct decl *dcl)
 
 	if (sym->token == IDEN && sym->type->op != FTN)
 		emit(ODECL, sym);
-	if (accept('='))
+	if (yytoken == '=')
 		initializer(sym, sym->type, -1);
 	if (!(sym->flags & (ISGLOBAL|ISEXTERN)) && tp->op != FTN)
 		sym->flags |= ISDEFINED;

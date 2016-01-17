@@ -629,8 +629,6 @@ primary(void)
 	return np;
 }
 
-static Node *assign(void);
-
 static Node *
 arguments(Node *np)
 {
@@ -659,7 +657,7 @@ arguments(Node *np)
 	toomany = 0;
 
 	do {
-		arg = decay(assign());
+		arg = decay(assign(NULL));
 		argtype = *targs;
 		if (argtype == ellipsistype) {
 			n = 0;
@@ -1007,16 +1005,22 @@ ternary(void)
 	return cond;
 }
 
-static Node *
-assign(void)
+Node *
+assign(Node *np)
 {
-	Node *np, *(*fun)(char , Node *, Node *);
+	Node *(*fun)(char , Node *, Node *);
 	char op;
 
-	np = ternary();
+	if (np) {
+		op = OINIT;
+	} else {
+		op = OASSIGN;
+		np = ternary();
+	}
+
 	for (;;) {
 		switch (yytoken) {
-		case '=':    op = OASSIGN; fun = assignop;   break;
+		case '=': /* op = op; */;  fun = assignop;   break;
 		case MUL_EQ: op = OA_MUL;  fun = arithmetic; break;
 		case DIV_EQ: op = OA_DIV;  fun = arithmetic; break;
 		case MOD_EQ: op = OA_MOD;  fun = integerop;  break;
@@ -1031,7 +1035,7 @@ assign(void)
 		}
 		chklvalue(np);
 		next();
-		np = (fun)(op, np, assign());
+		np = (fun)(op, np, assign(NULL));
 	}
 }
 
@@ -1069,9 +1073,9 @@ expr(void)
 {
 	Node *lp, *rp;
 
-	lp = assign();
+	lp = assign(NULL);
 	while (accept(',')) {
-		rp = assign();
+		rp = assign(NULL);
 		lp = node(OCOMMA, rp->type, lp, rp);
 	}
 
@@ -1087,177 +1091,4 @@ condexpr(void)
 	if (np->constant)
 		warn("conditional expression is constant");
 	return np;
-}
-
-struct designator {
-	TINT pos;
-	struct designator *next;
-};
-
-static TINT
-arydesig(Type *tp)
-{
-	TINT npos;
-	Node *np;
-
-	if (tp->op != ARY)
-		errorp("array index in non-array initializer");
-	next();
-	np = iconstexpr();
-	npos = np->sym->u.i;
-	freetree(np);
-	expect(']');
-	return npos;
-}
-
-static TINT
-fielddesig(Type *tp)
-{
-	TINT npos;
-	int ons;
-	Symbol *sym, **p;
-
-	if (!tp->aggreg)
-		errorp("field name not in record or union initializer");
-	ons = namespace;
-	namespace = tp->ns;
-	next();
-	namespace = ons;
-	if (yytoken != IDEN)
-		unexpected();
-	sym = yylval.sym;
-	if ((sym->flags & ISDECLARED) == 0) {
-		errorp(" unknown field '%s' specified in initializer",
-		      sym->name);
-		return 0;
-	}
-	for (p = tp->p.fields; *p != sym; ++p)
-		/* nothing */;
-	return p - tp->p.fields;
-}
-
-static struct designator *
-designation(Type *tp)
-{
-	struct designator *des = NULL, *d;
-	TINT (*fun)(Type *);
-
-	for (;;) {
-		switch (yytoken) {
-		case '[': fun = arydesig;   break;
-		case '.': fun = fielddesig; break;
-		default:
-			if (des)
-				expect('=');
-			return des;
-		}
-		d = xmalloc(sizeof(*d));
-		d->next = NULL;
-
-		if (!des) {
-			des = d;
-		} else {
-			des->next = d;
-			des = d;
-		}
-		des->pos  = (*fun)(tp);
-	}
-}
-
-static void
-initlist(Symbol *sym, Type *tp)
-{
-	struct designator *des;
-	int toomany = 0;
-	TINT n;
-	Type *newtp;
-
-	for (n = 0; ; ++n) {
-		if ((des = designation(tp)) == NULL) {
-			des = xmalloc(sizeof(*des));
-			des->pos = n;
-		} else {
-			n = des->pos;
-		}
-		switch (tp->op) {
-		case ARY:
-			if (tp->defined && n >= tp->n.elem) {
-				if (!toomany)
-					warn("excess elements in array initializer");
-				toomany = 1;
-				sym = NULL;
-			}
-			newtp = tp->type;
-			break;
-		case STRUCT:
-			if (n >= tp->n.elem) {
-				if (!toomany)
-					warn("excess elements in struct initializer");
-				toomany = 1;
-				sym = NULL;
-			} else {
-				sym = tp->p.fields[n];
-				newtp = sym->type;
-			}
-			break;
-		default:
-			newtp = tp;
-			warn("braces around scalar initializer");
-			if (n > 0) {
-				if (!toomany)
-					warn("excess elements in scalar initializer");
-				toomany = 1;
-				sym = NULL;
-			}
-			break;
-		}
-		initializer(sym, newtp, n);
-		if (!accept(','))
-			break;
-	}
-	expect('}');
-
-	if (tp->op == ARY && !tp->defined) {
-		tp->n.elem = n + 1;
-		tp->defined = 1;
-	}
-}
-
-void
-initializer(Symbol *sym, Type *tp, int nelem)
-{
-	Node *np;
-	int flags = sym->flags;
-
-	if (tp->op == FTN)
-		error("function '%s' is initialized like a variable", sym->name);
-
-	if (accept('{')) {
-		initlist(sym, tp);
-		return;
-	}
-	np = assign();
-
-	/* if !sym it means there are too much initializers */
-	if (!sym)
-		return;
-	if (nelem >= 0)
-		return;
-
-	np = assignop(OINIT, varnode(sym), np);
-
-	if (flags & ISDEFINED) {
-		errorp("redeclaration of '%s'", sym->name);
-	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
-		if (!np->right->constant)
-			errorp("initializer element is not constant");
-		emit(OINIT, np);
-		sym->flags |= ISDEFINED;
-	} else if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
-		errorp("'%s' has both '%s' and initializer",
-		       sym->name, (flags&ISEXTERN) ? "extern" : "typedef");
-	} else {
-		np->op = OASSIGN;
-		emit(OEXPR, np);
-	}
 }
