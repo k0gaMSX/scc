@@ -105,34 +105,34 @@ initlist(Symbol *sym, Type *tp)
 		}
 		switch (tp->op) {
 		case ARY:
-			if (tp->defined && n >= tp->n.elem) {
-				if (!toomany)
-					warn("excess elements in array initializer");
-				toomany = 1;
-				sym = NULL;
-			}
 			newtp = tp->type;
+			if (!tp->defined || n < tp->n.elem)
+				break;
+			if (!toomany)
+				warn("excess elements in array initializer");
+			toomany = 1;
+			sym = NULL;
 			break;
 		case STRUCT:
-			if (n >= tp->n.elem) {
-				if (!toomany)
-					warn("excess elements in struct initializer");
-				toomany = 1;
-				sym = NULL;
-			} else {
+			if (n < tp->n.elem) {
 				sym = tp->p.fields[n];
 				newtp = sym->type;
+				break;
 			}
+			if (!toomany)
+				warn("excess elements in struct initializer");
+			toomany = 1;
+			sym = NULL;
 			break;
 		default:
 			newtp = tp;
 			warn("braces around scalar initializer");
-			if (n > 0) {
-				if (!toomany)
-					warn("excess elements in scalar initializer");
-				toomany = 1;
-				sym = NULL;
-			}
+			if (n <= 0)
+				break;
+			if (!toomany)
+				warn("excess elements in scalar initializer");
+			toomany = 1;
+			sym = NULL;
 			break;
 		}
 		if (accept('{'))
