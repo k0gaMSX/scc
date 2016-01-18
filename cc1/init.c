@@ -78,11 +78,24 @@ designation(Init *ip)
 	return ip;
 }
 
+static Node *initlist(Type *tp);
+
 static Node *
-initlist(Symbol *sym, Type *tp)
+initialize(Type *tp)
+{
+	Node *np;
+
+	np = (accept('{')) ? initlist(tp) : assign();
+	if ((np = convert(decay(np), tp, 0)) == NULL)
+		errorp("incorrect initializer");
+	return np;
+}
+
+static Node *
+initlist(Type *tp)
 {
 	Init *ip;
-	Symbol *nsym;
+	Symbol *sym;
 	struct designator *dp;
 	int toomany = 0;
 	Type *newtp;
@@ -99,19 +112,20 @@ initlist(Symbol *sym, Type *tp)
 		designation(ip);
 		switch (tp->op) {
 		case ARY:
-			newtp = tp->type;
-			if (!tp->defined || ip->pos < tp->n.elem)
+			newtp = sym->type;
+			if (!tp->defined || ip->pos <= tp->n.elem)
 				break;
 			if (!toomany)
 				warn("excess elements in array initializer");
 			toomany = 1;
 			break;
 		case STRUCT:
-			if (ip->pos < tp->n.elem) {
-				sym = tp->p.fields[ip->pos];
+			if (ip->pos <= tp->n.elem) {
+				sym = tp->p.fields[ip->pos-1];
 				newtp = sym->type;
 				break;
 			}
+			newtp = inttype;
 			if (!toomany)
 				warn("excess elements in struct initializer");
 			toomany = 1;
@@ -119,7 +133,7 @@ initlist(Symbol *sym, Type *tp)
 		default:
 			newtp = tp;
 			warn("braces around scalar initializer");
-			if (ip->pos <= 0)
+			if (ip->pos == 1)
 				break;
 			if (!toomany)
 				warn("excess elements in scalar initializer");
@@ -128,8 +142,7 @@ initlist(Symbol *sym, Type *tp)
 		}
 		dp = ip->head;
 		dp->pos = ip->pos;
-		/* TODO: pass the correct parameters to initlist */
-		dp->expr = (accept('{')) ? initlist(sym, tp) : assign(NULL);
+		dp->expr = initialize(newtp);
 
 		if (!accept(','))
 			break;
@@ -141,9 +154,10 @@ end_of_initializer:
 		tp->n.elem = ip->pos;
 		tp->defined = 1;
 	}
-	nsym = newsym(NS_IDEN);
-	nsym->u.init = ip;
-	return constnode(nsym);
+	sym = newsym(NS_IDEN);
+	sym->u.init = ip;
+	sym->type = tp;
+	return constnode(sym);
 }
 
 void
@@ -155,14 +169,7 @@ initializer(Symbol *sym, Type *tp, int nelem)
 	if (tp->op == FTN)
 		errorp("function '%s' is initialized like a variable", sym->name);
 
-	switch (yytoken) {
-	case '{':
-		initlist(sym, tp);
-		return;
-	case '=':
-		np = assign(varnode(sym));
-		break;
-	}
+	np = node(OINIT, tp, varnode(sym), initialize(tp));
 
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);

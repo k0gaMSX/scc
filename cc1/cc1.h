@@ -384,7 +384,7 @@ extern Node *castcode(Node *np, Type *newtp);
 extern TUINT ones(int nbytes);
 
 /* expr.c */
-extern Node *decay(Node *), *negate(Node *np), *assign(Node *np);;
+extern Node *decay(Node *), *negate(Node *np), *assign(void);;
 extern Node *convert(Node *np, Type *tp1, char iscast);
 extern Node *iconstexpr(void), *condexpr(void), *expr(void);
 extern bool isnodecmp(int op);

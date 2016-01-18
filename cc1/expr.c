@@ -512,9 +512,7 @@ static Node *
 assignop(char op, Node *lp, Node *rp)
 {
 	if ((rp = convert(decay(rp), lp->type, 0)) == NULL) {
-		errorp((op == OINIT) ?
-		        "incorrect initiliazer" :
-		        "incompatible types when assigning");
+		errorp("incompatible types when assigning");
 		return lp;
 	}
 
@@ -657,7 +655,7 @@ arguments(Node *np)
 	toomany = 0;
 
 	do {
-		arg = decay(assign(NULL));
+		arg = decay(assign());
 		argtype = *targs;
 		if (argtype == ellipsistype) {
 			n = 0;
@@ -1006,21 +1004,15 @@ ternary(void)
 }
 
 Node *
-assign(Node *np)
+assign(void)
 {
-	Node *(*fun)(char , Node *, Node *);
+	Node *np, *(*fun)(char , Node *, Node *);
 	char op;
 
-	if (np) {
-		op = OINIT;
-	} else {
-		op = OASSIGN;
-		np = ternary();
-	}
-
+	np = ternary();
 	for (;;) {
 		switch (yytoken) {
-		case '=': /* op = op; */;  fun = assignop;   break;
+		case '=':    op = OASSIGN; fun = assignop;   break;
 		case MUL_EQ: op = OA_MUL;  fun = arithmetic; break;
 		case DIV_EQ: op = OA_DIV;  fun = arithmetic; break;
 		case MOD_EQ: op = OA_MOD;  fun = integerop;  break;
@@ -1035,7 +1027,7 @@ assign(Node *np)
 		}
 		chklvalue(np);
 		next();
-		np = (fun)(op, np, assign(NULL));
+		np = (fun)(op, np, assign());
 	}
 }
 
@@ -1073,9 +1065,9 @@ expr(void)
 {
 	Node *lp, *rp;
 
-	lp = assign(NULL);
+	lp = assign();
 	while (accept(',')) {
-		rp = assign(NULL);
+		rp = assign();
 		lp = node(OCOMMA, rp->type, lp, rp);
 	}
 

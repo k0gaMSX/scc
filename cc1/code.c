@@ -207,6 +207,8 @@ emitconst(Node *np)
 		for (bp = sym->u.s; c = *bp; ++bp)
 			printf("%02X", c & 0xFF);
 		break;
+	case STRUCT:
+		return;
 	default:
 		/* TODO: Handle other kind of constants */
 		abort();
