@@ -191,9 +191,9 @@ static void
 chklvalue(Node *np)
 {
 	if (!np->lvalue)
-		error("lvalue required in operation");
+		errorp("lvalue required in operation");
 	if (np->type == voidtype)
-		error("invalid use of void expression");
+		errorp("invalid use of void expression");
 }
 
 Node *
