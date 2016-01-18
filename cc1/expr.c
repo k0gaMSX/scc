@@ -544,6 +544,8 @@ incdec(Node *np, char op)
 static Node *
 address(char op, Node *np)
 {
+	Node *new;
+
 	if (BTYPE(np) != FTN) {
 		chklvalue(np);
 		if (np->symbol && (np->sym->flags & ISREGISTER))
@@ -554,7 +556,11 @@ address(char op, Node *np)
 			return new;
 		}
 	}
-	return node(op, mktype(np->type, PTR, 0, NULL), np, NULL);
+	new = node(op, mktype(np->type, PTR, 0, NULL), np, NULL);
+
+	if (np->symbol && np->sym->flags & (ISGLOBAL|ISLOCAL|ISPRIVATE))
+		new->constant = 1;
+	return new;
 }
 
 static Node *
