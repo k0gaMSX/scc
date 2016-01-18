@@ -6,7 +6,6 @@
 #include "../inc/sizes.h"
 #include "cc1.h"
 
-typedef struct inititlizer Init;
 
 struct designator {
 	TINT pos;
@@ -14,11 +13,6 @@ struct designator {
 	struct designator *next;
 };
 
-struct inititlizer {
-	Type *type;
-	TUINT curpos;
-	struct designator *head;
-};
 
 static TINT
 arydesig(Init *ip)
@@ -79,7 +73,7 @@ designation(Init *ip)
 	default:  return ip;
 	}
 
-	ip->curpos  = (*fun)(ip);
+	ip->pos  = (*fun)(ip);
 	expect('=');
 	return ip;
 }
@@ -87,53 +81,53 @@ designation(Init *ip)
 static Node *
 initlist(Symbol *sym, Type *tp)
 {
-	struct inititlizer *ip;
+	Init *ip;
+	Symbol *nsym;
 	struct designator *dp;
 	int toomany = 0;
-	TINT n;
 	Type *newtp;
 
 	ip = xmalloc(sizeof(*ip));
 	ip->head = NULL;
-	if (accept('}'))
-		return NULL;
+	ip->pos = 0;
+	ip->type = tp;
 
-	for (ip->curpos = 0; ; ++ip->curpos) {
+	if (accept('}'))
+		goto end_of_initializer;
+
+	for (ip->pos = 1; ; ++ip->pos) {
 		designation(ip);
 		switch (tp->op) {
 		case ARY:
 			newtp = tp->type;
-			if (!tp->defined || n < tp->n.elem)
+			if (!tp->defined || ip->pos < tp->n.elem)
 				break;
 			if (!toomany)
 				warn("excess elements in array initializer");
 			toomany = 1;
-			sym = NULL;
 			break;
 		case STRUCT:
-			if (n < tp->n.elem) {
-				sym = tp->p.fields[n];
+			if (ip->pos < tp->n.elem) {
+				sym = tp->p.fields[ip->pos];
 				newtp = sym->type;
 				break;
 			}
 			if (!toomany)
 				warn("excess elements in struct initializer");
 			toomany = 1;
-			sym = NULL;
 			break;
 		default:
 			newtp = tp;
 			warn("braces around scalar initializer");
-			if (n <= 0)
+			if (ip->pos <= 0)
 				break;
 			if (!toomany)
 				warn("excess elements in scalar initializer");
 			toomany = 1;
-			sym = NULL;
 			break;
 		}
 		dp = ip->head;
-		dp->pos = ip->curpos;
+		dp->pos = ip->pos;
 		/* TODO: pass the correct parameters to initlist */
 		dp->expr = (accept('{')) ? initlist(sym, tp) : assign(NULL);
 
@@ -142,11 +136,14 @@ initlist(Symbol *sym, Type *tp)
 	}
 	expect('}');
 
+end_of_initializer:
 	if (tp->op == ARY && !tp->defined) {
-		tp->n.elem = n + 1;
+		tp->n.elem = ip->pos;
 		tp->defined = 1;
 	}
-	return NULL;
+	nsym = newsym(NS_IDEN);
+	nsym->u.init = ip;
+	return constnode(nsym);
 }
 
 void

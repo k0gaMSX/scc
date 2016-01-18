@@ -17,6 +17,7 @@ typedef struct symbol Symbol;
 typedef struct caselist Caselist;
 typedef struct node Node;
 typedef struct input Input;
+typedef struct init Init;
 
 struct limits {
 	union {
@@ -61,6 +62,14 @@ struct type {
 	} n;
 };
 
+struct designator;
+
+struct init {
+	Type *type;
+	TUINT pos;
+	struct designator *head;
+};
+
 struct symbol {
 	char *name;
 	Type *type;
@@ -75,6 +84,7 @@ struct symbol {
 		TFLOAT f;
 		char *s;
 		unsigned char token;
+		Init *init;
 		Symbol **pars;
 	} u;
 	struct symbol *next;
