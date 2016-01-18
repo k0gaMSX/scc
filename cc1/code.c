@@ -291,13 +291,9 @@ emittype(Type *tp)
 static void
 emitinit(unsigned op, void *arg)
 {
-	Node *np = arg;
-
 	puts("(");
-	emitexp(OEXPR, np->right);
+	emitexp(OEXPR, arg);
 	puts(")");
-	np->right = NULL;
-	freetree(np);
 }
 
 static void

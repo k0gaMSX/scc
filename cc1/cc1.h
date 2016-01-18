@@ -17,7 +17,6 @@ typedef struct symbol Symbol;
 typedef struct caselist Caselist;
 typedef struct node Node;
 typedef struct input Input;
-typedef struct init Init;
 
 struct limits {
 	union {
@@ -62,14 +61,6 @@ struct type {
 	} n;
 };
 
-struct designator;
-
-struct init {
-	Type *type;
-	TUINT pos;
-	struct designator *head;
-};
-
 struct symbol {
 	char *name;
 	Type *type;
@@ -84,7 +75,7 @@ struct symbol {
 		TFLOAT f;
 		char *s;
 		unsigned char token;
-		Init *init;
+		Node **init;
 		Symbol **pars;
 	} u;
 	struct symbol *next;
@@ -175,7 +166,8 @@ enum {
 	ISEMITTED  =    1024,
 	ISDEFINED  =    2048,
 	ISSTRING   =    4096,
-	ISTYPEDEF  =    8192
+	ISTYPEDEF  =    8192,
+	ISINITLST  =   16384
 };
 
 /* lexer mode, compiler or preprocessor directive */
