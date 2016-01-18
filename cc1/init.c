@@ -169,12 +169,12 @@ initializer(Symbol *sym, Type *tp, int nelem)
 	if (tp->op == FTN)
 		errorp("function '%s' is initialized like a variable", sym->name);
 
-	np = node(OINIT, tp, varnode(sym), initialize(tp));
+	np = initialize(tp);
 
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
 	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
-		if (!np->right->constant)
+		if (!np->constant)
 			errorp("initializer element is not constant");
 		emit(OINIT, np);
 		sym->flags |= ISDEFINED;
@@ -182,7 +182,7 @@ initializer(Symbol *sym, Type *tp, int nelem)
 		errorp("'%s' has both '%s' and initializer",
 		       sym->name, (flags&ISEXTERN) ? "extern" : "typedef");
 	} else {
-		np->op = OASSIGN;
+		np = node(OASSIGN, tp, varnode(sym), np);
 		emit(OEXPR, np);
 	}
 }
