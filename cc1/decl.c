@@ -614,15 +614,24 @@ field(struct decl *dcl)
 	char *name = sym->name;
 	Type *structp = dcl->parent, *tp = dcl->type;
 	TINT n = structp->n.elem;
+	int err = 0;
 
 	if (empty(sym, tp))
 		return sym;
-	if (dcl->sclass)
-		error("storage class in struct/union field");
-	if (tp->op == FTN)
-		error("invalid type in struct/union");
-	if (!tp->defined)
+	if (tp->op == FTN) {
+		errorp("invalid type in struct/union");
+		err = 1;
+	}
+	if (dcl->sclass) {
+		errorp("storage class in struct/union field");
+		err = 1;
+	}
+	if (!tp->defined) {
 		error("field '%s' has incomplete type", name);
+		err = 1;
+	}
+	if (err)
+		return sym;
 
 	if ((sym = install(dcl->ns, sym)) == NULL)
 		error("duplicated member '%s'", name);
