@@ -98,9 +98,11 @@ initialize(Type *tp)
 
 	np = (accept('{')) ? initlist(tp) : assign();
 	sym = np->sym;
-	if (sym && (sym->flags & ISSTRING) != 0 && tp->op == ARY) {
+	if (sym && sym->flags&ISSTRING && tp->op == ARY) {
 		btp = tp->type;
-		if (btp != chartype && btp != uchartype && btp != schartype) {
+		if (btp != chartype &&
+		    btp != uchartype &&
+		    btp != schartype) {
 			errorp("array of inappropriate type initialized from string constant");
 			goto return_zero;
 		}
@@ -117,6 +119,8 @@ initialize(Type *tp)
 
 		return np;
 	}
+	if (eqtype(tp, np->type))
+		return np;
 	if ((aux = convert(decay(np), tp, 0)) != NULL)
 		return aux;
 
