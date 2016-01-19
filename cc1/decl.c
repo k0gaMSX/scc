@@ -728,8 +728,11 @@ identifier(struct decl *dcl)
 		return sym;
 
 	/* TODO: Add warning about ANSI limits */
-	if (!tp->defined && sclass != EXTERN && sclass != TYPEDEF)
+	if (!tp->defined                          &&
+	    sclass != EXTERN && sclass != TYPEDEF &&
+	    !(tp->op == ARY && yytoken == '=')) {
 		errorp("declared variable '%s' of incomplete type", name);
+	}
 
 	if (tp->op != FTN) {
 		sym = install(NS_IDEN, sym);
