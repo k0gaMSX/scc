@@ -328,9 +328,10 @@ emitdesig(Node *np, Type *tp)
 	case PTR:
 	case INT:
 	case ENUM:
-		aux = (sym) ? *sym->u.init : constnode(zero);
+		aux = (sym) ? *sym->u.init : convert(constnode(zero), tp, 0);
 		emitexp(OEXPR, aux);
 		break;
+	/* TODO: case UNION: */
 	case STRUCT:
 	case ARY:
 		for (n = 0; n < tp->n.elem; ++n) {
@@ -339,10 +340,13 @@ emitdesig(Node *np, Type *tp)
 		}
 		break;
 	default:
-		/* TODO: Handle other kind of constants */
 		abort();
 	}
 
+	if (sym) {
+		free(sym->u.init);
+		sym->u.init = NULL;
+	}
 	freetree(np);
 	return;
 
