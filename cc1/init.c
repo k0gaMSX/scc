@@ -1,4 +1,5 @@
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,7 +111,7 @@ mkcompound(Init *ip)
 
 	if ((n = ip->max) == 0) {
 		v = NULL;
-	} else if (n >= n * sizeof(*v)) {
+	} else if (n > SIZE_MAX / sizeof(*v)) {
 		errorp("compound literal too big");
 		return constnode(zero);
 	} else {
@@ -240,16 +241,21 @@ initializer(Symbol *sym, Type *tp)
 	Node *np;
 	int flags = sym->flags;
 
-	if (tp->op == FTN)
-		errorp("function '%s' is initialized like a variable", sym->name);
+	if (tp->op == FTN) {
+		errorp("function '%s' is initialized like a variable",
+		       sym->name);
+		tp = inttype;
+	}
 	np = initialize(tp);
 
 	emit(ODECL, sym);
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
 	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
-		if (!np->constant)
+		if (!np->constant) {
 			errorp("initializer element is not constant");
+			return;
+		}
 		emit(OINIT, np);
 		sym->flags |= ISDEFINED;
 	} else if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
