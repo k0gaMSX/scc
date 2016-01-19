@@ -251,10 +251,10 @@ initlist(Type *tp)
 		else
 			newdesig(&in, np);
 
-		if (in.pos > in.max)
-			in.max = in.pos;
 		if (++in.pos == 0)
 			errorp("compound literal too big");
+		if (in.pos > in.max)
+			in.max = in.pos;
 		if (tp->n.elem == in.pos && !braces)
 			break;
 	} while (accept(','));
