@@ -201,6 +201,7 @@ emitconst(Node *np)
 		       (long long) sym->u.i & ones(tp->size));
 		break;
 	case ARY:
+		/* TODO: All this code must go out */
 		if (sym->flags & ISSTRING) {
 			putchar('"');
 			for (bp = sym->u.s; c = *bp; ++bp)
@@ -306,10 +307,55 @@ emittype(Type *tp)
 }
 
 static void
+emitdesig(Node *np, Type *tp)
+{
+	Symbol *sym;
+	size_t n;
+	Node *aux;
+
+	if (!np) {
+		sym = NULL;
+	} else {
+		if (!np->symbol)
+			goto emit_expression;
+		sym = np->sym;
+		if ((sym->flags & ISINITLST) == 0)
+			goto emit_expression;
+	}
+
+	switch (tp->op) {
+	case PTR:
+	case INT:
+	case ENUM:
+		aux = (sym) ? *sym->u.init : constnode(zero);
+		emitexp(OEXPR, aux);
+		break;
+	case STRUCT:
+	case ARY:
+		for (n = 0; n < tp->n.elem; ++n) {
+			aux = (sym) ? sym->u.init[n] : NULL;
+			emitdesig(aux, tp->type);
+		}
+		break;
+	default:
+		/* TODO: Handle other kind of constants */
+		abort();
+	}
+
+	freetree(np);
+	return;
+
+emit_expression:
+	emitexp(OEXPR, np);
+}
+
+static void
 emitinit(unsigned op, void *arg)
 {
+	Node *np = arg;
+
 	puts("(");
-	emitexp(OEXPR, arg);
+	emitdesig(np, np->type);
 	puts(")");
 }
 

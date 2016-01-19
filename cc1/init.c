@@ -108,23 +108,22 @@ mkcompound(Init *ip)
 	struct designator *dp, *next;
 	Symbol *sym;
 
-	n = ip->max;
-	if (n >= n * sizeof(*v)) {
+	if ((n = ip->max) == 0) {
+		v = NULL;
+	} else if (n >= n * sizeof(*v)) {
 		errorp("compound literal too big");
 		return constnode(zero);
-	}
-	n *= sizeof(*v);
-	v = memset(xmalloc(n), 0, n);
+	} else {
+		n *= sizeof(*v);
+		v = memset(xmalloc(n), 0, n);
 
-	for (dp = ip->head; dp; dp = next) {
-		p = &v[dp->pos];
-		if (*p) {
-			warn("double initialization in compound literal");
+		for (dp = ip->head; dp; dp = next) {
+			p = &v[dp->pos];
 			freetree(*p);
+			*p = dp->expr;
+			next = dp->next;
+			free(dp);
 		}
-		*p = dp->expr;
-		next = dp->next;
-		free(dp);
 	}
 
 	sym = newsym(NS_IDEN);
