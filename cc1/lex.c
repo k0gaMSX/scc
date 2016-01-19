@@ -486,7 +486,7 @@ repeat:
 	yylval.sym = newstring(yytext+1, yylen-1);
 	*bp++ = '"';
 	*bp = '\0';
-	return CONSTANT;
+	return STRING;
 }
 
 static unsigned

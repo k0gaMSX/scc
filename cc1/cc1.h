@@ -186,6 +186,7 @@ enum tokens {
 	IDEN,
 	SCLASS,
 	CONSTANT,
+	STRING,
 	SIZEOF,
 	INDIR,
 	INC,

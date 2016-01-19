@@ -616,6 +616,7 @@ primary(void)
 
 	sym = yylval.sym;
 	switch (yytoken) {
+	case STRING:
 	case CONSTANT:
 		np = constnode(sym);
 		next();

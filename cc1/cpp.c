@@ -734,7 +734,7 @@ outcpp(void)
 	char c, *s, *t;
 
 	for (next(); yytoken != EOFTOK; next()) {
-		if (yytoken != CONSTANT || *yytext != '"') {
+		if (yytoken != STRING) {
 			printf("%s ", yytext);
 			continue;
 		}

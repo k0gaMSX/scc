@@ -96,8 +96,14 @@ initialize(Type *tp)
 	Type *btp;
 	size_t len;
 
-	np = (accept('{')) ? initlist(tp) : assign();
+	if ((tp->op == ARY || tp->op == STRUCT) &&
+	    yytoken != '{' && yytoken != STRING) {
+		return initlist(tp);
+	}
+
+	np = (yytoken == '{') ? initlist(tp) : assign();
 	sym = np->sym;
+
 	if (sym && sym->flags&ISSTRING && tp->op == ARY) {
 		btp = tp->type;
 		if (btp != chartype &&
@@ -123,8 +129,8 @@ initialize(Type *tp)
 		return np;
 	if ((aux = convert(decay(np), tp, 0)) != NULL)
 		return aux;
-
 	errorp("incorrect initializer");
+
 return_zero:
 	return constnode(zero);
 }
@@ -168,9 +174,6 @@ newdesig(Init *ip, Node *np)
 {
 	struct designator *dp;
 
-	if (ip->pos > ip->max)
-		ip->max = ip->pos;
-
 	dp = xmalloc(sizeof(*dp));
 	dp->pos = ip->pos;
 	dp->expr = np;
@@ -188,7 +191,7 @@ static Node *
 initlist(Type *tp)
 {
 	Init in;
-	int toomany = 0, outbound;
+	int braces, scalar, toomany, outbound;
 	Type *newtp;
 	Node *np;
 
@@ -196,6 +199,10 @@ initlist(Type *tp)
 	in.type = tp;
 	in.pos = 0;
 	in.max = 0;
+	braces = scalar = toomany = 0;
+
+	if (accept('{'))
+		braces = 1;
 
 	do {
 		if (yytoken == '}')
@@ -226,7 +233,9 @@ initlist(Type *tp)
 			break;
 		default:
 			newtp = tp;
-			warn("braces around scalar initializer");
+			if (!scalar)
+				warn("braces around scalar initializer");
+			scalar = 1;
 			if (in.pos == 0)
 				break;
 			if (!toomany)
@@ -242,15 +251,19 @@ initlist(Type *tp)
 		else
 			newdesig(&in, np);
 
+		if (in.pos > in.max)
+			in.max = in.pos;
 		if (++in.pos == 0)
 			errorp("compound literal too big");
-
+		if (tp->n.elem == in.pos && !braces)
+			break;
 	} while (accept(','));
 
-	expect('}');
+	if (braces)
+		expect('}');
 
 	if (tp->op == ARY && !tp->defined) {
-		tp->n.elem = in.pos;
+		tp->n.elem = in.max;
 		tp->defined = 1;
 	}
 	if (tp->op == ARY || tp->op == STRUCT)
