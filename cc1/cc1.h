@@ -384,7 +384,7 @@ extern int negop(int op);
 extern bool cmpnode(Node *np, TUINT val);
 
 /* init.c */
-extern void initializer(Symbol *sym, Type *tp, int nelem);
+extern void initializer(Symbol *sym, Type *tp);
 
 /* cpp.c */
 extern void icpp(void);

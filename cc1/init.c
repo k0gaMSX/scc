@@ -235,7 +235,7 @@ initlist(Type *tp)
 }
 
 void
-initializer(Symbol *sym, Type *tp, int nelem)
+initializer(Symbol *sym, Type *tp)
 {
 	Node *np;
 	int flags = sym->flags;
