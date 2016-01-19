@@ -199,19 +199,23 @@ chklvalue(Node *np)
 Node *
 decay(Node *np)
 {
+	Node *new;
 	Type *tp = np->type;
 
 	switch (tp->op) {
 	case ARY:
 		tp = tp->type;
 		if (np->op == OPTR) {
-			Node *new = np->left;
+			new = np->left;
 			free(np);
 			new->type = mktype(tp, PTR, 0, NULL);
 			return new;
 		}
 	case FTN:
-		np = node(OADDR, mktype(tp, PTR, 0, NULL), np, NULL);
+		new = node(OADDR, mktype(tp, PTR, 0, NULL), np, NULL);
+		if (np->sym && np->sym->flags & (ISGLOBAL|ISLOCAL|ISPRIVATE))
+			new->constant = 1;
+		return new;
 	default:
 		return np;
 	}
