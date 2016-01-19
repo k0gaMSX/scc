@@ -87,7 +87,6 @@ struct node {
 	Type *type;
 	Symbol *sym;
 	bool lvalue : 1;
-	bool symbol: 1;
 	bool constant : 1;
 	struct node *left, *right;
 };

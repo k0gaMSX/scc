@@ -552,7 +552,7 @@ address(char op, Node *np)
 
 	if (BTYPE(np) != FTN) {
 		chklvalue(np);
-		if (np->symbol && (np->sym->flags & ISREGISTER))
+		if (np->sym && (np->sym->flags & ISREGISTER))
 			errorp("address of register variable '%s' requested", yytext);
 		if (np->op == OPTR) {
 			Node *new = np->left;
@@ -562,7 +562,7 @@ address(char op, Node *np)
 	}
 	new = node(op, mktype(np->type, PTR, 0, NULL), np, NULL);
 
-	if (np->symbol && np->sym->flags & (ISGLOBAL|ISLOCAL|ISPRIVATE))
+	if (np->sym && np->sym->flags & (ISGLOBAL|ISLOCAL|ISPRIVATE))
 		new->constant = 1;
 	return new;
 }

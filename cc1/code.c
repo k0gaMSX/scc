@@ -316,7 +316,7 @@ emitdesig(Node *np, Type *tp)
 	if (!np) {
 		sym = NULL;
 	} else {
-		if (!np->symbol)
+		if (!np->sym)
 			goto emit_expression;
 		sym = np->sym;
 		if ((sym->flags & ISINITLST) == 0)
@@ -474,7 +474,7 @@ node(unsigned op, Type *tp, Node *lp, Node *rp)
 	np->op = op;
 	np->type = tp;
 	np->sym = NULL;
-	np->constant = np->symbol = np->lvalue = 0;
+	np->constant = np->lvalue = 0;
 	np->left = lp;
 	np->right = rp;
 
@@ -491,7 +491,6 @@ varnode(Symbol *sym)
 	np->type = sym->type;
 	np->lvalue = tp->op != FTN && tp->op != ARY;
 	np->constant = 0;
-	np->symbol = 1;
 	np->sym = sym;
 	return np;
 }
@@ -503,7 +502,6 @@ constnode(Symbol *sym)
 
 	np = node(OSYM, sym->type, NULL, NULL);
 	np->type = sym->type;
-	np->symbol = 1;
 	np->constant = 1;
 	np->sym = sym;
 	return np;
