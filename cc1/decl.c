@@ -789,12 +789,12 @@ identifier(struct decl *dcl)
 		sym->flags = flags;
 	}
 
-	if (sym->token == IDEN && sym->type->op != FTN)
-		emit(ODECL, sym);
 	if (accept('='))
 		initializer(sym, sym->type);
 	if (!(sym->flags & (ISGLOBAL|ISEXTERN)) && tp->op != FTN)
 		sym->flags |= ISDEFINED;
+	if (sym->token == IDEN && sym->type->op != FTN)
+		emit(ODECL, sym);
 	return sym;
 }
 

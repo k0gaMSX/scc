@@ -244,6 +244,7 @@ initializer(Symbol *sym, Type *tp)
 		errorp("function '%s' is initialized like a variable", sym->name);
 	np = initialize(tp);
 
+	emit(ODECL, sym);
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
 	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
