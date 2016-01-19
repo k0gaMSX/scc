@@ -118,7 +118,10 @@ mkcompound(Init *ip)
 
 	for (dp = ip->head; dp; dp = next) {
 		p = &v[dp->pos];
-		freetree(*p);
+		if (*p) {
+			warn("double initialization in compound literal");
+			freetree(*p);
+		}
 		*p = dp->expr;
 		next = dp->next;
 		free(dp);

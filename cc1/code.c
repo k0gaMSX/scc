@@ -188,6 +188,8 @@ emitconst(Node *np)
 	Symbol *sym = np->sym;
 	Type *tp = np->type;
 	TUINT u;
+	size_t n;
+	Node **p;
 
 	switch (tp->op) {
 	case PTR:
@@ -199,13 +201,19 @@ emitconst(Node *np)
 		       (long long) sym->u.i & ones(tp->size));
 		break;
 	case ARY:
-		/*
-		 * FIX: At this point we are going to assume
-		 * that all the arrays are strings
-		 */
-		putchar('"');
-		for (bp = sym->u.s; c = *bp; ++bp)
-			printf("%02X", c & 0xFF);
+		if (sym->flags & ISSTRING) {
+			putchar('"');
+			for (bp = sym->u.s; c = *bp; ++bp)
+				printf("%02X", c & 0xFF);
+			/* TODO: Why we don't free here? */
+		} else if (sym->flags & ISINITLST) {
+			n = tp->n.elem;
+			for (p = sym->u.init; n--; ++p)
+				emitexp(OEXPR, *p);
+			free(sym->u.init);
+		} else {
+			abort();
+		}
 		break;
 	case STRUCT:
 		return;
@@ -219,7 +227,16 @@ static void
 emitsym(unsigned op, void *arg)
 {
 	Node *np = arg;
-	putchar('\t');
+
+	if ((np->sym->flags & ISINITLST) == 0) {
+		/*
+		 * When we have a compound literal we are going
+		 * to call to emitnode for every element of it,
+		 * and it means that we will have two '\t'
+		 * for the first element
+		 */
+		putchar('\t');
+	}
 	(np->constant) ? emitconst(np) : emitvar(np->sym);
 }
 
