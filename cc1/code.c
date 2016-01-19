@@ -204,8 +204,9 @@ emitconst(Node *np)
 		/* TODO: All this code must go out */
 		if (sym->flags & ISSTRING) {
 			putchar('"');
-			for (bp = sym->u.s; c = *bp; ++bp)
-				printf("%02X", c & 0xFF);
+			n = tp->n.elem;
+			for (bp = sym->u.s; n-- > 0; ++bp)
+				printf("%02X", (*bp) & 0xFF);
 			/* TODO: Why we don't free here? */
 		} else if (sym->flags & ISINITLST) {
 			n = tp->n.elem;

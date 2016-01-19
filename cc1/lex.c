@@ -483,7 +483,7 @@ repeat:
 	*bp = '\0';
 
 	yylen = bp - yytext + 1;
-	yylval.sym = newstring(yytext+1, yylen-2);
+	yylval.sym = newstring(yytext+1, yylen-1);
 	*bp++ = '"';
 	*bp = '\0';
 	return CONSTANT;

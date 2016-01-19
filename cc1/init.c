@@ -110,7 +110,9 @@ initialize(Type *tp)
 			tp->n.elem = len;
 		} else if (tp->n.elem < len) {
 			warn("initializer-string for array of chars is too long");
-			np->sym = newstring(sym->u.s, tp->n.elem);
+			sym = newstring(sym->u.s, tp->n.elem);
+			np->sym = sym;
+			np->type = sym->type;
 		}
 
 		return np;
