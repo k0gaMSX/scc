@@ -341,6 +341,7 @@ extern void pushctx(void), popctx(void);
 extern void killsym(Symbol *sym);
 extern Symbol *newlabel(void);
 extern void keywords(struct keyword *key, int ns);
+extern Symbol *newstring(char *s, size_t len);
 
 /* stmt.c */
 extern void compound(Symbol *lbreak, Symbol *lcont, Caselist *lswitch);

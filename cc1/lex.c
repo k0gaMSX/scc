@@ -483,10 +483,7 @@ repeat:
 	*bp = '\0';
 
 	yylen = bp - yytext + 1;
-	yylval.sym = newsym(NS_IDEN);
-	yylval.sym->flags |= ISSTRING | ISCONSTANT;
-	yylval.sym->u.s = xstrdup(yytext+1);
-	yylval.sym->type = mktype(chartype, ARY, yylen - 2, NULL);
+	yylval.sym = newstring(yytext+1, yylen-2);
 	*bp++ = '"';
 	*bp = '\0';
 	return CONSTANT;

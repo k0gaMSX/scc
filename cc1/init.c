@@ -91,14 +91,36 @@ static Node *initlist(Type *tp);
 static Node *
 initialize(Type *tp)
 {
-	Node *np;
+	Node *np, *aux;
+	Symbol *sym;
+	Type *btp;
+	size_t len;
 
-	np = (accept('{')) ? initlist(tp) : decay(assign());
-	if ((np = convert(np, tp, 0)) == NULL) {
-		errorp("incorrect initializer");
-		np = constnode(zero);
+	np = (accept('{')) ? initlist(tp) : assign();
+	sym = np->sym;
+	if (sym && (sym->flags & ISSTRING) != 0 && tp->op == ARY) {
+		btp = tp->type;
+		if (btp != chartype && btp != uchartype && btp != schartype) {
+			errorp("array of inappropriate type initialized from string constant");
+			goto return_zero;
+		}
+		len = strlen(sym->u.s);
+		if (!tp->defined) {
+			tp->defined = 1;
+			tp->n.elem = len;
+		} else if (tp->n.elem < len) {
+			warn("initializer-string for array of chars is too long");
+			np->sym = newstring(sym->u.s, tp->n.elem);
+		}
+
+		return np;
 	}
-	return np;
+	if ((aux = convert(decay(np), tp, 0)) != NULL)
+		return aux;
+
+	errorp("incorrect initializer");
+return_zero:
+	return constnode(zero);
 }
 
 static Node *
