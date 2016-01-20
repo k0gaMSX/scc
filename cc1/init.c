@@ -66,6 +66,7 @@ fielddesig(Init *ip)
 	}
 	for (p = tp->p.fields; *p != sym; ++p)
 		/* nothing */;
+	next();
 	return p - tp->p.fields;
 }
 
