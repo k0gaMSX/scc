@@ -386,6 +386,7 @@ extern bool cmpnode(Node *np, TUINT val);
 
 /* init.c */
 extern void initializer(Symbol *sym, Type *tp);
+extern Node *initlist(Type *tp);
 
 /* cpp.c */
 extern void icpp(void);

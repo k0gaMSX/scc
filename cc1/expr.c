@@ -820,13 +820,15 @@ cast(void)
 	case TQUALIFIER:
 	case TYPE:
 		tp = typename();
+		expect(')');
+
+		if (yytoken == '{')
+			return initlist(tp);
+
 		switch (tp->op) {
 		case ARY:
 			error("cast specify an array type");
-		case FTN:
-			error("cast specify a function type");
 		default:
-			expect(')');
 			lp = cast();
 			if ((rp = convert(lp,  tp, 1)) == NULL)
 				error("bad type convertion requested");

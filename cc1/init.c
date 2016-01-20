@@ -87,8 +87,6 @@ designation(Init *ip)
 	return ip;
 }
 
-static Node *initlist(Type *tp);
-
 static Node *
 initialize(Type *tp)
 {
@@ -188,7 +186,7 @@ newdesig(Init *ip, Node *np)
 	}
 }
 
-static Node *
+Node *
 initlist(Type *tp)
 {
 	Init in;
