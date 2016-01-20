@@ -31,12 +31,17 @@ arydesig(Init *ip)
 {
 	TINT npos;
 	Node *np;
+	Type *tp = ip->type;
 
 	if (ip->type->op != ARY)
 		errorp("array index in non-array initializer");
 	next();
 	np = iconstexpr();
 	npos = np->sym->u.i;
+	if (npos < 0 || tp->defined && npos >= tp->n.elem) {
+		errorp("array index in initializer exceeds array bounds");
+		npos = 0;
+	}
 	freetree(np);
 	expect(']');
 	return npos;
