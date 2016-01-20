@@ -99,6 +99,7 @@ initialize(Type *tp)
 	Symbol *sym;
 	Type *btp;
 	size_t len;
+	char *s;
 
 	if ((tp->op == ARY || tp->op == STRUCT) &&
 	    yytoken != '{' && yytoken != STRING) {
@@ -119,13 +120,16 @@ initialize(Type *tp)
 		len = strlen(sym->u.s);
 		if (!tp->defined) {
 			tp->defined = 1;
-			tp->n.elem = len;
+			tp->n.elem = len+1;
 		} else if (tp->n.elem < len) {
 			warn("initializer-string for array of chars is too long");
-			sym = newstring(sym->u.s, tp->n.elem);
-			np->sym = sym;
-			np->type = sym->type;
 		}
+		len = tp->n.elem;
+		s = sym->u.s;
+		sym = newstring(NULL, len);
+		strncpy(sym->u.s, s, len);
+		np->sym = sym;
+		np->type = sym->type;
 
 		return np;
 	}
