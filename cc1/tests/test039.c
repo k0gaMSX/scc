@@ -4,7 +4,6 @@ name: TEST039
 description: Test of integer constants
 comments: This test is done for z80 sizes
 error:
-
 output:
 F1	I
 G2	F1	main
@@ -31,7 +30,6 @@ A8	O	ull
 	A8	#O1	:O
 	r	#I0
 }
-
 */
 
 int

@@ -2,7 +2,6 @@
 name: TEST048
 description: Basic test for initializer
 error:
-
 output:
 S2	S
 M3	I	a
@@ -25,7 +24,6 @@ L9
 L11
 	r	#I0
 }
-
 */
 
 struct S {

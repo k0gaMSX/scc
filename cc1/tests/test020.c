@@ -3,9 +3,8 @@
 name: TEST020
 description: Basic test for integer algebraic identities
 error:
-test020.c:84: warning: division by 0
-test020.c:85: warning: division by 0
-
+test020.c:82: warning: division by 0
+test020.c:83: warning: division by 0
 output:
 F1	I
 G2	F1	main
@@ -44,7 +43,6 @@ A3	I	i
 	A3	A3	#I0	/I	:I
 	A3	A3	#I0	%I	:I
 }
-
 */
 
 int

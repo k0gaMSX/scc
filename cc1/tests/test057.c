@@ -3,7 +3,6 @@
 name: TEST057
 description: test of initialization of incomplete arrays
 error:
-
 output:
 V1	I	#3
 V2	V1	#2
@@ -31,7 +30,6 @@ G6	F5	main
 \
 	r	G3	'P	#P6	+P	#P4	+P	@I	G4	'P	#P6	+P	#P6	+P	@I	!I
 }
-
 */
 
 int arr1[][3] = {

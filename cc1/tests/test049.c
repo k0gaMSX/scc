@@ -2,7 +2,6 @@
 name: TEST049
 description: Basic test for initializer
 error:
-
 output:
 G1	I	x
 (
@@ -21,7 +20,6 @@ G5	F4	main
 L6
 	r	#I0
 }
-
 */
 
 int x = 5;

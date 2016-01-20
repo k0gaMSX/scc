@@ -2,7 +2,6 @@
 name: TEST045
 description: Basic test of initializers
 error:
-
 output:
 G1	I	x
 (
@@ -17,7 +16,6 @@ G3	F2	main
 L4
 	r	#I0
 }
-
 */
 
 

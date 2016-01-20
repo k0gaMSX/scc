@@ -4,7 +4,6 @@ description: Basic test for goto
 error:
 test011.c:14: warning: 'foo' defined but not used
 test011.c:14: warning: 'start' defined but not used
-
 output:
 F1	I	E
 G2	F1	main
@@ -20,7 +19,6 @@ L6
 	j	L5
 	r	#I1
 }
-
 */
 
 #line 1

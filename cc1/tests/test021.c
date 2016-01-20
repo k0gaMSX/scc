@@ -4,7 +4,6 @@ name: TEST021
 description: Basic test for char constants
 comments: This test is done for z80 implementation
 error:
-
 output:
 F1	I
 G2	F1	main
@@ -23,7 +22,6 @@ A4	C	sc
 	A4	#C1	:C
 	A4	#C41	:C
 }
-
 */
 
 int

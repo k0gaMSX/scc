@@ -2,7 +2,6 @@
 name: TEST002
 description: Test forward references before definition of types
 error:
-
 output:
 G4	P	x
 F7	I
@@ -27,7 +26,6 @@ L14
 	b
 L13
 }
-
 */
 
 struct S *x;

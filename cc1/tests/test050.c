@@ -2,9 +2,8 @@
 name: TEST050
 description: Basic test for initializer
 error:
-TODO
+TODO:
 output:
-
 */
 
 struct S { int a; int b; };

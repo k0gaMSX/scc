@@ -2,7 +2,6 @@
 name: TEST052
 description: Basic test for initializer
 error:
-
 output:
 S2	S
 M3	I	a
@@ -33,7 +32,6 @@ L12
 L13
 	r	#I0
 }
-
 */
 
 struct S {int a; int b;};

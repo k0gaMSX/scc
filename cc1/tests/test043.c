@@ -2,7 +2,6 @@
 name: TEST043
 description: Test for double typedef (taken from plan9 kernel)
 error:
-
 output:
 F4	0
 S2	Clock0link
@@ -16,7 +15,6 @@ G11	F10	main
 	G9	M6	.P	@F4	c0
 	r	#I0
 }
-
 */
 
 typedef struct Clock0link Clock0link;

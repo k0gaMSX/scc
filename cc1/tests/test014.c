@@ -18,7 +18,6 @@ test014.c:34: error: invalid type specification
 test014.c:35: warning: 'f' defined but not used
 test014.c:35: warning: 'par' defined but not used
 test014.c:38: error: conflicting types for 'd'
-
 output:
 G1	I	a
 Y2	K	b
@@ -46,7 +45,6 @@ T17	F13	func3
 R16	I	par
 \
 }
-
 */
 
 #line 1

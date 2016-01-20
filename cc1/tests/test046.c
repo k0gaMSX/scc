@@ -2,7 +2,6 @@
 name: TEST046
 description: Basic test for initializators
 error:
-
 output:
 V1	I	#3
 G2	V1	x
@@ -26,7 +25,6 @@ L7
 L8
 	r	#I0
 }
-
 */
 
 int x[3] = {1, 2, 3};

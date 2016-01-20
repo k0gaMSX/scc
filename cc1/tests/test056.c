@@ -2,7 +2,6 @@
 name: TEST056
 desciption: Test of overlaying designators
 error:
-
 output:
 V6	K	#3
 S2	S
@@ -30,7 +29,6 @@ A13	V12	m
 	A13	:V12
 	r	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	!I
 }
-
 */
 
 struct S {

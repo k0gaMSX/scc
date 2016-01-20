@@ -3,7 +3,7 @@
 name: TEST031
 description: Test concatenation in preprocessor
 error:
- 
+TODO
 output:
  
 */

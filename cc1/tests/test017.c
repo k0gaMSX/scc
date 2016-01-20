@@ -2,7 +2,6 @@
 name: TEST017
 description: Basic test about pointers and structs
 error:
-
 output:
 F9	I	E
 G10	F9	main
@@ -26,7 +25,6 @@ L13
 L14
 	r	#I0
 }
-
 */
 
 #line 1

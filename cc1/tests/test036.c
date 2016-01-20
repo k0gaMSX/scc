@@ -3,8 +3,7 @@
 name: TEST036
 description: Duff's device
 error:
-test036.c:63: warning: type defaults to 'int' in declaration
-
+test036.c:61: warning: type defaults to 'int' in declaration
 output:
 F4	I	E
 G5	F4	send
@@ -50,7 +49,6 @@ L9
 	v	L10	#I0
 L8
 }
-
 */
 
 /* Disgusting, no?  But it compiles and runs just fine.  I feel a combination of

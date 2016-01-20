@@ -2,7 +2,6 @@
 name: TEST004
 description: Test integer operations
 error:
-
 output:
 F1	I	E
 G2	F1	main
@@ -29,7 +28,6 @@ A3	I	x
 L4
 	r	#I0
 }
-
 */
 
 int

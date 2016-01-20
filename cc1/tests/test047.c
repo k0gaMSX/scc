@@ -2,7 +2,6 @@
 name: TEST047
 description: Basic test for initializer
 error:
-
 output:
 S2	S
 M3	I	a
@@ -29,7 +28,6 @@ L10
 L11
 	r	#I0
 }
-
 */
 
 

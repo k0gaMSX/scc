@@ -4,7 +4,6 @@ description: Basic pointer test
 error:
 test016.c:43: error: redefinition of 'func2'
 test016.c:47: error: incompatible types when assigning
-
 output:
 G1	I	g
 F2	I
@@ -42,7 +41,6 @@ L14
 	A11	#P0	:P
 	r	A10
 }
-
 */
 
 #line 1

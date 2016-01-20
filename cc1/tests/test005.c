@@ -2,7 +2,6 @@
 name: TEST005
 description: Test unary integer operations
 error:
-
 output:
 F1	I	E
 G2	F1	main
@@ -19,7 +18,6 @@ A3	I	x
 L4
 	r	#I0
 }
-
 */
 
 

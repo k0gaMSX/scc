@@ -16,10 +16,10 @@ case $# in
 		../cc1 -I./ -w $i  >$out 2>$err
 		(echo '/^error/+;/^output/-c'
 		cat $err
-		printf "\n.\n"
+		printf ".\n"
 		echo '/^output/+;/^\*\//-c'
 		cat $out
-		printf "\n.\nw\n") | ed -s $i
+		printf ".\nw\n") | ed -s $i
 	done
 	;;
 esac

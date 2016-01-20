@@ -2,7 +2,6 @@
 name: TEST051
 description: Basic test for initializer
 error:
-
 output:
 V1	I	#3
 G2	V1	arr
@@ -26,7 +25,6 @@ L7
 L8
 	r	#I0
 }
-
 */
 
 int arr[3] = {[2] = 2, [0] = 0, [1] = 1};

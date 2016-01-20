@@ -3,7 +3,6 @@
 name: TEST026
 descritpion: Test of predefined cpp macros
 error:
-
 output:
 F2	I
 G3	F2	main
@@ -12,13 +11,12 @@ G3	F2	main
 A4	I	y
 A6	P	p
 	A6	"746573743032362E6300	'P	:P
-	A4	#I21	:I
+	A4	#I1F	:I
 	A4	#I1	:I
 	A4	#I1	:I
 	A4	#I1	:I
 	A4	#I1	:I
 }
-
 */
 
 #define x(y)  (y)
