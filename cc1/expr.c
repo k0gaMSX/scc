@@ -17,7 +17,7 @@ cmpnode(Node *np, TUINT val)
 	Type *tp;
 	TUINT mask, nodeval;
 
-	if (!np || !np->constant)
+	if (!np || !np->constant || !np->sym)
 		return 0;
 	sym = np->sym;
 	tp = sym->type;

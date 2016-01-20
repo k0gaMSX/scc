@@ -316,8 +316,17 @@ fold(int op, Type *tp, Node *lp, Node *rp)
 		warn("division by 0");
 		return NULL;
 	}
-	if (!lp->constant || rp && !rp->constant)
+	/*
+	 * Return if any of the children is no constant,
+	 * or it is a constant generated when
+	 * the address of a static variable is taken
+	 * (when we don't know the physical address so
+	 * we cannot fold it)
+	 */
+	if (!lp->constant || !lp->sym ||
+	    rp && (!rp->constant || !rp->sym)) {
 		return NULL;
+	}
 	optype = lp->type;
 	ls = lp->sym;
 	rs = (rp) ? rp->sym : NULL;
