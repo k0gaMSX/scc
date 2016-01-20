@@ -1,5 +1,5 @@
 * Verify correctness in initializators
-* emit initializators
+* emit automatic initializators
 * Implement bitfields
 * Define data structure shared between cc1 and cc2 with the type
   information
@@ -9,3 +9,4 @@
 * Add correct emit for any kind of constant
 * Add warning when some ANSI limit is violated.
 * Free memory in emit after some error happened.
+* Rewrite initializers to deal with the idea of  "current object"
