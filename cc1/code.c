@@ -313,6 +313,7 @@ emitdesig(Node *np, Type *tp)
 	Symbol *sym;
 	size_t n;
 	Node *aux;
+	Type *p;
 
 	if (!np) {
 		sym = NULL;
@@ -336,7 +337,8 @@ emitdesig(Node *np, Type *tp)
 	case ARY:
 		for (n = 0; n < tp->n.elem; ++n) {
 			aux = (sym) ? sym->u.init[n] : NULL;
-			emitdesig(aux, tp->type);
+			p = (tp->op == ARY) ? tp->type : tp->p.fields[n]->type;
+			emitdesig(aux, p);
 		}
 		break;
 	default:
