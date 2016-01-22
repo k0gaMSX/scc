@@ -310,7 +310,6 @@ emitstring(Symbol *sym, Type *tp)
 			       chartype->letter, (*bp++) & 0xFF);
 		} while (!isprint(*bp) && bp < lim);
 	}
-	/* TODO: Why we don't free here? */
 }
 
 static void
