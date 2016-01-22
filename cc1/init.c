@@ -100,17 +100,17 @@ initialize(Type *tp)
 	Type *btp;
 	size_t len;
 	char *s;
+	int isstring;
 
 	if ((tp->op == ARY || tp->op == STRUCT) &&
 	    yytoken != '{' && yytoken != STRING) {
 		return initlist(tp);
 	}
 
+	isstring = yytoken == STRING;
 	np = (yytoken == '{') ? initlist(tp) : assign();
 
-	if (np->left &&
-	    np->left->sym->flags & ISSTRING &&
-	    tp->op == ARY) {
+	if (isstring && tp->op == ARY) {
 		sym = np->left->sym;
 		btp = tp->type;
 		if (btp != chartype  &&

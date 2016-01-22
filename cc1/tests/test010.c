@@ -7,10 +7,10 @@ test010.c:11: warning: conditional expression is constant
 test010.c:31: warning: conditional expression is constant
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	x
+A3	I	"x
 	A3	#I0	:I
 	j	L6
 	e

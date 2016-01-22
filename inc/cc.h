@@ -40,6 +40,7 @@ extern int debug;
 #define L_FIELD     'M'
 #define L_AUTO      'A'
 #define L_EXTERN    'X'
+#define L_NAME     '"'
 
 extern void die(const char *fmt, ...);
 extern void dbg(const char *fmt, ...);

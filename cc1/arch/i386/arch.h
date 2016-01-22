@@ -30,8 +30,4 @@
 #define L_ULONG     L_UINT32
 #define L_LLONG     L_INT64
 #define L_ULLONG    L_UINT64
-#define L_BOOL      'B'
-#define L_FLOAT     'J'
-#define L_DOUBLE    'D'
-#define L_LDOUBLE   'H'
 #define L_ENUM      L_INT

@@ -7,10 +7,10 @@ test019.c:13: warning: division by 0
 test019.c:14: warning: division by 0
 output:
 F1	I
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	i
+A3	I	"i
 	A3	#I3	:I
 	A3	#I1	:I
 	A3	#I12	:I

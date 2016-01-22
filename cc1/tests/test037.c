@@ -9,7 +9,7 @@ test037.c:32: warning: conditional expression is constant
 test037.c:34: warning: conditional expression is constant
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
 	j	L3	#I0

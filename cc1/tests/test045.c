@@ -3,12 +3,12 @@ name: TEST045
 description: Basic test of initializers
 error:
 output:
-G1	I	x
+G1	I	"x
 (
 	#I5
 )
 F2	I	E
-G3	F2	main
+G3	F2	"main
 {
 \
 	j	L4	G1	#I5	=I

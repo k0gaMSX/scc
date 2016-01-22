@@ -5,12 +5,12 @@ error:
 output:
 V6	K	#3
 S2	S
-M3	I	a
-M4	I	b
-M5	I	c
-M7	V6	d
-M8	I	e
-G9	S2	s
+M3	I	"a
+M4	I	"b
+M5	I	"c
+M7	V6	"d
+M8	I	"e
+G9	S2	"s
 (
 	#I1
 	#I2
@@ -21,11 +21,11 @@ G9	S2	s
 	#I0
 )
 V10	K	#0
-G11	V10	m
+G11	V10	"m
 (
 )
 F12	I
-G13	F12	main
+G13	F12	"main
 {
 \
 	r	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	!I

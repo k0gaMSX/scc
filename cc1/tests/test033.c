@@ -3,7 +3,7 @@ name: TEST033
 description: test for #if defined()
 error:
 output:
-G1	I	c
+G1	I	"c
 */
 
 #if defined(FOO)

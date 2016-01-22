@@ -5,16 +5,16 @@ description: test special characters @ and $ in macro definitions
 error:
 output:
 F4	I
-G5	F4	main
+G5	F4	"main
 {
 \
 V9	K	#44
-Y8	V9
+Y8	V9	"
 (
 	#"This is a string $ or # or ##and it is ok !
 	#K00
 )
-A7	P	p
+A7	P	"p
 	A7	Y8	'P	:P
 	r	A7	#P0	!I
 }

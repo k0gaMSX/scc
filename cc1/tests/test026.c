@@ -5,13 +5,13 @@ descritpion: Test of predefined cpp macros
 error:
 output:
 F2	I
-G3	F2	main
+G3	F2	"main
 {
 \
-A4	I	y
-A6	P	p
+A4	I	"y
+A6	P	"p
 V8	K	#10
-Y7	V8
+Y7	V8	"
 (
 	#"test026.c
 	#K00

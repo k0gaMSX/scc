@@ -4,14 +4,14 @@ description: Basic test for initializators
 error:
 output:
 V1	I	#3
-G2	V1	x
+G2	V1	"x
 (
 	#I1
 	#I2
 	#I3
 )
 F3	I	E
-G4	F3	main
+G4	F3	"main
 {
 \
 	j	L5	G2	#I1	=I

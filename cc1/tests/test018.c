@@ -4,16 +4,16 @@ description: Basic test for arrays
 error:
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
 V3	K	#4
 V4	V3	#2
-A5	V4	arr
-A7	P	p
-A9	P	q
+A5	V4	"arr
+A7	P	"p
+A9	P	"q
 V10	I	#4
-A11	V10	v
+A11	V10	"v
 	A7	A5	'P	:P
 	A9	A5	'P	#P4	+P	#P3	+P	:P
 	A5	'P	#P4	+P	#P3	+P	@K	#K2	:K

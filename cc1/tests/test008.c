@@ -4,10 +4,10 @@ description: Basic do while loop
 error:
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	x
+A3	I	"x
 	A3	#I0	:I
 	e
 L4

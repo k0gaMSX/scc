@@ -6,15 +6,15 @@ comments: This test is done for z80 sizes
 error:
 output:
 F1	I
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	i
-A4	N	u
-A5	W	l
-A6	Z	ul
-A7	Q	ll
-A8	O	ull
+A3	I	"i
+A4	N	"u
+A5	W	"l
+A6	Z	"ul
+A7	Q	"ll
+A8	O	"ull
 	A3	#I1	:I
 	A3	#I1	:I
 	A4	#N1	:N

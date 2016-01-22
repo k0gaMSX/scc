@@ -6,7 +6,7 @@ test011.c:14: warning: 'foo' defined but not used
 test011.c:14: warning: 'start' defined but not used
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
 L3

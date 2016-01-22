@@ -5,11 +5,11 @@ error:
 test042.c:20: error: bad type convertion requested
 output:
 F1	I
-G2	F1	main
+G2	F1	"main
 {
 \
 F3	0
-X4	F3	f
+X4	F3	"f
 */
 
 int

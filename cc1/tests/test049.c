@@ -3,16 +3,16 @@ name: TEST049
 description: Basic test for initializer
 error:
 output:
-G1	I	x
+G1	I	"x
 (
 	#I5
 )
-G3	P	p
+G3	P	"p
 (
 	G1	'P
 )
 F4	I	E
-G5	F4	main
+G5	F4	"main
 {
 \
 	j	L6	G3	@I	#I5	=I

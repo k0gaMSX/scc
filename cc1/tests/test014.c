@@ -19,30 +19,30 @@ test014.c:35: warning: 'f' defined but not used
 test014.c:35: warning: 'par' defined but not used
 test014.c:38: error: conflicting types for 'd'
 output:
-G1	I	a
-Y2	K	b
-X3	I	c
+G1	I	"a
+Y2	K	"b
+X3	I	"c
 F5	I
-G6	F5	func1
+G6	F5	"func1
 {
 \
-A7	I	h
-T8	K	i
-R9	W	j
-X10	I	k
-T11	Z	a
+A7	I	"h
+T8	K	"i
+R9	W	"j
+X10	I	"k
+T11	Z	"a
 	r	#I0
 }
 F13	0	I
-G14	F13	func2
+G14	F13	"func2
 {
-R12	I	par
+R12	I	"par
 \
-A15	I	par
+A15	I	"par
 }
-T17	F13	func3
+T17	F13	"func3
 {
-R16	I	par
+R16	I	"par
 \
 }
 */

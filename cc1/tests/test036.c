@@ -6,13 +6,13 @@ error:
 test036.c:61: warning: type defaults to 'int' in declaration
 output:
 F4	I	E
-G5	F4	send
+G5	F4	"send
 {
-R1	P	to
-R2	P	from
-R3	I	count
+R1	P	"to
+R2	P	"from
+R3	I	"count
 \
-R7	I	n
+R7	I	"n
 	R7	R3	#I7	+I	#I8	/I	:I
 	s	L9	R3	#I8	%I
 L10

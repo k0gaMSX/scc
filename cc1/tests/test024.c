@@ -6,11 +6,11 @@ comments: This test is done for z80 data types
 error:
 output:
 F1	I
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	Q	i
-A4	O	u
+A3	Q	"i
+A4	O	"u
 	A3	#Q1	:Q
 	A3	#QFFFFFFFFFFFFFFFF	:Q
 	A3	#QFFFFFFFFFFFFFFFF	:Q

@@ -5,20 +5,20 @@ error:
 test015.c:53: error: label 's' already defined
 output:
 S8	s2
-M9	I	s
+M9	I	"s
 S5	s1
-M6	I	s
-M10	S8	s1
+M6	I	"s
+M10	S8	"s1
 S2	s
-M11	S5	s
-G12	S2	s2
+M11	S5	"s
+G12	S2	"s2
 F13	I
-G14	F13	main
+G14	F13	"main
 {
 \
 	j	L15
-A16	S2	s
-A17	I	s
+A16	S2	"s
+A17	I	"s
 	r	A17
 	r	A16	M11	.S5	M6	.I	A16	M11	.S5	M10	.S8	M9	.I	+I
 L15

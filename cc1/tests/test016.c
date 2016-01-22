@@ -5,13 +5,13 @@ error:
 test016.c:43: error: redefinition of 'func2'
 test016.c:47: error: incompatible types when assigning
 output:
-G1	I	g
+G1	I	"g
 F2	I
-G3	F2	func1
+G3	F2	"func1
 {
 \
-A4	I	x
-A6	P	p
+A4	I	"x
+A6	P	"p
 	G1	#I1	:I
 	A4	#I1	:I
 	A6	A4	'P	:P
@@ -26,12 +26,12 @@ L7
 L8
 	r	#I0
 }
-G9	F2	func2
+G9	F2	"func2
 {
 \
-A10	I	x
-A11	P	p
-A13	P	pp
+A10	I	"x
+A11	P	"p
+A13	P	"pp
 	A10	#I1	:I
 	A11	A10	'P	:P
 	A13	A11	'P	:P

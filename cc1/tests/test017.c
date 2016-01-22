@@ -4,16 +4,16 @@ description: Basic test about pointers and structs
 error:
 output:
 F9	I	E
-G10	F9	main
+G10	F9	"main
 {
 \
 S2	s1
-M3	I	y
-M4	I	z
-A11	S2	nested
+M3	I	"y
+M4	I	"z
+A11	S2	"nested
 S6	s2
-M8	P	p
-A12	S6	v
+M8	P	"p
+A12	S6	"v
 	A12	M8	.P	A11	'P	:P
 	A12	M8	.P	@S2	M3	.I	#I1	:I
 	A12	M8	.P	@S2	M4	.I	#I2	:I

@@ -10,10 +10,10 @@ test029.c:35: error: redefinition of 'f1'
 test029.c:36: error: 'f' undeclared
 output:
 F2	I
-G3	F2	f1
+G3	F2	"f1
 {
 \
-A4	I	f
+A4	I	"f
 	A4	#I2	*I
 }
 */

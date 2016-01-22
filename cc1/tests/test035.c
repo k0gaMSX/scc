@@ -5,10 +5,10 @@ description: Basic test for enumerations
 error:
 output:
 F6	I	E
-G7	F6	main
+G7	F6	"main
 {
 \
-A8	I	e
+A8	I	"e
 	A8	#I3	:I
 	j	L9	A8	#I1	=I
 	r	#I0

@@ -4,10 +4,10 @@ description: Test integer operations
 error:
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	x
+A3	I	"x
 	A3	#I0	:I
 	A3	A3	#I2	+I	:I
 	A3	A3	#I1	-I	:I

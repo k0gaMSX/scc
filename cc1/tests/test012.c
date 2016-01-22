@@ -5,10 +5,10 @@ error:
 test012.c:39: warning: 'foo' defined but not used
 output:
 F1	I	E
-G2	F1	main
+G2	F1	"main
 {
 \
-A3	I	x
+A3	I	"x
 	A3	#I0	:I
 	s	L5	A3
 L6

@@ -4,15 +4,15 @@ description: Basic test for initializer
 error:
 output:
 S2	S
-M3	I	a
-M4	I	b
-G5	S2	s
+M3	I	"a
+M4	I	"b
+G5	S2	"s
 (
 	#I1
 	#I2
 )
 F6	I	E
-G7	F6	main
+G7	F6	"main
 {
 \
 	j	L8	G5	M3	.I	#I1	=I

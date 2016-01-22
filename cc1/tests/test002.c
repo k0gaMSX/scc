@@ -3,17 +3,17 @@ name: TEST002
 description: Test forward references before definition of types
 error:
 output:
-G4	P	x
+G4	P	"x
 F7	I
-G8	F7	main
+G8	F7	"main
 {
 \
 S2	S
-M5	I	i
-M6	P	next
-A9	S2	y
-A10	P	p
-A11	N	n
+M5	I	"i
+M6	P	"next
+A9	S2	"y
+A10	P	"p
+A11	N	"n
 	A9	M5	.I	#I0	:I
 	G4	@S2	A9	:S2
 	A11	#N0	:N	A10	A9	'P	:P	,P
