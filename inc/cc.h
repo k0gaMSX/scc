@@ -24,8 +24,13 @@ extern int debug;
 #define L_UINT16    'N'
 #define L_UINT32    'Z'
 #define L_UINT64    'O'
-#define L_ELLIPSIS  'E'
+#define L_BOOL      'B'
 
+#define L_FLOAT     'J'
+#define L_DOUBLE    'D'
+#define L_LDOUBLE   'H'
+
+#define L_ELLIPSIS  'E'
 #define L_VOID      '0'
 #define L_POINTER   'P'
 #define L_FUNCTION  'F'
@@ -40,6 +45,8 @@ extern int debug;
 #define L_FIELD     'M'
 #define L_AUTO      'A'
 #define L_EXTERN    'X'
+#define L_LABEL     'L'
+
 #define L_NAME     '"'
 
 extern void die(const char *fmt, ...);
