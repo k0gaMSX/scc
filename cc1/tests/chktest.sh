@@ -13,6 +13,7 @@ do
 	rm -f $chk
 	awk '/^name:/            {printf "Running %s ", $2}
 	     /^error:$/          {copyon=1; next}
+	     /^TODO/             {printf "[DISABLED]"}
 	     /^output:$/         {next}
 	     /^\*\//             {copyon=0; next}
 	     copyon==1           {print > "'$chk'"}' $i
