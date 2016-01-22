@@ -5,8 +5,7 @@ description: Test of integer constants
 comments: This test is done for z80 sizes
 error:
 output:
-F1	I
-G2	F1	"main
+G2	F	"main
 {
 \
 A3	I	"i

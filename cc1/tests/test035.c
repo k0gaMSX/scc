@@ -4,8 +4,7 @@ name: TEST035
 description: Basic test for enumerations
 error:
 output:
-F6	I	E
-G7	F6	"main
+G7	F	"main
 {
 \
 A8	I	"e

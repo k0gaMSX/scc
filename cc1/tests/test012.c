@@ -4,8 +4,7 @@ description: Basic switch test
 error:
 test012.c:39: warning: 'foo' defined but not used
 output:
-F1	I	E
-G2	F1	"main
+G2	F	"main
 {
 \
 A3	I	"x

@@ -14,8 +14,7 @@ G6	V5	"arr
 	#I3
 	#I4
 )
-F7	I	E
-G8	F7	"main
+G8	F	"main
 {
 \
 	j	L9	G6	M3	.I	#I1	=I

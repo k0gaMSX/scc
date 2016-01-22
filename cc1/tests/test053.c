@@ -11,8 +11,7 @@ G5	S2	"s
 	#I1
 	#I2
 )
-F6	I	E
-G7	F6	"main
+G7	F	"main
 {
 \
 	j	L8	G5	M3	.I	#I1	=I

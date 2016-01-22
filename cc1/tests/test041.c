@@ -2,15 +2,14 @@
 name: TEST041
 description: Test for bug parsing ternary operators
 error:
-test041.c:49: error: type mismatch in conditional expression
-test041.c:49: error: incompatible types when assigning
-test041.c:50: error: used struct/union type value where scalar is required
-test041.c:51: warning: 'i' defined but not used
-test041.c:51: warning: 'foo' defined but not used
-test041.c:51: warning: 's' defined but not used
+test041.c:48: error: type mismatch in conditional expression
+test041.c:48: error: incompatible types when assigning
+test041.c:49: error: used struct/union type value where scalar is required
+test041.c:50: warning: 'i' defined but not used
+test041.c:50: warning: 'foo' defined but not used
+test041.c:50: warning: 's' defined but not used
 output:
-F1	I
-G2	F1	"main
+G2	F	"main
 {
 \
 A3	I	"i

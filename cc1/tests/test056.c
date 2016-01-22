@@ -24,8 +24,7 @@ V10	K	#0
 G11	V10	"m
 (
 )
-F12	I
-G13	F12	"main
+G13	F	"main
 {
 \
 	r	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	!I

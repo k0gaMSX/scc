@@ -11,8 +11,7 @@ G3	P	"p
 (
 	G1	'P
 )
-F4	I	E
-G5	F4	"main
+G5	F	"main
 {
 \
 	j	L6	G3	@I	#I5	=I

@@ -4,12 +4,11 @@ name: TEST037
 description: Basic sizeof test
 comments: This test is based in z80 sizes
 error:
-test037.c:30: warning: conditional expression is constant
-test037.c:32: warning: conditional expression is constant
-test037.c:34: warning: conditional expression is constant
+test037.c:29: warning: conditional expression is constant
+test037.c:31: warning: conditional expression is constant
+test037.c:33: warning: conditional expression is constant
 output:
-F1	I	E
-G2	F1	"main
+G2	F	"main
 {
 \
 	j	L3	#I0

@@ -3,10 +3,7 @@ name: TEST001
 description: Basic hello world test
 error:
 output:
-F3	I	P	E
-X4	F3	"printf
-F5	I
-G6	F5	"main
+G6	F	"main
 {
 \
 V8	K	#13

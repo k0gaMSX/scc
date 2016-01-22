@@ -847,7 +847,6 @@ decl(void)
 	 * against GLOBALCTX+1
 	 */
 	if (curctx != GLOBALCTX+1 || yytoken == ';') {
-		emit(ODECL, sym);
 		/*
 		 * avoid non used warnings in prototypes
 		 */

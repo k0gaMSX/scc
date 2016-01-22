@@ -4,8 +4,7 @@ description: Test forward references before definition of types
 error:
 output:
 G4	P	"x
-F7	I
-G8	F7	"main
+G8	F	"main
 {
 \
 S2	S

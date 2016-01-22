@@ -228,7 +228,6 @@ emitletter(Type *tp)
 	putchar(tp->letter);
 	switch (tp->op) {
 	case ARY:
-	case FTN:
 	case STRUCT:
 	case UNION:
 		printf("%u", tp->id);
@@ -272,15 +271,6 @@ emittype(Type *tp)
 			emit(ODECL, *sp);
 		break;
 	case FTN:
-		emitletter(tp);
-		putchar('\t');
-		emitletter(tp->type);
-		n = tp->n.elem;
-		for (vp = tp->p.pars; n-- > 0; ++vp) {
-			putchar('\t');
-			emitletter(*vp);
-		}
-		putchar('\n');
 		return;
 	default:
 		abort();

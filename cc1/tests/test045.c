@@ -7,8 +7,7 @@ G1	I	"x
 (
 	#I5
 )
-F2	I	E
-G3	F2	"main
+G3	F	"main
 {
 \
 	j	L4	G1	#I5	=I

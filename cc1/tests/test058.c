@@ -39,8 +39,7 @@ G4	V3	"arr
 	#I0
 	#I0
 )
-F5	I
-G6	F5	"main
+G6	F	"main
 {
 \
 	r	G4	'P	#PA	+P	#P8	+P	@I	G4	'P	#P1E	+P	#PA	+P	#P8	+P	@I	!I

@@ -4,8 +4,7 @@ name: TEST026
 descritpion: Test of predefined cpp macros
 error:
 output:
-F2	I
-G3	F2	"main
+G3	F	"main
 {
 \
 A4	I	"y
@@ -17,7 +16,7 @@ Y7	V8	"
 	#K00
 )
 	A6	Y7	'P	:P
-	A4	#I25	:I
+	A4	#I24	:I
 	A4	#I1	:I
 	A4	#I1	:I
 	A4	#I1	:I

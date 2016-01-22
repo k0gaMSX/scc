@@ -3,8 +3,7 @@ name: TEST040
 description: Test for bug parsing typenames in struct definition
 error:
 output:
-F8	I
-G9	F8	"main
+G9	F	"main
 {
 \
 S2	List

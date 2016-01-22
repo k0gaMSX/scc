@@ -4,8 +4,7 @@ name: TEST027
 description: Test of cpp stringizer
 error:
 output:
-F2	I
-G3	F2	"main
+G3	F	"main
 {
 \
 A5	P	"p

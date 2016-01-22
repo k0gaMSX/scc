@@ -6,8 +6,7 @@ test016.c:43: error: redefinition of 'func2'
 test016.c:47: error: incompatible types when assigning
 output:
 G1	I	"g
-F2	I
-G3	F2	"func1
+G3	F	"func1
 {
 \
 A4	I	"x
@@ -26,7 +25,7 @@ L7
 L8
 	r	#I0
 }
-G9	F2	"func2
+G9	F	"func2
 {
 \
 A10	I	"x

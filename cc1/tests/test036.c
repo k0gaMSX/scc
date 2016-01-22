@@ -3,10 +3,9 @@
 name: TEST036
 description: Duff's device
 error:
-test036.c:61: warning: type defaults to 'int' in declaration
+test036.c:60: warning: type defaults to 'int' in declaration
 output:
-F4	I	E
-G5	F4	"send
+G5	F	"send
 {
 R1	P	"to
 R2	P	"from

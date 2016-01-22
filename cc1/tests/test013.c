@@ -17,8 +17,7 @@ G8	Q	"h
 G9	O	"i
 G10	I	"j
 G11	N	"k
-F12	I
-G13	F12	"main
+G13	F	"main
 {
 \
 	G1	G2	gI	:I

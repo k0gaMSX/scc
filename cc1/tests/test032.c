@@ -4,8 +4,7 @@ name: TEST032
 description: test special characters @ and $ in macro definitions
 error:
 output:
-F4	I
-G5	F4	"main
+G5	F	"main
 {
 \
 V9	K	#44
