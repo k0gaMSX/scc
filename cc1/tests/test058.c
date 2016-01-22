@@ -1,6 +1,6 @@
 /*
 name: TEST058
-description: Test of initialization mixing dsignators and sequence
+description: Test of initialization mixing designators and sequence
 error:
 output:
 V1	I	#5
