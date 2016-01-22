@@ -9,7 +9,14 @@ F5	I
 G6	F5	main
 {
 \
-	X4	"68656C6C6F20776F726C640A00	'P	pP	cI
+V8	K	#13
+Y7	V8
+(
+	#"hello world
+	#K0A
+	#K00
+)
+	X4	Y7	'P	pP	cI
 	r	#I0
 }
 */

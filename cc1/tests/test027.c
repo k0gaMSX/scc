@@ -9,7 +9,13 @@ G3	F2	main
 {
 \
 A5	P	p
-	A5	"68656C6C6F20697320626574746572207468616E2062796500	'P	:P
+V7	K	#25
+Y6	V7
+(
+	#"hello is better than bye
+	#K00
+)
+	A5	Y6	'P	:P
 	r	A5	@K	gI
 }
 */
@@ -24,4 +30,3 @@ main(void)
 
 	return *p;
 }
-

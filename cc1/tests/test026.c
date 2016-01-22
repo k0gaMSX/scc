@@ -10,8 +10,14 @@ G3	F2	main
 \
 A4	I	y
 A6	P	p
-	A6	"746573743032362E6300	'P	:P
-	A4	#I1F	:I
+V8	K	#10
+Y7	V8
+(
+	#"test026.c
+	#K00
+)
+	A6	Y7	'P	:P
+	A4	#I25	:I
 	A4	#I1	:I
 	A4	#I1	:I
 	A4	#I1	:I

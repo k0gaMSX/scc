@@ -1,4 +1,5 @@
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -189,7 +190,6 @@ emitconst(Node *np)
 	Type *tp = np->type;
 	TUINT u;
 	size_t n;
-	Node **p;
 
 	switch (tp->op) {
 	case PTR:
@@ -200,27 +200,7 @@ emitconst(Node *np)
 		       np->type->letter,
 		       (long long) sym->u.i & ones(tp->size));
 		break;
-	case ARY:
-		/* TODO: All this code must go out */
-		if (sym->flags & ISSTRING) {
-			putchar('"');
-			n = tp->n.elem;
-			for (bp = sym->u.s; n-- > 0; ++bp)
-				printf("%02X", (*bp) & 0xFF);
-			/* TODO: Why we don't free here? */
-		} else if (sym->flags & ISINITLST) {
-			n = tp->n.elem;
-			for (p = sym->u.init; n--; ++p)
-				emitexp(OEXPR, *p);
-			free(sym->u.init);
-		} else {
-			abort();
-		}
-		break;
-	case STRUCT:
-		return;
 	default:
-		/* TODO: Handle other kind of constants */
 		abort();
 	}
 }
@@ -308,6 +288,32 @@ emittype(Type *tp)
 }
 
 static void
+emitstring(Symbol *sym, Type *tp)
+{
+	char *bp, *s, *lim;
+	int n;
+
+	bp = bp = sym->u.s;
+	lim = &sym->u.s[tp->n.elem];
+	while (bp < lim) {
+		s = bp;
+		while (isprint(*bp) && bp < lim)
+			++bp;
+		if ((n = bp - s) > 1)
+			printf("\t#\"%.*s\n", n, s);
+		else
+			bp = s;
+		if (bp == lim)
+			break;
+		do {
+			printf("\t#%c%02X\n",
+			       chartype->letter, (*bp++) & 0xFF);
+		} while (!isprint(*bp) && bp < lim);
+	}
+	/* TODO: Why we don't free here? */
+}
+
+static void
 emitdesig(Node *np, Type *tp)
 {
 	Symbol *sym;
@@ -321,6 +327,10 @@ emitdesig(Node *np, Type *tp)
 		if (!np->sym)
 			goto emit_expression;
 		sym = np->sym;
+		if (sym->flags & ISSTRING) {
+			emitstring(sym, tp);
+			return;
+		}
 		if ((sym->flags & ISINITLST) == 0)
 			goto emit_expression;
 	}

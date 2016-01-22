@@ -617,6 +617,12 @@ primary(void)
 	sym = yylval.sym;
 	switch (yytoken) {
 	case STRING:
+		np = constnode(sym);
+		emit(ODECL, sym);
+		emit(OINIT, np);
+		np = decay(varnode(sym));
+		next();
+		break;
 	case CONSTANT:
 		np = constnode(sym);
 		next();

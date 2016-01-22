@@ -107,11 +107,13 @@ initialize(Type *tp)
 	}
 
 	np = (yytoken == '{') ? initlist(tp) : assign();
-	sym = np->sym;
 
-	if (sym && sym->flags&ISSTRING && tp->op == ARY) {
+	if (np->left &&
+	    np->left->sym->flags & ISSTRING &&
+	    tp->op == ARY) {
+		sym = np->left->sym;
 		btp = tp->type;
-		if (btp != chartype &&
+		if (btp != chartype  &&
 		    btp != uchartype &&
 		    btp != schartype) {
 			errorp("array of inappropriate type initialized from string constant");

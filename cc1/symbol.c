@@ -230,6 +230,7 @@ newstring(char *s, size_t len)
 {
 	Symbol *sym = newsym(NS_IDEN);
 
+	sym->id = newid();
 	sym->flags |= ISSTRING | ISCONSTANT | ISPRIVATE;
 	sym->u.s = xmalloc(len);
 	if (s)
