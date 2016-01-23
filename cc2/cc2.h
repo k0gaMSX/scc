@@ -1,12 +1,13 @@
 
 enum tflags {
-	SIGNF   = 1,
-	INTF    = 2,
-	DEFTYP  = 4,
-	STRUCTF = 8,
-	UNIONF  = 16,
-	FUNCF   = 32,
-	ARYF    = 64
+	SIGNF   =    1,
+	INTF    =    2,
+	DEFTYP  =    4,
+	STRUCTF =    8,
+	UNIONF  =    16,
+	FUNCF   =    32,
+	ARYF    =    64,
+	STRF    =   128
 };
 
 enum op {
@@ -150,11 +151,13 @@ extern void generate(void);
 extern void peephole(void);
 
 /* code.c */
+extern void emit(Node *np);
 extern void writeout(void);
 
 /* node.c */
 extern void cleannodes(void);
 extern void delnode(Node *np);
+extern void deltree(Node *np);
 extern Node *newnode(void);
 
 /* symbol.c */

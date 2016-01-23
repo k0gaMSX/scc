@@ -212,8 +212,8 @@ constant(char *token, union tokenop u)
 	++token;
 	if (*token == OSTRING) {
 		np->op = OSYM;
-		np->type = ptrtype;
 		sym->id = newid();
+		sym->type.flags = STRF;
 		sym->u.s = xstrdup(++token);
 	} else {
 		np->op = OCONST;
@@ -224,6 +224,7 @@ constant(char *token, union tokenop u)
 		}
 		sym->u.i = v;
 	}
+	push(np);
 }
 
 static void
@@ -363,6 +364,11 @@ stmt(void)
 	static Node *lastp;
 	Node *np = pop();
 
+	if (ininit) {
+		emit(np);
+		deltree(np);
+		return;
+	}
 	if (!stmtp)
 		stmtp = np;
 	else

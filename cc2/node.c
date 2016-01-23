@@ -52,6 +52,16 @@ delnode(Node *np)
 }
 
 void
+deltree(Node *np)
+{
+	if (!np)
+		return;
+	deltree(np->left);
+	deltree(np->right);
+	delnode(np);
+}
+
+void
 cleannodes(void)
 {
 	struct arena *ap, *next;

@@ -35,6 +35,7 @@ repeat:
 int
 main(void)
 {
+
 	while (moreinput()) {
 		parse();
 		optimize();
