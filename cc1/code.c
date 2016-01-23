@@ -290,7 +290,7 @@ emitstring(Symbol *sym, Type *tp)
 		while (isprint(*bp) && bp < lim)
 			++bp;
 		if ((n = bp - s) > 1)
-			printf("\t#%c%.*s\n", L_NAME, n, s);
+			printf("\t#\"%.*s\n", n, s);
 		else
 			bp = s;
 		if (bp == lim)
@@ -377,8 +377,7 @@ emitdcl(unsigned op, void *arg)
 	putchar('\t');
 	emitletter(sym->type);
 	printf("\t\"%s", (sym->name) ? sym->name : "");
-	if (op != OFUN)
-		putchar('\n');
+	putchar('\n');
 	sym->flags |= ISEMITTED;
 }
 
@@ -422,7 +421,7 @@ emitfun(unsigned op, void *arg)
 	Symbol *sym = arg, **sp;
 
 	emitdcl(op, arg);
-	puts("\n{");
+	puts("{");
 
 	for (sp = sym->u.pars; sp && *sp; ++sp)
 		emit(ODECL, *sp);
