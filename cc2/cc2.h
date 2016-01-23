@@ -1,14 +1,136 @@
 
+enum tflags {
+	SIGNF   = 1,
+	INTF    = 2,
+	DEFTYP  = 4,
+	STRUCTF = 8,
+	UNIONF  = 16,
+	FUNCF   = 32,
+	ARYF    = 64
+};
+
+enum op {
+	/* types */
+	ELLIPSIS = 'E',
+	INT8     = 'C',
+	INT16    = 'I',
+	INT32    = 'W',
+	INT64    = 'Q',
+	UINT8    = 'K',
+	UINT16   = 'N',
+	UINT32   = 'Z',
+	UINT64   = 'O',
+	POINTER  = 'P',
+	FUNCTION = 'F',
+	VECTOR   = 'V',
+	UNION    = 'U',
+	STRUCT   = 'S',
+	BOOL     = 'B',
+	FLOAT    = 'J',
+	DOUBLE   = 'D',
+	LDOUBLE  = 'H',
+	VOID     = '0',
+	ONAME    = '"',
+	/* kind of operand */
+	NONE     = 0,
+	MEM      = 'M',
+	AUTO     = 'A',
+	REG      = 'R',
+	/* storage class */
+	GLOB     = 'G',
+	EXTRN    = 'X',
+	PRIVAT   = 'Y',
+	LOCAL    = 'T',
+	MEMBER   = 'M',
+	LABEL    = 'L',
+	/* operands */
+	OADD     = '+',
+	OSUB     = '-',
+	OMUL     = '*',
+	OMOD     = '%',
+	ODIV     = '/',
+	OSHL     = 'l',
+	OSHR     = 'r',
+	OLT      = '<',
+	OGT      = '>',
+	OLE      = '[',
+	OGE      = ']',
+	OEQ      = '=',
+	ONE      = '!',
+	OBAND    = '&',
+	OBOR     = '|',
+	OBXOR    = '^',
+	OCPL     = '~',
+	OASSIG   = ':',
+	ONEG     = '_',
+	OCALL    = 'c',
+	OPAR     = 'p',
+	OFIELD   = '.',
+	OCOMMA   = ',',
+	OASK     = '?',
+	OCOLON   = ' ',
+	OADDR    = '\'',
+	OAND     = 'a',
+	OOR      = 'b',
+	OPTR     = '@',
+	OSYM     = 'y',
+	OCAST    = 'g',
+	OCONST   = '#',
+	OSTRING  = '"',
+	/*statements */
+	OJMP     = 'j',
+	ORET     = 'r',
+	OBLOOP   = 'b',
+	OELOOP   = 'e',
+	OCASE    = 'v',
+	ODEFAULT = 'f',
+	OTABLE   = 't',
+	OSWITCH  = 's',
+	OEPARS   = '\\',
+	OSTMT    = '\t'
+};
+
 enum nerrors {
+	EIDOVER,       /* identifier overflow */
+	EOUTPAR,       /* out pf params */
+	ESYNTAX,       /* syntax error */
+	ESTACKA,       /* stack unaligned */
+	ESTACKO,       /* stack overflow */
+	ESTACKU,       /* stack underflow */
 	ELNLINE,       /* line too long */
 	EFERROR,       /* error reading from file:%s*/
 	ENUMERR
 };
 
 typedef struct node Node;
+typedef struct type Type;
+typedef struct symbol Symbol;
+
+struct type {
+	unsigned short size;
+	unsigned short align;
+	unsigned short flags;
+};
+
+struct symbol {
+	unsigned short id;
+	char *name;
+	Type type;
+	char kind;
+	union {
+		TUINT i;
+		char *s;
+	} u;
+	Symbol *next;
+	Symbol *h_next;
+};
 
 struct node {
-	unsigned char op;
+	char op;
+	Type type;
+	Symbol *sym;
+	Node *left, *right;
+	Node *stmt;
 };
 
 /* main.c */
@@ -29,3 +151,14 @@ extern void peephole(void);
 
 /* code.c */
 extern void writeout(void);
+
+/* node.c */
+extern void cleannodes(void);
+extern void delnode(Node *np);
+extern Node *newnode(void);
+
+/* symbol.c */
+extern Symbol *getsym(int id);
+extern void popctx(void);
+extern void pushctx(void);
+extern void freesym(Symbol *sym);

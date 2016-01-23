@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "arch.h"
 #include "cc2.h"
 #include "error.h"
 

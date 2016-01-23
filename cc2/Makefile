@@ -2,7 +2,8 @@
 
 include ../config.mk
 
-OBJS = main.o parser.o code.o optm.o peep.o cgen.o
+OBJS = main.o parser.o code.o optm.o peep.o cgen.o \
+       symbol.o node.o arch/$(ARCH)/types.o
 
 all: cc2
 
