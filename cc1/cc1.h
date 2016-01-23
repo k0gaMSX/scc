@@ -1,5 +1,4 @@
 
-#include "arch.h"
 
 #define INPUTSIZ LINESIZ
 #ifndef PREFIX

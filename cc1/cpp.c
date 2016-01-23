@@ -8,6 +8,7 @@
 
 #include "../inc/sizes.h"
 #include "../inc/cc.h"
+#include "arch.h"
 #include "cc1.h"
 
 #ifndef PREFIX

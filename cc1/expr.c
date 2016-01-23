@@ -4,6 +4,7 @@
 
 #include "../inc/cc.h"
 #include "../inc/sizes.h"
+#include "arch.h"
 #include "cc1.h"
 
 #define XCHG(lp, rp, np) (np = lp, lp = rp, rp = np)
