@@ -498,7 +498,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 			/*
 			 * pars was allocated by the caller
 			 * but the type already exists, so
-			 * we have to deallocted it
+			 * we have to deallocte it
 			 */
 			free(pars);
 			return bp;
