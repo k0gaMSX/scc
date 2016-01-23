@@ -123,6 +123,31 @@ struct input {
  * Definition of enumerations
  */
 
+/* data type letters */
+enum {
+	L_INT8      = 'C',
+	L_INT16     = 'I',
+	L_INT32     = 'W',
+	L_INT64     = 'Q',
+	L_UINT8     = 'K',
+	L_UINT16    = 'N',
+	L_UINT32    = 'Z',
+	L_UINT64    = 'O',
+	L_BOOL      = 'B',
+
+	L_FLOAT     = 'J',
+	L_DOUBLE    = 'D',
+	L_LDOUBLE   = 'H',
+
+	L_ELLIPSIS  = 'E',
+	L_VOID      = '0',
+	L_POINTER   = 'P',
+	L_FUNCTION  = 'F',
+	L_ARRAY     = 'V',
+	L_UNION     = 'U',
+	L_STRUCT    = 'S',
+};
+
 /* recovery points */
 enum {
 	END_DECL,

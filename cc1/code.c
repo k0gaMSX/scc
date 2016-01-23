@@ -166,19 +166,19 @@ emitvar(Symbol *sym)
 	short flags = sym->flags;
 
 	if (flags & ISLOCAL)
-		c = L_LOCAL;
+		c = 'T';
 	else if (flags & ISPRIVATE)
-		c =  L_PRIVATE;
+		c =  'Y';
 	else if (flags & ISGLOBAL)
-		c = L_PUBLIC;
+		c = 'G';
 	else if (flags & ISREGISTER)
-		c = L_REGISTER;
+		c = 'R';
 	else if (flags & ISFIELD)
-		c = L_FIELD;
+		c = 'M';
 	else if (flags & ISEXTERN)
-		c = L_EXTERN;
+		c = 'X';
 	else
-		c = L_AUTO;
+		c = 'A';
 	printf("%c%u", c, sym->id);
 }
 
