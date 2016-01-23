@@ -293,7 +293,7 @@ binary(char *token, union tokenop u)
 static void
 begininit(void)
 {
-	inint = 1;
+	ininit = 1;
 }
 
 static void
