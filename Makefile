@@ -3,7 +3,7 @@
 
 include config.mk
 
-SUBDIRS  = lib cc1 cc2
+SUBDIRS  = lib cc1 cc2 driver/$(DRIVER)
 ARCHS   = z80 i386-sysv amd64-sysv
 
 all clean:
@@ -12,7 +12,10 @@ all clean:
 		(cd $$i; ${MAKE} -$(MAKEFLAGS) $@ || exit); \
 	done
 
-multi:
+scc: lib/libcc.a
+	cd driver/$(DRIVER) && make $@
+
+multi: lib/libcc.a
 	for i in $(ARCHS) ; \
 	do \
 		$(MAKE) -$(MAKEFLAGS) $$i || exit ;\
@@ -32,10 +35,19 @@ $(ARCHS): lib/libcc.a
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
 
-install:
-	mkdir -p $(DESTDIR)$(PREFIX)/libexec/scc/
-	cp -f bin/cc[12]-*
-	cd $(DESTDIR)$(PREFIX)/libexec/scc/ && chmod 755 cc[12]-*
+install: scc
+	mkdir -p $(PREFIX)/libexec/scc/
+	mkdir -p $(PREFIX)/bin/
+	cp -f bin/cc[12]-* $(PREFIX)/libexec/scc/
+	cp -f driver/$(DRIVER)/scc $(PREFIX)/bin/
+	cd $(PREFIX)/libexec/scc/ && ln -f cc1-$(ARCH) cc1
+	cd $(PREFIX)/libexec/scc/ && ln -f cc2-$(ARCH) cc2
+	cd $(PREFIX)/libexec/scc/ && ln -f cc1 cpp
+	cd $(PREFIX)/libexec/scc/ && chmod 755 cc[12]-* cc1 cc2 cpp
+
+uninstall:
+	rm -rf $(PREFIX)/libexec/scc/
+	rm -f $(PREFIX)/bin/scc
 
 
 distclean: clean

@@ -3,9 +3,10 @@ VERSION     = 0.1
 
 # Customize below to fit your system
 ARCH = z80
+DRIVER = posix
 
 # paths
-PREFIX    = /usr/local/
+PREFIX    = $(HOME)
 MANPREFIX = ${PREFIX}/share/man
 
 # if your system is not POSIX maybe you want to use cc or gcc
