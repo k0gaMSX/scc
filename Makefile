@@ -4,7 +4,6 @@
 include config.mk
 
 SUBDIRS  = lib cc1 cc2
-
 ARCHS   = z80 i386-sysv amd64-sysv
 
 all clean:
@@ -13,15 +12,22 @@ all clean:
 		(cd $$i; ${MAKE} -$(MAKEFLAGS) $@ || exit); \
 	done
 
-multi: $(ARCHS)
+multi:
+	for i in $(ARCHS) ; \
+	do \
+		$(MAKE) -$(MAKEFLAGS) $$i || exit ;\
+	done
 
 lib/libcc.a:
 	cd lib && $(MAKE) -$(MAKEFLAGS) all
 
+
 $(ARCHS): lib/libcc.a
 	for i in cc1 cc2; \
 	do \
-		(cd $$i; ARCH=$@ ${MAKE} -e $(MAKEFLAGS) clean $$i || exit); \
+		(cd $$i; \
+		 ARCH=$@ ${MAKE} -e -$(MAKEFLAGS) clean ;\
+		 ARCH=$@ $(MAKE) -e $$i || exit); \
 	done
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
