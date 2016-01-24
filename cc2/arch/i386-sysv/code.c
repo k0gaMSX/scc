@@ -3,7 +3,12 @@
 #include "../../cc2.h"
 
 void
-emit(Node *np)
+data(Node *np)
+{
+}
+
+void
+label(Symbol *sym)
 {
 }
 

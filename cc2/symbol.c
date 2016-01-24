@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,7 +48,7 @@ getsym(int id)
 
 	htab = &symtab[id & NR_SYMHASH-1];
 	for (sym = *htab; sym; sym = sym->h_next) {
-		if (sym->id > 0 && sym->id != id)
+		if (sym->id > 0 && sym->id == id)
 			break;
 	}
 	if (!sym) {
@@ -63,4 +64,16 @@ getsym(int id)
 		*htab = sym;
 	}
 	return sym;
+}
+
+char *
+symname(Symbol *sym)
+{
+	static char name[20];
+
+	if (sym->name)
+		return sym->name;
+	sprintf(name, ".%d", sym->numid);
+
+	return name;
 }

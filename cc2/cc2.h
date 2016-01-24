@@ -2,12 +2,11 @@
 enum tflags {
 	SIGNF   =    1,
 	INTF    =    2,
-	DEFTYP  =    4,
-	STRUCTF =    8,
+	STRF    =    8,
 	UNIONF  =    16,
-	FUNCF   =    32,
+	FUNF    =    32,
 	ARYF    =    64,
-	STRF    =   128
+	INITF   =   128
 };
 
 enum op {
@@ -115,13 +114,10 @@ struct type {
 
 struct symbol {
 	unsigned short id;
+	unsigned short numid;
 	char *name;
 	Type type;
 	char kind;
-	union {
-		TUINT i;
-		char *s;
-	} u;
 	Symbol *next;
 	Symbol *h_next;
 };
@@ -129,7 +125,11 @@ struct symbol {
 struct node {
 	char op;
 	Type type;
-	Symbol *sym;
+	union {
+		TUINT i;
+		char *s;
+		Symbol *sym;
+	} u;
 	Node *left, *right;
 	Node *stmt;
 };
@@ -151,7 +151,8 @@ extern void generate(void);
 extern void peephole(void);
 
 /* code.c */
-extern void emit(Node *np);
+extern void label(Symbol *sym);
+extern void data(Node *np);
 extern void writeout(void);
 
 /* node.c */
@@ -165,3 +166,4 @@ extern Symbol *getsym(int id);
 extern void popctx(void);
 extern void pushctx(void);
 extern void freesym(Symbol *sym);
+extern char *symname(Symbol *sym);

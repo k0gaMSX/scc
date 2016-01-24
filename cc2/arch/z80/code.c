@@ -34,28 +34,46 @@ code(int op, Node *to, Node *from)
 {
 }
 
+void
+label(Symbol *sym)
+{
+	int seg, flags = sym->type.flags;
+
+	if (flags & FUNF)
+		seg = CODESEG;
+	else if (flags & INITF)
+		seg = DATASEG;
+	else
+		seg = BSSSEG;
+	segment(seg);
+
+	printf("%s:\n", symname(sym));
+}
+
 static void
-emitsym(Symbol *sym)
+emitstring(Node *np)
 {
 	/*In z80 we can ignore the aligment */
-	if (sym->type.flags & STRF) {
-		fputs(sym->u.s, stdout);
-		free(sym->u.s);
-		sym->u.s = NULL;
-	} else {
-		switch (sym->type.size) {
-		case 1:
-			printf("%02X", (int) (sym->u.i & 0xFF));
-			break;
-		case 2:
-			printf("%04X", (int) (sym->u.i & 0xFFFF));
-			break;
-		case 4:
-			printf("%08X", (long) (sym->u.i & 0xFFFFFFFF));
-			break;
-		default:
-			abort();
-		}
+	printf("\"%s\"", np->u.s);
+	free(np->u.s);
+	np->u.s = NULL;
+}
+
+static void
+emitconst(Node *np)
+{
+	switch (np->type.size) {
+	case 1:
+		printf("%02X", (int) np->u.i & 0xFF);
+		break;
+	case 2:
+		printf("%04X", (int) np->u.i & 0xFFFF);
+		break;
+	case 4:
+		printf("%08X", (long) np->u.i & 0xFFFFFFFF);
+		break;
+	default:
+		abort();
 	}
 }
 
@@ -64,24 +82,36 @@ emittree(Node *np)
 {
 	if (!np)
 		return;
-	if (np->op == OSYM) {
-		emitsym(np->sym);
-	} else {
-		emit(np->left);
+
+	switch (np->op) {
+	case OSTRING:
+		emitstring(np);
+		break;
+	case OCONST:
+		emitconst(np);
+		break;
+	case OADDR:
+		emittree(np->left);
+		break;
+	case MEM:
+		fputs(symname(np->u.sym), stdout);
+		break;
+	default:
+		emittree(np->left);
 		printf(" %c ", np->op);
-		emit(np->right);
+		emittree(np->right);
+		break;
 	}
 }
 
 void
-emit(Node *np)
+data(Node *np)
 {
 	char *s;
 
 	/*
 	 * In z80 we can ignore the alignment
 	 */
-	segment(DATASEG);
 	switch (np->type.size) {
 	case 1:
 		s = "\tDB\t";
@@ -98,6 +128,7 @@ emit(Node *np)
 	}
 	fputs(s, stdout);
 	emittree(np);
+	putchar('\n');
 }
 
 void

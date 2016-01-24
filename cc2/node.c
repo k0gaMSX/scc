@@ -39,7 +39,6 @@ newnode(void)
 
 	np->right = NULL;
 	np->left = NULL;
-	np->sym = NULL;
 	np->stmt = NULL;
 	return np;
 }

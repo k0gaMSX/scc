@@ -22,19 +22,7 @@ extern Type int8type, int16type, int32type, int64type,
             elipsistype;
 
 Type funtype = {
-	.flags = DEFTYP | FUNCF
-};
-
-Type arrtype = {
-	.flags = DEFTYP | ARYF
-};
-
-Type uniontype = {
-	.flags = DEFTYP | UNIONF
-};
-
-Type strtype = {
-	.flags = DEFTYP | STRUCTF
+	.flags = FUNF
 };
 
 union tokenop {
@@ -44,10 +32,11 @@ union tokenop {
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
-                parameter, constant;
+                parameter, constant, aggregate;
 
 typedef void evalfun(void);
-static evalfun vardecl, beginfun, endfun, endpars, stmt, begininit, endinit;
+static evalfun vardecl, beginfun, endfun, endpars, stmt, begininit,
+               endinit, array;
 
 static struct decoc {
 	void (*eval)(void);
@@ -80,9 +69,9 @@ static struct decoc {
 	[ELLIPSIS]    = {NULL, type, .u.arg   = &elipsistype},
 
 	[FUNCTION]    = {NULL, type, .u.arg = &funtype},
-	[VECTOR]      = {NULL, NULL, .u.arg = &arrtype},
-	[UNION]       = {NULL, NULL, .u.arg = &uniontype},
-	[STRUCT]      = {NULL, NULL, .u.arg = &strtype},
+	[VECTOR]      = {array, aggregate},
+	[UNION]       = {NULL, NULL},
+	[STRUCT]      = {NULL, NULL},
 
 	[ONAME]       = {NULL, getname},
 	['{']         = {beginfun},
@@ -161,12 +150,22 @@ newid(void)
 
 	if (++id == 0)
 		error(EIDOVER);
+	return id;
 }
 
 static void
 type(char *token, union tokenop u)
 {
 	push(u.arg);
+}
+
+static void
+aggregate(char *token, union tokenop u)
+{
+	Symbol *sym;
+
+	sym = getsym(atoi(token+1));
+	push(&sym->type);
 }
 
 static void
@@ -182,7 +181,7 @@ symbol(char *token, union tokenop u)
 
 	sclass = *token++;
 	np = newnode();
-	np->sym = getsym(atoi(token));
+	np->u.sym = getsym(atoi(token));
 	np->op = u.op;
 	push(np);
 }
@@ -204,17 +203,14 @@ constant(char *token, union tokenop u)
 {
 	static char letters[] = "0123456789ABCDEF";
 	Node *np = newnode();
-	Symbol *sym = getsym(0);
 	TUINT v;
 	unsigned c;
 
-	np->sym = sym;
 	++token;
 	if (*token == OSTRING) {
-		np->op = OSYM;
-		sym->id = newid();
-		sym->type.flags = STRF;
-		sym->u.s = xstrdup(++token);
+		np->op = OSTRING;
+		np->type.flags = STRF;
+		np->u.s = xstrdup(++token);
 	} else {
 		np->op = OCONST;
 		np->type = *gettype(token++);
@@ -222,7 +218,7 @@ constant(char *token, union tokenop u)
 			v <<= 4;
 			c = strchr(letters, c) - letters;
 		}
-		sym->u.i = v;
+		np->u.i = v;
 	}
 	push(np);
 }
@@ -295,6 +291,8 @@ static void
 begininit(void)
 {
 	ininit = 1;
+	lastsym->type.flags |= INITF;
+	label(lastsym);
 }
 
 static void
@@ -333,6 +331,17 @@ endpars(void)
 }
 
 static void
+array(void)
+{
+	Type *tp, *base;
+	Node *np;
+
+	np = pop();
+	base = pop();
+	tp = pop();
+}
+
+static void
 vardecl(void)
 {
 	Type *tp;
@@ -344,11 +353,13 @@ vardecl(void)
 	tp = pop();
 	np = pop();
 
-	sym = np->sym;
+	sym = np->u.sym;
 	sym->name = name;
 	sym->type = *tp;
 	sym->kind = sclass;
 	lastsym = sym;
+	if (!name)
+		sym->numid = newid();
 
 	if (funpars >= 0) {
 		if (funpars == NR_FUNPARAM)
@@ -365,7 +376,7 @@ stmt(void)
 	Node *np = pop();
 
 	if (ininit) {
-		emit(np);
+		data(np);
 		deltree(np);
 		return;
 	}
