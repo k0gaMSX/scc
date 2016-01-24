@@ -253,7 +253,7 @@ emittype(Type *tp)
 		emitletter(tp);
 		putchar('\t');
 		emitletter(tp->type);
-		printf("\t#%d\n", tp->n.elem);
+		printf("\t#%c%d\n", sizettype->letter, tp->n.elem);
 		return;
 	case PTR:
 		emittype(tp->type);
