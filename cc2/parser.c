@@ -208,9 +208,11 @@ constant(char *token, union tokenop u)
 
 	++token;
 	if (*token == OSTRING) {
+		++token;
 		np->op = OSTRING;
 		np->type.flags = STRF;
-		np->u.s = xstrdup(++token);
+		np->type.size = strlen(token);
+		np->u.s = xstrdup(token);
 	} else {
 		np->op = OCONST;
 		np->type = *gettype(token++);
@@ -348,6 +350,20 @@ vardecl(void)
 	Node *np;
 	Symbol *sym;
 	char *name;
+
+	if (lastsym && (lastsym->type.flags & INITF) == 0) {
+		switch (lastsym->kind) {
+		case EXTRN:
+			label(lastsym);
+			break;
+		case GLOB:
+		case PRIVAT:
+		case LOCAL:
+			label(lastsym);
+			allocdata(&lastsym->type);
+			break;
+		}
+	}
 
 	name = pop();
 	tp = pop();

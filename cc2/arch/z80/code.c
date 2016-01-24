@@ -104,15 +104,16 @@ emittree(Node *np)
 	}
 }
 
-void
-data(Node *np)
+
+static void
+size2asm(Type *tp)
 {
 	char *s;
 
 	/*
 	 * In z80 we can ignore the alignment
 	 */
-	switch (np->type.size) {
+	switch (tp->size) {
 	case 1:
 		s = "\tDB\t";
 		break;
@@ -123,10 +124,23 @@ data(Node *np)
 		s = "\tDD\t";
 		break;
 	default:
-		s = "\tDS\t";
+		s = (tp->flags & STRF) ? "\tTEXT\t" : "\tDS\t%llu,";
 		break;
 	}
-	fputs(s, stdout);
+	printf(s, (unsigned long long) tp->size);
+}
+
+void
+allocdata(Type *tp)
+{
+	size2asm(tp);
+	puts("0");
+}
+
+void
+data(Node *np)
+{
+	size2asm(&np->type);
 	emittree(np);
 	putchar('\n');
 }

@@ -3,6 +3,11 @@
 #include "../../cc2.h"
 
 void
+allocdata(Type *tp)
+{
+}
+
+void
 data(Node *np)
 {
 }
