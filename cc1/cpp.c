@@ -713,8 +713,10 @@ cpp(void)
 
 	for (bp = clauses; bp->token && bp->token != yytoken; ++bp)
 		/* nothing */;
-	if (!bp->token)
-		error("incorrect preprocessor directive");
+	if (!bp->token) {
+		errorp("incorrect preprocessor directive");
+		goto error;
+	}
 
 	pushctx();              /* create a new context to avoid polish */
 	(*bp->fun)();           /* the current context, and to get all  */
@@ -723,6 +725,7 @@ cpp(void)
 	if (yytoken != EOFTOK && !cppoff)
 		errorp("trailing characters after preprocessor directive");
 
+error:
 	disexpand = 0;
 	lexmode = CCMODE;
 	namespace = ns;
