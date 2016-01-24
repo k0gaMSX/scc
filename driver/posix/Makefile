@@ -1,3 +1,5 @@
+.POSIX:
+
 include ../../config.mk
 
 all: scc
