@@ -8,10 +8,11 @@ ARCH = z80
 PREFIX    = /usr/local/
 MANPREFIX = ${PREFIX}/share/man
 
-CC = cc
+# if your system is not POSIX maybe you want to use cc or gcc
+CC = c99
 LD = $(CC)
 AR = ar
 
 # for Plan9 add -D_SUSV2_SOURCE -DNBOOL
-CFLAGS   = -DNDEBUG -Iarch/$(ARCH) -O2 -std=c99
+CFLAGS   = -DNDEBUG -Iarch/$(ARCH) -DPREFIX=\""$(PREFIX)"\"
 LDFLAGS  = -s

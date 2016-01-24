@@ -16,6 +16,10 @@ extern int debug;
 #define DBGON()
 #endif
 
+#ifndef PREFIX
+#define PREFIX "/usr/local/"
+#endif
+
 extern void die(const char *fmt, ...);
 extern void dbg(const char *fmt, ...);
 extern void *xmalloc(size_t size);

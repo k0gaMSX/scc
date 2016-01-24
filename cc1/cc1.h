@@ -1,9 +1,6 @@
 
 
 #define INPUTSIZ LINESIZ
-#ifndef PREFIX
-#define PREFIX "/usr/"
-#endif
 
 #define GLOBALCTX 0
 
