@@ -136,6 +136,7 @@ main(int argc, char *argv[])
 
 	argcc1[0] = "cc1";
 	argcc1[1] = *argv;
+	argcc2[0] = "cc2";
 
 	cc1(fds[1]);
 	cc2(fds[0]);
