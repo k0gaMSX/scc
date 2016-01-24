@@ -70,9 +70,14 @@ char *
 symname(Symbol *sym)
 {
 	static char name[20];
+	static unsigned short id;
 
 	if (sym->name)
 		return sym->name;
+	if (sym->numid == 0) {
+		if ((sym->numid = ++id) == 0)
+			error(EIDOVER);
+	}
 	sprintf(name, ".%d", sym->numid);
 
 	return name;

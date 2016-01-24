@@ -143,16 +143,6 @@ pop(void)
 	return *--sp;
 }
 
-static unsigned short
-newid(void)
-{
-	static unsigned short id;
-
-	if (++id == 0)
-		error(EIDOVER);
-	return id;
-}
-
 static void
 type(char *token, union tokenop u)
 {
@@ -374,8 +364,6 @@ vardecl(void)
 	sym->type = *tp;
 	sym->kind = sclass;
 	lastsym = sym;
-	if (!name)
-		sym->numid = newid();
 
 	if (funpars >= 0) {
 		if (funpars == NR_FUNPARAM)
