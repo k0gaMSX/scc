@@ -38,7 +38,9 @@ void
 label(Symbol *sym)
 {
 	int seg, flags = sym->type.flags;
+	char *name = symname(sym);
 
+	putchar('\n');
 	if (flags & FUNF)
 		seg = CODESEG;
 	else if (flags & INITF)
@@ -47,7 +49,16 @@ label(Symbol *sym)
 		seg = BSSSEG;
 	segment(seg);
 
-	printf("%s:\n", symname(sym));
+	switch (sym->kind) {
+	case EXTRN:
+		printf("\tEXTRN %s\n", name);
+		return;
+	case GLOB:
+		printf("\tPUBLIC %s\n", name);
+		break;
+	}
+
+	printf("%s:\n", name);
 }
 
 static void
