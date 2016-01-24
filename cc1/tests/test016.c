@@ -2,8 +2,8 @@
 name: TEST016
 description: Basic pointer test
 error:
-test016.c:43: error: redefinition of 'func2'
-test016.c:47: error: incompatible types when assigning
+test016.c:42: error: redefinition of 'func2'
+test016.c:46: error: incompatible types when assigning
 output:
 G1	I	"g
 G3	F	"func1

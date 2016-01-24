@@ -2,7 +2,7 @@
 name: TEST012
 description: Basic switch test
 error:
-test012.c:39: warning: 'foo' defined but not used
+test012.c:38: warning: 'foo' defined but not used
 output:
 G2	F	"main
 {

@@ -2,9 +2,9 @@
 name: TEST006
 description: Basic test for if
 error:
-test006.c:6: warning: conditional expression is constant
-test006.c:8: warning: conditional expression is constant
-test006.c:11: warning: conditional expression is constant
+test006.c:5: warning: conditional expression is constant
+test006.c:7: warning: conditional expression is constant
+test006.c:10: warning: conditional expression is constant
 output:
 G1	K	"c
 G3	F	"main

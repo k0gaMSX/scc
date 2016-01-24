@@ -271,7 +271,7 @@ lookup(int ns, char *name)
 		 * are typedef, because in other case we cannot declare
 		 * fields of such types.
 		 */
-		if (sns == NS_CPP || sns == ns)
+		if (sns == NS_CPP && !disexpand || sns == ns)
 			return sym;
 		if (ns == NS_CPP)
 			continue;

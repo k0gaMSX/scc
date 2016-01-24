@@ -2,8 +2,8 @@
 name: TEST011
 description: Basic test for goto
 error:
-test011.c:14: warning: 'foo' defined but not used
-test011.c:14: warning: 'start' defined but not used
+test011.c:13: warning: 'foo' defined but not used
+test011.c:13: warning: 'start' defined but not used
 output:
 G2	F	"main
 {

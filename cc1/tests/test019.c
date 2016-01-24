@@ -3,8 +3,8 @@
 name: TEST019
 description: Basic test of constant folding in integer arithmetic operations
 error:
+test019.c:12: warning: division by 0
 test019.c:13: warning: division by 0
-test019.c:14: warning: division by 0
 output:
 G2	F	"main
 {

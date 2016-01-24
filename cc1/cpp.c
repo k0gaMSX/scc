@@ -520,6 +520,7 @@ line(void)
 	if (cppoff)
 		return;
 
+	disexpand = 0;
 	next();
 	n = strtol(yytext, &endp, 10);
 	if (n <= 0 || n > USHRT_MAX || *endp != '\0') {
@@ -541,7 +542,7 @@ line(void)
 	next();
 
 set_line:
-	input->nline = n;
+	input->nline = n - 1;
 }
 
 static void

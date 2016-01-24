@@ -2,9 +2,9 @@
 name: TEST010
 description: Test for continue and break statements
 error:
-test010.c:9: warning: conditional expression is constant
-test010.c:11: warning: conditional expression is constant
-test010.c:31: warning: conditional expression is constant
+test010.c:8: warning: conditional expression is constant
+test010.c:10: warning: conditional expression is constant
+test010.c:30: warning: conditional expression is constant
 output:
 G2	F	"main
 {
