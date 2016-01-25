@@ -4,6 +4,7 @@
 
 #include "arch.h"
 #include "../../cc2.h"
+#include "../../../inc/sizes.h"
 
 enum segment {
 	CODESEG,
@@ -27,6 +28,33 @@ segment(int seg)
 		return;
 	fputs(txt[seg], stdout);
 	curseg = seg;
+}
+
+static char *
+symname(Symbol *sym)
+{
+	static char name[IDENTSIZ+1];
+	static unsigned short id;
+	int k = sym->kind;
+
+	if (sym->name) {
+		switch (sym->kind) {
+		case GLOB:
+		case EXTRN:
+			snprintf(name, sizeof(name), "_%s", sym->name);
+			return name;;
+		case PRIVAT:
+			return sym->name;
+		}
+	}
+
+	if (sym->numid == 0) {
+		if ((sym->numid = ++id) == 0)
+			error(EIDOVER);
+	}
+	sprintf(name, ".%d", sym->numid);
+
+	return name;
 }
 
 void

@@ -167,4 +167,3 @@ extern Symbol *getsym(int id);
 extern void popctx(void);
 extern void pushctx(void);
 extern void freesym(Symbol *sym);
-extern char *symname(Symbol *sym);
