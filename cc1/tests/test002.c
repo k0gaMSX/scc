@@ -7,9 +7,9 @@ G4	P	"x
 G8	F	"main
 {
 \
-S2	S
-M5	I	"i
-M6	P	"next
+S2	"S	#NC	#N2
+M5	I	"i	#N0
+M6	P	"next	#N2
 A9	S2	"y
 A10	P	"p
 A11	N	"n

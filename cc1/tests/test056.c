@@ -4,12 +4,12 @@ desciption: Test of overlaying designators
 error:
 output:
 V6	K	#N3
-S2	S
-M3	I	"a
-M4	I	"b
-M5	I	"c
-M7	V6	"d
-M8	I	"e
+S2	"S	#NB	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
+M5	I	"c	#N4
+M7	V6	"d	#N6
+M8	I	"e	#N9
 G9	S2	"s
 (
 	#I1

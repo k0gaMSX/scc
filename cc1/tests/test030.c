@@ -6,12 +6,12 @@ error:
 output:
 G14	F	"f1
 {
-S2	foo
-M3	I	"i
-M4	I	"j
-M5	I	"k
-M7	P	"p
-M8	J	"v
+S2	"foo	#N24	#N2
+M3	I	"i	#N0
+M4	I	"j	#N2
+M5	I	"k	#N4
+M7	P	"p	#N6
+M8	J	"v	#NE
 A9	S2	"f
 A11	P	"p
 A12	I	"n

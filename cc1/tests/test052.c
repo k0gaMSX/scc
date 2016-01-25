@@ -3,9 +3,9 @@ name: TEST052
 description: Basic test for initializer
 error:
 output:
-S2	S
-M3	I	"a
-M4	I	"b
+S2	"S	#N4	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
 V5	S2	#N2
 G6	V5	"arr
 (

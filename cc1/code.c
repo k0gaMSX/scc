@@ -264,9 +264,13 @@ emittype(Type *tp)
 		for (sp = tp->p.fields; n-- > 0; ++sp)
 			emittype((*sp)->type);
 		emitletter(tp);
-		if ((tag = tp->tag->name) != NULL)
-			printf("\t%s", tag);
-		putchar('\n');
+		tag = tp->tag->name;
+		printf("\t\"%s\t#%c%llX\t#%c%llX\n",
+		       (tag) ? tag : "",
+		       sizettype->letter,
+		       (unsigned long long) tp->size,
+		       sizettype->letter,
+		       (unsigned long long) tp->align);
 		n = tp->n.elem;
 		for (sp = tp->p.fields; n-- > 0; ++sp)
 			emit(ODECL, *sp);
@@ -378,6 +382,8 @@ emitdcl(unsigned op, void *arg)
 	putchar('\t');
 	emitletter(sym->type);
 	printf("\t\"%s", (sym->name) ? sym->name : "");
+	if (sym->flags & ISFIELD)
+		printf("\t#%c%llX", sizettype->letter, sym->u.i);
 	putchar('\n');
 	sym->flags |= ISEMITTED;
 }

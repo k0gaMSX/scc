@@ -6,10 +6,10 @@ output:
 G9	F	"main
 {
 \
-S2	List
-M4	I	"len
-M6	P	"head
-M7	P	"back
+S2	"List	#N1C	#N2
+M4	I	"len	#N0
+M6	P	"head	#N2
+M7	P	"back	#N6
 A10	S2	"List
 	r	A10	M4	.I
 }

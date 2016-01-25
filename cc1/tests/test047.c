@@ -3,10 +3,10 @@ name: TEST047
 description: Basic test for initializer
 error:
 output:
-S2	S
-M3	I	"a
-M4	I	"b
-M5	I	"c
+S2	"S	#N6	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
+M5	I	"c	#N4
 G6	S2	"x
 (
 	#I1

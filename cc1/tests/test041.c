@@ -16,8 +16,8 @@ A3	I	"i
 A5	P	"q
 A7	P	"s
 A8	P	"p
-S10	foo
-M11	I	"i
+S10	"foo	#N2	#N1
+M11	I	"i	#N0
 A12	S10	"foo
 	A3	A3	#I0	!I	#W0	#W0	?W	gI	:I
 	A8	A3	#I0	!I	#P0	#P0	?P	:P

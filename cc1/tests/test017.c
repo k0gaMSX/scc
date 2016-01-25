@@ -6,12 +6,12 @@ output:
 G10	F	"main
 {
 \
-S2	s1
-M3	I	"y
-M4	I	"z
+S2	"s1	#N4	#N1
+M3	I	"y	#N0
+M4	I	"z	#N2
 A11	S2	"nested
-S6	s2
-M8	P	"p
+S6	"s2	#N4	#N2
+M8	P	"p	#N0
 A12	S6	"v
 	A12	M8	.P	A11	'P	:P
 	A12	M8	.P	@S2	M3	.I	#I1	:I
