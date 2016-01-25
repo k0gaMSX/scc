@@ -433,7 +433,8 @@ extern Symbol *curfun, *zero, *one;
 
 extern Type *voidtype, *pvoidtype, *booltype,
             *uchartype,   *chartype, *schartype,
-            *uinttype,    *inttype,     *sizettype,
+            *uinttype,    *inttype,
+            *sizettype, *pdifftype,
             *ushortype,   *shortype,
             *longtype,    *ulongtype,
             *ullongtype,  *llongtype,

@@ -318,7 +318,7 @@ parithmetic(char op, Node *lp, Node *rp)
 	if (op == OSUB && BTYPE(rp) == PTR) {
 		if (tp != rp->type)
 			goto incorrect;
-		lp = node(OSUB, inttype, lp, rp);
+		lp = node(OSUB, pdifftype, lp, rp);
 		return node(ODIV, inttype, lp, size);
 	}
 	if (!rp->type->integer)

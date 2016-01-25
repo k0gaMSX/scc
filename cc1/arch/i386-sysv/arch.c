@@ -211,8 +211,21 @@ static Type types[] = {
 		.letter = L_ELLIPSIS,
 		.defined = 1,
 		.printed = 1
-	}
+	},
+	{       /* 19 = pdifftype */
+		.op = INT,
+		.letter = L_INT,
+		.defined = 1,
+		.size = 4,
+		.integer = 1,
+		.arith = 1,
+		.align = 4,
+		.sign = 1,
+		.n.rank = RANK_INT,
+		.printed = 1
+	},
 };
+
 
 Type *voidtype = &types[0], *pvoidtype = &types[1],
      *booltype = &types[2], *schartype = &types[3],
@@ -222,8 +235,10 @@ Type *voidtype = &types[0], *pvoidtype = &types[1],
      *longtype = &types[10], *ulongtype = &types[11],
      *ullongtype = &types[12], *llongtype = &types[13],
      *floattype = &types[14], *doubletype = &types[15],
-     *ldoubletype = &types[16], *sizettype = &types[17],
+     *ldoubletype = &types[16],
+     *sizettype = &types[17], *pdifftype = &types[19],
      *ellipsistype = &types[18];
+
 
 static Symbol dummy0 = {.u.i = 0, .type = &types[9]},
               dummy1 = {.u.i = 1, .type = &types[9]};
