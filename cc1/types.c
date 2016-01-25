@@ -166,11 +166,11 @@ invalid_type:
 	error("invalid type specification");
 }
 
-static TINT
+static TSIZE
 typesize(Type *tp)
 {
 	Symbol **sp;
-	TINT n, size, align;
+	TSIZE n, size, align;
 
 	switch (tp->op) {
 	case ARY:

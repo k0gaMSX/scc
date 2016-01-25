@@ -107,9 +107,9 @@ typedef struct type Type;
 typedef struct symbol Symbol;
 
 struct type {
-	unsigned short size;
-	unsigned short align;
-	unsigned short flags;
+	TSIZE size;
+	TSIZE align;
+	char flags;
 };
 
 struct symbol {

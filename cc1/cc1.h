@@ -42,8 +42,8 @@ struct type {
 	bool arith : 1;             /* this type is INT, ENUM, FLOAT */
 	bool aggreg : 1;            /* this type is struct or union */
 	bool k_r : 1;               /* This is a k&r function */
-	size_t size;                /* sizeof the type */
-	size_t align;               /* align of the type */
+	TSIZE size;                 /* sizeof the type */
+	TSIZE align;                /* align of the type */
 	Type *type;                 /* base type */
 	Symbol *tag;                /* symbol of the strug tag */
 	Type *next;                 /* next element in the hash */
