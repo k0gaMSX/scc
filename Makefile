@@ -14,6 +14,7 @@ all:
 	cp -f cc1/cc1 bin/cc1
 	cp -f cc2/cc2 bin/cc2
 	cp -f driver/$(DRIVER)/scc bin/scc
+	strip bin/cc1 bin/cc2 bin/scc
 
 multi:
 	for i in $(ARCHS) ; \
@@ -30,6 +31,7 @@ $(ARCHS):
 	done
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
+	strip bin/cc1 bin/cc1-$@ bin/cc2-$@
 
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
