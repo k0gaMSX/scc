@@ -10,8 +10,7 @@ M4	I	"b	#N2
 M5	I	"c	#N4
 M7	V6	"d	#N6
 M8	I	"e	#N9
-G9	S2	"s
-(
+G9	S2	"s	(
 	#I1
 	#I2
 	#I0
@@ -21,8 +20,7 @@ G9	S2	"s
 	#I0
 )
 V10	K	#N0
-G11	V10	"m
-(
+G11	V10	"m	(
 )
 G13	F	"main
 {

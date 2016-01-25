@@ -4,8 +4,7 @@ description: Basic test for initializer
 error:
 output:
 V1	I	#N3
-G2	V1	"arr
-(
+G2	V1	"arr	(
 	#I0
 	#I1
 	#I2

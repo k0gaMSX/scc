@@ -300,7 +300,6 @@ initializer(Symbol *sym, Type *tp)
 	}
 	np = initialize(tp);
 
-	emit(ODECL, sym);
 	if (flags & ISDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
 	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
@@ -308,12 +307,15 @@ initializer(Symbol *sym, Type *tp)
 			errorp("initializer element is not constant");
 			return;
 		}
+		sym->flags |= ISINIT;
+		emit(ODECL, sym);
 		emit(OINIT, np);
 		sym->flags |= ISDEFINED;
 	} else if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
 		errorp("'%s' has both '%s' and initializer",
 		       sym->name, (flags&ISEXTERN) ? "extern" : "typedef");
 	} else {
+		emit(ODECL, sym);
 		np = node(OASSIGN, tp, varnode(sym), np);
 		emit(OEXPR, np);
 	}

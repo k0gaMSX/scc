@@ -8,8 +8,7 @@ G5	F	"main
 {
 \
 V9	K	#N44
-Y8	V9	"
-(
+Y8	V9	"	(
 	#"This is a string $ or # or ##and it is ok !
 	#K00
 )

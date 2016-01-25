@@ -10,13 +10,12 @@ G3	F	"main
 A4	I	"y
 A6	P	"p
 V8	K	#N10
-Y7	V8	"
-(
+Y7	V8	"	(
 	#"test026.c
 	#K00
 )
 	A6	Y7	'P	:P
-	A4	#I24	:I
+	A4	#I23	:I
 	A4	#I1	:I
 	A4	#I1	:I
 	A4	#I1	:I

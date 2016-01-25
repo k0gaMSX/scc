@@ -7,8 +7,7 @@ G6	F	"main
 {
 \
 V8	K	#N13
-Y7	V8	"
-(
+Y7	V8	"	(
 	#"hello world
 	#K0A
 	#K00

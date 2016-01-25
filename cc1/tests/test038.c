@@ -6,7 +6,7 @@ error:
 test038.c:43: error: redeclaration of 'x'
 output:
 G1	I	"x
-(
+	(
 	#I0
 )
 G5	F	"foo

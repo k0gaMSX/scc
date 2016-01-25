@@ -32,11 +32,11 @@ union tokenop {
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
-                parameter, constant, composed;
+                parameter, constant, composed, begininit, endinit;
 
 typedef void evalfun(void);
-static evalfun vardecl, beginfun, endfun, endpars, stmt, begininit,
-               endinit, array, aggregate, flddecl;
+static evalfun vardecl, beginfun, endfun, endpars, stmt,
+               array, aggregate, flddecl;
 
 static struct decoc {
 	void (*eval)(void);
@@ -76,8 +76,8 @@ static struct decoc {
 	[ONAME]       = {NULL, getname},
 	['{']         = {beginfun},
 	['}']         = {endfun},
-	['(']         = {begininit},
-	[')']         = {endinit},
+	['(']         = {NULL, begininit},
+	[')']         = {NULL, endinit},
 	[OEPARS]      = {endpars},
 	[OSTMT]       = {stmt},
 
@@ -280,15 +280,13 @@ binary(char *token, union tokenop u)
 }
 
 static void
-begininit(void)
+begininit(char *token, union tokenop u)
 {
 	ininit = 1;
-	lastsym->type.flags |= INITF;
-	label(lastsym);
 }
 
 static void
-endinit(void)
+endinit(char *token, union tokenop u)
 {
 	ininit = 0;
 }
@@ -368,26 +366,38 @@ array(void)
 }
 
 static void
+decl(Symbol *sym)
+{
+	switch (sym->kind) {
+	case EXTRN:
+		label(sym);
+		break;
+	case GLOB:
+	case PRIVAT:
+	case LOCAL:
+		label(sym);
+		if (!ininit)
+			allocdata(&sym->type);
+		break;
+	case AUTO:
+	case REG:
+		if (funpars >= 0) {
+			if (funpars == NR_FUNPARAM)
+				error(EOUTPAR);
+			params[funpars++] = sym;
+			break;
+		}
+		break;
+	}
+}
+
+static void
 vardecl(void)
 {
 	Type *tp;
 	Node *np;
 	Symbol *sym;
 	char *name;
-
-	if (lastsym && (lastsym->type.flags & INITF) == 0) {
-		switch (lastsym->kind) {
-		case EXTRN:
-			label(lastsym);
-			break;
-		case GLOB:
-		case PRIVAT:
-		case LOCAL:
-			label(lastsym);
-			allocdata(&lastsym->type);
-			break;
-		}
-	}
 
 	name = pop();
 	tp = pop();
@@ -397,13 +407,11 @@ vardecl(void)
 	sym->name = name;
 	sym->type = *tp;
 	sym->kind = sclass;
+	if (ininit)
+		sym->type.flags |= INITF;
 	lastsym = sym;
+	decl(sym);
 
-	if (funpars >= 0) {
-		if (funpars == NR_FUNPARAM)
-			error(EOUTPAR);
-		params[funpars++] = sym;
-	}
 	delnode(np);
 }
 
@@ -457,6 +465,7 @@ parse(void)
 	size_t len;
 	int c;
 	struct decoc *dp;
+	void (*fun)(void);
 
 	for (;;) {
 		if (!fgets(line, sizeof(line), stdin))
@@ -475,7 +484,8 @@ parse(void)
 			(*dp->parse)(t, dp->u);
 		}
 
-		(*optbl[c].eval)();
+		if ((fun = *optbl[c].eval) != NULL)
+			(*fun)();
 		if (sp != stack)
 			error(ESTACKA);
 		if (c == '}')

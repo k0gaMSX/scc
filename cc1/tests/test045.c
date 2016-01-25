@@ -3,8 +3,7 @@ name: TEST045
 description: Basic test of initializers
 error:
 output:
-G1	I	"x
-(
+G1	I	"x	(
 	#I5
 )
 G3	F	"main

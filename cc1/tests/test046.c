@@ -4,8 +4,7 @@ description: Basic test for initializators
 error:
 output:
 V1	I	#N3
-G2	V1	"x
-(
+G2	V1	"x	(
 	#I1
 	#I2
 	#I3

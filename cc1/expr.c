@@ -619,6 +619,7 @@ primary(void)
 	switch (yytoken) {
 	case STRING:
 		np = constnode(sym);
+		sym->flags |= ISINIT;
 		emit(ODECL, sym);
 		emit(OINIT, np);
 		np = decay(varnode(sym));

@@ -365,7 +365,7 @@ emitinit(unsigned op, void *arg)
 {
 	Node *np = arg;
 
-	puts("(");
+	puts("\t(");
 	emitdesig(np, np->type);
 	puts(")");
 }
@@ -384,8 +384,9 @@ emitdcl(unsigned op, void *arg)
 	printf("\t\"%s", (sym->name) ? sym->name : "");
 	if (sym->flags & ISFIELD)
 		printf("\t#%c%llX", sizettype->letter, sym->u.i);
-	putchar('\n');
 	sym->flags |= ISEMITTED;
+	if ((sym->flags & ISINIT) == 0)
+		putchar('\n');
 }
 
 static void

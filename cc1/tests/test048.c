@@ -7,8 +7,7 @@ S2	"S	#N4	#N1
 M3	I	"a	#N0
 M4	I	"b	#N2
 V5	S2	#N1
-G6	V5	"x
-(
+G6	V5	"x	(
 	#I1
 	#I2
 )

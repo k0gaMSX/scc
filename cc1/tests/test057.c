@@ -6,8 +6,7 @@ error:
 output:
 V1	I	#N3
 V2	V1	#N2
-G3	V2	"arr1
-(
+G3	V2	"arr1	(
 	#I2
 	#I7
 	#I5
@@ -15,8 +14,7 @@ G3	V2	"arr1
 	#I1
 	#I2
 )
-G4	V2	"arr2
-(
+G4	V2	"arr2	(
 	#I2
 	#I7
 	#I5
