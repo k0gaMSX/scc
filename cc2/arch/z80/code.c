@@ -21,7 +21,7 @@ segment(int seg)
 	static char *txt[] = {
 		[CODESEG] = "\tCSEG\n",
 		[DATASEG] = "\tDSEG\n",
-		[BSSSEG] = "\tXSEG\n",
+		[BSSSEG] = "\tASEG\n",
 	};
 
 	if (seg == curseg)
