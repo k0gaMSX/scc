@@ -10,7 +10,7 @@ all: cc1
 $(OBJS) : cc1.h ../inc/cc.h ../inc/sizes.h arch/$(ARCH)/arch.h
 
 cc1: $(OBJS) ../lib/libcc.a
-	$(CC) $(LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
+	$(CC) $(SLDFLAGS) $(LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
 
 cpp: cc1
 	ln -f cc1 cpp
@@ -21,4 +21,3 @@ test:
 clean:
 	rm -f $(OBJS)
 	rm -f cc1 cpp
-
