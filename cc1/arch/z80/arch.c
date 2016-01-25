@@ -40,7 +40,7 @@ static Type types[] = {
 	},
 	{       /* 3 = schartype */
 		.op = INT,
-		.letter = L_SCHAR,
+		.letter = L_INT8,
 		.defined = 1,
 		.size = 1,
 		.integer = 1,
@@ -52,7 +52,7 @@ static Type types[] = {
 	},
 	{      /* 4 = uchartype */
 		.op = INT,
-		.letter = L_UCHAR,
+		.letter = L_UINT8,
 		.defined = 1,
 		.size = 1,
 		.integer = 1,
@@ -63,7 +63,7 @@ static Type types[] = {
 	},
 	{      /* 5 = chartype */
 		.op = INT,
-		.letter = L_CHAR,
+		.letter = L_UINT8,
 		.defined = 1,
 		.size = 1,
 		.integer = 1,
@@ -75,7 +75,7 @@ static Type types[] = {
 	},
 	{       /* 6 = ushortype */
 		.op = INT,
-		.letter = L_USHORT,
+		.letter = L_UINT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
@@ -86,7 +86,7 @@ static Type types[] = {
 	},
 	{       /* 7 = shortype */
 		.op = INT,
-		.letter = L_SHORT,
+		.letter = L_INT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
@@ -98,7 +98,7 @@ static Type types[] = {
 	},
 	{       /* 8 = uinttype */
 		.op = INT,
-		.letter = L_UINT,
+		.letter = L_UINT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
@@ -109,7 +109,7 @@ static Type types[] = {
 	},
 	{       /* 9 = inttype */
 		.op = INT,
-		.letter = L_INT,
+		.letter = L_INT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
@@ -121,7 +121,7 @@ static Type types[] = {
 	},
 	{      /* 10 = longtype */
 		.op = INT,
-		.letter = L_LONG,
+		.letter = L_INT32,
 		.defined = 1,
 		.size = 4,
 		.integer = 1,
@@ -133,7 +133,7 @@ static Type types[] = {
 	},
 	{       /* 11 = ulongtype */
 		.op = INT,
-		.letter = L_ULONG,
+		.letter = L_UINT32,
 		.defined = 1,
 		.size = 4,
 		.integer = 1,
@@ -144,7 +144,7 @@ static Type types[] = {
 	},
 	{	/* 12 = ullongtype */
 		.op = INT,
-		.letter = L_ULLONG,
+		.letter = L_UINT64,
 		.defined = 1,
 		.size = 8,
 		.integer = 1,
@@ -155,7 +155,7 @@ static Type types[] = {
 	},
 	{       /* 13 = llongtype */
 		.op = INT,
-		.letter = L_LLONG,
+		.letter = L_INT64,
 		.defined = 1,
 		.size = 8,
 		.integer = 1,
@@ -197,7 +197,7 @@ static Type types[] = {
 	},
 	{       /* 17 = sizettype */
 		.op = INT,
-		.letter = L_UINT,
+		.letter = L_UINT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
@@ -214,7 +214,7 @@ static Type types[] = {
 	},
 	{       /* 7 = pdifftype */
 		.op = INT,
-		.letter = L_SHORT,
+		.letter = L_INT16,
 		.defined = 1,
 		.size = 2,
 		.integer = 1,
