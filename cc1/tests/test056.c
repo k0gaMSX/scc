@@ -3,7 +3,7 @@ name: TEST056
 desciption: Test of overlaying designators
 error:
 output:
-V6	K	#3
+V6	K	#N3
 S2	S
 M3	I	"a
 M4	I	"b
@@ -20,7 +20,7 @@ G9	S2	"s
 	#K0
 	#I0
 )
-V10	K	#0
+V10	K	#N0
 G11	V10	"m
 (
 )

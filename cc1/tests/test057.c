@@ -4,8 +4,8 @@ name: TEST057
 description: test of initialization of incomplete arrays
 error:
 output:
-V1	I	#3
-V2	V1	#2
+V1	I	#N3
+V2	V1	#N2
 G3	V2	"arr1
 (
 	#I2

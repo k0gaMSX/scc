@@ -3,7 +3,7 @@ name: TEST046
 description: Basic test for initializators
 error:
 output:
-V1	I	#3
+V1	I	#N3
 G2	V1	"x
 (
 	#I1

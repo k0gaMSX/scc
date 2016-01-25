@@ -8,7 +8,7 @@ G3	F	"main
 {
 \
 A5	P	"p
-V7	K	#25
+V7	K	#N25
 Y6	V7	"
 (
 	#"hello is better than bye

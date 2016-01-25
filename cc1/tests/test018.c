@@ -6,12 +6,12 @@ output:
 G2	F	"main
 {
 \
-V3	K	#4
-V4	V3	#2
+V3	K	#N4
+V4	V3	#N2
 A5	V4	"arr
 A7	P	"p
 A9	P	"q
-V10	I	#4
+V10	I	#N4
 A11	V10	"v
 	A7	A5	'P	:P
 	A9	A5	'P	#P4	+P	#P3	+P	:P

@@ -6,7 +6,7 @@ output:
 S2	S
 M3	I	"a
 M4	I	"b
-V5	S2	#2
+V5	S2	#N2
 G6	V5	"arr
 (
 	#I1

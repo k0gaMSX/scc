@@ -6,7 +6,7 @@ output:
 G6	F	"main
 {
 \
-V8	K	#13
+V8	K	#N13
 Y7	V8	"
 (
 	#"hello world

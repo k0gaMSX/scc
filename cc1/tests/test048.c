@@ -6,7 +6,7 @@ output:
 S2	S
 M3	I	"a
 M4	I	"b
-V5	S2	#1
+V5	S2	#N1
 G6	V5	"x
 (
 	#I1

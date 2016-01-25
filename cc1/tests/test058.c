@@ -3,9 +3,9 @@ name: TEST058
 description: Test of initialization mixing designators and sequence
 error:
 output:
-V1	I	#5
-V2	V1	#3
-V3	V2	#2
+V1	I	#N5
+V2	V1	#N3
+V3	V2	#N2
 G4	V3	"arr
 (
 	#I0

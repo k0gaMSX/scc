@@ -7,7 +7,7 @@ output:
 G6	F	"foo
 {
 \
-V8	K	#3
+V8	K	#N3
 Y10	V8	"
 (
 	#"hi
