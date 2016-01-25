@@ -356,11 +356,15 @@ static void
 array(void)
 {
 	Type *tp, *base;
-	Node *np;
+	Node *size;
 
-	np = pop();
+	size = pop();
 	base = pop();
 	tp = pop();
+	tp->size = size->u.i;
+	tp->align = base->align;
+
+	delnode(size);
 }
 
 static void
