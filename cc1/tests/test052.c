@@ -23,10 +23,10 @@ L9
 	j	L11	G6	M4	.I	#I2	=I
 	r	#I2
 L11
-	j	L12	G6	M3	.I	#I3	=I
+	j	L12	G6	'P	#P4	+P	@S2	M3	.I	#I3	=I
 	r	#I3
 L12
-	j	L13	G6	M4	.I	#I4	=I
+	j	L13	G6	'P	#P4	+P	@S2	M4	.I	#I4	=I
 	r	#I4
 L13
 	r	#I0

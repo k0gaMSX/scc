@@ -166,42 +166,70 @@ invalid_type:
 	error("invalid type specification");
 }
 
-static TSIZE
+void
 typesize(Type *tp)
 {
 	Symbol **sp;
-	TSIZE n, size, align;
+	Type *aux;
+	TSIZE n, size, align, a;
 
 	switch (tp->op) {
 	case ARY:
-		return tp->n.elem * tp->type->size;
+		/* FIXME: Control overflow */
+		tp->size = tp->n.elem * tp->type->size;
+		tp->align = tp->type->align;
+		return;
 	case PTR:
-		return pvoidtype->size;
+		tp->size = pvoidtype->size;
+		tp->align = pvoidtype->align;
+		return;
 	case STRUCT:
-		size = 0;
-		n = tp->n.elem;
-		for (sp = tp->p.fields; n--; ++sp) {
-			tp = (*sp)->type;
-			align = tp->align-1;
-			size = size + align & ~align;
-			size += tp->size;
-		}
-		/* TODO: Add aligment of the first field */
-		return size;
 	case UNION:
-		size = 0;
+		/* FIXME: Control overflow */
+		/*
+		 * The alignment of the struct/union is
+		 * he alignment of the largest included type.
+		 * The size of an union is the size of the largest
+		 * field, and the size of a struct is the sum
+		 * of the size of every field plus padding bits.
+		 */
+		align = size = 0;
 		n = tp->n.elem;
 		for (sp = tp->p.fields; n--; ++sp) {
-			tp = (*sp)->type;
-			if (tp->size > size)
-				size = tp->size;
+			(*sp)->u.i = size;
+			aux = (*sp)->type;
+			a = aux->align;
+			if (a > align)
+				align = a;
+			if (tp->op == STRUCT) {
+				if (--a != 0)
+					size += (size + a) & ~a;
+				size += aux->size;
+			} else {
+				if (tp->size > size)
+					size = aux->size;
+			}
 		}
-		/* TODO: Add aligment of the worst field */
-		return size;
+
+		tp->align = align;
+		/*
+		 * We have to add the padding bits to
+		 * ensure next struct in an array is well
+		 * alignment.
+		 */
+		if (tp->op == STRUCT && align-- > 1)
+			size += size + align & ~align;
+		tp->size = size;
+		return;
 	case ENUM:
-		return inttype->size;
+		tp->size = inttype->size;
+		tp->align = inttype->align;
+		return;
+	case FTN:
+		return;
+	default:
+		abort();
 	}
-	return 0;
 }
 
 Type *
@@ -242,7 +270,6 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	type.p.pars = pars;
 	type.n.elem = nelem;
 	type.ns = 0;
-	/* TODO: Set aligment for new types */
 
 	switch (op) {
 	case ARY:
@@ -279,7 +306,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		}
 	}
 
-	type.size = typesize(&type);
+	typesize(&type);
 	bp = duptype(&type);
 	bp->next = *tbl;
 	return *tbl = bp;

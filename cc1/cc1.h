@@ -352,6 +352,7 @@ extern Type *ctype(unsigned type, unsigned sign, unsigned size);
 extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
 extern struct limits *getlimits(Type *tp);
+extern void typesize(Type *tp);
 
 /* symbol.c */
 extern void dumpstab(char *msg);

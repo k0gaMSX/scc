@@ -486,7 +486,6 @@ newtag(void)
 			error("too much tags declared");
 		tp = mktype(NULL, tag, 0, NULL);
 		tp->ns = ns++;
-		tp->p.fields = NULL;
 		sym->type = tp;
 		tp->tag = sym;
 		DBG("declared tag '%s' with ns = %d\n",
@@ -533,6 +532,7 @@ structdcl(void)
 	}
 	--nested;
 
+	typesize(tp);
 	namespace = ns;
 	expect('}');
 	return tp;
