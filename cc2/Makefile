@@ -16,7 +16,7 @@ error.h: cc2.h
 	awk -f generror cc2.h > $$$$.h && mv $$$$.h $@
 
 cc2: $(OBJS) ../lib/libcc.a
-	$(CC) $(SLDFLAGS) $(LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
+	$(CC) $(SCC_LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
 
 clean:
 	rm -f $(OBJS)
