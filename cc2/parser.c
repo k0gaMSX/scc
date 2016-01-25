@@ -32,11 +32,11 @@ union tokenop {
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
-                parameter, constant, aggregate;
+                parameter, constant, composed;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt, begininit,
-               endinit, array;
+               endinit, array, aggregate, flddecl;
 
 static struct decoc {
 	void (*eval)(void);
@@ -49,8 +49,8 @@ static struct decoc {
 	[EXTRN]       = {vardecl, symbol, .u.op = MEM},
 	[PRIVAT]      = {vardecl, symbol, .u.op = MEM},
 	[LOCAL]       = {vardecl, symbol, .u.op = MEM},
-	[MEMBER]      = {NULL, symbol},
-	[LABEL]       = {NULL, symbol},
+	[MEMBER]      = {flddecl, symbol},
+	[LABEL]       = {flddecl, symbol},
 
 	[INT8]        = {NULL, type, .u.arg   = &int8type},
 	[INT16]       = {NULL, type, .u.arg   = &int16type},
@@ -69,9 +69,9 @@ static struct decoc {
 	[ELLIPSIS]    = {NULL, type, .u.arg   = &elipsistype},
 
 	[FUNCTION]    = {NULL, type, .u.arg = &funtype},
-	[VECTOR]      = {array, aggregate},
-	[UNION]       = {NULL, NULL},
-	[STRUCT]      = {NULL, NULL},
+	[VECTOR]      = {array, composed},
+	[UNION]       = {aggregate, composed},
+	[STRUCT]      = {aggregate, composed},
 
 	[ONAME]       = {NULL, getname},
 	['{']         = {beginfun},
@@ -122,7 +122,7 @@ static struct decoc {
 };
 
 static void *stack[STACKSIZ], **sp = stack;
-static Symbol *lastsym, *curfun;
+static Symbol *lastsym, *curfun, *lastaggreg;
 static Symbol *params[NR_FUNPARAM];
 static int funpars = -1, sclass, callpars, ininit;
 static Node *stmtp, *callp;
@@ -150,7 +150,7 @@ type(char *token, union tokenop u)
 }
 
 static void
-aggregate(char *token, union tokenop u)
+composed(char *token, union tokenop u)
 {
 	Symbol *sym;
 
@@ -323,6 +323,36 @@ endpars(void)
 }
 
 static void
+aggregate(void)
+{
+	Node *align, *size;
+	char *name;
+	Type *tp;
+	Symbol *sym;
+
+	align = pop();
+	size = pop();
+	name = pop();
+	tp = pop();
+
+	tp->size = size->u.i;
+	tp->align = align->u.i;
+	/*
+	 * type is the first field of Symbol so we can obtain the
+	 * address of the symbol from the address of the type.
+	 * We have to do this because composed returns the pointer
+	 * to the type, but in this function we also need the
+	 * symbol to store the name.
+	 */
+	sym = (Symbol *) tp;
+	lastaggreg = sym;
+	sym->name = name;
+
+	delnode(align);
+	delnode(size);
+}
+
+static void
 array(void)
 {
 	Type *tp, *base;
@@ -371,6 +401,31 @@ vardecl(void)
 		params[funpars++] = sym;
 	}
 	delnode(np);
+}
+
+static void
+flddecl(void)
+{
+	Node *off, *np;
+	char *name;
+	Type *tp;
+	Symbol *sym;
+
+	if (!lastaggreg)
+		error(ESYNTAX);
+
+	off = pop();
+	name = pop();
+	tp = pop();
+	np = pop();
+
+	sym = np->u.sym;
+	sym->off = off->u.i;
+	sym->name = name;
+	sym->type = *tp;
+
+	delnode(np);
+	delnode(off);
 }
 
 static void

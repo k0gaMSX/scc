@@ -113,11 +113,12 @@ struct type {
 };
 
 struct symbol {
+	Type type;
 	unsigned short id;
 	unsigned short numid;
 	char *name;
-	Type type;
 	char kind;
+	TSIZE off;
 	Symbol *next;
 	Symbol *h_next;
 };
