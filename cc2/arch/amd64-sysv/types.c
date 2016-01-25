@@ -42,7 +42,7 @@ Type uint16type = {
 Type uint32type = {
 	.flags  = INTF,
 	.size   = 4,
-	.align  = 2
+	.align  = 4
 };
 
 Type uint64type = {
@@ -74,8 +74,8 @@ Type float64type = {
 };
 
 Type float80type = {
-	.size   = 10,
-	.align  = 12
+	.size   = 16,
+	.align  = 16
 };
 
 Type voidtype = {

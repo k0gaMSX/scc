@@ -24,7 +24,7 @@ Type int32type = {
 Type int64type = {
 	.flags  = SIGNF | INTF,
 	.size   = 8,
-	.align  = 8
+	.align  = 4
 };
 
 Type uint8type = {
@@ -48,7 +48,7 @@ Type uint32type = {
 Type uint64type = {
 	.flags  = INTF,
 	.size   = 8,
-	.align  = 2
+	.align  = 4
 };
 
 Type ptrtype = {
@@ -70,11 +70,11 @@ Type float32type = {
 
 Type float64type = {
 	.size   = 8,
-	.align  = 8
+	.align  = 4
 };
 
 Type float80type = {
-	.size   = 10,
+	.size   = 12,
 	.align  =  4
 };
 

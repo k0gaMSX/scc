@@ -26,8 +26,8 @@
 #define L_USHORT    L_UINT16
 #define L_INT       L_INT32
 #define L_UINT      L_UINT32
-#define L_LONG      L_INT32
-#define L_ULONG     L_UINT32
+#define L_LONG      L_INT64
+#define L_ULONG     L_UINT64
 #define L_LLONG     L_INT64
 #define L_ULLONG    L_UINT64
 #define L_ENUM      L_INT
