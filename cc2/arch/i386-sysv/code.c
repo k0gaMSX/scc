@@ -169,7 +169,7 @@ label(Symbol *sym)
 	case LOCAL:
 		return;
 	case GLOB:
-		printf("\t.globl\t%s\n", name);
+		printf("\t.global\t%s\n", name);
 		break;
 	}
 
