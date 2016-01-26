@@ -35,23 +35,20 @@ symname(Symbol *sym)
 {
 	static char name[IDENTSIZ+1];
 	static unsigned short id;
-	int k = sym->kind;
 
 	if (sym->name) {
 		switch (sym->kind) {
 		case GLOB:
 		case EXTRN:
 			snprintf(name, sizeof(name), "_%s", sym->name);
-			return name;;
+			return name;
 		case PRIVAT:
 			return sym->name;
 		}
 	}
 
-	if (sym->numid == 0) {
-		if ((sym->numid = ++id) == 0)
-			error(EIDOVER);
-	}
+	if (sym->numid == 0 && (sym->numid = ++id) == 0)
+		error(EIDOVER);
 	sprintf(name, ".%d", sym->numid);
 
 	return name;
@@ -79,10 +76,10 @@ label(Symbol *sym)
 
 	switch (sym->kind) {
 	case EXTRN:
-		printf("\tEXTRN %s\n", name);
+		printf("\tEXTRN\t%s\n", name);
 		return;
 	case GLOB:
-		printf("\tPUBLIC %s\n", name);
+		printf("\tPUBLIC\t%s\n", name);
 		break;
 	}
 
@@ -90,26 +87,17 @@ label(Symbol *sym)
 }
 
 static void
-emitstring(Node *np)
-{
-	/*In z80 we can ignore the aligment */
-	printf("\"%s\"", np->u.s);
-	free(np->u.s);
-	np->u.s = NULL;
-}
-
-static void
 emitconst(Node *np)
 {
 	switch (np->type.size) {
 	case 1:
-		printf("%02X", (int) np->u.i & 0xFF);
+		printf("%d", (int) np->u.i & 0xFF);
 		break;
 	case 2:
-		printf("%04X", (int) np->u.i & 0xFFFF);
+		printf("%d", (int) np->u.i & 0xFFFF);
 		break;
 	case 4:
-		printf("%08X", (long) np->u.i & 0xFFFFFFFF);
+		printf("%ld", (long) np->u.i & 0xFFFFFFFF);
 		break;
 	default:
 		abort();
@@ -124,7 +112,9 @@ emittree(Node *np)
 
 	switch (np->op) {
 	case OSTRING:
-		emitstring(np);
+		printf("\"%s\"", np->u.s);
+		free(np->u.s);
+		np->u.s = NULL;
 		break;
 	case OCONST:
 		emitconst(np);
@@ -142,7 +132,6 @@ emittree(Node *np)
 		break;
 	}
 }
-
 
 static void
 size2asm(Type *tp)
