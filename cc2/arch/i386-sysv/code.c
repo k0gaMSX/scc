@@ -106,9 +106,6 @@ size2asm(Type *tp)
 {
 	char *s;
 
-	if (tp->align != 1)
-		printf("\t.align\t%d\n", tp->align);
-
 	if (tp->flags & STRF) {
 		s = "\t.ascii\t";
 	} else {
@@ -153,8 +150,8 @@ label(Symbol *sym)
 {
 	int seg, flags = sym->type.flags;
 	char *name = symname(sym);
+	Type *tp = &sym->type;
 
-	putchar('\n');
 	if (flags & FUNF)
 		seg = CODESEG;
 	else if (flags & INITF)
@@ -170,11 +167,16 @@ label(Symbol *sym)
 		return;
 	case GLOB:
 		printf("\t.global\t%s\n", name);
+		if (seg == BSSSEG) {
+			printf("\t.comm\t%s,%llu\n",
+			       name,
+			       (unsigned long long) tp->size);
+		}
 		break;
 	}
-
+	if (sym->type.align != 1)
+		printf("\t.align\t%d\n",sym->type.align );
 	printf("%s:\n", name);
-
 }
 
 void
