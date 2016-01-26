@@ -65,7 +65,6 @@ label(Symbol *sym)
 	int seg, flags = sym->type.flags;
 	char *name = symname(sym);
 
-	putchar('\n');
 	if (flags & FUNF)
 		seg = CODESEG;
 	else if (flags & INITF)
