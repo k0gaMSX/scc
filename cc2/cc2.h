@@ -5,7 +5,6 @@ enum tflags {
 	STRF    =    8,
 	UNIONF  =    16,
 	FUNF    =    32,
-	ARYF    =    64,
 	INITF   =   128
 };
 
