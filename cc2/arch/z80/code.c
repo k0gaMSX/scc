@@ -152,19 +152,23 @@ size2asm(Type *tp)
 	/*
 	 * In z80 we can ignore the alignment
 	 */
-	switch (tp->size) {
-	case 1:
+	if (tp->flags & STRF) {
 		s = "\tDB\t";
-		break;
-	case 2:
-		s = "\tDW\t";
-		break;
-	case 4:
-		s = "\tDD\t";
-		break;
-	default:
-		s = (tp->flags & STRF) ? "\tTEXT\t" : "\tDS\t%llu,";
-		break;
+	} else {
+		switch (tp->size) {
+		case 1:
+			s = "\tDB\t";
+			break;
+		case 2:
+			s = "\tDW\t";
+			break;
+		case 4:
+			s = "\tDD\t";
+			break;
+		default:
+			s = "\tDS\t%llu,";
+			break;
+		}
 	}
 	printf(s, (unsigned long long) tp->size);
 }
