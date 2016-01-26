@@ -164,8 +164,9 @@ label(Symbol *sym)
 	segment(seg);
 
 	switch (sym->kind) {
-	case LOCAL:
 	case EXTRN:
+		printf("\t.extern\t%s\n", name);
+	case LOCAL:
 		return;
 	case GLOB:
 		printf("\t.globl\t%s\n", name);
