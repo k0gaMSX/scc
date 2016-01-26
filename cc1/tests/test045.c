@@ -10,9 +10,9 @@ G3	F	"main
 {
 \
 	j	L4	G1	#I5	=I
-	r	#I1
+	h	#I1
 L4
-	r	#I0
+	h	#I0
 }
 */
 

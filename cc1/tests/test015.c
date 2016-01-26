@@ -18,8 +18,8 @@ G14	F	"main
 	j	L15
 A16	S2	"s
 A17	I	"s
-	r	A17
-	r	A16	M11	.S5	M6	.I	A16	M11	.S5	M10	.S8	M9	.I	+I
+	h	A17
+	h	A16	M11	.S5	M6	.I	A16	M11	.S5	M10	.S8	M9	.I	+I
 L15
 */
 

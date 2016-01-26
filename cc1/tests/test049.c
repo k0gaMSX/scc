@@ -13,9 +13,9 @@ G5	F	"main
 {
 \
 	j	L6	G3	@I	#I5	=I
-	r	#I1
+	h	#I1
 L6
-	r	#I0
+	h	#I0
 }
 */
 

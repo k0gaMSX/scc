@@ -13,9 +13,9 @@ A3	I	"x
 	A3	A3	~I	:I
 	A3	A3	_I	:I
 	j	L4	A3	#I2	=I
-	r	#I1
+	h	#I1
 L4
-	r	#I0
+	h	#I0
 }
 */
 

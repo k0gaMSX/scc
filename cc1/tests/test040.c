@@ -11,7 +11,7 @@ M4	I	"len	#N0
 M6	P	"head	#N2
 M7	P	"back	#N6
 A10	S2	"List
-	r	A10	M4	.I
+	h	A10	M4	.I
 }
 */
 

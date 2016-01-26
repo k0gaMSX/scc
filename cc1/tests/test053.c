@@ -14,12 +14,12 @@ G7	F	"main
 {
 \
 	j	L8	G5	M3	.I	#I1	=I
-	r	#I1
+	h	#I1
 L8
 	j	L9	G5	M4	.I	#I2	=I
-	r	#I2
+	h	#I2
 L9
-	r	#I0
+	h	#I0
 }
 */
 

@@ -17,9 +17,9 @@ A11	P	"p
 A12	I	"n
 \
 	j	L15	A9	M3	.I	A11	@S2	M3	.I	=I
-	r	#I0
+	h	#I0
 L15
-	r	A11	@S2	M4	.I	A12	+I
+	h	A11	@S2	M4	.I	A12	+I
 }
 G17	F	"main
 {
@@ -28,7 +28,7 @@ A18	S2	"f
 	A18	M3	.I	A18	M4	.I	#I1	:I	:I
 	G14	A18	pS2	A18	'P	pP	#I2	pI	cI
 	G14	A18	pS2	A18	'P	pP	#I2	pI	#I1	pI	A18	pS2	A18	'P	pP	cI
-	r	#I0
+	h	#I0
 }
 */
 

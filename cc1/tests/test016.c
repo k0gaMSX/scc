@@ -16,14 +16,14 @@ A6	P	"p
 	A6	A4	'P	:P
 	A6	@I	#I0	:I
 	j	L7	A4	#I0	=I
-	r	#I1
+	h	#I1
 L7
 	A6	G1	'P	:P
 	A6	@I	#I0	:I
 	j	L8	A6	#P0	!I
-	r	#I1
+	h	#I1
 L8
-	r	#I0
+	h	#I0
 }
 G9	F	"func2
 {
@@ -38,7 +38,7 @@ A13	P	"pp
 	A13	@P	@I	#I0	:I
 L14
 	A11	#P0	:P
-	r	A10
+	h	A10
 }
 */
 

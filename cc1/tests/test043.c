@@ -11,7 +11,7 @@ G11	F	"main
 {
 \
 	G9	M6	.P	@F	c0
-	r	#I0
+	h	#I0
 }
 */
 

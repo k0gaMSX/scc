@@ -15,12 +15,12 @@ G8	F	"main
 {
 \
 	j	L9	G6	M3	.I	#I1	=I
-	r	#I1
+	h	#I1
 L9
 	j	L11	G6	M4	.I	#I2	=I
-	r	#I2
+	h	#I2
 L11
-	r	#I0
+	h	#I0
 }
 */
 

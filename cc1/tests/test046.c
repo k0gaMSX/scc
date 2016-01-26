@@ -13,15 +13,15 @@ G4	F	"main
 {
 \
 	j	L5	G2	#I1	=I
-	r	#I1
+	h	#I1
 L5
 	j	L7	G2	'P	#P2	+P	@I	#I2	=I
-	r	#I2
+	h	#I2
 L7
 	j	L8	G2	'P	#P4	+P	@I	#I3	=I
-	r	#I3
+	h	#I3
 L8
-	r	#I0
+	h	#I0
 }
 */
 

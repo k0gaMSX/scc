@@ -6,7 +6,7 @@ output:
 G2	F	"main
 {
 \
-	r	#I0
+	h	#I0
 }
 */
 

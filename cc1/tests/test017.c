@@ -17,12 +17,12 @@ A12	S6	"v
 	A12	M8	.P	@S2	M3	.I	#I1	:I
 	A12	M8	.P	@S2	M4	.I	#I2	:I
 	j	L13	A11	M3	.I	#I1	=I
-	r	#I1
+	h	#I1
 L13
 	j	L14	A11	M4	.I	#I2	=I
-	r	#I2
+	h	#I2
 L14
-	r	#I0
+	h	#I0
 }
 */
 

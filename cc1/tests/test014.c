@@ -30,7 +30,7 @@ T8	K	"i
 R9	W	"j
 X10	I	"k
 T11	Z	"a
-	r	#I0
+	h	#I0
 }
 G14	F	"func2
 {

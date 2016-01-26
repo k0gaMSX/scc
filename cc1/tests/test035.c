@@ -10,18 +10,18 @@ G7	F	"main
 A8	I	"e
 	A8	#I3	:I
 	j	L9	A8	#I1	=I
-	r	#I0
+	h	#I0
 L9
 	j	L10	A8	#I0	=I
-	r	#I1
+	h	#I1
 L10
 	j	L11	A8	#I2	=I
-	r	#I2
+	h	#I2
 L11
 	j	L12	A8	#I3	=I
-	r	#I3
+	h	#I3
 L12
-	r	#I0
+	h	#I0
 }
 */
 

@@ -11,13 +11,13 @@ G6	F	"main
 {
 \
 X7	S2	"x
-	r	X7	'P	#P0	!I
+	h	X7	'P	#P0	!I
 }
 G5	F	"foo
 {
 \
 	X3	M9	.I	#I0	:I
-	r	X3	M9	.I
+	h	X3	M9	.I
 }
 X13	S11	"bar2
 */

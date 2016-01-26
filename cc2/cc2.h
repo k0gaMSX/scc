@@ -78,7 +78,7 @@ enum op {
 	OSTRING  = '"',
 	/*statements */
 	OJMP     = 'j',
-	ORET     = 'r',
+	ORET     = 'h',
 	OBLOOP   = 'b',
 	OELOOP   = 'e',
 	OCASE    = 'v',

@@ -41,7 +41,7 @@ G4	V3	"arr	(
 G6	F	"main
 {
 \
-	r	G4	'P	#PA	+P	#P8	+P	@I	G4	'P	#P1E	+P	#PA	+P	#P8	+P	@I	!I
+	h	G4	'P	#PA	+P	#P8	+P	@I	G4	'P	#P1E	+P	#PA	+P	#P8	+P	@I	!I
 }
 */
 

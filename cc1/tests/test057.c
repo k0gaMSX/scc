@@ -25,7 +25,7 @@ G4	V2	"arr2	(
 G6	F	"main
 {
 \
-	r	G3	'P	#P6	+P	#P4	+P	@I	G4	'P	#P6	+P	#P6	+P	@I	!I
+	h	G3	'P	#P6	+P	#P4	+P	@I	G4	'P	#P6	+P	#P6	+P	@I	!I
 }
 */
 

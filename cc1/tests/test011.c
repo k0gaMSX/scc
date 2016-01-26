@@ -10,13 +10,13 @@ G2	F	"main
 \
 L3
 	j	L4
-	r	#I1
+	h	#I1
 L5
-	r	#I0
+	h	#I0
 L4
 L6
 	j	L5
-	r	#I1
+	h	#I1
 }
 */
 

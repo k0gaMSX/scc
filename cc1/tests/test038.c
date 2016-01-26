@@ -12,13 +12,13 @@ G1	I	"x
 G5	F	"foo
 {
 \
-	r	X3	'P
+	h	X3	'P
 }
 G3	F	"main
 {
 \
 	G1	#I0	:I
-	r	G1
+	h	G1
 }
 */
 

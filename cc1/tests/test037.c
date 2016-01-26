@@ -12,15 +12,15 @@ G2	F	"main
 {
 \
 	j	L3	#I0
-	r	#I1
+	h	#I1
 L3
 	j	L4	#I0
-	r	#I2
+	h	#I2
 L4
 	j	L5	#I0
-	r	#I3
+	h	#I3
 L5
-	r	#I0
+	h	#I0
 }
 */
 

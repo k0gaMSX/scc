@@ -11,7 +11,7 @@ G3	F	"main
 {
 \
 	j	L4	#I0
-	r	#I1
+	h	#I1
 	j	L5
 L4
 	j	L6	#I0
@@ -19,18 +19,18 @@ L4
 L6
 	j	L8	#I1
 	j	L9	G1	gI	#I0	=I
-	r	#I1
+	h	#I1
 	j	L10
 L9
-	r	#I0
+	h	#I0
 L10
 	j	L11
 L8
-	r	#I1
+	h	#I1
 L11
 L7
 L5
-	r	#I1
+	h	#I1
 }
 */
 
