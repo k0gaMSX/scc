@@ -120,7 +120,7 @@ initialize(Type *tp)
 			errorp("array of inappropriate type initialized from string constant");
 			goto return_zero;
 		}
-		len = strlen(sym->u.s);
+		len = sym->type->n.elem;
 		if (!tp->defined) {
 			tp->defined = 1;
 			tp->n.elem = len+1;
