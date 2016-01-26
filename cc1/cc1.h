@@ -188,7 +188,7 @@ enum {
 	ISSTRING   =    4096,
 	ISTYPEDEF  =    8192,
 	ISINITLST  =   16384,
-	ISINIT    =    32768
+	HASINIT    =   32768
 };
 
 /* lexer mode, compiler or preprocessor directive */

@@ -307,7 +307,7 @@ initializer(Symbol *sym, Type *tp)
 			errorp("initializer element is not constant");
 			return;
 		}
-		sym->flags |= ISINIT;
+		sym->flags |= HASINIT;
 		emit(ODECL, sym);
 		emit(OINIT, np);
 		sym->flags |= ISDEFINED;

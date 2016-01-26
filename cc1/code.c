@@ -385,7 +385,7 @@ emitdcl(unsigned op, void *arg)
 	if (sym->flags & ISFIELD)
 		printf("\t#%c%llX", sizettype->letter, sym->u.i);
 	sym->flags |= ISEMITTED;
-	if ((sym->flags & ISINIT) == 0)
+	if ((sym->flags & HASINIT) == 0)
 		putchar('\n');
 }
 
