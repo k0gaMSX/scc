@@ -377,7 +377,7 @@ decl(Symbol *sym)
 	case PRIVAT:
 	case LOCAL:
 		label(sym);
-		if (!ininit)
+		if (!ininit && (sym->type.flags & FUNF) == 0)
 			allocdata(&sym->type);
 		break;
 	case AUTO:
