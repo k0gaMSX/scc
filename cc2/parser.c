@@ -202,6 +202,7 @@ constant(char *token, union tokenop u)
 		np->op = OSTRING;
 		np->type.flags = STRF;
 		np->type.size = strlen(token);
+		np->type.align = int8type.align;
 		np->u.s = xstrdup(token);
 	} else {
 		np->op = OCONST;
