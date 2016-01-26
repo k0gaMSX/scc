@@ -123,7 +123,7 @@ size2asm(Type *tp)
 			s = "\t.quad\t";
 			break;
 		default:
-			s = "\t.space\t%llu";
+			s = "\t.space\t%llu,";
 			break;
 		}
 	}
