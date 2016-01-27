@@ -110,7 +110,7 @@ For(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 	stmt(end, begin, lswitch);
 	emit(OEXPR, einc);
 	emit(OLABEL, cond);
-	emit(OBRANCH, begin);
+	emit((econd) ? OBRANCH : OJUMP, begin);
 	emit(OEXPR, econd);
 	emit(OELOOP, NULL);
 	emit(OLABEL, end);
