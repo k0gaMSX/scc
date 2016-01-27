@@ -13,7 +13,7 @@ A3	I	"x
 L6
 	j	L4
 L5
-	t	#1
+	t	#N1
 	v	L6	#I0
 L4
 	s	L8	A3
@@ -25,13 +25,13 @@ L14
 	h	#I1
 	j	L10
 L11
-	t	#2
+	t	#N2
 	v	L12	#I0
 	f	L14
 L10
 	j	L7
 L8
-	t	#1
+	t	#N1
 	v	L9	#I0
 L7
 	h	#I2
@@ -41,7 +41,7 @@ L17
 	h	#I3
 	j	L15
 L16
-	t	#1
+	t	#N1
 	v	L17	#I1
 L15
 	s	L19	A3
@@ -51,7 +51,7 @@ L21
 	h	#I4
 	j	L18
 L19
-	t	#1
+	t	#N1
 	v	L21	#I1
 L18
 	s	L23	A3
@@ -63,7 +63,7 @@ L26
 	h	#I1
 	j	L22
 L23
-	t	#3
+	t	#N3
 	v	L25	#I1
 	v	L24	#I0
 	f	L26

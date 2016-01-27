@@ -466,7 +466,7 @@ emitswitcht(unsigned op, void *arg)
 	Caselist *lcase = arg;
 	struct scase *p, *next;
 
-	printf("\tt\t#%0x\n", lcase->nr);
+	printf("\tt\t#%c%0x\n", sizettype->letter, lcase->nr);
 	for (p = lcase->head; p; p = next) {
 		emitsymid(OCASE, p->label);
 		emitexp(OEXPR, p->expr);

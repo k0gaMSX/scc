@@ -37,7 +37,7 @@ L19
 L12
 	j	L8
 L9
-	t	#8
+	t	#N8
 	v	L19	#I1
 	v	L18	#I2
 	v	L17	#I3
