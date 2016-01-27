@@ -13,10 +13,10 @@ A3	I	"x
 L4
 	A3	A3	#I1	+I	:I
 L6
-	j	L4	A3	#IA	<I
+	y	L4	A3	#IA	<I
 	b
 L5
-	j	L7	A3	#IA	=I
+	y	L7	A3	#IA	=I
 	h	#I1
 L7
 	h	#I0

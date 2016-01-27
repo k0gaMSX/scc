@@ -21,7 +21,7 @@ A11	N	"n
 L12
 	A11	#N1	:+N	A10	A10	@S2	M6	.P	:P	,P
 L14
-	j	L12	A10	#P0	!I
+	y	L12	A10	#P0	!I
 	b
 L13
 }

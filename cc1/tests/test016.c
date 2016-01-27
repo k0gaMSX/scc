@@ -15,12 +15,12 @@ A6	P	"p
 	A4	#I1	:I
 	A6	A4	'P	:P
 	A6	@I	#I0	:I
-	j	L7	A4	#I0	=I
+	y	L7	A4	#I0	=I
 	h	#I1
 L7
 	A6	G1	'P	:P
 	A6	@I	#I0	:I
-	j	L8	A6	#P0	!I
+	y	L8	A6	#P0	!I
 	h	#I1
 L8
 	h	#I0
@@ -34,7 +34,7 @@ A13	P	"pp
 	A10	#I1	:I
 	A11	A10	'P	:P
 	A13	A11	'P	:P
-	j	L14	A11	#P0	=I
+	y	L14	A11	#P0	=I
 	A13	@P	@I	#I0	:I
 L14
 	A11	#P0	:P

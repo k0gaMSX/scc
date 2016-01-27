@@ -13,10 +13,10 @@ G5	S2	"s	(
 G7	F	"main
 {
 \
-	j	L8	G5	M3	.I	#I1	=I
+	y	L8	G5	M3	.I	#I1	=I
 	h	#I1
 L8
-	j	L9	G5	M4	.I	#I2	=I
+	y	L9	G5	M4	.I	#I2	=I
 	h	#I2
 L9
 	h	#I0

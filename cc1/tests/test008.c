@@ -11,13 +11,13 @@ A3	I	"x
 	e
 L4
 	A3	A3	#I1	+I	:I
-	j	L4	A3	#IA	<I
+	y	L4	A3	#IA	<I
 	b
 L5
 	e
 L6
 	A3	A3	#I1	+I	:I
-	j	L6	A3	#I14	<I
+	y	L6	A3	#I14	<I
 	b
 L7
 	h	A3	#I14	-I

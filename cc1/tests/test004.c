@@ -22,7 +22,7 @@ A3	I	"x
 	A3	A3	A3	#I3	<I	+I	:I
 	A3	A3	A3	#I1	>I	+I	:I
 	A3	A3	A3	#I4	<I	+I	:I
-	j	L4	A3	#I4	=I
+	y	L4	A3	#I4	=I
 	h	#I1
 L4
 	h	#I0

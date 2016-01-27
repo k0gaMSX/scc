@@ -9,16 +9,16 @@ G7	F	"main
 \
 A8	I	"e
 	A8	#I3	:I
-	j	L9	A8	#I1	=I
+	y	L9	A8	#I1	=I
 	h	#I0
 L9
-	j	L10	A8	#I0	=I
+	y	L10	A8	#I0	=I
 	h	#I1
 L10
-	j	L11	A8	#I2	=I
+	y	L11	A8	#I2	=I
 	h	#I2
 L11
-	j	L12	A8	#I3	=I
+	y	L12	A8	#I3	=I
 	h	#I3
 L12
 	h	#I0

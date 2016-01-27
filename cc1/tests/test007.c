@@ -13,7 +13,7 @@ A3	I	"x
 L4
 	A3	A3	#I1	-I	:I
 L6
-	j	L4	A3	#I0	!I
+	y	L4	A3	#I0	!I
 	b
 L5
 	h	A3

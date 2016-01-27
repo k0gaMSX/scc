@@ -12,7 +12,7 @@ G3	P	"p	(
 G5	F	"main
 {
 \
-	j	L6	G3	@I	#I5	=I
+	y	L6	G3	@I	#I5	=I
 	h	#I1
 L6
 	h	#I0

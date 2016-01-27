@@ -16,16 +16,16 @@ G6	V5	"arr	(
 G8	F	"main
 {
 \
-	j	L9	G6	M3	.I	#I1	=I
+	y	L9	G6	M3	.I	#I1	=I
 	h	#I1
 L9
-	j	L11	G6	M4	.I	#I2	=I
+	y	L11	G6	M4	.I	#I2	=I
 	h	#I2
 L11
-	j	L12	G6	'P	#P4	+P	@S2	M3	.I	#I3	=I
+	y	L12	G6	'P	#P4	+P	@S2	M3	.I	#I3	=I
 	h	#I3
 L12
-	j	L13	G6	'P	#P4	+P	@S2	M4	.I	#I4	=I
+	y	L13	G6	'P	#P4	+P	@S2	M4	.I	#I4	=I
 	h	#I4
 L13
 	h	#I0

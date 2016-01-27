@@ -10,15 +10,15 @@ G1	K	"c
 G3	F	"main
 {
 \
-	j	L4	#I0
+	y	L4	#I0
 	h	#I1
 	j	L5
 L4
-	j	L6	#I0
+	y	L6	#I0
 	j	L7
 L6
-	j	L8	#I1
-	j	L9	G1	gI	#I0	=I
+	y	L8	#I1
+	y	L9	G1	gI	#I0	=I
 	h	#I1
 	j	L10
 L9

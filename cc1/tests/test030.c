@@ -16,7 +16,7 @@ A9	S2	"f
 A11	P	"p
 A12	I	"n
 \
-	j	L15	A9	M3	.I	A11	@S2	M3	.I	=I
+	y	L15	A9	M3	.I	A11	@S2	M3	.I	=I
 	h	#I0
 L15
 	h	A11	@S2	M4	.I	A12	+I

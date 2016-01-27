@@ -9,7 +9,7 @@ G1	I	"x	(
 G3	F	"main
 {
 \
-	j	L4	G1	#I5	=I
+	y	L4	G1	#I5	=I
 	h	#I1
 L4
 	h	#I0

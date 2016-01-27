@@ -17,16 +17,16 @@ A11	V10	"v
 	A9	A5	'P	#P4	+P	#P3	+P	:P
 	A5	'P	#P4	+P	#P3	+P	@K	#K2	:K
 	A11	#I2	:I
-	j	L13	A5	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
+	y	L13	A5	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
 L13
-	j	L14	A7	#P4	+P	#P3	+P	@K	gI	#I2	=I
+	y	L14	A7	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
 L14
-	j	L15	A9	@K	gI	#I2	=I
+	y	L15	A9	@K	gI	#I2	=I
 	h	#I1
 L15
-	j	L16	A11	#I2	=I
+	y	L16	A11	#I2	=I
 	h	#I1
 L16
 	h	#I0

@@ -14,10 +14,10 @@ G6	V5	"x	(
 G8	F	"main
 {
 \
-	j	L9	G6	M3	.I	#I1	=I
+	y	L9	G6	M3	.I	#I1	=I
 	h	#I1
 L9
-	j	L11	G6	M4	.I	#I2	=I
+	y	L11	G6	M4	.I	#I2	=I
 	h	#I2
 L11
 	h	#I0

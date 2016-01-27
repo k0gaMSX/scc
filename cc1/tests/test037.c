@@ -11,13 +11,13 @@ output:
 G2	F	"main
 {
 \
-	j	L3	#I0
+	y	L3	#I0
 	h	#I1
 L3
-	j	L4	#I0
+	y	L4	#I0
 	h	#I2
 L4
-	j	L5	#I0
+	y	L5	#I0
 	h	#I3
 L5
 	h	#I0

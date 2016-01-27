@@ -15,13 +15,13 @@ G6	S2	"x	(
 G8	F	"main
 {
 \
-	j	L9	G6	M3	.I	#I1	=I
+	y	L9	G6	M3	.I	#I1	=I
 	h	#I1
 L9
-	j	L10	G6	M4	.I	#I2	=I
+	y	L10	G6	M4	.I	#I2	=I
 	h	#I2
 L10
-	j	L11	G6	M5	.I	#I3	=I
+	y	L11	G6	M5	.I	#I3	=I
 	h	#I3
 L11
 	h	#I0

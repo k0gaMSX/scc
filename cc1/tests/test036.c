@@ -32,7 +32,7 @@ L18
 	R1	@I	R2	#N2	:iP	@I	:I
 L19
 	R1	@I	R2	#N2	:iP	@I	:I
-	j	L11	R7	#I1	:-I	#I0	>I
+	y	L11	R7	#I1	:-I	#I0	>I
 	b
 L12
 	j	L8

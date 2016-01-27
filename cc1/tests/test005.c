@@ -12,7 +12,7 @@ A3	I	"x
 	A3	A3	#I0	=I	:I
 	A3	A3	~I	:I
 	A3	A3	_I	:I
-	j	L4	A3	#I2	=I
+	y	L4	A3	#I2	=I
 	h	#I1
 L4
 	h	#I0

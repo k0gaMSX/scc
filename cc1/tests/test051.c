@@ -12,13 +12,13 @@ G2	V1	"arr	(
 G4	F	"main
 {
 \
-	j	L5	G2	#I0	=I
+	y	L5	G2	#I0	=I
 	h	#I1
 L5
-	j	L7	G2	'P	#P2	+P	@I	#I1	=I
+	y	L7	G2	'P	#P2	+P	@I	#I1	=I
 	h	#I2
 L7
-	j	L8	G2	'P	#P4	+P	@I	#I2	=I
+	y	L8	G2	'P	#P4	+P	@I	#I2	=I
 	h	#I3
 L8
 	h	#I0
