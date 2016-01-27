@@ -32,7 +32,8 @@ union tokenop {
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
-                parameter, constant, composed, begininit, endinit;
+                parameter, constant, composed, begininit, endinit,
+                jump;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,
@@ -115,6 +116,9 @@ static struct decoc {
 
 	[OCONST]      = NULL, constant,
 
+	[OJMP]        = NULL, NULL,
+	[ORET]        = NULL, jump,
+
 	[OCASE]       = NULL,
 	[ODEFAULT]    = NULL,
 	[OTABLE]      = NULL,
@@ -124,7 +128,7 @@ static struct decoc {
 static void *stack[STACKSIZ], **sp = stack;
 static Symbol *lastsym, *curfun, *lastaggreg;
 static Symbol *params[NR_FUNPARAM];
-static int funpars = -1, sclass, callpars, ininit;
+static int funpars = -1, sclass, callpars, ininit, injump;
 static Node *stmtp, *callp;
 
 static void
@@ -235,6 +239,17 @@ ternary(char *token, union tokenop u)
 	ask->left = pop();
 	ask->right = pop();
 	push(ask);
+}
+
+static void
+jump(char *token, union tokenop u)
+{
+	Node *np;
+
+	np = newnode();
+	np->op = *token;
+	push(np);
+	injump = 1;
 }
 
 static void
@@ -445,12 +460,19 @@ static void
 stmt(void)
 {
 	static Node *lastp;
-	Node *np = pop();
+	Node *aux, *np;
 
+	np = pop();
 	if (ininit) {
 		data(np);
 		deltree(np);
 		return;
+	}
+	if (injump) {
+		aux = np;
+		np = pop();
+		np->left = aux;
+		injump = 0;
 	}
 	if (!stmtp)
 		stmtp = np;
