@@ -40,6 +40,7 @@ newnode(void)
 	np->right = NULL;
 	np->left = NULL;
 	np->stmt = NULL;
+	np->label = NULL;
 	return np;
 }
 

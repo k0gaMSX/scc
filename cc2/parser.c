@@ -33,11 +33,11 @@ union tokenop {
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
                 parameter, constant, composed, begininit, endinit,
-                jump;
+                jump, oreturn, loop, assign, ocase, odefault, casetable;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,
-               array, aggregate, flddecl;
+               array, aggregate, flddecl, labeldcl;
 
 static struct decoc {
 	void (*eval)(void);
@@ -51,7 +51,7 @@ static struct decoc {
 	[PRIVAT]      = {vardecl, symbol, .u.op = MEM},
 	[LOCAL]       = {vardecl, symbol, .u.op = MEM},
 	[MEMBER]      = {flddecl, symbol},
-	[LABEL]       = {flddecl, symbol},
+	[LABEL]       = {labeldcl, symbol},
 
 	[INT8]        = {NULL, type, .u.arg   = &int8type},
 	[INT16]       = {NULL, type, .u.arg   = &int16type},
@@ -84,14 +84,14 @@ static struct decoc {
 
 	[OCPL]        = {NULL, unary},
 	[ONEG]        = {NULL, unary},
-	[OFIELD]      = {NULL, unary},
 	[OADDR]       = {NULL, unary},
-	[OAND]        = {NULL, unary},
-	[OOR]         = {NULL, unary},
 	[OPTR]        = {NULL, unary},
 	[OCAST]       = {NULL, unary},
 	[OPAR ]       = {NULL, unary},
 
+	[OAND]        = {NULL, binary},
+	[OOR]         = {NULL, binary},
+	[OFIELD]      = {NULL, binary},
 	[OADD]        = {NULL, binary},
 	[OSUB]        = {NULL, binary},
 	[OMUL]        = {NULL, binary},
@@ -108,28 +108,33 @@ static struct decoc {
 	[OBAND]       = {NULL, binary},
 	[OBOR]        = {NULL, binary},
 	[OBXOR]       = {NULL, binary},
-	[OASSIG]      = {NULL, binary},
 	[OCOMMA]      = {NULL, binary},
 
+	[OASSIG]      = {NULL, assign},
 	[OASK]        = {NULL, ternary},
 	[OCALL]       = {NULL, call},
 
 	[OCONST]      = NULL, constant,
 
-	[OJMP]        = NULL, NULL,
-	[ORET]        = NULL, jump,
+	[OJMP]        = NULL, jump,
+	[OBRANCH]     = NULL, jump,
+	[ORET]        = NULL, oreturn,
 
-	[OCASE]       = NULL,
-	[ODEFAULT]    = NULL,
-	[OTABLE]      = NULL,
-	[OSWITCH]     = NULL
+	[OBLOOP]      = NULL, loop,
+	[OELOOP]      = NULL, loop,
+
+	[OCASE]       = NULL, jump,
+	[OSWITCH]     = NULL, jump,
+
+	[ODEFAULT]    = NULL, odefault,
+	[OTABLE]      = NULL, casetable,
 };
 
+static Symbol *curfun;
+static int funpars = -1, sclass, ininit, endf, lineno;
+static Node *stmtp;
 static void *stack[STACKSIZ], **sp = stack;
-static Symbol *lastsym, *curfun, *lastaggreg;
 static Symbol *params[NR_FUNPARAM];
-static int funpars = -1, sclass, callpars, ininit, injump;
-static Node *stmtp, *callp;
 
 static void
 push(void *elem)
@@ -145,6 +150,12 @@ pop(void)
 	if (sp == stack)
 		error(ESTACKU);
 	return *--sp;
+}
+
+static int
+empty(void)
+{
+	return sp == stack;
 }
 
 static void
@@ -221,6 +232,39 @@ constant(char *token, union tokenop u)
 }
 
 static void
+assign(char *token, union tokenop u)
+{
+	int c, op = *token++;
+	Node *np = newnode();
+
+	switch (*token) {
+	case ODIV:
+	case OMOD:
+	case OADD:
+	case OSUB:
+	case OSHL:
+	case OSHR:
+	case OBAND:
+	case OBXOR:
+	case OBOR:
+	case OINC:
+	case ODEC:
+		c = *token++;
+		break;
+	default:
+		c = 0;
+		break;
+	}
+
+	np->u.subop = c;
+	np->op = op;
+	np->type = *gettype(token);
+	np->right = pop();
+	np->left = pop();
+	push(np);
+}
+
+static void
 ternary(char *token, union tokenop u)
 {
 	Node *ask, *colon;
@@ -237,19 +281,111 @@ ternary(char *token, union tokenop u)
 	ask->op = OASK;
 	ask->type = *tp;
 	ask->left = pop();
-	ask->right = pop();
 	push(ask);
+}
+
+static Node *
+eval(char *tok)
+{
+	struct decoc *dp;
+
+	do {
+		dp = &optbl[*tok];
+		if (!dp->parse)
+			break;
+		(*dp->parse)(tok, dp->u);
+	} while (tok = strtok(NULL, "\t\n"));
+}
+
+static int
+nextline(void)
+{
+	char line[MAXLINE];
+	size_t len;
+	int c;
+	void (*fun)(void);
+
+repeat:
+	++lineno;
+	if (!fgets(line, sizeof(line), stdin))
+		return 0;
+	if ((len = strlen(line)) == 0 || line[0] == '\n')
+		goto repeat;
+	if (line[len-1] != '\n')
+		error(ELNLINE);
+	line[len-1] = '\0';
+
+	c = *line;
+	eval(strtok(line, "\t\n"));
+	if ((fun = *optbl[c].eval) != NULL)
+		(*fun)();
+	if (sp != stack)
+		error(ESTACKA);
+	return 1;
+}
+
+static void
+oreturn(char *token, union tokenop u)
+{
+	Node *np;
+
+	np = newnode();
+	np->op = *token;
+	eval(strtok(NULL, "\t\n"));
+	if (!empty())
+		np->left = pop();
+	push(np);
 }
 
 static void
 jump(char *token, union tokenop u)
+{
+	Node *np, *aux;
+
+	np = newnode();
+	np->op = *token;
+	eval(strtok(NULL, "\t\n"));
+
+	if (*token != OJMP)
+		np->left = pop();
+	aux = pop();
+	np->u.sym = aux->u.sym;
+	delnode(aux);
+	push(np);
+}
+
+static void
+casetable(char *token, union tokenop u)
+{
+	Node *np, *aux;
+
+	np = newnode();
+	np->op = *token;
+	eval(strtok(NULL, "\t\n"));
+	np->left = pop();
+	push(np);
+}
+
+static void
+odefault(char *token, union tokenop u)
+{
+	Node *np;
+
+	np = newnode();
+	np->op = *token;
+	eval(strtok(NULL, "\t\n"));
+	np->left = pop();
+	push(np);
+}
+
+static void
+loop(char *token, union tokenop u)
 {
 	Node *np;
 
 	np = newnode();
 	np->op = *token;
 	push(np);
-	injump = 1;
 }
 
 static void
@@ -276,7 +412,7 @@ call(char *token, union tokenop u)
 		np->right = par;
 	}
 	fun = newnode();
-	fun->op = OCALL;
+	fun->op = *token++;
 	fun->type = *gettype(token);
 	fun->left = np;
 	fun->right = par;
@@ -305,27 +441,6 @@ static void
 endinit(char *token, union tokenop u)
 {
 	ininit = 0;
-}
-
-static void
-beginfun(void)
-{
-	if (curfun)
-		error(ESYNTAX);
-	memset(params, 0, sizeof(params));
-	funpars = 0;
-	curfun = lastsym;
-	pushctx();
-}
-
-static void
-endfun(void)
-{
-	if (!curfun)
-		error(ESYNTAX);
-	popctx();
-	curfun = NULL;
-	funpars = -1;
 }
 
 static void
@@ -359,7 +474,6 @@ aggregate(void)
 	 * symbol to store the name.
 	 */
 	sym = (Symbol *) tp;
-	lastaggreg = sym;
 	sym->name = name;
 
 	delnode(align);
@@ -392,7 +506,7 @@ decl(Symbol *sym)
 	case PRIVAT:
 	case LOCAL:
 		label(sym);
-		if (!ininit && (sym->type.flags & FUNF) == 0)
+		if (!ininit)
 			allocdata(&sym->type);
 		break;
 	case AUTO:
@@ -420,13 +534,25 @@ vardecl(void)
 	np = pop();
 
 	sym = np->u.sym;
+	/*
+	 * We have to free sym->name because in tentative declarations
+	 * we can multiple declarations of the same symbol, and in this
+	 * case our parser will allocate twice the memory
+	 */
+	free(sym->name);
 	sym->name = name;
 	sym->type = *tp;
 	sym->kind = sclass;
+
 	if (ininit)
 		sym->type.flags |= INITF;
-	lastsym = sym;
-	decl(sym);
+
+	if ((tp->flags & FUNF) == 0) {
+		decl(sym);
+	} else {
+		curfun = sym;
+		label(sym);
+	}
 
 	delnode(np);
 }
@@ -439,16 +565,13 @@ flddecl(void)
 	Type *tp;
 	Symbol *sym;
 
-	if (!lastaggreg)
-		error(ESYNTAX);
-
 	off = pop();
 	name = pop();
 	tp = pop();
 	np = pop();
 
 	sym = np->u.sym;
-	sym->off = off->u.i;
+	sym->u.off = off->u.i;
 	sym->name = name;
 	sym->type = *tp;
 
@@ -457,10 +580,34 @@ flddecl(void)
 }
 
 static void
+labeldcl( void)
+{
+	Node *np;
+	Symbol *sym;
+
+	np = pop();
+	sym = np->u.sym;
+	delnode(np);
+	nextline();
+	stmtp->label = sym;
+	sym->u.label = stmtp;
+	
+}
+
+static void
+addnode(Node *np)
+{
+	if (!curfun->u.label)
+		curfun->u.label = np;
+	else
+		stmtp->stmt = np;
+	stmtp = np;
+}
+
+static void
 stmt(void)
 {
-	static Node *lastp;
-	Node *aux, *np;
+	Node *np;
 
 	np = pop();
 	if (ininit) {
@@ -468,53 +615,37 @@ stmt(void)
 		deltree(np);
 		return;
 	}
-	if (injump) {
-		aux = np;
-		np = pop();
-		np->left = aux;
-		injump = 0;
-	}
-	if (!stmtp)
-		stmtp = np;
-	else
-		lastp->stmt = np;
-	lastp = np;
+	addnode(np);
+}
+
+static void
+beginfun(void)
+{
+	memset(params, 0, sizeof(params));
+	funpars = 0;
+	pushctx();
+}
+
+static void
+endfun(void)
+{
+	Node *np;
+
+	np = newnode();
+	np->op = ONOP;
+	addnode(np);
+	curfun = NULL;
+	funpars = -1;
+	endf = 1;
+	popctx();
 }
 
 void
 parse(void)
 {
-	char line[MAXLINE], *t;
-	size_t len;
-	int c;
-	struct decoc *dp;
-	void (*fun)(void);
-
-	for (;;) {
-		if (!fgets(line, sizeof(line), stdin))
-			break;
-		if ((len = strlen(line)) == 0 || line[0] == '\n')
-			continue;
-		if (line[len-1] != '\n')
-			error(ELNLINE);
-		line[len-1] = '\0';
-
-		c = *line;
-		for (t = strtok(line, "\t\n"); t; t = strtok(NULL, "\t\n")) {
-			dp = &optbl[*t];
-			if (!dp->parse)
-				break;
-			(*dp->parse)(t, dp->u);
-		}
-
-		if ((fun = *optbl[c].eval) != NULL)
-			(*fun)();
-		if (sp != stack)
-			error(ESTACKA);
-		if (c == '}')
-			break;
-	}
-
+	endf = 0;
+	while (!endf && nextline())
+		/* nothing */;
 	if (ferror(stdin))
 		error(EFERROR, strerror(errno));
 }

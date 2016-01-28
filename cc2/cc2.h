@@ -76,8 +76,12 @@ enum op {
 	OCAST    = 'g',
 	OCONST   = '#',
 	OSTRING  = '"',
+	OINC     = 'i',
+	ODEC     = 'd',
 	/*statements */
+	ONOP     = 'n',
 	OJMP     = 'j',
+	OBRANCH  = 'y',
 	ORET     = 'h',
 	OBLOOP   = 'b',
 	OELOOP   = 'e',
@@ -90,6 +94,8 @@ enum op {
 };
 
 enum nerrors {
+	EEOFFUN,       /* EOF while parsing function */
+	ENLABEL,       /* label without statement */
 	EIDOVER,       /* identifier overflow */
 	EOUTPAR,       /* out pf params */
 	ESYNTAX,       /* syntax error */
@@ -117,7 +123,10 @@ struct symbol {
 	unsigned short numid;
 	char *name;
 	char kind;
-	TSIZE off;
+	union {
+		TSIZE off;
+		Node *label;
+	} u;
 	Symbol *next;
 	Symbol *h_next;
 };
@@ -129,7 +138,9 @@ struct node {
 		TUINT i;
 		char *s;
 		Symbol *sym;
+		char subop;
 	} u;
+	Symbol *label;
 	Node *left, *right;
 	Node *stmt;
 };

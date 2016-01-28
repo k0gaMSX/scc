@@ -39,6 +39,7 @@ popctx(void)
 		symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
 		freesym(sym);
 	}
+	locals = NULL;
 }
 
 Symbol *
