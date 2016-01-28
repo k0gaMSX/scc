@@ -308,6 +308,7 @@ initializer(Symbol *sym, Type *tp)
 			return;
 		}
 		sym->flags |= HASINIT;
+		sym->flags &= ~ISEMITTED;
 		emit(ODECL, sym);
 		emit(OINIT, np);
 		sym->flags |= ISDEFINED;
