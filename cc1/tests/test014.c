@@ -11,7 +11,6 @@ test014.c:21: warning: 'par' defined but not used
 test014.c:21: warning: 'par' defined but not used
 test014.c:26: warning: 'par' defined but not used
 test014.c:28: error: incorrect storage class for file-scope declaration
-test014.c:28: error: invalid storage class for function 'd'
 test014.c:31: error: bad storage class in function parameter
 test014.c:32: error: invalid storage class for function 'func4'
 test014.c:33: error: invalid type specification

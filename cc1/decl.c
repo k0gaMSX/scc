@@ -654,7 +654,8 @@ bad_storage(Type *tp, char *name)
 {
 	if (tp->op != FTN)
 		errorp("incorrect storage class for file-scope declaration");
-	errorp("invalid storage class for function '%s'", name);
+	else
+		errorp("invalid storage class for function '%s'", name);
 }
 
 static Symbol *
@@ -764,12 +765,11 @@ identifier(struct decl *dcl)
 		switch (sclass) {
 		case REGISTER:
 		case AUTO:
-			if (curctx == GLOBALCTX || tp->op == FTN) {
-				bad_storage(tp, name);
+			if (curctx != GLOBALCTX && tp->op != FTN) {
+				flags |= (sclass == REGISTER) ? ISREGISTER : ISAUTO;
 				break;
 			}
-			flags |= (sclass == REGISTER) ? ISREGISTER : ISAUTO;
-			break;
+			bad_storage(tp, name);
 		case NOSCLASS:
 			if (tp->op == FTN)
 				flags |= ISEXTERN;
