@@ -8,6 +8,6 @@ generate(void)
 }
 
 void
-addable(void)
+addressability(void)
 {
 }

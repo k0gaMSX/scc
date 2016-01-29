@@ -155,7 +155,7 @@ extern void parse(void);
 extern void optimize(void);
 
 /* cgen.c */
-extern void addable(void);
+extern void addressability(void);
 extern void generate(void);
 
 /* peep.c */
