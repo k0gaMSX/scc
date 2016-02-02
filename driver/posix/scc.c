@@ -41,8 +41,7 @@ cc1(int fd)
 		perror("scc:cc1");
 		exit(1);
 	case 0:
-		close(1);
-		dup(fd);
+		dup2(fd, 1);
 		fmt = (arch) ? "%s/libexec/scc/cc1-%s" : "%s/libexec/scc/cc1";
 		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
 		if (r == sizeof(cmd)) {
@@ -71,8 +70,7 @@ cc2(int fd)
 		perror("scc:cc2");
 		exit(1);
 	case 0:
-		close(0);
-		dup(fd);
+		dup2(fd, 0);
 		fmt = (arch) ? "%s/libexec/scc/cc2-%s" : "%s/libexec/scc/cc2";
 		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
 		if (r == sizeof(cmd)) {
