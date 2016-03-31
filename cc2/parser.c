@@ -581,7 +581,7 @@ flddecl(void)
 }
 
 static void
-labeldcl( void)
+labeldcl(void)
 {
 	Node *np;
 	Symbol *sym;
