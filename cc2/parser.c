@@ -592,11 +592,10 @@ labeldcl( void)
 	nextline();
 	stmtp->label = sym;
 	sym->u.label = stmtp;
-	
 }
 
 static void
-addnode(Node *np)
+addstmt(Node *np)
 {
 	if (!curfun->u.label)
 		curfun->u.label = np;
@@ -616,7 +615,7 @@ stmt(void)
 		deltree(np);
 		return;
 	}
-	addnode(np);
+	addstmt(np);
 }
 
 static void
@@ -634,7 +633,7 @@ endfun(void)
 
 	np = newnode();
 	np->op = ONOP;
-	addnode(np);
+	addstmt(np);
 	/* TODO: process the function */
 	curfun = NULL;
 	funpars = -1;
