@@ -132,16 +132,6 @@ size2asm(Type *tp)
 
 
 void
-defsym(Symbol *sym, int alloc)
-{
-	label(sym);
-	if (!alloc)
-		return;
-	size2asm(&sym->type);
-	puts("0");
-}
-
-void
 data(Node *np)
 {
 	size2asm(&np->type);
@@ -149,7 +139,7 @@ data(Node *np)
 	putchar('\n');
 }
 
-void
+static void
 label(Symbol *sym)
 {
 	int seg, flags = sym->type.flags;
@@ -181,6 +171,16 @@ label(Symbol *sym)
 	if (sym->type.align != 1)
 		printf("\t.align\t%d\n",sym->type.align );
 	printf("%s:\n", name);
+}
+
+void
+defsym(Symbol *sym, int alloc)
+{
+	label(sym);
+	if (!alloc)
+		return;
+	size2asm(&sym->type);
+	puts("0");
 }
 
 void

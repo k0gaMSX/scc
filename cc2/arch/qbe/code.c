@@ -18,11 +18,6 @@ data(Node *np)
 }
 
 void
-label(Symbol *sym)
-{
-}
-
-void
 writeout(void)
 {
 }

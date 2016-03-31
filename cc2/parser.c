@@ -498,25 +498,35 @@ array(void)
 static void
 decl(Symbol *sym)
 {
-	switch (sym->kind) {
-	case EXTRN:
-		defsym(sym, 0);
-		break;
-	case GLOB:
-	case PRIVAT:
-	case LOCAL:
-		defsym(sym, !ininit);
-		break;
-	case AUTO:
-	case REG:
-		if (funpars >= 0) {
-			if (funpars == NR_FUNPARAM)
-				error(EOUTPAR);
-			params[funpars++] = sym;
+	int alloc;
+	Type *tp = &sym->type;
+
+	if (tp->flags & FUNF) {
+		curfun = sym;
+		return;
+	} else {
+		switch (sym->kind) {
+		case EXTRN:
+			alloc = 0;
 			break;
+		case GLOB:
+		case PRIVAT:
+		case LOCAL:
+			alloc = (tp->flags & INITF) == 0;
+			break;
+		case AUTO:
+		case REG:
+			if (funpars >= 0) {
+				if (funpars == NR_FUNPARAM)
+					error(EOUTPAR);
+				params[funpars++] = sym;
+			}
+			return;
+		default:
+			abort();
 		}
-		break;
 	}
+	defsym(sym, alloc);
 }
 
 static void
@@ -544,14 +554,7 @@ vardecl(void)
 
 	if (ininit)
 		sym->type.flags |= INITF;
-
-	if ((tp->flags & FUNF) == 0) {
-		decl(sym);
-	} else {
-		curfun = sym;
-		label(sym);
-	}
-
+	decl(sym);
 	delnode(np);
 }
 
@@ -632,6 +635,7 @@ endfun(void)
 	np = newnode();
 	np->op = ONOP;
 	addnode(np);
+	/* TODO: process the function */
 	curfun = NULL;
 	funpars = -1;
 	endf = 1;

@@ -162,7 +162,6 @@ extern void generate(void);
 extern void peephole(void);
 
 /* code.c */
-extern void label(Symbol *sym);
 extern void data(Node *np);
 extern void defsym(Symbol *sym, int alloc);
 extern void writeout(void);

@@ -59,7 +59,7 @@ code(int op, Node *to, Node *from)
 {
 }
 
-void
+static void
 label(Symbol *sym)
 {
 	int seg, flags = sym->type.flags;
