@@ -17,6 +17,7 @@ all:
 	strip bin/cc1 bin/cc2 bin/scc
 
 multi:
+	cd lib && $(MAKE) -e $(MAKEFLAGS)
 	for i in $(ARCHS) ; \
 	do \
 		$(MAKE) -$(MAKEFLAGS) $$i || exit ;\
