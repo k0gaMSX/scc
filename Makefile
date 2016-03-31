@@ -54,5 +54,11 @@ clean:
 		(cd $$i; ${MAKE} -$(MAKEFLAGS) $@ || exit); \
 	done
 
-distclean: clean
+multi-clean:
+	for i in $(ARCHS) ; \
+	do \
+		ARCH=$$i $(MAKE) -e -$(MAKEFLAGS) clean || exit; \
+	done
+
+distclean: multi-clean
 	rm -f bin/cc* bin/scc
