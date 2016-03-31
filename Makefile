@@ -4,7 +4,7 @@
 include config.mk
 
 DIRS  = lib cc1 cc2 driver/$(DRIVER)
-ARCHS = z80 i386-sysv amd64-sysv
+ARCHS = z80 i386-sysv amd64-sysv qbe
 
 all:
 	for i in $(DIRS) ; \
