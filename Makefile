@@ -32,7 +32,7 @@ $(ARCHS):
 	done
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
-	strip bin/cc1 bin/cc1-$@ bin/cc2-$@
+	strip bin/cc1-$@ bin/cc2-$@
 
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
