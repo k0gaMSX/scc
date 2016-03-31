@@ -8,7 +8,7 @@
 
 
 void
-allocdata(Type *tp)
+defsym(Symbol *sym, int alloc)
 {
 }
 

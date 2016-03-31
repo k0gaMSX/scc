@@ -164,7 +164,7 @@ extern void peephole(void);
 /* code.c */
 extern void label(Symbol *sym);
 extern void data(Node *np);
-extern void allocdata(Type *tp);
+extern void defsym(Symbol *sym, int alloc);
 extern void writeout(void);
 
 /* node.c */

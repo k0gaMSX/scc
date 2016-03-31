@@ -131,9 +131,12 @@ size2asm(Type *tp)
 }
 
 void
-allocdata(Type *tp)
+defsym(Symbol *sym, int alloc)
 {
-	size2asm(tp);
+	label(sym);
+	if (!alloc)
+		return;
+	size2asm(&sym->type);
 	puts("0");
 }
 

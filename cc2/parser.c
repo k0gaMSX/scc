@@ -500,14 +500,12 @@ decl(Symbol *sym)
 {
 	switch (sym->kind) {
 	case EXTRN:
-		label(sym);
+		defsym(sym, 0);
 		break;
 	case GLOB:
 	case PRIVAT:
 	case LOCAL:
-		label(sym);
-		if (!ininit)
-			allocdata(&sym->type);
+		defsym(sym, !ininit);
 		break;
 	case AUTO:
 	case REG:
