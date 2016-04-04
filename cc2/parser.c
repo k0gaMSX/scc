@@ -441,6 +441,7 @@ static void
 einit(char *token, union tokenop u)
 {
 	ininit = 0;
+	endinit();
 }
 
 static void

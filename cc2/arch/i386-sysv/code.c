@@ -186,3 +186,8 @@ void
 writeout(void)
 {
 }
+
+void
+endinit(void)
+{
+}
