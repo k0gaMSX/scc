@@ -544,8 +544,8 @@ vardecl(void)
 	sym = np->u.sym;
 	/*
 	 * We have to free sym->name because in tentative declarations
-	 * we can multiple declarations of the same symbol, and in this
-	 * case our parser will allocate twice the memory
+	 * we can have multiple declarations of the same symbol, and in
+	 * this case our parser will allocate twice the memory
 	 */
 	free(sym->name);
 	sym->name = name;
