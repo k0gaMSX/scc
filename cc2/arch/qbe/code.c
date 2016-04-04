@@ -34,6 +34,8 @@ size2asm(Type *tp)
 {
 	char *s;
 
+	/* In qbe we can ignore the aligment because it handles it */
+
 	if (tp->flags & STRF) {
 		abort();
 	} else {
@@ -51,11 +53,10 @@ size2asm(Type *tp)
 			s = "q\t";
 			break;
 		default:
-			s = "z\t%llu\t";
-			break;
+			abort();
 		}
 	}
-	printf(s, (unsigned long long) tp->size);
+	fputs(s, stdout);
 }
 
 void
@@ -65,12 +66,10 @@ defsym(Symbol *sym, int alloc)
 		return;
 	if (sym->kind == GLOB)
 		fputs("export ", stdout);
-	printf("data %c%s = {\n", sigil(sym), sym->name);
+	printf("data $%s = {\n", sym->name);
 	if (sym->type.flags & INITF)
 		return;
-	putchar('\t');
-	size2asm(&sym->type);
-	puts("0\n}");
+	printf("\tz\t%llu\n}\n", (unsigned long long) sym->type.size);
 }
 
 void
