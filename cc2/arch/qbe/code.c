@@ -99,7 +99,7 @@ size2asm(Type *tp)
 			s = "w\t";
 			break;
 		case 8:
-			s = "q\t";
+			s = "l\t";
 			break;
 		default:
 			abort();
