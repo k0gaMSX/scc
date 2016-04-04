@@ -6,28 +6,6 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
-/*
- * : is for user-defined Aggregate Types
- * $ is for globals (represented by a pointer)
- * % is for function-scope temporaries
- * @ is for block labels
- */
-static char
-sigil(Symbol *sym)
-{
-	switch (sym->kind) {
-	case EXTRN:
-	case GLOB:
-	case PRIVAT:
-	case LOCAL:
-		return '$';
-	case AUTO:
-	case REG:
-		return '%';
-	default:
-		abort();
-	}
-}
 
 static void
 size2asm(Type *tp)
