@@ -176,7 +176,7 @@ void
 defsym(Symbol *sym, int alloc)
 {
 	label(sym);
-	if (!alloc)
+	if (!alloc || (sym->type.flags & INITF))
 		return;
 	size2asm(&sym->type);
 	puts("0");

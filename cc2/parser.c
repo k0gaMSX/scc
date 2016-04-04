@@ -512,7 +512,7 @@ decl(Symbol *sym)
 		case GLOB:
 		case PRIVAT:
 		case LOCAL:
-			alloc = (tp->flags & INITF) == 0;
+			alloc = 1;
 			break;
 		case AUTO:
 		case REG:
