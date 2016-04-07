@@ -14,6 +14,7 @@ enum segment {
 };
 
 static int curseg = NOSEG;
+static TSIZE offpar, offvar;
 
 static void
 segment(int seg)
@@ -162,10 +163,48 @@ size2asm(Type *tp)
 }
 
 void
-defsym(Symbol *sym, int alloc)
+newfun()
+{
+	offpar = offvar = 0;
+}
+
+void
+defpar(Symbol *sym)
+{
+	TSIZE align, size;
+
+	if (sym->kind != REG && sym->kind != AUTO)
+		return;
+	align = sym->type.align;
+	size = sym->type.size;
+
+	offpar -= align-1 & ~align;
+	sym->u.off = offpar;
+	offpar -= size;
+	sym->kind = AUTO;
+}
+
+void
+defvar(Symbol *sym)
+{
+	TSIZE align, size;
+
+	if (sym->kind != REG && sym->kind != AUTO)
+		return;
+	align = sym->type.align;
+	size = sym->type.size;
+
+	offvar += align-1 & ~align;
+	sym->u.off = offvar;
+	offvar += size;
+	sym->kind = AUTO;
+}
+
+void
+defglobal(Symbol *sym)
 {
 	label(sym);
-	if (!alloc || (sym->type.flags & INITF))
+	if (sym->kind == EXTRN || (sym->type.flags & INITF))
 		return;
 	size2asm(&sym->type);
 	puts("0");

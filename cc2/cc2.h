@@ -35,14 +35,22 @@ enum op {
 	MEM      = 'M',
 	AUTO     = 'A',
 	REG      = 'R',
+	CONST    = '#',
+	STRING   = '"',
+	LABEL    = 'L',
 	/* storage class */
 	GLOB     = 'G',
 	EXTRN    = 'X',
 	PRIVAT   = 'Y',
 	LOCAL    = 'T',
 	MEMBER   = 'M',
-	LABEL    = 'L',
 	/* operands */
+	OMEM     = 'M',
+	OAUTO    = 'A',
+	OREG     = 'R',
+	OCONST   = '#',
+	OSTRING  = '"',
+	OLABEL   = 'L',
 	OADD     = '+',
 	OSUB     = '-',
 	OMUL     = '*',
@@ -74,8 +82,6 @@ enum op {
 	OPTR     = '@',
 	OSYM     = 'i',
 	OCAST    = 'g',
-	OCONST   = '#',
-	OSTRING  = '"',
 	OINC     = 'i',
 	ODEC     = 'd',
 	/*statements */
@@ -134,6 +140,8 @@ struct symbol {
 struct node {
 	char op;
 	Type type;
+	char complex;
+	char address;
 	union {
 		TUINT i;
 		char *s;
@@ -163,14 +171,15 @@ extern void peephole(void);
 
 /* code.c */
 extern void data(Node *np);
-extern void defsym(Symbol *sym, int alloc);
-extern void writeout(void), endinit(void);
+extern void writeout(void), endinit(void), newfun(void);
+extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 
 /* node.c */
 extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(void);
+extern Symbol *curfun;
 
 /* symbol.c */
 extern Symbol *getsym(int id);

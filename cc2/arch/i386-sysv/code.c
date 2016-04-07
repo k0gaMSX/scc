@@ -173,13 +173,28 @@ label(Symbol *sym)
 }
 
 void
-defsym(Symbol *sym, int alloc)
+defglobal(Symbol *sym)
 {
 	label(sym);
-	if (!alloc || (sym->type.flags & INITF))
+	if (sym->kind == EXTRN || (sym->type.flags & INITF))
 		return;
 	size2asm(&sym->type);
 	puts("0");
+}
+
+void
+defpar(Symbol *sym)
+{
+}
+
+void
+defvar(Symbol *sym)
+{
+}
+
+void
+newfun(void)
+{
 }
 
 void

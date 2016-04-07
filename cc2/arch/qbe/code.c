@@ -109,9 +109,9 @@ size2asm(Type *tp)
 }
 
 void
-defsym(Symbol *sym, int alloc)
+defglobal(Symbol *sym)
 {
-	if (!alloc)
+	if (sym->kind == EXTRN)
 		return;
 	if (sym->kind == GLOB)
 		fputs("export ", stdout);
@@ -119,6 +119,16 @@ defsym(Symbol *sym, int alloc)
 	if (sym->type.flags & INITF)
 		return;
 	printf("\tz\t%llu\n}\n", (unsigned long long) sym->type.size);
+}
+
+void
+defpar(Symbol *sym)
+{
+}
+
+void
+defvar(Symbol *sym)
+{
 }
 
 void

@@ -8,14 +8,16 @@
 
 #define NSYMBOLS   32
 
-int inhome;
+Symbol *curfun;
 
 struct arena {
 	Node *mem;
 	struct arena *next;
 };
+
 static struct arena *arena;
 static Node *freep;
+static int inhome;
 
 Node *
 newnode(void)

@@ -44,14 +44,14 @@ static struct decoc {
 	void (*parse)(char *token, union tokenop);
 	union tokenop u;
 } optbl[] = {            /*  eval     parse           args */
-	[AUTO]        = {  vardecl,  symbol, .u.op  =         AUTO},
-	[REG]         = {  vardecl,  symbol, .u.op  =          REG},
-	[GLOB]        = {  vardecl,  symbol, .u.op  =          MEM},
-	[EXTRN]       = {  vardecl,  symbol, .u.op  =          MEM},
-	[PRIVAT]      = {  vardecl,  symbol, .u.op  =          MEM},
-	[LOCAL]       = {  vardecl,  symbol, .u.op  =          MEM},
-	[MEMBER]      = {  flddecl,  symbol,                     0},
-	[LABEL]       = { labeldcl,  symbol,                     0},
+	[AUTO]        = {  vardecl,  symbol, .u.op  =        OAUTO},
+	[REG]         = {  vardecl,  symbol, .u.op  =         OREG},
+	[GLOB]        = {  vardecl,  symbol, .u.op  =         OMEM},
+	[EXTRN]       = {  vardecl,  symbol, .u.op  =         OMEM},
+	[PRIVAT]      = {  vardecl,  symbol, .u.op  =         OMEM},
+	[LOCAL]       = {  vardecl,  symbol, .u.op  =         OMEM},
+	[MEMBER]      = {  flddecl,  symbol, .u.op  =         OMEM},
+	[LABEL]       = { labeldcl,  symbol, .u.op  =       OLABEL},
 
 	[INT8]        = {     NULL,    type, .u.arg =    &int8type},
 	[INT16]       = {     NULL,    type, .u.arg =   &int16type},
@@ -130,11 +130,9 @@ static struct decoc {
 	[OTABLE]      = {     NULL, casetbl,                     0}
 };
 
-static Symbol *curfun;
-static int funpars = -1, sclass, ininit, endf, lineno;
+static int sclass, inpars, ininit, endf, lineno;
 static Node *stmtp;
 static void *stack[STACKSIZ], **sp = stack;
-static Symbol *params[NR_FUNPARAM];
 
 static void
 push(void *elem)
@@ -447,9 +445,9 @@ einit(char *token, union tokenop u)
 static void
 endpars(void)
 {
-	if (!curfun || funpars == -1)
+	if (!curfun || !inpars)
 		error(ESYNTAX);
-	funpars = -1;
+	inpars = 0;
 }
 
 static void
@@ -499,35 +497,28 @@ array(void)
 static void
 decl(Symbol *sym)
 {
-	int alloc;
 	Type *tp = &sym->type;
 
 	if (tp->flags & FUNF) {
 		curfun = sym;
-		return;
 	} else {
 		switch (sym->kind) {
 		case EXTRN:
-			alloc = 0;
-			break;
 		case GLOB:
 		case PRIVAT:
 		case LOCAL:
-			alloc = 1;
+			defglobal(sym);
 			break;
 		case AUTO:
 		case REG:
-			if (funpars >= 0) {
-				if (funpars == NR_FUNPARAM)
-					error(EOUTPAR);
-				params[funpars++] = sym;
-			}
-			return;
+			if (!curfun)
+				error(ESYNTAX);
+			((inpars) ? defpar : defvar)(sym);
+			break;
 		default:
 			abort();
 		}
 	}
-	defsym(sym, alloc);
 }
 
 static void
@@ -622,8 +613,7 @@ stmt(void)
 static void
 beginfun(void)
 {
-	memset(params, 0, sizeof(params));
-	funpars = 0;
+	inpars = 0;
 	pushctx();
 }
 
@@ -633,19 +623,19 @@ endfun(void)
 	Node *np;
 
 	np = newnode();
-	np->op = ONOP;
-	addstmt(np);
-	/* TODO: process the function */
 	curfun = NULL;
-	funpars = -1;
+	inpars = 0; /* I know, it is a bit redundant */
 	endf = 1;
-	popctx();
 }
 
 void
 parse(void)
 {
+	cleannodes();  /* remove code of previous function */
+	popctx();  /* remove context of previous function */
+	curfun = NULL;
 	endf = 0;
+
 	while (!endf && nextline())
 		/* nothing */;
 	if (ferror(stdin))
