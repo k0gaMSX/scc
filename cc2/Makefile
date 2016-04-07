@@ -12,7 +12,7 @@ $(OBJS): cc2.h
 main.o: error.h
 
 error.h: cc2.h
-	rm -f $@; trap 'rm -f $$$$.h' EXIT INT QUIT
+	rm -f $@; trap 'rm -f $$$$.h' EXIT INT QUIT ;\
 	awk -f generror cc2.h > $$$$.h && mv $$$$.h $@
 
 cc2: $(OBJS) ../lib/libcc.a
