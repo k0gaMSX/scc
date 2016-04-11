@@ -144,6 +144,11 @@ data(Node *np)
 void
 writeout(void)
 {
+	if (curfun->kind == GLOB)
+		fputs("export ", stdout);
+	printf("function $%s(", symname(curfun));
+	puts("){");
+	puts("}");
 }
 
 void
