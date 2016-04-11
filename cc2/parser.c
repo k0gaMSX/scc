@@ -613,18 +613,13 @@ stmt(void)
 static void
 beginfun(void)
 {
-	inpars = 0;
+	inpars = 1;
 	pushctx();
 }
 
 static void
 endfun(void)
 {
-	Node *np;
-
-	np = newnode();
-	curfun = NULL;
-	inpars = 0; /* I know, it is a bit redundant */
 	endf = 1;
 }
 
@@ -634,7 +629,6 @@ parse(void)
 	cleannodes();  /* remove code of previous function */
 	popctx();  /* remove context of previous function */
 	curfun = NULL;
-	endf = 0;
 
 	while (!endf && nextline())
 		/* nothing */;
