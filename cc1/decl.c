@@ -216,7 +216,7 @@ krfun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 			sym->flags |= ISAUTO;
 			if ((sym = install(NS_IDEN, sym)) == NULL) {
 				errorp("redefinition of parameter '%s'",
-				       sym->name);
+				       yylval.sym->name);
 				continue;
 			}
 			if (n < NR_FUNPARAM) {
