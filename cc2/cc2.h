@@ -38,6 +38,7 @@ enum op {
 	CONST    = '#',
 	STRING   = '"',
 	LABEL    = 'L',
+	INDEX    = 'I',
 	/* storage class */
 	GLOB     = 'G',
 	EXTRN    = 'X',
@@ -116,6 +117,8 @@ enum nerrors {
 typedef struct node Node;
 typedef struct type Type;
 typedef struct symbol Symbol;
+typedef struct addr Addr;
+typedef struct inst Inst;
 
 struct type {
 	TSIZE size;
@@ -144,6 +147,7 @@ struct node {
 	char address;
 	union {
 		TUINT i;
+		char reg;
 		char *s;
 		Symbol *sym;
 		char subop;
@@ -151,6 +155,21 @@ struct node {
 	Symbol *label;
 	Node *left, *right;
 	Node *stmt;
+};
+
+struct addr {
+        char kind;
+        union {
+                char reg;
+                TUINT i;
+                Symbol *sym;
+        } u;
+};
+
+struct inst {
+        char op;
+        Addr from1, from2, to;
+        Inst *next, *prev;
 };
 
 /* main.c */

@@ -55,11 +55,6 @@ symname(Symbol *sym)
 	return name;
 }
 
-void
-code(int op, Node *to, Node *from)
-{
-}
-
 static void
 label(Symbol *sym)
 {
