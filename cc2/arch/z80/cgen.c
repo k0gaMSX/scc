@@ -16,8 +16,8 @@ generate(void)
  *     STATIC => 12        (value)
  *     CONST => 20         $value
  */
-static Node *
-address(Node *np)
+Node *
+sethi(Node *np)
 {
 	Node *lp, *rp;
 
@@ -43,9 +43,9 @@ address(Node *np)
 		break;
 	default:
 		if (lp)
-			address(lp);
+			sethi(lp);
 		if (rp)
-			address(rp);
+			sethi(rp);
 		break;
 	}
 
@@ -64,16 +64,4 @@ address(Node *np)
 	if (np->complex == 0)
 		++np->complex;
 	return np;
-}
-
-void
-addressability(void)
-{
-	Node *np;
-
-	if (!curfun)
-		return;
-
-	for (np = curfun->u.label; np; np = np->stmt)
-		address(np);
 }

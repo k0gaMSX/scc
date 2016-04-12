@@ -39,7 +39,7 @@ main(void)
 	while (moreinput()) {
 		parse();
 		optimize();
-		addressability();
+		apply(sethi);
 		generate();
 		peephole();
 		writeout();

@@ -74,3 +74,15 @@ cleannodes(void)
 		free(ap);
 	}
 }
+
+void
+apply(Node *(*fun)(Node *))
+{
+	Node *np;
+
+	if (!curfun)
+		return;
+
+	for (np = curfun->u.label; np; np = np->stmt)
+		(*fun)(np);
+}

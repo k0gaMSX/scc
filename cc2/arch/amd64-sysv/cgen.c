@@ -7,7 +7,7 @@ generate(void)
 {
 }
 
-void
-addressability(void)
+Node *
+sethi(Node *np)
 {
 }

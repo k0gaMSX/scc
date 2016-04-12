@@ -182,7 +182,7 @@ extern void parse(void);
 extern void optimize(void);
 
 /* cgen.c */
-extern void addressability(void);
+extern Node *sethi(Node *np);
 extern void generate(void);
 
 /* peep.c */
@@ -194,6 +194,7 @@ extern void writeout(void), endinit(void), newfun(void);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 
 /* node.c */
+extern void apply(Node *(*fun)(Node *));
 extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
