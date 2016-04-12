@@ -69,7 +69,7 @@ cleannodes(void)
 	struct arena *ap, *next;
 
 	for (ap = arena; ap; ap = next) {
-		next = ap;
+		next = ap->next;
 		free(ap->mem);
 		free(ap);
 	}

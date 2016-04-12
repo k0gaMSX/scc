@@ -629,6 +629,7 @@ parse(void)
 	cleannodes();  /* remove code of previous function */
 	popctx();  /* remove context of previous function */
 	curfun = NULL;
+	endf = 0;
 
 	while (!endf && nextline())
 		/* nothing */;
