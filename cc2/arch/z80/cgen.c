@@ -42,10 +42,8 @@ sethi(Node *np)
 		np->address = 20;
 		break;
 	default:
-		if (lp)
-			sethi(lp);
-		if (rp)
-			sethi(rp);
+		sethi(lp);
+		sethi(rp);
 		break;
 	}
 
