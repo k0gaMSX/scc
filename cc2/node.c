@@ -40,7 +40,7 @@ newnode(void)
 	np = freep;
 	freep = np->left;
 
-	return memset(np, 0, sizeof(np));
+	return memset(np, 0, sizeof(*np));
 }
 
 void
