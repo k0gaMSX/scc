@@ -156,7 +156,7 @@ sethi(Node *np)
 	if (np->address > 10)
 		return np;
 	if (lp)
-		rp->complex = lp->complex;
+		np->complex = lp->complex;
 	if (rp) {
 		int d = np->complex - rp->complex;
 
