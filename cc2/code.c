@@ -26,7 +26,7 @@ nextpc(void)
         pc = new;
 }
 
-void
+static void
 addr(int op, Node *np, Addr *addr)
 {
 	switch (addr->kind = np->op) {

@@ -40,7 +40,7 @@ main(void)
 		parse();
 		optimize();
 		apply(sethi);
-		generate();
+		apply(cgen);
 		peephole();
 		writeout();
 	}

@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "../inc/cc.h"
 
@@ -39,11 +40,7 @@ newnode(void)
 	np = freep;
 	freep = np->left;
 
-	np->right = NULL;
-	np->left = NULL;
-	np->stmt = NULL;
-	np->label = NULL;
-	return np;
+	return memset(np, 0, sizeof(np));
 }
 
 void

@@ -1,10 +1,117 @@
 
+#include <stdlib.h>
+
 #include "arch.h"
 #include "../../cc2.h"
 
-void
-generate(void)
+enum sflags {
+	ISTMP  = 1,
+	ISCONS = 2
+};
+
+static Node *
+load(Node *np)
 {
+	Node *new;
+	Symbol *sym;
+
+	new = newnode();
+	sym = getsym(TMPSYM);
+	sym->type = np->type;
+	new->u.sym = sym;
+	new->op = OLOAD;
+	new->left = np;
+	new->type = np->type;
+	new->flags |= ISTMP;
+	return new;
+}
+
+Node *
+cgen(Node *np)
+{
+	Node *l, *r;
+	Symbol *sym;
+	int op;
+
+	if (!np)
+		return NULL;
+
+	l = cgen(np->left);
+	r = cgen(np->right);
+
+	switch (op = np->op) {
+	case OREG:
+	case OSTRING:
+		abort();
+	case OCONST:
+	case OLABEL:
+		np->flags |= ISCONS;
+	case OPAR:
+	case OMEM:
+	case OAUTO:
+		return np;
+	case OADD:
+	case OSUB:
+	case OMUL:
+	case OMOD:
+	case ODIV:
+	case OSHL:
+	case OSHR:
+	case OLT:
+	case OGT:
+	case OLE:
+	case OGE:
+	case OEQ:
+	case ONE:
+	case OBAND:
+	case OBOR:
+	case OBXOR:
+	case OCPL:
+		if ((l->flags & (ISTMP|ISCONS)) == 0)
+			np->left = load(l);
+		if ((r->flags & (ISTMP|ISCONS)) == 0)
+			np->right = load(r);
+		sym = getsym(TMPSYM);
+		sym->type = np->type;
+		np->flags |= ISTMP;
+		np->u.sym = sym;
+		np->op = OTMP;
+		code(op, np, np->left, np->right);
+		return np;
+	case ONOP:
+	case OBLOOP:
+	case OELOOP:
+		return NULL;
+	case ONEG:
+	case OADDR:
+	case OPTR:
+	case OCAST:
+	case OINC:
+	case ODEC:
+		abort();
+	case OASSIG:
+		code(op, l, l, r);
+		return r;
+	case OCALL:
+	case OFIELD:
+	case OCOMMA:
+	case OASK:
+	case OCOLON:
+	case OAND:
+	case OOR:
+		abort();
+	case OBRANCH:
+	case OJMP:
+		code(op, NULL, l, r);
+		return NULL;
+	case ORET:
+	case OCASE:
+	case ODEFAULT:
+	case OTABLE:
+	case OSWITCH:
+	default:
+		abort();
+	}
 }
 
 /*

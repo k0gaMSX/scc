@@ -1,4 +1,5 @@
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,9 +44,12 @@ popctx(void)
 }
 
 Symbol *
-getsym(int id)
+getsym(unsigned id)
 {
 	Symbol **htab, *sym;
+
+	if (id > USHRT_MAX)
+		error(EBADID);
 
 	htab = &symtab[id & NR_SYMHASH-1];
 	for (sym = *htab; sym; sym = sym->h_next) {

@@ -39,6 +39,7 @@ enum op {
 	STRING   = '"',
 	LABEL    = 'L',
 	INDEX    = 'I',
+	OTMP     = 'T',
 	/* storage class */
 	GLOB     = 'G',
 	EXTRN    = 'X',
@@ -51,6 +52,7 @@ enum op {
 	OREG     = 'R',
 	OCONST   = '#',
 	OSTRING  = '"',
+	OLOAD    = 'D',
 	OLABEL   = 'L',
 	OADD     = '+',
 	OSUB     = '-',
@@ -81,7 +83,6 @@ enum op {
 	OAND     = 'a',
 	OOR      = 'o',
 	OPTR     = '@',
-	OSYM     = 'i',
 	OCAST    = 'g',
 	OINC     = 'i',
 	ODEC     = 'd',
@@ -111,6 +112,7 @@ enum nerrors {
 	ESTACKU,       /* stack underflow */
 	ELNLINE,       /* line too long */
 	EFERROR,       /* error reading from file:%s*/
+	EBADID,        /* incorrect symbol id */
 	ENUMERR
 };
 
@@ -145,6 +147,7 @@ struct node {
 	Type type;
 	char complex;
 	char address;
+	unsigned char flags;
 	union {
 		TUINT i;
 		char reg;
@@ -183,7 +186,7 @@ extern void optimize(void);
 
 /* cgen.c */
 extern Node *sethi(Node *np);
-extern void generate(void);
+extern Node *cgen(Node *np);
 
 /* peep.c */
 extern void peephole(void);
@@ -191,6 +194,7 @@ extern void peephole(void);
 /* code.c */
 extern void data(Node *np);
 extern void writeout(void), endinit(void), newfun(void);
+extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 
 /* node.c */
@@ -202,7 +206,8 @@ extern Node *newnode(void);
 extern Symbol *curfun;
 
 /* symbol.c */
-extern Symbol *getsym(int id);
+#define TMPSYM  0
+extern Symbol *getsym(unsigned id);
 extern void popctx(void);
 extern void pushctx(void);
 extern void freesym(Symbol *sym);
