@@ -7,7 +7,7 @@
 #include "arch.h"
 #include "cc2.h"
 
-#define NSYMBOLS   32
+#define NNODES   32
 
 Symbol *curfun;
 
@@ -28,10 +28,10 @@ newnode(void)
 
 	if (!freep) {
 		ap = xmalloc(sizeof(*ap));
-		ap->mem = xcalloc(NSYMBOLS, sizeof(Node));
+		ap->mem = xcalloc(NNODES, sizeof(Node));
 		ap->next = arena;
 		arena = ap;
-		for (np = ap->mem; np < &ap->mem[NSYMBOLS-1]; ++np)
+		for (np = ap->mem; np < &ap->mem[NNODES-1]; ++np)
 			np->left = np+1;
 		np->left = NULL;
 		freep = np;
