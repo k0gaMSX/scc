@@ -5,7 +5,7 @@ description: Duff's device
 error:
 test036.c:60: warning: type defaults to 'int' in declaration
 output:
-G5	F	"send
+G5	I	F	"send
 {
 R1	P	"to
 R2	P	"from
