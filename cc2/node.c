@@ -71,6 +71,7 @@ cleannodes(void)
 		free(ap);
 	}
 	arena = NULL;
+	freep = NULL;
 }
 
 void
