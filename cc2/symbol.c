@@ -11,7 +11,7 @@
 
 #define NR_SYMHASH  64
 
-static Symbol *symtab[NR_SYMHASH];
+static Symbol *symtab[NR_SYMHASH], *curlocal;
 static Symbol *locals;
 static int infunction;
 
@@ -40,7 +40,7 @@ popctx(void)
 		symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
 		freesym(sym);
 	}
-	locals = NULL;
+	curlocal = locals = NULL;
 }
 
 Symbol *
@@ -59,11 +59,12 @@ getsym(unsigned id)
 	if (!sym) {
 		sym = xcalloc(1, sizeof(*sym));
 		sym->id = id;
-		if (!infunction) {
-			sym->next = NULL;
-		} else {
-			sym->next = locals;
-			locals = sym;
+		if (infunction) {
+			if (!locals)
+				locals = sym;
+			if (curlocal)
+				curlocal->next = sym;
+			curlocal = sym;
 		}
 		sym->h_next = *htab;
 		*htab = sym;
