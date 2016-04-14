@@ -70,6 +70,7 @@ cleannodes(void)
 		free(ap->mem);
 		free(ap);
 	}
+	arena = NULL;
 }
 
 void
