@@ -201,8 +201,9 @@ writeout(void)
 
 	for ( ; p; p = p->next) {
 		tp = &p->type;
-		printf("\t%s %s= alloc%d %d\n",
-		       symname(p), size2asm(tp), tp->size, tp->align);
+		printf("\t%s %s= alloc%lld %lld\n",
+		       symname(p), size2asm(tp),
+		       (long long) tp->size, (long long) tp->align);
 	}
 
 	for (pc = prog; pc; pc = pc->next) {
@@ -233,6 +234,7 @@ inst3(void)
 {
 	printf("\t%s %c= %s\t%s,%s\n",
 	       addr2txt(&pc->to),
+	       'w',                    /* FIXME */
 	       optbl[pc->op].txt,
 	       addr2txt(&pc->from1), addr2txt(&pc->from2));
 }
