@@ -5,6 +5,7 @@ enum tflags {
 	STRF    =    8,
 	UNIONF  =    16,
 	FUNF    =    32,
+	PARF    =    64,
 	INITF   =   128
 };
 
@@ -211,3 +212,6 @@ extern Symbol *getsym(unsigned id);
 extern void popctx(void);
 extern void pushctx(void);
 extern void freesym(Symbol *sym);
+
+/* globals */
+extern Symbol *locals;

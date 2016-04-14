@@ -103,34 +103,25 @@ emittree(Node *np)
 	}
 }
 
-static void
+static char *
 size2asm(Type *tp)
 {
-	char *s;
-
-	/* In qbe we can ignore the aligment because it handles it */
-
 	if (tp->flags & STRF) {
-		s = "b\t";
+		return "b";
 	} else {
 		switch (tp->size) {
 		case 1:
-			s = "b\t";
-			break;
+			return "b";
 		case 2:
-			s = "h\t";
-			break;
+			return "h";
 		case 4:
-			s = "w\t";
-			break;
+			return "w";
 		case 8:
-			s = "l\t";
-			break;
+			return "l";
 		default:
 			abort();
 		}
 	}
-	fputs(s, stdout);
 }
 
 void
@@ -149,6 +140,7 @@ defglobal(Symbol *sym)
 void
 defpar(Symbol *sym)
 {
+	sym->type.flags |= PARF;
 }
 
 void
@@ -159,8 +151,7 @@ defvar(Symbol *sym)
 void
 data(Node *np)
 {
-	putchar('\t');
-	size2asm(&np->type);
+	printf("\t%s\t", size2asm(&np->type));
 	emittree(np);
 	putchar(',');
 	putchar('\n');
@@ -169,9 +160,15 @@ data(Node *np)
 void
 writeout(void)
 {
+	Symbol *p;
+
 	if (curfun->kind == GLOB)
 		fputs("export ", stdout);
 	printf("function %s(", symname(curfun));
+
+	for (p = locals; p && p->type.flags & PARF; p = p->next)
+		printf("%s %s,", size2asm(&p->type), symname(p));
+
 	puts("){");
 	puts("}");
 }

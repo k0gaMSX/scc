@@ -11,8 +11,9 @@
 
 #define NR_SYMHASH  64
 
+Symbol *locals;
+
 static Symbol *symtab[NR_SYMHASH], *curlocal;
-static Symbol *locals;
 static int infunction;
 
 
