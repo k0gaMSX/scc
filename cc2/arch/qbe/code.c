@@ -6,24 +6,49 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
+/*
+ * : is for user-defined Aggregate Types
+ * $ is for globals (represented by a pointer)
+ * % is for function-scope temporaries
+ * @ is for block labels
+ */
+static char
+sigil(Symbol *sym)
+{
+	switch (sym->kind) {
+	case EXTRN:
+	case GLOB:
+	case PRIVAT:
+	case LOCAL:
+		return '$';
+	case AUTO:
+	case REG:
+		return '%';
+	default:
+		abort();
+	}
+}
+
 static char *
 symname(Symbol *sym)
 {
-	static char name[IDENTSIZ+1];
+	static char name[IDENTSIZ+2];
 	static unsigned short id;
+	char c = sigil(sym);
 
 	if (sym->name) {
 		switch (sym->kind) {
 		case EXTRN:
 		case GLOB:
 		case PRIVAT:
+			sprintf(name, "%c%s", c, sym->name);
 			return sym->name;
 		}
 	}
 
 	if (sym->numid == 0 && (sym->numid = ++id) == 0)
 		error(EIDOVER);
-	sprintf(name, ".L%d", sym->numid);
+	sprintf(name, "%c.%d", c, sym->numid);
 
 	return name;
 }
@@ -115,7 +140,7 @@ defglobal(Symbol *sym)
 		return;
 	if (sym->kind == GLOB)
 		fputs("export ", stdout);
-	printf("data $%s = {\n", symname(sym));
+	printf("data %s = {\n", symname(sym));
 	if (sym->type.flags & INITF)
 		return;
 	printf("\tz\t%llu\n}\n", (unsigned long long) sym->type.size);
@@ -146,7 +171,7 @@ writeout(void)
 {
 	if (curfun->kind == GLOB)
 		fputs("export ", stdout);
-	printf("function $%s(", symname(curfun));
+	printf("function %s(", symname(curfun));
 	puts("){");
 	puts("}");
 }
