@@ -201,7 +201,7 @@ writeout(void)
 
 	puts(")\n{");
 
-	for ( ; p; p = p->next) {
+	for ( ; p && p->id != TMPSYM; p = p->next) {
 		tp = &p->type;
 		printf("\t%s %s= alloc%lld %lld\n",
 		       symname(p), size2asm(tp),
