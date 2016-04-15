@@ -131,6 +131,7 @@ struct type {
 
 struct symbol {
 	Type type;
+	Type rtype;
 	unsigned short id;
 	unsigned short numid;
 	char *name;

@@ -524,13 +524,15 @@ decl(Symbol *sym)
 static void
 vardecl(void)
 {
-	Type *tp;
+	Type *tp, *rp;
 	Node *np;
 	Symbol *sym;
 	char *name;
 
 	name = pop();
 	tp = pop();
+	if (tp->flags & FUNF)
+		rp = pop();
 	np = pop();
 
 	sym = np->u.sym;
@@ -542,6 +544,8 @@ vardecl(void)
 	free(sym->name);
 	sym->name = name;
 	sym->type = *tp;
+	if (tp->flags & FUNF)
+		sym->rtype = *rp;
 	sym->kind = sclass;
 
 	if (ininit)
