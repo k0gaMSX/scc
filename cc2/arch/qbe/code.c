@@ -164,7 +164,7 @@ writeout(void)
 
 	if (curfun->kind == GLOB)
 		fputs("export ", stdout);
-	printf("function %s(", symname(curfun));
+	printf("function w %s(", symname(curfun));
 
 	for (p = locals; p && p->type.flags & PARF; p = p->next)
 		printf("%s %s,", size2asm(&p->type), symname(p));
