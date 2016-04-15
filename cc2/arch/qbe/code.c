@@ -41,8 +41,11 @@ symname(Symbol *sym)
 		case EXTRN:
 		case GLOB:
 		case PRIVAT:
+		case AUTO:
 			sprintf(name, "%c%s", c, sym->name);
 			return name;
+		default:
+			abort();
 		}
 	}
 
