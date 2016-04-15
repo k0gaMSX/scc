@@ -191,19 +191,22 @@ writeout(void)
 {
 	Symbol *p;
 	Type *tp;
+	char *sep;
 
 	if (curfun->kind == GLOB)
 		fputs("export ", stdout);
-	printf("function %s %s(\n", size2asm(&curfun->rtype), symname(curfun));
+	printf("function %s %s(", size2asm(&curfun->rtype), symname(curfun));
 
-	for (p = locals; p && p->type.flags & PARF; p = p->next)
-		printf("\t%s %s,\n", size2asm(&p->type), symname(p));
-
-	puts(")\n{");
+	for (sep = "", p = locals; p; p = p->next, sep = ",") {
+		if ((p->type.flags & PARF) == 0)
+			break;
+		printf("%s%s %s", sep, size2asm(&p->type), symname(p));
+	}
+	puts(")");
 
 	for ( ; p && p->id != TMPSYM; p = p->next) {
 		tp = &p->type;
-		printf("\t%s %s= alloc%lld %lld\n",
+		printf("\t%s %s=\talloc%lld\t%lld\n",
 		       symname(p), size2asm(tp),
 		       (long long) tp->size, (long long) tp->align);
 	}
