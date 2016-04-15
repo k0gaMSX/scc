@@ -96,7 +96,7 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
-		code(op, l, l, r);
+		code(op, l, r, NULL);
 		return r;
 	case OCALL:
 	case OFIELD:
