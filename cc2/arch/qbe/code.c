@@ -42,7 +42,7 @@ symname(Symbol *sym)
 		case GLOB:
 		case PRIVAT:
 			sprintf(name, "%c%s", c, sym->name);
-			return sym->name;
+			return name;
 		}
 	}
 
