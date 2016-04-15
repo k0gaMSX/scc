@@ -223,6 +223,7 @@ addr2txt(Addr *a)
 	switch (a->kind) {
 	case AUTO:
 	case LABEL:
+	case TMP:
 		return symname(a->u.sym);
 	default:
 		abort();

@@ -40,7 +40,7 @@ enum op {
 	STRING   = '"',
 	LABEL    = 'L',
 	INDEX    = 'I',
-	OTMP     = 'T',
+	TMP      = 'T',
 	/* storage class */
 	GLOB     = 'G',
 	EXTRN    = 'X',
@@ -49,6 +49,7 @@ enum op {
 	MEMBER   = 'M',
 	/* operands */
 	OMEM     = 'M',
+	OTMP     = 'T',
 	OAUTO    = 'A',
 	OREG     = 'R',
 	OCONST   = '#',

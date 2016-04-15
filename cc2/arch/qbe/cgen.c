@@ -10,19 +10,29 @@ enum sflags {
 };
 
 static Node *
+tmpnode(Node *np)
+{
+	Symbol *sym;
+
+	sym = getsym(TMPSYM);
+	sym->type = np->type;
+	sym->kind = TMP;
+	np->u.sym = sym;
+	np->op = OTMP;
+	np->flags |= ISTMP;
+	return np;
+}
+
+static Node *
 load(Node *np)
 {
 	Node *new;
-	Symbol *sym;
 
-	new = newnode();
-	sym = getsym(TMPSYM);
-	sym->type = np->type;
-	new->u.sym = sym;
-	new->op = OLOAD;
+	new = tmpnode(newnode());
 	new->left = np;
 	new->type = np->type;
-	new->flags |= ISTMP;
+	code(OLOAD, new, np, NULL);
+
 	return new;
 }
 
@@ -67,15 +77,11 @@ cgen(Node *np)
 	case OBXOR:
 	case OCPL:
 		if ((l->flags & (ISTMP|ISCONS)) == 0)
-			np->left = load(l);
+			l = np->left = load(l);
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
-			np->right = load(r);
-		sym = getsym(TMPSYM);
-		sym->type = np->type;
-		np->flags |= ISTMP;
-		np->u.sym = sym;
-		np->op = OTMP;
-		code(op, np, np->left, np->right);
+			r = np->right = load(r);
+		tmpnode(np);
+		code(op, np, l, r);
 		return np;
 	case ONOP:
 	case OBLOOP:
