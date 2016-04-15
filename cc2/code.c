@@ -27,21 +27,21 @@ nextpc(void)
 }
 
 static void
-addr(int op, Node *np, Addr *addr)
+addr(Node *np, Addr *addr)
 {
 	switch (addr->kind = np->op) {
 	case REG:
 		addr->u.reg = np->u.reg;
 		break;
 	case CONST:
-		/* TODO: different type of constants*/
-		np->u.i = np->u.i;
+		abort();
 		break;
 	case LABEL:
 		addr->u.sym = np->u.sym;
 		break;
 	case AUTO:
-	case INDEX:
+	case TMP:
+		addr->u.sym = np->u.sym;
 		break;
 	default:
 		abort();
@@ -54,13 +54,13 @@ code(int op, Node *to, Node *from1, Node *from2)
 {
 	nextpc();
 	if (from1)
-		addr(op, from1, &pc->from1);
+		addr(from1, &pc->from1);
 	if (from2)
-		addr(op, from2, &pc->from2);
+		addr(from2, &pc->from2);
 	if (to)
-		addr(op, to, &pc->to);
+		addr(to, &pc->to);
+	pc->op = op;
 }
-
 
 void
 delcode(void)
