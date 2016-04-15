@@ -38,7 +38,6 @@ addr(int op, Node *np, Addr *addr)
 		np->u.i = np->u.i;
 		break;
 	case LABEL:
-	case MEM:
 		addr->u.sym = np->u.sym;
 		break;
 	case AUTO:

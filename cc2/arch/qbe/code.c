@@ -95,7 +95,7 @@ emittree(Node *np)
 	case OADDR:
 		emittree(np->left);
 		break;
-	case MEM:
+	case OMEM:
 		fputs(symname(np->u.sym), stdout);
 		break;
 	default:

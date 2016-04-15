@@ -141,10 +141,10 @@ sethi(Node *np)
 	rp = np->right;
 
 	switch (np->op) {
-	case AUTO:
-	case REG:
-	case MEM:
-	case CONST:
+	case OAUTO:
+	case OREG:
+	case OMEM:
+	case OCONST:
 		np->address = 11;
 		break;
 	default:

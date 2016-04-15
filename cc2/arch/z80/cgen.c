@@ -29,16 +29,16 @@ sethi(Node *np)
 	lp = np->left;
 	rp = np->right;
 	switch (np->op) {
-	case AUTO:
+	case OAUTO:
 		np->address = 11;
 		break;
-	case REG:
+	case OREG:
 		np->address = 13;
 		break;
-	case MEM:
+	case OMEM:
 		np->address = 12;
 		break;
-	case CONST:
+	case OCONST:
 		np->address = 20;
 		break;
 	default:
