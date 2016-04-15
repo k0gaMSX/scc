@@ -138,7 +138,8 @@ struct symbol {
 	char kind;
 	union {
 		TSIZE off;
-		Node *label;
+		Node *nlabel;
+		Inst *ilabel;
 	} u;
 	Symbol *next;
 	Symbol *h_next;
@@ -173,6 +174,7 @@ struct addr {
 
 struct inst {
         char op;
+	Symbol *label;
         Addr from1, from2, to;
         Inst *next, *prev;
 };
@@ -216,3 +218,4 @@ extern void freesym(Symbol *sym);
 
 /* globals */
 extern Symbol *locals;
+extern Inst *pc, *prog;

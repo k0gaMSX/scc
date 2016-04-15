@@ -4,7 +4,7 @@
 #include "arch.h"
 #include "cc2.h"
 
-static Inst *pc, *prog;
+Inst *pc, *prog;
 
 static void
 nextpc(void)

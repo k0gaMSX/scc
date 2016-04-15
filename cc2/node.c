@@ -80,6 +80,6 @@ apply(Node *(*fun)(Node *))
 	if (!curfun)
 		return;
 
-	for (np = curfun->u.label; np; np = np->stmt)
+	for (np = curfun->u.nlabel; np; np = np->stmt)
 		(*fun)(np);
 }

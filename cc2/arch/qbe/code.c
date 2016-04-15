@@ -6,6 +6,30 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
+static void inst3(void);
+
+static struct opdata {
+	void (*fun)(void);
+	char *txt;
+} optbl [] = {
+	[OADD]  = {.fun = inst3, .txt = "add"},
+	[OSUB]  = {.fun = inst3, .txt = "sub"},
+	[OMUL]  = {.fun = inst3, .txt = "mul"},
+	[OMOD]  = {.fun = inst3, .txt = "rem"},
+	[ODIV]  = {.fun = inst3, .txt = "div"},
+	[OSHL]  = {.fun = inst3, .txt = "shl"},
+	[OSHR]  = {.fun = inst3, .txt = "shr"},
+	[OLT]   = {.fun = inst3, .txt = "clt"},
+	[OGT]   = {.fun = inst3, .txt = "cgt"},
+	[OLE]   = {.fun = inst3, .txt = "cle"},
+	[OGE]   = {.fun = inst3, .txt = "cge"},
+	[OEQ]   = {.fun = inst3, .txt = "ceq"},
+	[ONE]   = {.fun = inst3, .txt = "cne"},
+	[OBAND] = {.fun = inst3, .txt = "and"},
+	[OBOR]  = {.fun = inst3, .txt = "or"},
+	[OBXOR] = {.fun = inst3, .txt = "xor"}
+};
+
 /*
  * : is for user-defined Aggregate Types
  * $ is for globals (represented by a pointer)
@@ -181,8 +205,36 @@ writeout(void)
 		       symname(p), size2asm(tp), tp->size, tp->align);
 	}
 
+	for (pc = prog; pc; pc = pc->next) {
+		if (pc->label)
+			printf("%s:\n", symname(pc->label));
+		(*optbl[pc->op].fun)();
+	}
 
 	puts("}");
+}
+
+static char *
+addr2txt(Addr *a)
+{
+	static char buff[40];
+
+	switch (a->kind) {
+	case AUTO:
+	case LABEL:
+		return symname(a->u.sym);
+	default:
+		abort();
+	}
+}
+
+static void
+inst3(void)
+{
+	printf("\t%s %c= %s\t%s,%s\n",
+	       addr2txt(&pc->to),
+	       optbl[pc->op].txt,
+	       addr2txt(&pc->from1), addr2txt(&pc->from2));
 }
 
 void

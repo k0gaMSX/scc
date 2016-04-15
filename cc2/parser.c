@@ -587,14 +587,14 @@ labeldcl(void)
 	delnode(np);
 	nextline();
 	stmtp->label = sym;
-	sym->u.label = stmtp;
+	sym->u.nlabel = stmtp;
 }
 
 static void
 addstmt(Node *np)
 {
-	if (!curfun->u.label)
-		curfun->u.label = np;
+	if (!curfun->u.nlabel)
+		curfun->u.nlabel = np;
 	else
 		stmtp->stmt = np;
 	stmtp = np;

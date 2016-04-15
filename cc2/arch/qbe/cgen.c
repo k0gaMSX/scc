@@ -46,7 +46,6 @@ cgen(Node *np)
 	case OCONST:
 	case OLABEL:
 		np->flags |= ISCONS;
-	case OPAR:
 	case OMEM:
 	case OAUTO:
 		return np;
@@ -82,6 +81,7 @@ cgen(Node *np)
 	case OBLOOP:
 	case OELOOP:
 		return NULL;
+	case OPAR:
 	case ONEG:
 	case OADDR:
 	case OPTR:
