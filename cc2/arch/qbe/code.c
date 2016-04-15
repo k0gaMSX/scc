@@ -6,28 +6,30 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
-static void inst3(void);
+static void binary(void), load(void), store(void);
 
 static struct opdata {
 	void (*fun)(void);
 	char *txt;
 } optbl [] = {
-	[OADD]  = {.fun = inst3, .txt = "add"},
-	[OSUB]  = {.fun = inst3, .txt = "sub"},
-	[OMUL]  = {.fun = inst3, .txt = "mul"},
-	[OMOD]  = {.fun = inst3, .txt = "rem"},
-	[ODIV]  = {.fun = inst3, .txt = "div"},
-	[OSHL]  = {.fun = inst3, .txt = "shl"},
-	[OSHR]  = {.fun = inst3, .txt = "shr"},
-	[OLT]   = {.fun = inst3, .txt = "clt"},
-	[OGT]   = {.fun = inst3, .txt = "cgt"},
-	[OLE]   = {.fun = inst3, .txt = "cle"},
-	[OGE]   = {.fun = inst3, .txt = "cge"},
-	[OEQ]   = {.fun = inst3, .txt = "ceq"},
-	[ONE]   = {.fun = inst3, .txt = "cne"},
-	[OBAND] = {.fun = inst3, .txt = "and"},
-	[OBOR]  = {.fun = inst3, .txt = "or"},
-	[OBXOR] = {.fun = inst3, .txt = "xor"}
+	[OADD]  =  {.fun = binary, .txt = "add"},
+	[OSUB]  =  {.fun = binary, .txt = "sub"},
+	[OMUL]  =  {.fun = binary, .txt = "mul"},
+	[OMOD]  =  {.fun = binary, .txt = "rem"},
+	[ODIV]  =  {.fun = binary, .txt = "div"},
+	[OSHL]  =  {.fun = binary, .txt = "shl"},
+	[OSHR]  =  {.fun = binary, .txt = "shr"},
+	[OLT]   =  {.fun = binary, .txt = "clt"},
+	[OGT]   =  {.fun = binary, .txt = "cgt"},
+	[OLE]   =  {.fun = binary, .txt = "cle"},
+	[OGE]   =  {.fun = binary, .txt = "cge"},
+	[OEQ]   =  {.fun = binary, .txt = "ceq"},
+	[ONE]   =  {.fun = binary, .txt = "cne"},
+	[OBAND] =  {.fun = binary, .txt = "and"},
+	[OBOR]  =  {.fun = binary, .txt = "or"},
+	[OBXOR] =  {.fun = binary, .txt = "xor"},
+	[OLOAD] =  {.fun = load,   .txt = "load"},
+	[OASSIG] = {.fun = store,  .txt = "store"}
 };
 
 /*
@@ -231,13 +233,31 @@ addr2txt(Addr *a)
 }
 
 static void
-inst3(void)
+binary(void)
 {
-	printf("\t%s %c= %s\t%s,%s\n",
-	       addr2txt(&pc->to),
-	       'w',                    /* FIXME */
-	       optbl[pc->op].txt,
-	       addr2txt(&pc->from1), addr2txt(&pc->from2));
+	printf("\t%s %c=\t%s\t",
+	       addr2txt(&pc->to), 'w', optbl[pc->op].txt);
+	fputs(addr2txt(&pc->from1), stdout);
+	putchar(',');
+	fputs(addr2txt(&pc->from2), stdout);
+	putchar('\n');
+}
+
+static void
+store(void)
+{
+	printf("\t\t%s%c\t", optbl[pc->op].txt, 'w'),
+	fputs(addr2txt(&pc->from1), stdout);
+	putchar(',');
+	fputs(addr2txt(&pc->to), stdout);
+	putchar('\n');
+}
+
+static void
+load(void)
+{
+	printf("\t%s %c=\t", addr2txt(&pc->to), 'w');
+	printf("%s\t%s\n", optbl[pc->op].txt, addr2txt(&pc->from1));
 }
 
 void
