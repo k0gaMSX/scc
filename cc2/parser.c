@@ -232,29 +232,30 @@ constant(char *token, union tokenop u)
 static void
 assign(char *token, union tokenop u)
 {
-	int c, op = *token++;
+	int subop, op = u.op;
 	Node *np = newnode();
 
-	switch (*token) {
-	case ODIV:
-	case OMOD:
-	case OADD:
-	case OSUB:
-	case OSHL:
-	case OSHR:
-	case OBAND:
-	case OBXOR:
-	case OBOR:
-	case OINC:
-	case ODEC:
-		c = *token++;
+	switch (subop = *++token) {
+	case '/':
+	case '%':
+	case '+':
+	case '-':
+	case 'l':
+	case 'r':
+	case '&':
+	case '|':
+	case '^':
+	case 'i':
+	case 'd':
+		++token;
+		subop = optbl[subop].u.op;
 		break;
 	default:
-		c = 0;
+		subop = 0;
 		break;
 	}
 
-	np->u.subop = c;
+	np->u.subop = subop;
 	np->op = op;
 	np->type = *gettype(token);
 	np->right = pop();
