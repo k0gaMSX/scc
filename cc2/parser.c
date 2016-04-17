@@ -33,7 +33,7 @@ union tokenop {
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
                 parameter, constant, composed, binit, einit,
-                jump, oreturn, loop, assign, ocase, odefault, casetbl;
+                jump, oreturn, loop, assign, ocase, casetbl;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,
@@ -126,7 +126,7 @@ static struct decoc {
 	['v']   = {     NULL,    jump, .u.op =         OCASE},
 	['s']   = {     NULL,    jump, .u.op =       OSWITCH},
 
-	['f']   = {     NULL,odefault, .u.op =      ODEFAULT},
+	['f']   = {     NULL, casetbl, .u.op =      ODEFAULT},
 	['t']   = {     NULL, casetbl, .u.op =        OTABLE}
 };
 
@@ -356,18 +356,6 @@ static void
 casetbl(char *token, union tokenop u)
 {
 	Node *np, *aux;
-
-	np = newnode();
-	np->op = u.op;
-	eval(strtok(NULL, "\t\n"));
-	np->left = pop();
-	push(np);
-}
-
-static void
-odefault(char *token, union tokenop u)
-{
-	Node *np;
 
 	np = newnode();
 	np->op = u.op;
