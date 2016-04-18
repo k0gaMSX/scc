@@ -139,6 +139,8 @@ size2asm(Type *tp)
 		return "b";
 	} else {
 		switch (tp->size) {
+		case 0:
+			return "";
 		case 1:
 			return "b";
 		case 2:
