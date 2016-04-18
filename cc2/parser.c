@@ -27,7 +27,7 @@ Type funtype = {
 
 union tokenop {
 	void *arg;
-	int op;
+	unsigned op;
 };
 
 typedef void parsefun(char *, union tokenop);
@@ -44,14 +44,14 @@ static struct decoc {
 	void (*parse)(char *token, union tokenop);
 	union tokenop u;
 } optbl[] = {      /*  eval     parse           args */
-	['A']   = {  vardecl,  symbol, .u.op  =        OAUTO},
-	['R']   = {  vardecl,  symbol, .u.op  =         OREG},
-	['G']   = {  vardecl,  symbol, .u.op  =         OMEM},
-	['X']   = {  vardecl,  symbol, .u.op  =         OMEM},
-	['Y']   = {  vardecl,  symbol, .u.op  =         OMEM},
-	['T']   = {  vardecl,  symbol, .u.op  =         OMEM},
-	['M']   = {  flddecl,  symbol, .u.op  =         OMEM},
-	['L']   = { labeldcl,  symbol, .u.op  =       OLABEL},
+	['A']   = {  vardecl,  symbol, .u.op  =  SAUTO<<8 | OAUTO},
+	['R']   = {  vardecl,  symbol, .u.op  =   SREG<<8 |  OREG},
+	['G']   = {  vardecl,  symbol, .u.op  =  SGLOB<<8 |  OMEM},
+	['X']   = {  vardecl,  symbol, .u.op  = SEXTRN<<8 |  OMEM},
+	['Y']   = {  vardecl,  symbol, .u.op  =  SPRIV<<8 |  OMEM},
+	['T']   = {  vardecl,  symbol, .u.op  = SLOCAL<<8 |  OMEM},
+	['M']   = {  flddecl,  symbol, .u.op  =  SMEMB<<8 |  OMEM},
+	['L']   = { labeldcl,  symbol, .u.op  = SLABEL<<8 | OLABEL},
 
 	['C']   = {     NULL,    type, .u.arg =    &int8type},
 	['I']   = {     NULL,    type, .u.arg =   &int16type},
@@ -182,10 +182,10 @@ symbol(char *token, union tokenop u)
 {
 	Node *np;
 
-	sclass = *token++;
+	sclass = u.op >> 8;
 	np = newnode();
-	np->u.sym = getsym(atoi(token));
-	np->op = u.op;
+	np->u.sym = getsym(atoi(token+1));
+	np->op = u.op & 0xFF;
 	push(np);
 }
 
@@ -492,14 +492,14 @@ decl(Symbol *sym)
 		curfun = sym;
 	} else {
 		switch (sym->kind) {
-		case EXTRN:
-		case GLOB:
-		case PRIVAT:
-		case LOCAL:
+		case SEXTRN:
+		case SGLOB:
+		case SPRIV:
+		case SLOCAL:
 			defglobal(sym);
 			break;
-		case AUTO:
-		case REG:
+		case SAUTO:
+		case SREG:
 			if (!curfun)
 				error(ESYNTAX);
 			((inpars) ? defpar : defvar)(sym);

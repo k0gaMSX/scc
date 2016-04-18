@@ -30,17 +30,15 @@ static void
 addr(Node *np, Addr *addr)
 {
 	switch (addr->kind = np->op) {
-	case REG:
+	case SREG:
 		addr->u.reg = np->u.reg;
 		break;
 	case CONST:
 		abort();
 		break;
-	case LABEL:
-		addr->u.sym = np->u.sym;
-		break;
-	case AUTO:
-	case TMP:
+	case SLABEL:
+	case SAUTO:
+	case STMP:
 		addr->u.sym = np->u.sym;
 		break;
 	default:

@@ -42,13 +42,14 @@ static char
 sigil(Symbol *sym)
 {
 	switch (sym->kind) {
-	case EXTRN:
-	case GLOB:
-	case PRIVAT:
-	case LOCAL:
+	case SEXTRN:
+	case SGLOB:
+	case SPRIV:
+	case SLOCAL:
 		return '$';
-	case AUTO:
-	case REG:
+	case SAUTO:
+	case SREG:
+	case STMP:
 		return '%';
 	default:
 		abort();
@@ -64,10 +65,10 @@ symname(Symbol *sym)
 
 	if (sym->name) {
 		switch (sym->kind) {
-		case EXTRN:
-		case GLOB:
-		case PRIVAT:
-		case AUTO:
+		case SEXTRN:
+		case SGLOB:
+		case SPRIV:
+		case SAUTO:
 			sprintf(name, "%c%s", c, sym->name);
 			return name;
 		default:
@@ -156,9 +157,9 @@ size2asm(Type *tp)
 void
 defglobal(Symbol *sym)
 {
-	if (sym->kind == EXTRN)
+	if (sym->kind == SEXTRN)
 		return;
-	if (sym->kind == GLOB)
+	if (sym->kind == SGLOB)
 		fputs("export ", stdout);
 	printf("data %s = {\n", symname(sym));
 	if (sym->type.flags & INITF)
@@ -193,7 +194,7 @@ writeout(void)
 	Type *tp;
 	char *sep;
 
-	if (curfun->kind == GLOB)
+	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
 	printf("function %s %s(", size2asm(&curfun->rtype), symname(curfun));
 
@@ -226,9 +227,9 @@ addr2txt(Addr *a)
 	static char buff[40];
 
 	switch (a->kind) {
-	case AUTO:
-	case LABEL:
-	case TMP:
+	case SAUTO:
+	case SLABEL:
+	case STMP:
 		return symname(a->u.sym);
 	default:
 		abort();

@@ -16,7 +16,7 @@ tmpnode(Node *np)
 
 	sym = getsym(TMPSYM);
 	sym->type = np->type;
-	sym->kind = TMP;
+	sym->kind = STMP;
 	np->u.sym = sym;
 	np->op = OTMP;
 	np->flags |= ISTMP;

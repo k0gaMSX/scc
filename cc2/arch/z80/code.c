@@ -39,11 +39,11 @@ symname(Symbol *sym)
 
 	if (sym->name) {
 		switch (sym->kind) {
-		case GLOB:
-		case EXTRN:
+		case SGLOB:
+		case SEXTRN:
 			snprintf(name, sizeof(name), "_%s", sym->name);
 			return name;
-		case PRIVAT:
+		case SPRIV:
 			return sym->name;
 		}
 	}
@@ -70,10 +70,10 @@ label(Symbol *sym)
 	segment(seg);
 
 	switch (sym->kind) {
-	case EXTRN:
+	case SEXTRN:
 		printf("\tEXTRN\t%s\n", name);
 		return;
-	case GLOB:
+	case SGLOB:
 		printf("\tPUBLIC\t%s\n", name);
 		break;
 	}
@@ -168,7 +168,7 @@ defpar(Symbol *sym)
 {
 	TSIZE align, size;
 
-	if (sym->kind != REG && sym->kind != AUTO)
+	if (sym->kind != SREG && sym->kind != SAUTO)
 		return;
 	align = sym->type.align;
 	size = sym->type.size;
@@ -176,7 +176,7 @@ defpar(Symbol *sym)
 	offpar -= align-1 & ~align;
 	sym->u.off = offpar;
 	offpar -= size;
-	sym->kind = AUTO;
+	sym->kind = SAUTO;
 }
 
 void
@@ -184,7 +184,7 @@ defvar(Symbol *sym)
 {
 	TSIZE align, size;
 
-	if (sym->kind != REG && sym->kind != AUTO)
+	if (sym->kind != SREG && sym->kind != SAUTO)
 		return;
 	align = sym->type.align;
 	size = sym->type.size;
@@ -192,14 +192,14 @@ defvar(Symbol *sym)
 	offvar += align-1 & ~align;
 	sym->u.off = offvar;
 	offvar += size;
-	sym->kind = AUTO;
+	sym->kind = SAUTO;
 }
 
 void
 defglobal(Symbol *sym)
 {
 	label(sym);
-	if (sym->kind == EXTRN || (sym->type.flags & INITF))
+	if (sym->kind == SEXTRN || (sym->type.flags & INITF))
 		return;
 	size2asm(&sym->type);
 	puts("0");

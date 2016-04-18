@@ -9,6 +9,19 @@ enum tflags {
 	INITF   =   128
 };
 
+enum sclass {
+	SAUTO     = 'A',
+	SREG      = 'R',
+	SLABEL    = 'L',
+	SINDEX    = 'I',
+	STMP      = 'N',
+	SGLOB     = 'G',
+	SEXTRN    = 'X',
+	SPRIV     = 'Y',
+	SLOCAL    = 'T',
+	SMEMB     = 'M',
+};
+
 enum op {
 	/* types */
 	ELLIPSIS = 'E',
@@ -33,20 +46,8 @@ enum op {
 	ONAME    = '"',
 	/* kind of operand */
 	NONE     = 0,
-	MEM      = 'M',
-	AUTO     = 'A',
-	REG      = 'R',
 	CONST    = '#',
 	STRING   = '"',
-	LABEL    = 'L',
-	INDEX    = 'I',
-	TMP      = 'T',
-	/* storage class */
-	GLOB     = 'G',
-	EXTRN    = 'X',
-	PRIVAT   = 'Y',
-	LOCAL    = 'T',
-	MEMBER   = 'M',
 	/* operands */
 	OMEM     = 'M',
 	OTMP     = 'T',
