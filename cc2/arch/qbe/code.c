@@ -12,24 +12,24 @@ static struct opdata {
 	void (*fun)(void);
 	char *txt;
 } optbl [] = {
-	[OADD]  =  {.fun = binary, .txt = "add"},
-	[OSUB]  =  {.fun = binary, .txt = "sub"},
-	[OMUL]  =  {.fun = binary, .txt = "mul"},
-	[OMOD]  =  {.fun = binary, .txt = "rem"},
-	[ODIV]  =  {.fun = binary, .txt = "div"},
-	[OSHL]  =  {.fun = binary, .txt = "shl"},
-	[OSHR]  =  {.fun = binary, .txt = "shr"},
-	[OLT]   =  {.fun = binary, .txt = "clt"},
-	[OGT]   =  {.fun = binary, .txt = "cgt"},
-	[OLE]   =  {.fun = binary, .txt = "cle"},
-	[OGE]   =  {.fun = binary, .txt = "cge"},
-	[OEQ]   =  {.fun = binary, .txt = "ceq"},
-	[ONE]   =  {.fun = binary, .txt = "cne"},
-	[OBAND] =  {.fun = binary, .txt = "and"},
-	[OBOR]  =  {.fun = binary, .txt = "or"},
-	[OBXOR] =  {.fun = binary, .txt = "xor"},
-	[OLOAD] =  {.fun = load,   .txt = "load"},
-	[OASSIG] = {.fun = store,  .txt = "store"}
+	[ASADD]  =  {.fun = binary, .txt = "add"},
+	[ASSUB]  =  {.fun = binary, .txt = "sub"},
+	[ASMUL]  =  {.fun = binary, .txt = "mul"},
+	[ASMOD]  =  {.fun = binary, .txt = "rem"},
+	[ASDIV]  =  {.fun = binary, .txt = "div"},
+	[ASSHL]  =  {.fun = binary, .txt = "shl"},
+	[ASSHR]  =  {.fun = binary, .txt = "shr"},
+	[ASLT]   =  {.fun = binary, .txt = "clt"},
+	[ASGT]   =  {.fun = binary, .txt = "cgt"},
+	[ASLE]   =  {.fun = binary, .txt = "cle"},
+	[ASGE]   =  {.fun = binary, .txt = "cge"},
+	[ASEQ]   =  {.fun = binary, .txt = "ceq"},
+	[ASNE]   =  {.fun = binary, .txt = "cne"},
+	[ASBAND] =  {.fun = binary, .txt = "and"},
+	[ASBOR]  =  {.fun = binary, .txt = "or"},
+	[ASBXOR] =  {.fun = binary, .txt = "xor"},
+	[ASLOAD] =  {.fun = load,   .txt = "load"},
+	[ASASSIG] = {.fun = store,  .txt = "store"}
 };
 
 /*

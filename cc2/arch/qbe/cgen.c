@@ -9,6 +9,26 @@ enum sflags {
 	ISCONS = 2
 };
 
+static char opasm[] = {
+	[OADD] = ASADD,
+	[OSUB] = ASSUB,
+	[OMUL] = ASMUL,
+	[OMOD] = ASMOD,
+	[ODIV] = ASDIV,
+	[OSHL] = ASSHL,
+	[OSHR] = ASSHR,
+	[OLT] = ASLT,
+	[OGT] = ASGT,
+	[OLE] = ASLE,
+	[OGE] = ASGE,
+	[OEQ] = ASEQ,
+	[ONE] = ASNE,
+	[OBAND] = ASBAND,
+	[OBOR] = ASBOR,
+	[OBXOR] = ASBXOR,
+	[OCPL] = ASCPL
+};
+
 static Node *
 tmpnode(Node *np)
 {
@@ -31,7 +51,7 @@ load(Node *np)
 	new = tmpnode(newnode());
 	new->left = np;
 	new->type = np->type;
-	code(OLOAD, new, np, NULL);
+	code(ASLOAD, new, np, NULL);
 
 	return new;
 }
@@ -81,7 +101,7 @@ cgen(Node *np)
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
 			r = np->right = load(r);
 		tmpnode(np);
-		code(op, np, l, r);
+		code(opasm[op], np, l, r);
 		return np;
 	case ONOP:
 	case OBLOOP:
@@ -96,7 +116,7 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
-		code(op, l, r, NULL);
+		code(ASASSIG, l, r, NULL);
 		return r;
 	case OCALL:
 	case OFIELD:
