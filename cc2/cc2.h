@@ -20,10 +20,12 @@ enum sclass {
 	SPRIV     = 'Y',
 	SLOCAL    = 'T',
 	SMEMB     = 'M',
+	SCONST    = '#',
+	STRING    = '"',
+	SNONE     = 0
 };
 
-enum op {
-	/* types */
+enum types {
 	ELLIPSIS = 'E',
 	INT8     = 'C',
 	INT16    = 'I',
@@ -42,12 +44,11 @@ enum op {
 	FLOAT    = 'J',
 	DOUBLE   = 'D',
 	LDOUBLE  = 'H',
-	VOID     = '0',
-	ONAME    = '"',
+	VOID     = '0'
+};
+
+enum op {
 	/* kind of operand */
-	NONE     = 0,
-	CONST    = '#',
-	STRING   = '"',
 	/* operands */
 	OMEM     = 'M',
 	OTMP     = 'T',
@@ -100,8 +101,6 @@ enum op {
 	ODEFAULT = 'f',
 	OTABLE   = 't',
 	OSWITCH  = 's',
-	OEPARS   = '\\',
-	OSTMT    = '\t'
 };
 
 enum nerrors {

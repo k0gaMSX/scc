@@ -22,7 +22,7 @@ nextpc(void)
         }
 
         new->prev = pc;
-        new->to.kind = new->from2.kind = new->from1.kind = NONE;
+        new->to.kind = new->from2.kind = new->from1.kind = SNONE;
         pc = new;
 }
 
@@ -33,7 +33,7 @@ addr(Node *np, Addr *addr)
 	case SREG:
 		addr->u.reg = np->u.reg;
 		break;
-	case CONST:
+	case SCONST:
 		abort();
 		break;
 	case SLABEL:
