@@ -51,7 +51,7 @@ enum op {
 	/* kind of operand */
 	/* operands */
 	OMEM     = 'M',
-	OTMP     = 'T',
+	OTMP     = 'N',
 	OAUTO    = 'A',
 	OREG     = 'R',
 	OCONST   = '#',
