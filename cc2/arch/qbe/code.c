@@ -54,9 +54,10 @@ sigil(Symbol *sym)
 	case SLOCAL:
 		return '$';
 	case SAUTO:
-	case SREG:
 	case STMP:
 		return '%';
+	case SLABEL:
+		return '@';
 	default:
 		abort();
 	}
