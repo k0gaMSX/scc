@@ -11,25 +11,28 @@ static void binary(void), load(void), store(void);
 static struct opdata {
 	void (*fun)(void);
 	char *txt;
+	char letter;
 } optbl [] = {
-	[ASADD]  =  {.fun = binary, .txt = "add"},
-	[ASSUB]  =  {.fun = binary, .txt = "sub"},
-	[ASMUL]  =  {.fun = binary, .txt = "mul"},
-	[ASMOD]  =  {.fun = binary, .txt = "rem"},
-	[ASDIV]  =  {.fun = binary, .txt = "div"},
-	[ASSHL]  =  {.fun = binary, .txt = "shl"},
-	[ASSHR]  =  {.fun = binary, .txt = "shr"},
-	[ASLT]   =  {.fun = binary, .txt = "clt"},
-	[ASGT]   =  {.fun = binary, .txt = "cgt"},
-	[ASLE]   =  {.fun = binary, .txt = "cle"},
-	[ASGE]   =  {.fun = binary, .txt = "cge"},
-	[ASEQ]   =  {.fun = binary, .txt = "ceq"},
-	[ASNE]   =  {.fun = binary, .txt = "cne"},
-	[ASBAND] =  {.fun = binary, .txt = "and"},
-	[ASBOR]  =  {.fun = binary, .txt = "or"},
-	[ASBXOR] =  {.fun = binary, .txt = "xor"},
-	[ASLOAD] =  {.fun = load,   .txt = "load"},
-	[ASASSIG] = {.fun = store,  .txt = "store"}
+	[ASADD]  =  {.fun = binary, .txt = "add", .letter = 'w'},
+	[ASSUB]  =  {.fun = binary, .txt = "sub", .letter = 'w'},
+	[ASMUL]  =  {.fun = binary, .txt = "mul", .letter = 'w'},
+	[ASMOD]  =  {.fun = binary, .txt = "rem", .letter = 'w'},
+	[ASDIV]  =  {.fun = binary, .txt = "div", .letter = 'w'},
+	[ASSHL]  =  {.fun = binary, .txt = "shl", .letter = 'w'},
+	[ASSHR]  =  {.fun = binary, .txt = "shr", .letter = 'w'},
+	[ASLT]   =  {.fun = binary, .txt = "clt", .letter = 'w'},
+	[ASGT]   =  {.fun = binary, .txt = "cgt", .letter = 'w'},
+	[ASLE]   =  {.fun = binary, .txt = "cle", .letter = 'w'},
+	[ASGE]   =  {.fun = binary, .txt = "cge", .letter = 'w'},
+	[ASEQ]   =  {.fun = binary, .txt = "ceqw", .letter = 'w'},
+	[ASEQL]  =  {.fun = binary, .txt = "ceql", .letter = 'w'},
+	[ASNE]   =  {.fun = binary, .txt = "cnew", .letter = 'w'},
+	[ASNEL]  =  {.fun = binary, .txt = "cnel", .letter = 'w'},
+	[ASBAND] =  {.fun = binary, .txt = "and", .letter = 'w'},
+	[ASBOR]  =  {.fun = binary, .txt = "or", .letter = 'w'},
+	[ASBXOR] =  {.fun = binary, .txt = "xor", .letter = 'w'},
+	[ASLOAD] =  {.fun = load,   .txt = "load", .letter = 'w'},
+	[ASASSIG] = {.fun = store,  .txt = "store", .letter = 'w'}
 };
 
 /*
@@ -241,8 +244,10 @@ addr2txt(Addr *a)
 static void
 binary(void)
 {
+	struct opdata *p = &optbl[pc->op];
+
 	printf("\t%s %c=\t%s\t",
-	       addr2txt(&pc->to), 'w', optbl[pc->op].txt);
+	       addr2txt(&pc->to), p->letter, p->txt);
 	fputs(addr2txt(&pc->from1), stdout);
 	putchar(',');
 	fputs(addr2txt(&pc->from2), stdout);

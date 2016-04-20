@@ -61,6 +61,7 @@ cgen(Node *np)
 {
 	Node *l, *r;
 	Symbol *sym;
+	Type *tp;
 	int op;
 
 	if (!np)
@@ -68,8 +69,9 @@ cgen(Node *np)
 
 	l = cgen(np->left);
 	r = cgen(np->right);
+	tp = &np->type;
 
-	switch (op = np->op) {
+	switch (np->op) {
 	case OREG:
 	case OSTRING:
 		abort();
@@ -79,6 +81,10 @@ cgen(Node *np)
 	case OMEM:
 	case OAUTO:
 		return np;
+	case OEQ:
+	case ONE:
+		op = opasm[np->op] + (tp->size == 8);
+		goto binary;
 	case OADD:
 	case OSUB:
 	case OMUL:
@@ -90,18 +96,18 @@ cgen(Node *np)
 	case OGT:
 	case OLE:
 	case OGE:
-	case OEQ:
-	case ONE:
 	case OBAND:
 	case OBOR:
 	case OBXOR:
 	case OCPL:
+		op = opasm[np->op];
+	binary:
 		if ((l->flags & (ISTMP|ISCONS)) == 0)
 			l = np->left = load(l);
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
 			r = np->right = load(r);
 		tmpnode(np);
-		code(opasm[op], np, l, r);
+		code(op, np, l, r);
 		return np;
 	case ONOP:
 	case OBLOOP:
