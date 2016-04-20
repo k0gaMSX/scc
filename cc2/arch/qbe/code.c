@@ -1,10 +1,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "arch.h"
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
+
+#define ADDR_LEN (IDENTSIZ+2)
 
 static void binary(void), load(void), store(void);
 
@@ -229,8 +232,6 @@ writeout(void)
 static char *
 addr2txt(Addr *a)
 {
-	static char buff[40];
-
 	switch (a->kind) {
 	case SAUTO:
 	case SLABEL:
@@ -245,13 +246,12 @@ static void
 binary(void)
 {
 	struct opdata *p = &optbl[pc->op];
+	char to[ADDR_LEN], from1[ADDR_LEN], from2[ADDR_LEN];
 
-	printf("\t%s %c=\t%s\t",
-	       addr2txt(&pc->to), p->letter, p->txt);
-	fputs(addr2txt(&pc->from1), stdout);
-	putchar(',');
-	fputs(addr2txt(&pc->from2), stdout);
-	putchar('\n');
+	strcpy(to, addr2txt(&pc->to));
+	strcpy(from1, addr2txt(&pc->from1));
+	strcpy(from2, addr2txt(&pc->from2));
+	printf("\t%s %c=\t%s\t%s,%s\n", to, p->letter, p->txt, from1, from2);
 }
 
 static void
