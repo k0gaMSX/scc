@@ -122,7 +122,7 @@ cgen(Node *np)
 	Node *l, *r;
 	Symbol *sym;
 	Type *tp;
-	int op;
+	int op, off;
 	char *tbl;
 
 	if (!np)
@@ -142,6 +142,16 @@ cgen(Node *np)
 	case OMEM:
 	case OAUTO:
 		return np;
+	case OLT:
+	case OGT:
+	case OLE:
+	case OGE:
+		/*
+		 * unsigned version of operations are always +1 the
+		 * signed version
+		 */
+		off = (tp->flags & SIGNF) == 0;
+		goto binary;
 	case OADD:
 	case OSUB:
 	case OMUL:
@@ -149,16 +159,14 @@ cgen(Node *np)
 	case ODIV:
 	case OSHL:
 	case OSHR:
-	case OLT:
-	case OGT:
-	case OLE:
-	case OGE:
 	case OBAND:
 	case OBOR:
 	case OBXOR:
 	case OCPL:
 	case OEQ:
 	case ONE:
+		off = 0;
+	binary:
 		switch (tp->size) {
 		case 4:
 			tbl = (tp->flags & INTF) ? opasmw : opasms;
@@ -169,8 +177,7 @@ cgen(Node *np)
 		default:
 			abort();
 		}
-		op = tbl[np->op];
-	binary:
+		op = tbl[np->op] + off;
 		if ((l->flags & (ISTMP|ISCONS)) == 0)
 			l = np->left = load(l);
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
