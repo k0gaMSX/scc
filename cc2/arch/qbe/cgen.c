@@ -142,6 +142,7 @@ cgen(Node *np)
 	case OMEM:
 	case OAUTO:
 		return np;
+	case OSHR:
 	case OMOD:
 	case ODIV:
 	case OLT:
@@ -158,7 +159,6 @@ cgen(Node *np)
 	case OSUB:
 	case OMUL:
 	case OSHL:
-	case OSHR:
 	case OBAND:
 	case OBOR:
 	case OBXOR:
