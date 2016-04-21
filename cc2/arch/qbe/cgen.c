@@ -267,6 +267,6 @@ sethi(Node *np)
 			np->complex = rp->complex;
 	}
 	if (np->complex == 0)
-		++rp->complex;
+		++np->complex;
 	return np;
 }
