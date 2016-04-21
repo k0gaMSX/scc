@@ -107,11 +107,30 @@ static Node *
 load(Node *np)
 {
 	Node *new;
+	int op;
+	Type *tp = &np->type;
 
 	new = tmpnode(newnode());
 	new->left = np;
-	new->type = np->type;
-	code(ASLOAD, new, np, NULL);
+	new->type = *tp;
+
+	switch (tp->size) {
+	case 1:
+		op = ASLDB;
+		break;
+	case 2:
+		op = ASLDH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASLDW : ASLDS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASLDL : ASLDD;
+		break;
+	default:
+		abort();
+	}
+	code(op, new, np, NULL);
 
 	return new;
 }
@@ -133,7 +152,6 @@ cgen(Node *np)
 	tp = &np->type;
 
 	switch (np->op) {
-	case OREG:
 	case OSTRING:
 		abort();
 	case OCONST:
@@ -182,8 +200,7 @@ cgen(Node *np)
 			l = np->left = load(l);
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
 			r = np->right = load(r);
-		tmpnode(np);
-		code(op, np, l, r);
+		code(op, tmpnode(np), l, r);
 		return np;
 	case ONOP:
 	case OBLOOP:
@@ -198,7 +215,23 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
-		code(ASASSIG, l, r, NULL);
+		switch (tp->size) {
+		case 1:
+			op = ASSTB;
+			break;
+		case 2:
+			op = ASSTH;
+			break;
+		case 4:
+			op = (tp->flags & INTF) ? ASSTW : ASSTS;
+			break;
+		case 8:
+			op = (tp->flags & INTF) ? ASSTL : ASSTD;
+			break;
+		default:
+			abort();
+		}
+		code(op, l, r, NULL);
 		return r;
 	case OCALL:
 	case OFIELD:

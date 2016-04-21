@@ -132,7 +132,6 @@ struct type {
 
 struct symbol {
 	Type type;
-	Type rtype;
 	unsigned short id;
 	unsigned short numid;
 	char *name;
@@ -208,7 +207,6 @@ extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(void);
-extern Symbol *curfun;
 
 /* symbol.c */
 #define TMPSYM  0
@@ -218,5 +216,7 @@ extern void pushctx(void);
 extern void freesym(Symbol *sym);
 
 /* globals */
+extern Type rtype;
+extern Symbol *curfun;
 extern Symbol *locals;
 extern Inst *pc, *prog;
