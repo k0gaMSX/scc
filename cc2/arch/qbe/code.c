@@ -7,7 +7,7 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
-#define ADDR_LEN (IDENTSIZ+2)
+#define ADDR_LEN (IDENTSIZ+64)
 
 static void binary(void), load(void), store(void);
 
@@ -118,17 +118,19 @@ sigil(Symbol *sym)
 static char *
 symname(Symbol *sym)
 {
-	static char name[IDENTSIZ+2];
-	static unsigned short id;
+	static char name[ADDR_LEN];
+	static unsigned id;
 	char c = sigil(sym);
 
 	if (sym->name) {
 		switch (sym->kind) {
 		case SEXTRN:
 		case SGLOB:
+			sprintf(name, "%c%s", c, sym->name);
+			return name;
 		case SPRIV:
 		case SAUTO:
-			sprintf(name, "%c%s", c, sym->name);
+			sprintf(name, "%c%s.%u", c, sym->name, sym->id);
 			return name;
 		default:
 			abort();
@@ -137,7 +139,7 @@ symname(Symbol *sym)
 
 	if (sym->numid == 0 && (sym->numid = ++id) == 0)
 		error(EIDOVER);
-	sprintf(name, "%c.%d", c, sym->numid);
+	sprintf(name, "%c.%u", c, sym->numid);
 
 	return name;
 }
