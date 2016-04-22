@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "arch.h"
@@ -135,6 +136,76 @@ load(Node *np)
 	return new;
 }
 
+static Node *
+cast(Node *nd, Node *ns)
+{
+	Type *ts, *td;
+	Node *tmp;
+	int op, disint, sisint;
+	extern Type uint32type, int32type;
+
+	if ((ns->flags & (ISTMP|ISCONS)) == 0)
+		ns = nd->left = load(ns);
+	td = &nd->type;
+	ts = &ns->type;
+	disint = (td->flags & INTF) != 0;
+	sisint = (ts->flags & INTF) != 0;
+
+	if (disint && sisint) {
+		if (td->size <= ts->size)
+			return nd;
+		assert(td->size == 4 || td->size == 8);
+		switch (ts->size) {
+		case 1:
+			op = (td->size == 4) ? ASEXTBW : ASEXTBL;
+			break;
+		case 2:
+			op = (td->size == 4) ? ASEXTHW : ASEXTHL;
+			break;
+		case 4:
+			op = ASEXTWL;
+			break;
+		default:
+			abort();
+		}
+		op += (td->flags & SIGNF) == 0;
+	} else if (disint) {
+		/* conversion from float to int */
+		switch (ts->size) {
+		case 4:
+			op = (td->size == 8) ? ASSTOL : ASSTOW;
+			break;
+		case 8:
+			op = (td->size == 8) ? ASDTOL : ASDTOW;
+			break;
+		default:
+			abort();
+		}
+		/* TODO: Add signess */
+	} else {
+		/* conversion from int to float */
+		switch (ts->size) {
+		case 1:
+		case 2:
+			tmp = tmpnode(newnode());
+			tmp->type = (ts->flags&SIGNF) ? int32type : uint32type;
+			tmp->left = ns;
+			nd->left = ns = cast(tmp, ns);
+		case 4:
+			op = (td->size == 8) ? ASSWTOD : ASSWTOS;
+			break;
+		case 8:
+			op = (td->size == 8) ? ASSLTOD : ASSLTOS;
+			break;
+		default:
+			abort();
+		}
+		/* TODO: Add signess */
+	}
+	code(op, tmpnode(nd), ns, NULL);
+	return nd;
+}
+
 Node *
 cgen(Node *np)
 {
@@ -206,11 +277,13 @@ cgen(Node *np)
 	case OBLOOP:
 	case OELOOP:
 		return NULL;
+	case OCAST:
+		assert(r == NULL);
+		return cast(np, l);
 	case OPAR:
 	case ONEG:
 	case OADDR:
 	case OPTR:
-	case OCAST:
 	case OINC:
 	case ODEC:
 		abort();

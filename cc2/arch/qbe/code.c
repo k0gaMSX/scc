@@ -9,19 +9,19 @@
 
 #define ADDR_LEN (IDENTSIZ+64)
 
-static void binary(void), load(void), store(void);
+static void binary(void), unary(void), store(void);
 
 static struct opdata {
 	void (*fun)(void);
 	char *txt;
 	char letter;
 } optbl [] = {
-	[ASLDB]   =  {.fun = load,  .txt = "load", .letter = 'b'},
-	[ASLDH]   =  {.fun = load,  .txt = "load", .letter = 'h'},
-	[ASLDW]   =  {.fun = load,  .txt = "load", .letter = 'w'},
-	[ASLDL]   =  {.fun = load,  .txt = "load", .letter = 'l'},
-	[ASLDS]   =  {.fun = load,  .txt = "load", .letter = 's'},
-	[ASLDD]   =  {.fun = load,  .txt = "load", .letter = 'd'},
+	[ASLDB]   =  {.fun = unary,  .txt = "load", .letter = 'b'},
+	[ASLDH]   =  {.fun = unary,  .txt = "load", .letter = 'h'},
+	[ASLDW]   =  {.fun = unary,  .txt = "load", .letter = 'w'},
+	[ASLDL]   =  {.fun = unary,  .txt = "load", .letter = 'l'},
+	[ASLDS]   =  {.fun = unary,  .txt = "load", .letter = 's'},
+	[ASLDD]   =  {.fun = unary,  .txt = "load", .letter = 'd'},
 
 	[ASSTB]   =  {.fun = store,  .txt = "store", .letter = 'b'},
 	[ASSTH]   =  {.fun = store,  .txt = "store", .letter = 'h'},
@@ -99,6 +99,25 @@ static struct opdata {
 	[ASGED]   =  {.fun = binary, .txt = "cged", .letter = 'w'},
 	[ASEQD]   =  {.fun = binary, .txt = "ceqd", .letter = 'w'},
 	[ASNED]   =  {.fun = binary, .txt = "cned", .letter = 'w'},
+
+	[ASEXTBW] =  {.fun = unary, .txt = "extsb", .letter = 'w'},
+	[ASUEXTBW]=  {.fun = unary, .txt = "extub", .letter = 'w'},
+	[ASEXTBL] =  {.fun = unary, .txt = "extsb", .letter = 'l'},
+	[ASUEXTBL]=  {.fun = unary, .txt = "extub", .letter = 'l'},
+	[ASEXTHW] =  {.fun = unary, .txt = "extsh", .letter = 'w'},
+	[ASUEXTHW]=  {.fun = unary, .txt = "extuh", .letter = 'w'},
+	[ASEXTWL] =  {.fun = unary, .txt = "extsh", .letter = 'l'},
+	[ASUEXTWL]=  {.fun = unary, .txt = "extuh", .letter = 'l'},
+
+	[ASSTOL] = {.fun = unary, .txt = "stosi", .letter = 'l'},
+	[ASSTOW] = {.fun = unary, .txt = "stosi", .letter = 'w'},
+	[ASDTOL] = {.fun = unary, .txt = "dtosi", .letter = 'l'},
+	[ASDTOW] = {.fun = unary, .txt = "dtosi", .letter = 'w'},
+
+	[ASSWTOD] = {.fun = unary, .txt = "swtof", .letter = 'd'},
+	[ASSWTOS] = {.fun = unary, .txt = "swtof", .letter = 's'},
+	[ASSLTOD] = {.fun = unary, .txt = "sltof", .letter = 'd'},
+	[ASSLTOS] = {.fun = unary, .txt = "sltof", .letter = 's'},
 };
 
 /*
@@ -354,7 +373,7 @@ store(void)
 }
 
 static void
-load(void)
+unary(void)
 {
 	struct opdata *p = &optbl[pc->op];
 	char to[ADDR_LEN], from[ADDR_LEN];
