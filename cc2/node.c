@@ -10,6 +10,7 @@
 #define NNODES   32
 
 Symbol *curfun;
+Type rtype;
 
 struct arena {
 	Node *mem;
