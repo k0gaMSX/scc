@@ -16,7 +16,13 @@ static struct opdata {
 	char *txt;
 	char letter;
 } optbl [] = {
-	[ASLOAD] =  {.fun = load,   .txt = "load", .letter = 'w'},
+	[ASLDB]   =  {.fun = load,  .txt = "load", .letter = 'b'},
+	[ASLDH]   =  {.fun = load,  .txt = "load", .letter = 'h'},
+	[ASLDW]   =  {.fun = load,  .txt = "load", .letter = 'w'},
+	[ASLDL]   =  {.fun = load,  .txt = "load", .letter = 'l'},
+	[ASLDS]   =  {.fun = load,  .txt = "load", .letter = 's'},
+	[ASLDD]   =  {.fun = load,  .txt = "load", .letter = 'd'},
+
 	[ASSTB]   =  {.fun = store,  .txt = "store", .letter = 'b'},
 	[ASSTH]   =  {.fun = store,  .txt = "store", .letter = 'h'},
 	[ASSTW]   =  {.fun = store,  .txt = "store", .letter = 'w'},
@@ -346,8 +352,12 @@ store(void)
 static void
 load(void)
 {
-	printf("\t%s %c=\t", addr2txt(&pc->to), 'w');
-	printf("%s\t%s\n", optbl[pc->op].txt, addr2txt(&pc->from1));
+	struct opdata *p = &optbl[pc->op];
+	char to[ADDR_LEN], from[ADDR_LEN];
+
+	strcpy(to, addr2txt(&pc->to));
+	strcpy(from, addr2txt(&pc->from1));
+	printf("\t%s %c=\t%s\t%s\n", to, p->letter, p->txt, from);
 }
 
 void

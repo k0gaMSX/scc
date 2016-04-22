@@ -107,11 +107,30 @@ static Node *
 load(Node *np)
 {
 	Node *new;
+	int op;
+	Type *tp = &np->type;
 
 	new = tmpnode(newnode());
 	new->left = np;
-	new->type = np->type;
-	code(ASLOAD, new, np, NULL);
+	new->type = *tp;
+
+	switch (tp->size) {
+	case 1:
+		op = ASLDB;
+		break;
+	case 2:
+		op = ASLDH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASLDW : ASLDS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASLDL : ASLDD;
+		break;
+	default:
+		abort();
+	}
+	code(op, new, np, NULL);
 
 	return new;
 }

@@ -5,13 +5,19 @@
 #define TSIZE   unsigned long
 
 enum asmop {
-	ASLOAD,
 	ASSTB,
 	ASSTH,
 	ASSTW,
 	ASSTL,
 	ASSTS,
 	ASSTD,
+
+	ASLDB,
+	ASLDH,
+	ASLDW,
+	ASLDL,
+	ASLDS,
+	ASLDD,
 
 	ASADDW,
 	ASSUBW,
