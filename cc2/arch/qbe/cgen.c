@@ -290,7 +290,10 @@ cgen(Node *np)
 	case OPAR:
 	case ONEG:
 	case OADDR:
+		abort();
 	case OPTR:
+		np->left = load(load(l));
+		return tmpnode(np);
 	case OINC:
 	case ODEC:
 		abort();
