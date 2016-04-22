@@ -152,7 +152,6 @@ cgen(Node *np)
 	tp = &np->type;
 
 	switch (np->op) {
-	case OREG:
 	case OSTRING:
 		abort();
 	case OCONST:
