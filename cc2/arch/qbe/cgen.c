@@ -200,8 +200,7 @@ cgen(Node *np)
 			l = np->left = load(l);
 		if ((r->flags & (ISTMP|ISCONS)) == 0)
 			r = np->right = load(r);
-		tmpnode(np);
-		code(op, np, l, r);
+		code(op, tmpnode(np), l, r);
 		return np;
 	case ONOP:
 	case OBLOOP:
