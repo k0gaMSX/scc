@@ -313,7 +313,7 @@ writeout(void)
 	puts(")\n{");
 
 	/* allocate stack space for parameters */
-	for (p = locals; p && (p->type.flags & PARF) == 0; p = p->next)
+	for (p = locals; p && (p->type.flags & PARF) != 0; p = p->next)
 		alloc(p);
 
 	/* allocate stack space for local variables) */
