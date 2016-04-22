@@ -258,7 +258,6 @@ cgen(Node *np)
 	case OBAND:
 	case OBOR:
 	case OBXOR:
-	case OCPL:
 	case OEQ:
 	case ONE:
 		off = 0;
@@ -285,15 +284,18 @@ cgen(Node *np)
 	case OELOOP:
 		return NULL;
 	case OCAST:
-		assert(r == NULL);
 		return cast(np, l);
-	case OPAR:
-	case ONEG:
 	case OADDR:
-		abort();
+		np->flags |= ISTMP;
+		np->op = OTMP;
+		np->u.sym = l->u.sym;
+		return np;
 	case OPTR:
 		np->left = load(load(l));
 		return tmpnode(np);
+	case OCPL:
+	case OPAR:
+	case ONEG:
 	case OINC:
 	case ODEC:
 		abort();
