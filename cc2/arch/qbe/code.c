@@ -246,31 +246,53 @@ data(Node *np)
 	putchar('\n');
 }
 
+static void
+alloc(Symbol *sym)
+{
+	Type *tp = &sym->type;
+
+	printf("\t%s %s=\talloc%lld\t%lld\n",
+	       symname(sym), size2asm(tp),
+	       (long long) tp->size, (long long) tp->align);
+}
+
 void
 writeout(void)
 {
 	Symbol *p;
 	Type *tp;
-	char *sep;
+	char *sep, *name;
 
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
 	printf("function %s %s(", size2asm(&curfun->rtype), symname(curfun));
 
+	/* declare formal parameters */
 	for (sep = "", p = locals; p; p = p->next, sep = ",") {
 		if ((p->type.flags & PARF) == 0)
 			break;
-		printf("%s%s %s", sep, size2asm(&p->type), symname(p));
+		printf("%s%s %s.val", sep, size2asm(&p->type), symname(p));
 	}
-	puts(")");
+	puts(")\n{");
 
-	for ( ; p && p->id != TMPSYM; p = p->next) {
+	/* allocate stack space for parameters */
+	for (p = locals; p && (p->type.flags & PARF) == 0; p = p->next)
+		alloc(p);
+
+	/* allocate stack space for local variables) */
+	for ( ; p && p->id != TMPSYM; p = p->next)
+		alloc(p);
+
+	/* store formal parameters in parameters */
+	for (p = locals; p; p = p->next) {
 		tp = &p->type;
-		printf("\t%s %s=\talloc%lld\t%lld\n",
-		       symname(p), size2asm(tp),
-		       (long long) tp->size, (long long) tp->align);
+		if ((tp->flags & PARF) == 0)
+			break;
+		name = symname(p);
+		printf("\t\tstore%s\t%s.val,%s\n", size2asm(tp), name, name);
 	}
 
+	/* emit assembler instructions */
 	for (pc = prog; pc; pc = pc->next) {
 		if (pc->label)
 			printf("%s:\n", symname(pc->label));
