@@ -6,7 +6,12 @@
 
 enum asmop {
 	ASLOAD,
-	ASASSIG,
+	ASSTB,
+	ASSTH,
+	ASSTW,
+	ASSTL,
+	ASSTS,
+	ASSTD,
 
 	ASADDW,
 	ASSUBW,

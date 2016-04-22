@@ -17,7 +17,12 @@ static struct opdata {
 	char letter;
 } optbl [] = {
 	[ASLOAD] =  {.fun = load,   .txt = "load", .letter = 'w'},
-	[ASASSIG] = {.fun = store,  .txt = "store", .letter = 'w'},
+	[ASSTB]   =  {.fun = store,  .txt = "store", .letter = 'b'},
+	[ASSTH]   =  {.fun = store,  .txt = "store", .letter = 'h'},
+	[ASSTW]   =  {.fun = store,  .txt = "store", .letter = 'w'},
+	[ASSTL]   =  {.fun = store,  .txt = "store", .letter = 'l'},
+	[ASSTS]   =  {.fun = store,  .txt = "store", .letter = 's'},
+	[ASSTD]   =  {.fun = store,  .txt = "store", .letter = 'd'},
 
 	[ASADDW]  =  {.fun = binary, .txt = "add", .letter = 'w'},
 	[ASSUBW]  =  {.fun = binary, .txt = "sub", .letter = 'w'},
@@ -330,11 +335,12 @@ binary(void)
 static void
 store(void)
 {
-	printf("\t\t%s%c\t", optbl[pc->op].txt, 'w'),
-	fputs(addr2txt(&pc->from1), stdout);
-	putchar(',');
-	fputs(addr2txt(&pc->to), stdout);
-	putchar('\n');
+	struct opdata *p = &optbl[pc->op];
+	char to[ADDR_LEN], from[ADDR_LEN];
+
+	strcpy(to, addr2txt(&pc->to));
+	strcpy(from, addr2txt(&pc->from1));
+	printf("\t\t%s%c\t%s,%s\n", p->txt, p->letter, from, to);
 }
 
 static void

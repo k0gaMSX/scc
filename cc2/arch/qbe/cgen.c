@@ -198,7 +198,23 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
-		code(ASASSIG, l, r, NULL);
+		switch (tp->size) {
+		case 1:
+			op = ASSTB;
+			break;
+		case 2:
+			op = ASSTH;
+			break;
+		case 4:
+			op = (tp->flags & INTF) ? ASSTW : ASSTS;
+			break;
+		case 8:
+			op = (tp->flags & INTF) ? ASSTL : ASSTD;
+			break;
+		default:
+			abort();
+		}
+		code(op, l, r, NULL);
 		return r;
 	case OCALL:
 	case OFIELD:
