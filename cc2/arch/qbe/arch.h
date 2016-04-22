@@ -124,5 +124,8 @@ enum asmop {
 	ASSWTOD,
 	ASSWTOS,
 	ASSLTOD,
-	ASSLTOS
+	ASSLTOS,
+
+	ASEXTS,
+	ASTRUNCD
 };

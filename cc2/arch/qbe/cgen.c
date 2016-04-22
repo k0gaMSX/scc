@@ -168,6 +168,10 @@ cast(Node *nd, Node *ns)
 		default:
 			abort();
 		}
+		/*
+		 * unsigned version of operations are always +1 the
+		 * signed version
+		 */
 		op += (td->flags & SIGNF) == 0;
 	} else if (disint) {
 		/* conversion from float to int */
@@ -182,7 +186,7 @@ cast(Node *nd, Node *ns)
 			abort();
 		}
 		/* TODO: Add signess */
-	} else {
+	} else if (sisint) {
 		/* conversion from int to float */
 		switch (ts->size) {
 		case 1:
@@ -201,6 +205,9 @@ cast(Node *nd, Node *ns)
 			abort();
 		}
 		/* TODO: Add signess */
+	} else {
+		/* conversion from float to float */
+		op = (td->size == 4) ? ASEXTS : ASTRUNCD;
 	}
 	code(op, tmpnode(nd), ns, NULL);
 	return nd;

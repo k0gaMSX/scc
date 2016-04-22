@@ -118,6 +118,9 @@ static struct opdata {
 	[ASSWTOS] = {.fun = unary, .txt = "swtof", .letter = 's'},
 	[ASSLTOD] = {.fun = unary, .txt = "sltof", .letter = 'd'},
 	[ASSLTOS] = {.fun = unary, .txt = "sltof", .letter = 's'},
+
+	[ASEXTS] = {.fun = unary, .txt = "exts", .letter = 'd'},
+	[ASSLTOS]= {.fun = unary, .txt = "truncd", .letter = 's'},
 };
 
 /*
