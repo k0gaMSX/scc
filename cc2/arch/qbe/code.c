@@ -123,6 +123,7 @@ static struct opdata {
 	[ASSLTOS]= {.fun = unary, .txt = "truncd", .letter = 's'},
 };
 
+static char buff[ADDR_LEN];
 /*
  * : is for user-defined Aggregate Types
  * $ is for globals (represented by a pointer)
@@ -151,7 +152,6 @@ sigil(Symbol *sym)
 static char *
 symname(Symbol *sym)
 {
-	static char name[ADDR_LEN];
 	static unsigned id;
 	char c = sigil(sym);
 
@@ -159,12 +159,12 @@ symname(Symbol *sym)
 		switch (sym->kind) {
 		case SEXTRN:
 		case SGLOB:
-			sprintf(name, "%c%s", c, sym->name);
-			return name;
+			sprintf(buff, "%c%s", c, sym->name);
+			return buff;
 		case SPRIV:
 		case SAUTO:
-			sprintf(name, "%c%s.%u", c, sym->name, sym->id);
-			return name;
+			sprintf(buff, "%c%s.%u", c, sym->name, sym->id);
+			return buff;
 		default:
 			abort();
 		}
@@ -172,9 +172,9 @@ symname(Symbol *sym)
 
 	if (sym->numid == 0 && (sym->numid = ++id) == 0)
 		error(EIDOVER);
-	sprintf(name, "%c.%u", c, sym->numid);
+	sprintf(buff, "%c.%u", c, sym->numid);
 
-	return name;
+	return buff;
 }
 
 static void
@@ -343,6 +343,9 @@ static char *
 addr2txt(Addr *a)
 {
 	switch (a->kind) {
+	case SCONST:
+		sprintf(buff, "%llu", (unsigned long long) a->u.i);
+		return buff;
 	case SAUTO:
 	case SLABEL:
 	case STMP:

@@ -34,7 +34,7 @@ addr(Node *np, Addr *addr)
 		addr->u.reg = np->u.reg;
 		break;
 	case SCONST:
-		abort();
+		addr->u.i = np->u.i;
 		break;
 	case SLABEL:
 	case SAUTO:
@@ -44,7 +44,6 @@ addr(Node *np, Addr *addr)
 	default:
 		abort();
 	}
-
 }
 
 void
