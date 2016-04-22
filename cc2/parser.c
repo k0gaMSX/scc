@@ -181,10 +181,13 @@ static void
 symbol(char *token, union tokenop u)
 {
 	Node *np;
+	Symbol *sym;
 
 	sclass = u.op >> 8;
 	np = newnode();
-	np->u.sym = getsym(atoi(token+1));
+	sym = getsym(atoi(token+1));
+	np->u.sym = sym;
+	np->type = sym->type;
 	np->op = u.op & 0xFF;
 	push(np);
 }
