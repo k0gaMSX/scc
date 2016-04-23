@@ -200,6 +200,7 @@ extern void data(Node *np);
 extern void writeout(void), endinit(void), newfun(void);
 extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
+extern void setlabel(Symbol *sym);
 
 /* node.c */
 extern void apply(Node *(*fun)(Node *));

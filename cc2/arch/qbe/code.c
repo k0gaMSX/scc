@@ -9,7 +9,7 @@
 
 #define ADDR_LEN (IDENTSIZ+64)
 
-static void binary(void), unary(void), store(void);
+static void binary(void), unary(void), store(void), jmp(void);
 
 static struct opdata {
 	void (*fun)(void);
@@ -121,6 +121,8 @@ static struct opdata {
 
 	[ASEXTS] = {.fun = unary, .txt = "exts", .letter = 'd'},
 	[ASSLTOS]= {.fun = unary, .txt = "truncd", .letter = 's'},
+
+	[ASJMP]  = {.fun = jmp},
 };
 
 static char buff[ADDR_LEN];
@@ -334,7 +336,8 @@ writeout(void)
 	for (pc = prog; pc; pc = pc->next) {
 		if (pc->label)
 			printf("%s:\n", symname(pc->label));
-		(*optbl[pc->op].fun)();
+		if (pc->op)
+			(*optbl[pc->op].fun)();
 	}
 
 	puts("}");
@@ -388,6 +391,12 @@ unary(void)
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from, addr2txt(&pc->from1));
 	printf("\t%s %c=\t%s\t%s\n", to, p->letter, p->txt, from);
+}
+
+static void
+jmp(void)
+{
+	printf("\t\tjmp\t%s\n", addr2txt(&pc->to));
 }
 
 void

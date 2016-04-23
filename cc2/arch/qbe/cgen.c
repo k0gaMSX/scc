@@ -225,6 +225,7 @@ cgen(Node *np)
 	if (!np)
 		return NULL;
 
+	setlabel(np->label);
 	l = cgen(np->left);
 	r = cgen(np->right);
 	tp = &np->type;
@@ -327,8 +328,9 @@ cgen(Node *np)
 	case OOR:
 		abort();
 	case OBRANCH:
+		abort();
 	case OJMP:
-		code(op, NULL, l, r);
+		code(ASJMP, np, NULL, NULL);
 		return NULL;
 	case ORET:
 	case OCASE:
