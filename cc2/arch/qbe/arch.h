@@ -5,6 +5,7 @@
 #define TSIZE   unsigned long
 
 enum asmop {
+	ASNOP = 0,
 	ASSTB,
 	ASSTH,
 	ASSTW,

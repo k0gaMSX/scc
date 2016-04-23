@@ -47,6 +47,15 @@ addr(Node *np, Addr *addr)
 }
 
 void
+setlabel(Symbol *sym)
+{
+	if (!sym)
+		return;
+	code(0, NULL, NULL, NULL);
+	pc->label = sym;
+}
+
+void
 code(int op, Node *to, Node *from1, Node *from2)
 {
 	nextpc();
