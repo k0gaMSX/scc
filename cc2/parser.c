@@ -569,20 +569,6 @@ flddecl(void)
 }
 
 static void
-labeldcl(void)
-{
-	Node *np;
-	Symbol *sym;
-
-	np = pop();
-	sym = np->u.sym;
-	delnode(np);
-	nextline();
-	stmtp->label = sym;
-	sym->u.nlabel = stmtp;
-}
-
-static void
 addstmt(Node *np)
 {
 	if (!curfun->u.nlabel)
@@ -590,6 +576,20 @@ addstmt(Node *np)
 	else
 		stmtp->stmt = np;
 	stmtp = np;
+}
+
+static void
+labeldcl(void)
+{
+	Node *np;
+	Symbol *sym;
+
+	np = pop();
+	np->op = ONOP;
+	sym = np->u.sym;
+	sym->kind = SLABEL;
+	np->label = sym;
+	addstmt(np);
 }
 
 static void
