@@ -29,16 +29,25 @@ nextpc(void)
 static void
 addr(Node *np, Addr *addr)
 {
-	switch (addr->kind = np->op) {
-	case SREG:
+	switch (np->op) {
+	case OREG:
+		addr->kind = SREG;
 		addr->u.reg = np->u.reg;
 		break;
-	case SCONST:
+	case OCONST:
+		addr->kind = OCONST;
 		addr->u.i = np->u.i;
 		break;
-	case SLABEL:
-	case SAUTO:
-	case STMP:
+	case OJMP:
+	case OLABEL:
+		addr->kind = SLABEL;
+		goto symbol;
+	case OAUTO:
+		addr->kind = SAUTO;
+		goto symbol;
+	case OTMP:
+		addr->kind = STMP;;
+	symbol:
 		addr->u.sym = np->u.sym;
 		break;
 	default:
