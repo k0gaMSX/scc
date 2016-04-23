@@ -317,9 +317,10 @@ writeout(void)
 		alloc(p);
 
 	/* allocate stack space for local variables) */
-	for ( ; p && p->id != TMPSYM; p = p->next)
-		alloc(p);
-
+	for ( ; p && p->id != TMPSYM; p = p->next) {
+		if (p->kind != SLABEL)
+			alloc(p);
+	}
 	/* store formal parameters in parameters */
 	for (p = locals; p; p = p->next) {
 		tp = &p->type;
