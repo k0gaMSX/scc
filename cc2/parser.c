@@ -577,6 +577,7 @@ labeldcl(void)
 	np->op = ONOP;
 	sym = np->u.sym;
 	sym->kind = SLABEL;
+	sym->u.stmt = np;
 	np->label = sym;
 	addstmt(np);
 }
