@@ -173,7 +173,7 @@ struct addr {
 };
 
 struct inst {
-        char op;
+        unsigned char op;
 	Symbol *label;
         Addr from1, from2, to;
         Inst *next, *prev;
