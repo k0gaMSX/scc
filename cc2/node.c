@@ -18,7 +18,7 @@ struct arena {
 };
 
 static struct arena *arena;
-static Node *freep;
+static Node *freep, *stmtp;
 static int inhome;
 
 Node *
@@ -42,6 +42,20 @@ newnode(void)
 	freep = np->left;
 
 	return memset(np, 0, sizeof(*np));
+}
+
+Node *
+addstmt(Node *np)
+{
+	if (!curfun->u.stmt)
+		curfun->u.stmt = np;
+	else
+		stmtp->next = np;
+	np->next = NULL;
+	np->prev = stmtp;
+	stmtp = np;
+
+	return np;
 }
 
 void
@@ -73,6 +87,7 @@ cleannodes(void)
 	}
 	arena = NULL;
 	freep = NULL;
+	stmtp = NULL;
 }
 
 void
@@ -83,6 +98,6 @@ apply(Node *(*fun)(Node *))
 	if (!curfun)
 		return;
 
-	for (np = curfun->u.nlabel; np; np = np->stmt)
+	for (np = curfun->u.stmt; np; np = np->next)
 		(*fun)(np);
 }

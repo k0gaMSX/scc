@@ -131,7 +131,6 @@ static struct decoc {
 };
 
 static int sclass, inpars, ininit, endf, lineno;
-static Node *stmtp;
 static void *stack[STACKSIZ], **sp = stack;
 
 static void
@@ -566,16 +565,6 @@ flddecl(void)
 
 	delnode(np);
 	delnode(off);
-}
-
-static void
-addstmt(Node *np)
-{
-	if (!curfun->u.nlabel)
-		curfun->u.nlabel = np;
-	else
-		stmtp->stmt = np;
-	stmtp = np;
 }
 
 static void

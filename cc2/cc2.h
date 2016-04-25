@@ -138,7 +138,7 @@ struct symbol {
 	char kind;
 	union {
 		TSIZE off;
-		Node *nlabel;
+		Node *stmt;
 		Inst *ilabel;
 	} u;
 	Symbol *next;
@@ -160,7 +160,7 @@ struct node {
 	} u;
 	Symbol *label;
 	Node *left, *right;
-	Node *stmt;
+	Node *next, *prev;
 };
 
 struct addr {
@@ -208,6 +208,7 @@ extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(void);
+extern Node *addstmt(Node *np);
 
 /* symbol.c */
 #define TMPSYM  0
