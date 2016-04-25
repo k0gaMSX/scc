@@ -9,6 +9,7 @@
 
 #define NNODES   32
 
+Node *curstmt;
 Symbol *curfun;
 Type rtype;
 
@@ -18,7 +19,7 @@ struct arena {
 };
 
 static struct arena *arena;
-static Node *freep, *stmtp;
+static Node *freep;
 static int inhome;
 
 Node *
@@ -50,12 +51,36 @@ addstmt(Node *np)
 	if (!curfun->u.stmt)
 		curfun->u.stmt = np;
 	else
-		stmtp->next = np;
+		curstmt->next = np;
 	np->next = NULL;
-	np->prev = stmtp;
-	stmtp = np;
+	np->prev = curstmt;
+	curstmt = np;
 
 	return np;
+}
+
+Node *
+delstmt(void)
+{
+	Node *next, *prev;
+
+	next = curstmt->next;
+	prev = curstmt->prev;
+	if (next)
+		next->prev = prev;
+	if (prev)
+		prev->next = next;
+	else
+		curfun->u.stmt = next;
+	deltree(curstmt);
+
+	return curstmt = next;
+}
+
+Node *
+nextstmt(void)
+{
+	return curstmt = curstmt->next;
 }
 
 void
@@ -87,17 +112,15 @@ cleannodes(void)
 	}
 	arena = NULL;
 	freep = NULL;
-	stmtp = NULL;
+	curstmt = NULL;
 }
 
 void
 apply(Node *(*fun)(Node *))
 {
-	Node *np;
-
 	if (!curfun)
 		return;
-
-	for (np = curfun->u.stmt; np; np = np->next)
-		(*fun)(np);
+	curstmt = curfun->u.stmt;
+	while (curstmt)
+		(*fun)(curstmt) ? nextstmt() : delstmt();
 }
