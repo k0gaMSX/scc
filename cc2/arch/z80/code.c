@@ -48,8 +48,6 @@ symname(Symbol *sym)
 		}
 	}
 
-	if (sym->numid == 0 && (sym->numid = ++id) == 0)
-		error(EIDOVER);
 	sprintf(name, ".%d", sym->numid);
 
 	return name;

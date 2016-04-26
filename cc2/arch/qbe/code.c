@@ -171,9 +171,6 @@ symname(Symbol *sym)
 			abort();
 		}
 	}
-
-	if (sym->numid == 0 && (sym->numid = ++id) == 0)
-		error(EIDOVER);
 	sprintf(buff, "%c.%u", c, sym->numid);
 
 	return buff;

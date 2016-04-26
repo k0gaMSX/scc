@@ -48,6 +48,7 @@ Symbol *
 getsym(unsigned id)
 {
 	Symbol **htab, *sym;
+	static unsigned short num;
 
 	if (id > USHRT_MAX)
 		error(EBADID);
@@ -60,6 +61,8 @@ getsym(unsigned id)
 	if (!sym) {
 		sym = xcalloc(1, sizeof(*sym));
 		sym->id = id;
+		if ((sym->numid = ++num) == 0)
+			error(EIDOVER);
 		if (infunction) {
 			if (!locals)
 				locals = sym;
