@@ -139,7 +139,7 @@ struct symbol {
 	union {
 		TSIZE off;
 		Node *stmt;
-		Inst *ilabel;
+		Inst *inst;
 	} u;
 	Symbol *next;
 	Symbol *h_next;
