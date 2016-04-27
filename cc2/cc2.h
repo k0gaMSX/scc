@@ -113,6 +113,7 @@ enum nerrors {
 	ESTACKO,       /* stack overflow */
 	ESTACKU,       /* stack underflow */
 	ELNLINE,       /* line too long */
+	ELNBLNE,       /* line without new line */
 	EFERROR,       /* error reading from file:%s*/
 	EBADID,        /* incorrect symbol id */
 	ENUMERR

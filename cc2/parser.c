@@ -313,7 +313,7 @@ repeat:
 	if ((len = strlen(line)) == 0 || line[0] == '\n')
 		goto repeat;
 	if (line[len-1] != '\n')
-		error(ELNLINE);
+		error(len < sizeof(line)-1 ? ELNBLNE : ELNLINE);
 	line[len-1] = '\0';
 
 	c = *line;
