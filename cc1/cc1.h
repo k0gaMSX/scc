@@ -10,7 +10,7 @@
  */
 typedef struct type Type;
 typedef struct symbol Symbol;
-typedef struct caselist Caselist;
+typedef struct swtch Switch;
 typedef struct node Node;
 typedef struct input Input;
 
@@ -87,19 +87,9 @@ struct node {
 	struct node *left, *right;
 };
 
-struct scase {
-	Symbol *label;
-	Node *expr;
-	struct scase *next;
-};
-
-struct caselist {
+struct swtch {
 	short nr;
-	Symbol *deflabel;
-	Symbol *ltable;
-	Symbol *lbreak;
-	Node *expr;
-	struct scase *head;
+	char hasdef;
 };
 
 struct yystype {
@@ -335,8 +325,8 @@ enum op {
 	OCALL,
 	ORET,
 	ODECL,
-	OSWITCH,
-	OSWITCHT,
+	OBSWITCH,
+	OESWITCH,
 	OINIT
 };
 
@@ -368,7 +358,7 @@ extern void keywords(struct keyword *key, int ns);
 extern Symbol *newstring(char *s, size_t len);
 
 /* stmt.c */
-extern void compound(Symbol *lbreak, Symbol *lcont, Caselist *lswitch);
+extern void compound(Symbol *lbreak, Symbol *lcont, Switch *sw);
 
 /* decl.c */
 extern Type *typename(void);

@@ -10,7 +10,7 @@
 
 Symbol *curfun;
 
-static void stmt(Symbol *lbreak, Symbol *lcont, Caselist *lswitch);
+static void stmt(Symbol *lbreak, Symbol *lcont, Switch *lswitch);
 
 static void
 label(void)
@@ -36,7 +36,7 @@ label(void)
 }
 
 static void
-stmtexp(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+stmtexp(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	if (accept(';'))
 		return;
@@ -62,7 +62,7 @@ condition(void)
 }
 
 static void
-While(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+While(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *begin, *cond, *end;
 	Node *np;
@@ -85,7 +85,7 @@ While(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-For(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *begin, *cond, *end;
 	Node *econd, *einc, *einit;
@@ -117,7 +117,7 @@ For(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Dowhile(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Dowhile(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *begin, *end;
 	Node *np;
@@ -137,7 +137,7 @@ Dowhile(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Return(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Return(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Node *np;
 	Type *tp = curfun->type->type;
@@ -160,7 +160,7 @@ Return(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Break(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Break(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	expect(BREAK);
 	if (!lbreak) {
@@ -172,7 +172,7 @@ Break(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Continue(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Continue(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	expect(CONTINUE);
 	if (!lcont) {
@@ -184,7 +184,7 @@ Continue(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Goto(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Goto(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *sym;
 
@@ -204,74 +204,70 @@ Goto(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-Switch(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Swtch(Symbol *obr, Symbol *lcont, Switch *osw)
 {
-	Caselist lcase = {.nr = 0, .head = NULL, .deflabel = NULL};
+	Switch sw = {0};
 	Node *cond;
+	Symbol *lbreak;
 
 	expect(SWITCH);
-	expect ('(');
 
+	expect ('(');
 	if ((cond = convert(expr(), inttype, 0)) == NULL) {
 		errorp("incorrect type in switch statement");
 		cond = constnode(zero);
 	}
 	expect (')');
 
-	lcase.expr = cond;
-	lcase.lbreak = newlabel();
-	lcase.ltable = newlabel();
-
-	emit(OSWITCH, &lcase);
-	stmt(lbreak, lcont, &lcase);
-	emit(OJUMP, lcase.lbreak);
-	emit(OLABEL, lcase.ltable);
-	emit(OSWITCHT, &lcase);
-	emit(OLABEL, lcase.lbreak);
+	lbreak = newlabel();
+	emit(OBSWITCH, NULL);
+	emit(OEXPR, cond);
+	stmt(lbreak, lcont, &sw);
+	emit(OESWITCH, NULL);
+	emit(OLABEL, lbreak);
 }
 
 static void
-Case(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Case(Symbol *lbreak, Symbol *lcont, Switch *sw)
 {
 	Node *np;
-	struct scase *pcase;
+	Symbol *label;
 
 	expect(CASE);
-	if (!lswitch)
-		errorp("case label not within a switch statement");
 	if ((np = iconstexpr()) == NULL)
 		errorp("case label does not reduce to an integer constant");
-	expect(':');
-	if (lswitch && lswitch->nr >= 0) {
-		if (++lswitch->nr == NR_SWITCH) {
-			errorp("too case labels for a switch statement");
-			lswitch->nr = -1;
-		} else {
-			pcase = xmalloc(sizeof(*pcase));
-			pcase->expr = np;
-			pcase->next = lswitch->head;
-			emit(OLABEL, pcase->label = newlabel());
-			lswitch->head = pcase;
-		}
+	if (!sw) {
+		errorp("case label not within a switch statement");
+	} else if (sw->nr >= 0 && ++sw->nr == NR_SWITCH) {
+		errorp("too case labels for a switch statement");
+		sw->nr = -1;
 	}
-	stmt(lbreak, lcont, lswitch);
+	expect(':');
+
+	label = newlabel();
+	emit(OCASE, label);
+	emit(OEXPR, np);
+	emit(OLABEL, label);
+	stmt(lbreak, lcont, sw);
 }
 
 static void
-Default(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+Default(Symbol *lbreak, Symbol *lcont, Switch *sw)
 {
-	Symbol *ldefault = newlabel();
+	Symbol *label = newlabel();
 
+	if (sw->hasdef)
+		errorp("multiple default labels in one switch");
+	sw->hasdef = 1;
 	expect(DEFAULT);
 	expect(':');
-	emit(OLABEL, ldefault);
-	lswitch->deflabel = ldefault;
-	++lswitch->nr;
-	stmt(lbreak, lcont, lswitch);
+	emit(ODEFAULT, label);
+	emit(OLABEL, label);
+	stmt(lbreak, lcont, sw);
 }
 
 static void
-If(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+If(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *end, *lelse;
 	Node *np;
@@ -294,7 +290,7 @@ If(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-blockit(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+blockit(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	switch (yytoken) {
 	case TYPEIDEN:
@@ -313,7 +309,7 @@ blockit(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 void
-compound(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+compound(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	static int nested;
 
@@ -342,9 +338,9 @@ compound(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 }
 
 static void
-stmt(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
+stmt(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
-	void (*fun)(Symbol *, Symbol *, Caselist *);
+	void (*fun)(Symbol *, Symbol *, Switch *);
 
 	switch (yytoken) {
 	case '{':      fun = compound; break;
@@ -356,7 +352,7 @@ stmt(Symbol *lbreak, Symbol *lcont, Caselist *lswitch)
 	case BREAK:    fun = Break;    break;
 	case CONTINUE: fun = Continue; break;
 	case GOTO:     fun = Goto;     break;
-	case SWITCH:   fun = Switch;   break;
+	case SWITCH:   fun = Swtch;    break;
 	case CASE:     fun = Case;     break;
 	case DEFAULT:  fun = Default;  break;
 	default:       fun = stmtexp;  break;

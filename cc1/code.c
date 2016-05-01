@@ -60,6 +60,8 @@ char *optxt[] = {
 	[OCOMMA] = ",",
 	[OLABEL] = "L%d\n",
 	[ODEFAULT] = "\tf\tL%d\n",
+	[OBSWITCH] = "\ts",
+	[OESWITCH] = "\tk\n",
 	[OCASE] = "\tv\tL%d",
 	[OJUMP] = "\tj\tL%d\n",
 	[OBRANCH] = "\ty\tL%d",
@@ -126,8 +128,8 @@ void (*opcode[])(unsigned, void *) = {
 	[OFUN] = emitfun,
 	[ORET] = emittext,
 	[ODECL] = emitdcl,
-	[OSWITCH] = emitswitch,
-	[OSWITCHT] = emitswitcht,
+	[OBSWITCH] = emittext,
+	[OESWITCH] = emittext,
 	[OPAR] = emitbin,
 	[OCALL] = emitbin,
 	[OINIT] = emitinit
@@ -455,32 +457,6 @@ emitsymid(unsigned op, void *arg)
 {
 	Symbol *sym = arg;
 	printf(optxt[op], sym->id);
-}
-
-static void
-emitswitch(unsigned op, void *arg)
-{
-	Caselist *lcase = arg;
-
-	printf("\ts\tL%u", lcase->ltable->id);
-	emitexp(OEXPR, lcase->expr);
-}
-
-static void
-emitswitcht(unsigned op, void *arg)
-{
-	Caselist *lcase = arg;
-	struct scase *p, *next;
-
-	printf("\tt\t#%c%0x\n", sizettype->letter, lcase->nr);
-	for (p = lcase->head; p; p = next) {
-		emitsymid(OCASE, p->label);
-		emitexp(OEXPR, p->expr);
-		next = p->next;
-		free(p);
-	}
-	if (lcase->deflabel)
-		emitsymid(ODEFAULT, lcase->deflabel);
 }
 
 Node *
