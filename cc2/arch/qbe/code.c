@@ -9,7 +9,7 @@
 
 #define ADDR_LEN (IDENTSIZ+64)
 
-static void binary(void), unary(void), store(void), jmp(void);
+static void binary(void), unary(void), store(void), jmp(void), ret(void);
 
 static struct opdata {
 	void (*fun)(void);
@@ -123,6 +123,7 @@ static struct opdata {
 	[ASSLTOS]= {.fun = unary, .txt = "truncd", .letter = 's'},
 
 	[ASJMP]  = {.fun = jmp},
+	[ASRET]  = {.fun = ret},
 };
 
 static char buff[ADDR_LEN];
@@ -388,6 +389,15 @@ unary(void)
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from, addr2txt(&pc->from1));
 	printf("\t%s %c=\t%s\t%s\n", to, p->letter, p->txt, from);
+}
+
+static void
+ret(void)
+{
+	if (pc->from1.kind == SNONE)
+		puts("\t\tret");
+	else
+		printf("\t\tret\t%s\n", addr2txt(&pc->from1));
 }
 
 static void

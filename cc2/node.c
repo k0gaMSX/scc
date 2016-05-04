@@ -83,6 +83,12 @@ nextstmt(void)
 	return curstmt = curstmt->next;
 }
 
+Node *
+prevstmt(void)
+{
+	return curstmt = curstmt->prev;
+}
+
 void
 delnode(Node *np)
 {

@@ -210,6 +210,8 @@ extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(void);
 extern Node *addstmt(Node *np);
+extern Node *prevstmt(void), *nextstmt(void);
+
 
 /* symbol.c */
 #define TMPSYM  0

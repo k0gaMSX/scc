@@ -225,7 +225,15 @@ cgen(Node *np)
 	if (!np)
 		return NULL;
 
-	setlabel(np->label);
+	if (np->label) {
+		setlabel(np->label);
+		if (np->next == NULL) {
+			Node *tmp = newnode();
+			tmp->op = ORET;
+			addstmt(tmp);
+			prevstmt();
+		}
+	}
 	l = cgen(np->left);
 	r = cgen(np->right);
 	tp = &np->type;
@@ -333,6 +341,10 @@ cgen(Node *np)
 		code(ASJMP, np, NULL, NULL);
 		return NULL;
 	case ORET:
+		if (l && (l->flags & (ISTMP|ISCONS)) == 0)
+			l = np->left = load(l);
+		code(ASRET, l, NULL, NULL);
+		return NULL;
 	case OCASE:
 	case ODEFAULT:
 	case OTABLE:
