@@ -228,11 +228,6 @@ emitsym(unsigned op, void *arg)
 static void
 emitletter(Type *tp)
 {
-	if (tp->op == FTN) {
-		emitletter(tp->type);
-		putchar('\t');
-	}
-
 	putchar(tp->letter);
 	switch (tp->op) {
 	case ARY:
@@ -388,6 +383,10 @@ emitdcl(unsigned op, void *arg)
 	emittype(sym->type);
 	emitvar(sym);
 	putchar('\t');
+	if (sym->type->op == FTN) {
+		emitletter(sym->type->type);
+		putchar('\t');
+	}
 	emitletter(sym->type);
 	printf("\t\"%s", (sym->name) ? sym->name : "");
 	if (sym->flags & ISFIELD)
