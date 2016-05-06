@@ -30,6 +30,7 @@ allocinput(char *fname, FILE *fp)
 	ip = xmalloc(sizeof(Input));
 	ip->fname = xstrdup(fname);
 	ip->p = ip->begin = ip->line = xmalloc(INPUTSIZ);
+	ip->p[0] = '\0';
 	ip->nline = 0;
 	ip->next = input;
 	ip->fp = fp;
@@ -89,7 +90,6 @@ ilex(char *fname)
 		}
 	}
 	allocinput(fname, fp);
-	*input->begin = '\0';
 	keywords(keys, NS_KEYWORD);
 }
 
