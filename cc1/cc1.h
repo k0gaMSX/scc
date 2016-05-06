@@ -82,8 +82,7 @@ struct node {
 	unsigned char op;
 	Type *type;
 	Symbol *sym;
-	bool lvalue : 1;
-	bool constant : 1;
+	char flags;
 	struct node *left, *right;
 };
 
@@ -163,22 +162,29 @@ enum {
 
 /* symbol flags */
 enum {
-	ISAUTO     =       1,
-	ISREGISTER =       2,
-	ISDECLARED =       4,
-	ISFIELD    =       8,
-	ISEXTERN   =      16,
-	ISUSED     =      32,
-	ISCONSTANT =      64,
-	ISGLOBAL   =     128,
-	ISPRIVATE  =     256,
-	ISLOCAL    =     512,
-	ISEMITTED  =    1024,
-	ISDEFINED  =    2048,
-	ISSTRING   =    4096,
-	ISTYPEDEF  =    8192,
-	ISINITLST  =   16384,
-	HASINIT    =   32768
+	SAUTO     =       1,
+	SREGISTER =       2,
+	SDECLARED =       4,
+	SFIELD    =       8,
+	SEXTERN   =      16,
+	SUSED     =      32,
+	SCONSTANT =      64,
+	SGLOBAL   =     128,
+	SPRIVATE  =     256,
+	SLOCAL    =     512,
+	SEMITTED  =    1024,
+	SDEFINED  =    2048,
+	SSTRING   =    4096,
+	STYPEDEF  =    8192,
+	SINITLST  =   16384,
+	SHASINIT  =   32768
+};
+
+/* node flags */
+enum {
+	NLVAL   = 1,
+	NCONST  = 2,
+	NEFFECT = 4
 };
 
 /* lexer mode, compiler or preprocessor directive */

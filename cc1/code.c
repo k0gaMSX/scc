@@ -168,17 +168,17 @@ emitvar(Symbol *sym)
 	char c;
 	short flags = sym->flags;
 
-	if (flags & ISLOCAL)
+	if (flags & SLOCAL)
 		c = 'T';
-	else if (flags & ISPRIVATE)
+	else if (flags & SPRIVATE)
 		c =  'Y';
-	else if (flags & ISGLOBAL)
+	else if (flags & SGLOBAL)
 		c = 'G';
-	else if (flags & ISREGISTER)
+	else if (flags & SREGISTER)
 		c = 'R';
-	else if (flags & ISFIELD)
+	else if (flags & SFIELD)
 		c = 'M';
-	else if (flags & ISEXTERN)
+	else if (flags & SEXTERN)
 		c = 'X';
 	else
 		c = 'A';
@@ -213,7 +213,7 @@ emitsym(unsigned op, void *arg)
 {
 	Node *np = arg;
 
-	if ((np->sym->flags & ISINITLST) == 0) {
+	if ((np->sym->flags & SINITLST) == 0) {
 		/*
 		 * When we have a compound literal we are going
 		 * to call to emitnode for every element of it,
@@ -222,7 +222,7 @@ emitsym(unsigned op, void *arg)
 		 */
 		putchar('\t');
 	}
-	(np->constant) ? emitconst(np) : emitvar(np->sym);
+	(np->flags & NCONST) ? emitconst(np) : emitvar(np->sym);
 }
 
 static void
@@ -324,11 +324,11 @@ emitdesig(Node *np, Type *tp)
 		if (!np->sym)
 			goto emit_expression;
 		sym = np->sym;
-		if (sym->flags & ISSTRING) {
+		if (sym->flags & SSTRING) {
 			emitstring(sym, tp);
 			return;
 		}
-		if ((sym->flags & ISINITLST) == 0)
+		if ((sym->flags & SINITLST) == 0)
 			goto emit_expression;
 	}
 
@@ -378,7 +378,7 @@ emitdcl(unsigned op, void *arg)
 {
 	Symbol *sym = arg;
 
-	if (sym->flags & ISEMITTED)
+	if (sym->flags & SEMITTED)
 		return;
 	emittype(sym->type);
 	emitvar(sym);
@@ -389,10 +389,10 @@ emitdcl(unsigned op, void *arg)
 	}
 	emitletter(sym->type);
 	printf("\t\"%s", (sym->name) ? sym->name : "");
-	if (sym->flags & ISFIELD)
+	if (sym->flags & SFIELD)
 		printf("\t#%c%llX", sizettype->letter, sym->u.i);
-	sym->flags |= ISEMITTED;
-	if ((sym->flags & HASINIT) == 0)
+	sym->flags |= SEMITTED;
+	if ((sym->flags & SHASINIT) == 0)
 		putchar('\n');
 }
 
@@ -467,7 +467,7 @@ node(unsigned op, Type *tp, Node *lp, Node *rp)
 	np->op = op;
 	np->type = tp;
 	np->sym = NULL;
-	np->constant = np->lvalue = 0;
+	np->flags = 0;
 	np->left = lp;
 	np->right = rp;
 
@@ -482,8 +482,7 @@ varnode(Symbol *sym)
 
 	np = node(OSYM, sym->type, NULL, NULL);
 	np->type = sym->type;
-	np->lvalue = tp->op != FTN && tp->op != ARY;
-	np->constant = 0;
+	np->flags = (tp->op != FTN && tp->op != ARY) ? NLVAL : 0;
 	np->sym = sym;
 	return np;
 }
@@ -495,7 +494,7 @@ constnode(Symbol *sym)
 
 	np = node(OSYM, sym->type, NULL, NULL);
 	np->type = sym->type;
-	np->constant = 1;
+	np->flags = NCONST;
 	np->sym = sym;
 	return np;
 }

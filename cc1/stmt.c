@@ -21,11 +21,11 @@ label(void)
 	case IDEN:
 	case TYPEIDEN:
 		sym = lookup(NS_LABEL, yytext);
-		if (sym->flags & ISDEFINED)
+		if (sym->flags & SDEFINED)
 			error("label '%s' already defined", yytext);
-		if ((sym->flags & ISDECLARED) == 0)
+		if ((sym->flags & SDECLARED) == 0)
 			sym = install(NS_LABEL, sym);
-		sym->flags |= ISDEFINED;
+		sym->flags |= SDEFINED;
 		emit(OLABEL, sym);
 		next();
 		expect(':');
@@ -195,9 +195,9 @@ Goto(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	if (yytoken != IDEN)
 		unexpected();
 	sym = yylval.sym;
-	if ((sym->flags & ISDECLARED) == 0)
+	if ((sym->flags & SDECLARED) == 0)
 		sym = install(NS_LABEL, sym);
-	sym->flags |= ISUSED;
+	sym->flags |= SUSED;
 	emit(OJUMP, sym);
 	next();
 	expect(';');

@@ -341,7 +341,7 @@ convert:
 	tp = ctype(INT, sign, size);
 	sym = newsym(NS_IDEN);
 	sym->type = tp;
-	sym->flags |= ISCONSTANT;
+	sym->flags |= SCONSTANT;
 	yylval.sym = readint(s, base, sign, sym);
 	return CONSTANT;
 }
@@ -513,7 +513,7 @@ iden(void)
 			sym = nextsym(sym, namespace);
 	}
 	yylval.sym = sym;
-	if (sym->flags & ISCONSTANT)
+	if (sym->flags & SCONSTANT)
 		return CONSTANT;
 	if (sym->token != IDEN)
 		yylval.token = sym->u.token;

@@ -65,7 +65,7 @@ fielddesig(Init *ip)
 	if (yytoken != IDEN)
 		unexpected();
 	sym = yylval.sym;
-	if ((sym->flags & ISDECLARED) == 0) {
+	if ((sym->flags & SDECLARED) == 0) {
 		errorp(" unknown field '%s' specified in initializer",
 		      sym->name);
 		return 0;
@@ -175,7 +175,7 @@ mkcompound(Init *ip)
 	sym = newsym(NS_IDEN);
 	sym->u.init = v;
 	sym->type = ip->type;
-	sym->flags |= ISINITLST;
+	sym->flags |= SINITLST;
 
 	return constnode(sym);
 }
@@ -300,21 +300,21 @@ initializer(Symbol *sym, Type *tp)
 	}
 	np = initialize(tp);
 
-	if (flags & ISDEFINED) {
+	if (flags & SDEFINED) {
 		errorp("redeclaration of '%s'", sym->name);
-	} else if ((flags & (ISGLOBAL|ISLOCAL|ISPRIVATE)) != 0) {
-		if (!np->constant) {
+	} else if ((flags & (SGLOBAL|SLOCAL|SPRIVATE)) != 0) {
+		if (!(np->flags & NCONST)) {
 			errorp("initializer element is not constant");
 			return;
 		}
-		sym->flags |= HASINIT;
-		sym->flags &= ~ISEMITTED;
+		sym->flags |= SHASINIT;
+		sym->flags &= ~SEMITTED;
 		emit(ODECL, sym);
 		emit(OINIT, np);
-		sym->flags |= ISDEFINED;
-	} else if ((flags & (ISEXTERN|ISTYPEDEF)) != 0) {
+		sym->flags |= SDEFINED;
+	} else if ((flags & (SEXTERN|STYPEDEF)) != 0) {
 		errorp("'%s' has both '%s' and initializer",
-		       sym->name, (flags&ISEXTERN) ? "extern" : "typedef");
+		       sym->name, (flags&SEXTERN) ? "extern" : "typedef");
 	} else {
 		emit(ODECL, sym);
 		np = node(OASSIGN, tp, varnode(sym), np);
