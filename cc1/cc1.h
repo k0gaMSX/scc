@@ -162,29 +162,29 @@ enum {
 
 /* symbol flags */
 enum {
-	SAUTO     =       1,
-	SREGISTER =       2,
-	SDECLARED =       4,
-	SFIELD    =       8,
-	SEXTERN   =      16,
-	SUSED     =      32,
-	SCONSTANT =      64,
-	SGLOBAL   =     128,
-	SPRIVATE  =     256,
-	SLOCAL    =     512,
-	SEMITTED  =    1024,
-	SDEFINED  =    2048,
-	SSTRING   =    4096,
-	STYPEDEF  =    8192,
-	SINITLST  =   16384,
-	SHASINIT  =   32768
+	SAUTO     = 1 << 0,
+	SREGISTER = 1 << 1,
+	SDECLARED = 1 << 2,
+	SFIELD    = 1 << 3,
+	SEXTERN   = 1 << 4,
+	SUSED     = 1 << 5,
+	SCONSTANT = 1 << 6,
+	SGLOBAL   = 1 << 7,
+	SPRIVATE  = 1 << 8,
+	SLOCAL    = 1 << 9,
+	SEMITTED  = 1 << 10,
+	SDEFINED  = 1 << 11,
+	SSTRING   = 1 << 12,
+	STYPEDEF  = 1 << 13,
+	SINITLST  = 1 << 14,
+	SHASINIT  = 1 << 15
 };
 
 /* node flags */
 enum {
-	NLVAL   = 1,
-	NCONST  = 2,
-	NEFFECT = 4
+	NLVAL   = 1 << 0,
+	NCONST  = 1 << 1,
+	NEFFECT = 1 << 2
 };
 
 /* lexer mode, compiler or preprocessor directive */
@@ -195,11 +195,11 @@ enum {
 
 /* input tokens */
 enum tokens {
-	CONST      =       1,      /* type qualifier tokens are used as flags */
-	RESTRICT   =       2,
-	VOLATILE   =       4,
-	INLINE     =       8,
-	TQUALIFIER =     128,
+	CONST      = 1 << 0,      /* type qualifier tokens are used as flags */
+	RESTRICT   = 1 << 1,
+	VOLATILE   = 1 << 2,
+	INLINE     = 1 << 3,
+	TQUALIFIER = 1 << 7,      /* this value is picked outside of ASCII range */
 	TYPE,
 	IDEN,
 	SCLASS,
