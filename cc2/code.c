@@ -53,7 +53,7 @@ addr(Node *np, Addr *addr)
 }
 
 Node *
-label(Symbol *sym)
+label2node(Symbol *sym)
 {
 	Node *np;
 

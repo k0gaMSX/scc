@@ -351,13 +351,13 @@ cgen(Node *np)
 			sym->kind = SLABEL;
 			next->label = sym;
 		}
-		ifyes = label(np->u.sym);
-		ifno = label(next->label);
+		ifyes = label2node(np->u.sym);
+		ifno = label2node(next->label);
 		op = ASBRANCH;
 		np = np->left;
 		goto emit_jump;
 	case OJMP:
-		ifyes = label(np->u.sym);
+		ifyes = label2node(np->u.sym);
 		op = ASJMP;
 		np = ifno = NULL;
 	emit_jump:
