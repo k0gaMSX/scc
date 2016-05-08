@@ -231,6 +231,20 @@ cast(Node *nd)
 	return nd;
 }
 
+static Node *
+abbrev(Node *np)
+{
+	Node *tmp;
+
+	if (np->u.subop == 0)
+		return np->right;
+	tmp = newnode(np->u.subop);
+	tmp->type = np->type;
+	tmp->right = np->right;
+	tmp->left = np->left;
+	return np->right = cgen(tmp);
+}
+
 Node *
 cgen(Node *np)
 {
@@ -317,6 +331,7 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
+		r = abbrev(np);
 		switch (tp->size) {
 		case 1:
 			op = ASSTB;
