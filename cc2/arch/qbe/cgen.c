@@ -5,6 +5,12 @@
 #include "arch.h"
 #include "../../cc2.h"
 
+enum lflags {
+	FORCE = 1 << 0,
+	LOADL = 1 << 1,
+	LOADR = 1 << 2
+};
+
 enum sflags {
 	ISTMP  = 1,
 	ISCONS = 2
@@ -104,47 +110,58 @@ tmpnode(Node *np)
 	return np;
 }
 
+/*
+ * load() load the address passed in a child of np in a temporary
+ * if it is not already in a temporay. It can be forced to load
+ * using the FORCE flag
+ */
 static Node *
-load(Node *np)
+load(Node *np, int flags)
 {
 	int op;
-	Node *new = tmpnode(newnode(ONOP));
-	Type *tp = &np->type;
+	Type *tp;
+	Node *child;
 
-	new->left = np;
-	new->type = *tp;
+	child = (flags & LOADL) ? np->left : np->right;
+	tp = &child->type;
 
-	switch (tp->size) {
-	case 1:
-		op = ASLDB;
-		break;
-	case 2:
-		op = ASLDH;
-		break;
-	case 4:
-		op = (tp->flags & INTF) ? ASLDW : ASLDS;
-		break;
-	case 8:
-		op = (tp->flags & INTF) ? ASLDL : ASLDD;
-		break;
-	default:
-		abort();
+	if ((flags & FORCE) || !(child->flags & (ISTMP|ISCONS))) {
+		Node *new = tmpnode(newnode(OTMP));
+		new->type = *tp;
+		new->left = child;
+
+		switch (tp->size) {
+		case 1:
+			op = ASLDB;
+			break;
+		case 2:
+			op = ASLDH;
+			break;
+		case 4:
+			op = (tp->flags & INTF) ? ASLDW : ASLDS;
+			break;
+		case 8:
+			op = (tp->flags & INTF) ? ASLDL : ASLDD;
+			break;
+		default:
+			abort();
+		}
+		code(op, new, child, NULL);
+		child = new;
 	}
-	code(op, new, np, NULL);
 
-	return new;
+	return (flags & LOADL) ? (np->left = child) : (np->right = child);
 }
 
 static Node *
-cast(Node *nd, Node *ns)
+cast(Node *nd)
 {
 	Type *ts, *td;
-	Node *tmp;
+	Node *tmp, *ns;
 	int op, disint, sisint;
 	extern Type uint32type, int32type;
 
-	if ((ns->flags & (ISTMP|ISCONS)) == 0)
-		ns = nd->left = load(ns);
+	ns = load(nd, LOADL);
 	td = &nd->type;
 	ts = &ns->type;
 	disint = (td->flags & INTF) != 0;
@@ -193,7 +210,7 @@ cast(Node *nd, Node *ns)
 			tmp = tmpnode(newnode(ONOP));
 			tmp->type = (ts->flags&SIGNF) ? int32type : uint32type;
 			tmp->left = ns;
-			nd->left = ns = cast(tmp, ns);
+			nd->left = ns = cast(tmp);
 		case 4:
 			op = (td->size == 8) ? ASSWTOD : ASSWTOS;
 			break;
@@ -215,7 +232,7 @@ cast(Node *nd, Node *ns)
 Node *
 cgen(Node *np)
 {
-	Node *l, *r;
+	Node *l, *r, *ifyes, *ifno, *next;
 	Symbol *sym;
 	Type *tp;
 	int op, off;
@@ -224,13 +241,7 @@ cgen(Node *np)
 	if (!np)
 		return NULL;
 
-	if (np->label) {
-		setlabel(np->label);
-		if (np->next == NULL) {
-			addstmt(newnode(ORET));
-			prevstmt();
-		}
-	}
+	setlabel(np->label);
 	l = cgen(np->left);
 	r = cgen(np->right);
 	tp = &np->type;
@@ -279,25 +290,23 @@ cgen(Node *np)
 			abort();
 		}
 		op = tbl[np->op] + off;
-		if ((l->flags & (ISTMP|ISCONS)) == 0)
-			l = np->left = load(l);
-		if ((r->flags & (ISTMP|ISCONS)) == 0)
-			r = np->right = load(r);
-		code(op, tmpnode(np), l, r);
+		code(op, tmpnode(np), load(np, LOADL), load(np, LOADR));
 		return np;
 	case ONOP:
 	case OBLOOP:
 	case OELOOP:
 		return NULL;
 	case OCAST:
-		return cast(np, l);
+		return cast(np);
 	case OADDR:
 		np->flags |= ISTMP;
 		np->op = OTMP;
 		np->u.sym = l->u.sym;
 		return np;
 	case OPTR:
-		np->left = load(load(l));
+		load(np, LOADL);
+		/* FIXME: The type of the loaded value is not np->type */
+		load(np, LOADL|FORCE);
 		return tmpnode(np);
 	case OCPL:
 	case OPAR:
@@ -333,14 +342,29 @@ cgen(Node *np)
 	case OOR:
 		abort();
 	case OBRANCH:
-		abort();
+		next = np->next;
+		l = load(np, LOADL);
+		if (next->label) {
+			sym = getsym(TMPSYM);
+			sym->kind = SLABEL;
+			next->label = sym;
+		}
+		ifyes = label(np->u.sym);
+		ifno = label(next->label);
+		op = ASBRANCH;
+		np = np->left;
+		goto emit_jump;
 	case OJMP:
-		code(ASJMP, np, NULL, NULL);
+		ifyes = label(np->u.sym);
+		op = ASJMP;
+		np = ifno = NULL;
+	emit_jump:
+		code(op, np, ifyes, ifno);
+		deltree(ifyes);
+		deltree(ifno);
 		return NULL;
 	case ORET:
-		if (l && (l->flags & (ISTMP|ISCONS)) == 0)
-			l = np->left = load(l);
-		code(ASRET, l, NULL, NULL);
+		code(ASRET, load(np, LOADL), NULL, NULL);
 		return NULL;
 	case OCASE:
 	case ODEFAULT:

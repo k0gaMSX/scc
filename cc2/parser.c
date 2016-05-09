@@ -556,7 +556,7 @@ labeldcl(void)
 	sym->kind = SLABEL;
 	sym->u.stmt = np;
 	np->label = sym;
-	addstmt(np);
+	addstmt(np, SETCUR);
 }
 
 static void
@@ -570,7 +570,7 @@ stmt(void)
 		deltree(np);
 		return;
 	}
-	addstmt(np);
+	addstmt(np, SETCUR);
 }
 
 static void

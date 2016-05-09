@@ -202,16 +202,18 @@ extern void writeout(void), endinit(void), newfun(void);
 extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 extern void setlabel(Symbol *sym);
+extern Node *label(Symbol *sym);
 
 /* node.c */
+#define SETCUR  1
+#define KEEPCUR 0
 extern void apply(Node *(*fun)(Node *));
 extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(int op);
-extern Node *addstmt(Node *np);
-extern Node *prevstmt(void), *nextstmt(void);
-
+extern Node *addstmt(Node *np, int flags);
+extern Node *nextstmt(void);
 
 /* symbol.c */
 #define TMPSYM  0
