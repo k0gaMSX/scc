@@ -107,11 +107,10 @@ tmpnode(Node *np)
 static Node *
 load(Node *np)
 {
-	Node *new;
 	int op;
+	Node *new = tmpnode(newnode(ONOP));
 	Type *tp = &np->type;
 
-	new = tmpnode(newnode());
 	new->left = np;
 	new->type = *tp;
 
@@ -191,7 +190,7 @@ cast(Node *nd, Node *ns)
 		switch (ts->size) {
 		case 1:
 		case 2:
-			tmp = tmpnode(newnode());
+			tmp = tmpnode(newnode(ONOP));
 			tmp->type = (ts->flags&SIGNF) ? int32type : uint32type;
 			tmp->left = ns;
 			nd->left = ns = cast(tmp, ns);
@@ -228,9 +227,7 @@ cgen(Node *np)
 	if (np->label) {
 		setlabel(np->label);
 		if (np->next == NULL) {
-			Node *tmp = newnode();
-			tmp->op = ORET;
-			addstmt(tmp);
+			addstmt(newnode(ORET));
 			prevstmt();
 		}
 	}

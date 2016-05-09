@@ -23,7 +23,7 @@ static Node *freep;
 static int inhome;
 
 Node *
-newnode(void)
+newnode(int op)
 {
 	struct arena *ap;
 	Node *np;
@@ -42,7 +42,10 @@ newnode(void)
 	np = freep;
 	freep = np->left;
 
-	return memset(np, 0, sizeof(*np));
+	memset(np, 0, sizeof(*np));
+	np->op = op;
+
+	return np;
 }
 
 Node *

@@ -208,7 +208,7 @@ extern void apply(Node *(*fun)(Node *));
 extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
-extern Node *newnode(void);
+extern Node *newnode(int op);
 extern Node *addstmt(Node *np);
 extern Node *prevstmt(void), *nextstmt(void);
 
