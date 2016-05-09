@@ -593,6 +593,7 @@ ifclause(int negate, int isifdef)
 			return;
 		}
 		status = expr->sym->u.i != 0;
+		freetree(expr);
 	}
 
 	if (negate)
