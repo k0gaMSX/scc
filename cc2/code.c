@@ -38,7 +38,6 @@ addr(Node *np, Addr *addr)
 		addr->kind = OCONST;
 		addr->u.i = np->u.i;
 		break;
-	case OJMP:
 	case OLABEL:
 		addr->kind = SLABEL;
 		goto symbol;
@@ -50,9 +49,19 @@ addr(Node *np, Addr *addr)
 	symbol:
 		addr->u.sym = np->u.sym;
 		break;
-	default:
-		abort();
 	}
+}
+
+Node *
+label(Symbol *sym)
+{
+	Node *np;
+
+	np = newnode();
+	np->op = OLABEL;
+	np->u.sym = sym;
+
+	return np;
 }
 
 void

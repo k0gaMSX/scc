@@ -216,7 +216,7 @@ cast(Node *nd, Node *ns)
 Node *
 cgen(Node *np)
 {
-	Node *l, *r;
+	Node *l, *r, *ifyes, *ifno, *next;
 	Symbol *sym;
 	Type *tp;
 	int op, off;
@@ -335,9 +335,27 @@ cgen(Node *np)
 	case OOR:
 		abort();
 	case OBRANCH:
-		abort();
+		if (l && (l->flags & (ISTMP|ISCONS)) == 0)
+			l = np->left = load(l);
+		next = np->next;
+		if (next->label) {
+			sym = getsym(TMPSYM);
+			sym->kind = SLABEL;
+			next->label = sym;
+		}
+		ifyes = label(np->u.sym);
+		ifno = label(next->label);
+		op = ASBRANCH;
+		np = np->left;
+		goto emit_jump;
 	case OJMP:
-		code(ASJMP, np, NULL, NULL);
+		ifyes = label(np->u.sym);
+		op = ASJMP;
+		np = ifno = NULL;
+	emit_jump:
+		code(op, np, ifyes, ifno);
+		deltree(ifyes);
+		deltree(ifno);
 		return NULL;
 	case ORET:
 		if (l && (l->flags & (ISTMP|ISCONS)) == 0)

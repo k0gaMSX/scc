@@ -131,5 +131,6 @@ enum asmop {
 	ASTRUNCD,
 
 	ASJMP,
+	ASBRANCH,
 	ASRET,
 };

@@ -202,6 +202,7 @@ extern void writeout(void), endinit(void), newfun(void);
 extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 extern void setlabel(Symbol *sym);
+extern Node *label(Symbol *sym);
 
 /* node.c */
 #define SETCUR  1
