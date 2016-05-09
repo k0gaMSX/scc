@@ -204,13 +204,15 @@ extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 extern void setlabel(Symbol *sym);
 
 /* node.c */
+#define SETCUR  1
+#define KEEPCUR 0
 extern void apply(Node *(*fun)(Node *));
 extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern Node *newnode(void);
-extern Node *addstmt(Node *np);
-extern Node *prevstmt(void), *nextstmt(void);
+extern Node *addstmt(Node *np, int flags);
+extern Node *nextstmt(void);
 
 
 /* symbol.c */

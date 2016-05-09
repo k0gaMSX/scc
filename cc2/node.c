@@ -46,15 +46,19 @@ newnode(void)
 }
 
 Node *
-addstmt(Node *np)
+addstmt(Node *np, int flag)
 {
+	if (curstmt)
+		np->next = curstmt->next;
+	np->prev = curstmt;
+
 	if (!curfun->u.stmt)
 		curfun->u.stmt = np;
 	else
 		curstmt->next = np;
-	np->next = NULL;
-	np->prev = curstmt;
-	curstmt = np;
+
+	if (flag == SETCUR)
+		curstmt = np;
 
 	return np;
 }
@@ -81,12 +85,6 @@ Node *
 nextstmt(void)
 {
 	return curstmt = curstmt->next;
-}
-
-Node *
-prevstmt(void)
-{
-	return curstmt = curstmt->prev;
 }
 
 void

@@ -230,8 +230,7 @@ cgen(Node *np)
 		if (np->next == NULL) {
 			Node *tmp = newnode();
 			tmp->op = ORET;
-			addstmt(tmp);
-			prevstmt();
+			addstmt(tmp, KEEPCUR);
 		}
 	}
 	l = cgen(np->left);
