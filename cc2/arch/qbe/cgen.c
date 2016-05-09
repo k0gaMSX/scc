@@ -366,7 +366,7 @@ cgen(Node *np)
 		deltree(ifno);
 		return NULL;
 	case ORET:
-		code(ASRET, load(np, LOADL), NULL, NULL);
+		code(ASRET, NULL, load(np, LOADL), NULL);
 		return NULL;
 	case OCASE:
 	case ODEFAULT:
