@@ -225,14 +225,7 @@ cgen(Node *np)
 	if (!np)
 		return NULL;
 
-	if (np->label) {
-		setlabel(np->label);
-		if (np->next == NULL) {
-			Node *tmp = newnode();
-			tmp->op = ORET;
-			addstmt(tmp, KEEPCUR);
-		}
-	}
+	setlabel(np->label);
 	l = cgen(np->left);
 	r = cgen(np->right);
 	tp = &np->type;
