@@ -123,6 +123,8 @@ load(Node *np, int flags)
 	Node *child;
 
 	child = (flags & LOADL) ? np->left : np->right;
+	if (!child)
+		return NULL;
 	tp = &child->type;
 
 	if ((flags & FORCE) || !(child->flags & (ISTMP|ISCONS))) {
