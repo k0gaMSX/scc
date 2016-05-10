@@ -9,9 +9,7 @@
 #include "cc1.h"
 
 static void emitbin(unsigned, void *),
-            emitswitcht(unsigned, void *),
             emitcast(unsigned, void *),
-            emitswitch(unsigned, void *),
             emitsym(unsigned, void *),
             emitexp(unsigned, void *),
             emitsymid(unsigned, void *),
@@ -188,11 +186,9 @@ emitvar(Symbol *sym)
 static void
 emitconst(Node *np)
 {
-	char *bp, c;
 	Symbol *sym = np->sym;
 	Type *tp = np->type;
 	TUINT u;
-	size_t n;
 
 	switch (tp->op) {
 	case PTR:
@@ -241,7 +237,6 @@ static void
 emittype(Type *tp)
 {
 	TINT n;
-	Type **vp;
 	Symbol **sp;
 	char *tag;
 
@@ -291,7 +286,7 @@ emitstring(Symbol *sym, Type *tp)
 	char *bp, *s, *lim;
 	int n;
 
-	bp = bp = sym->u.s;
+	bp = sym->u.s;
 	lim = &sym->u.s[tp->n.elem];
 	while (bp < lim) {
 		s = bp;
