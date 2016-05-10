@@ -351,9 +351,10 @@ cgen(Node *np)
 		}
 		code(op, np->left, load(np, LOADR), NULL);
 		return np->right;
+	case OCOMMA:
+		return np->right;
 	case OCALL:
 	case OFIELD:
-	case OCOMMA:
 	case OASK:
 	case OCOLON:
 	case OAND:
