@@ -245,10 +245,11 @@ abbrev(Node *np)
 	return np->right = cgen(tmp);
 }
 
+/* TODO: Fix "memory leaks" */
 Node *
 cgen(Node *np)
 {
-	Node *l, *r, *ifyes, *ifno, *next;
+	Node *ifyes, *ifno, *next;
 	Symbol *sym;
 	Type *tp;
 	int op, off;
@@ -258,8 +259,8 @@ cgen(Node *np)
 		return NULL;
 
 	setlabel(np->label);
-	l = cgen(np->left);
-	r = cgen(np->right);
+	np->left = cgen(np->left);
+	np->right = cgen(np->right);
 	tp = &np->type;
 
 	switch (np->op) {
@@ -317,7 +318,7 @@ cgen(Node *np)
 	case OADDR:
 		np->flags |= ISTMP;
 		np->op = OTMP;
-		np->u.sym = l->u.sym;
+		np->u.sym = np->left->u.sym;
 		return np;
 	case OPTR:
 		load(np, LOADL);
@@ -331,7 +332,7 @@ cgen(Node *np)
 	case ODEC:
 		abort();
 	case OASSIG:
-		r = abbrev(np);
+		abbrev(np);
 		switch (tp->size) {
 		case 1:
 			op = ASSTB;
@@ -348,8 +349,8 @@ cgen(Node *np)
 		default:
 			abort();
 		}
-		code(op, l, r, NULL);
-		return r;
+		code(op, np->left, load(np, LOADR), NULL);
+		return np->right;
 	case OCALL:
 	case OFIELD:
 	case OCOMMA:
@@ -360,7 +361,7 @@ cgen(Node *np)
 		abort();
 	case OBRANCH:
 		next = np->next;
-		l = load(np, LOADL);
+		load(np, LOADL);
 		if (next->label) {
 			sym = getsym(TMPSYM);
 			sym->kind = SLABEL;
