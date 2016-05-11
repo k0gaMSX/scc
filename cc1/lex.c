@@ -274,7 +274,7 @@ readint(char *s, int base, int sign, Symbol *sym)
 
 	for (u = 0; isxdigit(c = *s++); u = u*base + val) {
 		static char letters[] = "0123456789ABCDEF";
-		val = strchr(letters, c) - letters;
+		val = strchr(letters, toupper(c)) - letters;
 	repeat:
 		if (u <= max/base && u*base <= max - val)
 			continue;
