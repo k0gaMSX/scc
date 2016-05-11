@@ -354,7 +354,7 @@ digits(unsigned base)
 	for (p = input->p; c = *p; ++p) {
 		switch (base) {
 		case 8:
-			if (c > '7' || c < '0')
+			if (!strchr("01234567", c))
 				goto end;
 			break;
 		case 10:
