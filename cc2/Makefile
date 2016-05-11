@@ -8,8 +8,11 @@ OBJS = main.o parser.o peep.o symbol.o node.o code.o\
 
 all: cc2
 
+../inc/sizes.h:
+	cp ../inc/sizes_$(STD).h $@
 
-$(OBJS): cc2.h
+$(OBJS): cc2.h ../inc/sizes.h
+
 main.o: error.h
 
 error.h: cc2.h
