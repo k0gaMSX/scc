@@ -293,16 +293,18 @@ substitute:
 static int
 getpars(Symbol *args[NR_MACROARG])
 {
-	int n = -1;
+	int n, c;
 	Symbol *sym;
 
-	if (!accept('('))
-		return n;
-	++n;
+	c = *input->p;
+	next();
+	if (c != '(')
+		return -1;
+	next(); /* skip the '(' */
 	if (accept(')'))
-		return n;
+		return 0;
 
-	do {
+	for (n = 0; ; ++n) {
 		if (n == NR_MACROARG) {
 			cpperror("too much parameters in macro");
 			return NR_MACROARG;
@@ -313,9 +315,11 @@ getpars(Symbol *args[NR_MACROARG])
 		}
 		sym = install(NS_IDEN, yylval.sym);
 		sym->flags |= SUSED;
-		args[n++] = sym;
+		args[n] = sym;
 		next();
-	} while (accept(','));
+		if (!accept(','))
+			break;
+	}
 	expect(')');
 
 	return n;
@@ -399,7 +403,6 @@ define(void)
 	}
 
 	namespace = NS_IDEN;       /* Avoid polution in NS_CPP */
-	next();
 	if ((n = getpars(args)) == NR_MACROARG)
 		goto delete;
 	sprintf(buff, "%02d#", n);
