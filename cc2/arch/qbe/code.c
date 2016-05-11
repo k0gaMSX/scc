@@ -7,7 +7,7 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
-#define ADDR_LEN (IDENTSIZ+64)
+#define ADDR_LEN (INTIDENTSIZ+64)
 
 static void binary(void), unary(void), store(void), jmp(void), ret(void),
             branch(void);

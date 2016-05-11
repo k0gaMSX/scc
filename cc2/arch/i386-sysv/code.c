@@ -33,7 +33,7 @@ segment(int seg)
 static char *
 symname(Symbol *sym)
 {
-	static char name[IDENTSIZ+1];
+	static char name[INTIDENTSIZ+1];
 
 	if (sym->name) {
 		switch (sym->kind) {
