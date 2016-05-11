@@ -250,7 +250,7 @@ repeat:
 static void
 tok2str(void)
 {
-	if ((yylen = input->p - input->begin) > IDENTSIZ)
+	if ((yylen = input->p - input->begin) > INTIDENTSIZ)
 		error("token too big");
 	strncpy(yytext, input->begin, yylen);
 	yytext[yylen] = '\0';
