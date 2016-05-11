@@ -37,7 +37,7 @@
  * same number of characters as the corresponding universal character
  * name, if any)
  */
-#define EXTIDENTSIZ     63
+#define EXTIDENTSIZ     31
 /*
  * 4095 external identifiers in one translation unit
  */
