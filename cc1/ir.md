@@ -74,7 +74,7 @@ For example the next code:
 
 	struct foo {
 		int i;
-		ong c;
+		long c;
 	} var1;
 
 will generate the next output:
