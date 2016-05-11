@@ -223,7 +223,7 @@ Swtch(Symbol *obr, Symbol *lcont, Switch *osw)
 	emit(OBSWITCH, NULL);
 	emit(OEXPR, cond);
 	stmt(lbreak, lcont, &sw);
-	emit(OESWITCH, NULL);
+	emit(OESWITCH, lbreak);
 	emit(OLABEL, lbreak);
 }
 

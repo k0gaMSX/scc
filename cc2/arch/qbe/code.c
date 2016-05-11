@@ -157,7 +157,6 @@ sigil(Symbol *sym)
 static char *
 symname(Symbol *sym)
 {
-	static unsigned id;
 	char c = sigil(sym);
 
 	if (sym->name) {

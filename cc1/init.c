@@ -51,7 +51,6 @@ arydesig(Init *ip)
 static TINT
 fielddesig(Init *ip)
 {
-	TINT npos;
 	int ons;
 	Symbol *sym, **p;
 	Type *tp = ip->type;
@@ -79,7 +78,6 @@ fielddesig(Init *ip)
 static Init *
 designation(Init *ip)
 {
-	struct designator *dp;
 	TINT (*fun)(Init *);
 
 	switch (yytoken) {

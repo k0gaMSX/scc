@@ -32,8 +32,8 @@ union tokenop {
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
-                parameter, constant, composed, binit, einit,
-                jump, oreturn, loop, assign, ocase, casetbl;
+                constant, composed, binit, einit,
+                jump, oreturn, loop, assign, casetbl;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,

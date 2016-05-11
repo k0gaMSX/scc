@@ -383,7 +383,7 @@ commutative(int *op, Node **lp, Node **rp)
 static Node *
 identity(int *op, Node *lp, Node *rp)
 {
-	int iszeror, isoner, istruer, val;
+	int iszeror, isoner, istruer;
 	int iszerol, isonel, istruel;
 
 	if (!rp)

@@ -20,7 +20,6 @@ struct arena {
 
 static struct arena *arena;
 static Node *freep;
-static int inhome;
 
 Node *
 newnode(int op)

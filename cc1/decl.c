@@ -283,7 +283,6 @@ fundcl(struct declarators *dp)
 	Symbol *syms[NR_FUNPARAM+1], **pars;
 	int k_r, ntypes, nsyms;
 	size_t size;
-	void (*fp)(Type **, Symbol **, int *, int *);
 
 	pushctx();
 	expect('(');
@@ -367,7 +366,7 @@ static Type *
 specifier(int *sclass, int *qualifier)
 {
 	Type *tp = NULL;
-	int spec, qlf, sign, type, cls, size, mask;
+	int spec, qlf, sign, type, cls, size;
 
 	spec = qlf = sign = type = cls = size = 0;
 

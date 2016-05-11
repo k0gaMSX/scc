@@ -102,8 +102,6 @@ void
 popctx(void)
 {
 	Symbol *next, *sym;
-	char *name;
-	short f;
 
 	if (--curctx == GLOBALCTX) {
 		for (sym = labels; sym; sym = next) {

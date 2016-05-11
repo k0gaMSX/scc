@@ -35,7 +35,6 @@ static char *
 symname(Symbol *sym)
 {
 	static char name[IDENTSIZ+1];
-	static unsigned short id;
 
 	if (sym->name) {
 		switch (sym->kind) {

@@ -56,7 +56,6 @@ promote(Node *np)
 {
 	Type *tp;
 	Node *new;
-	unsigned r;
 	struct limits *lim, *ilim;
 
 	tp = np->type;
@@ -85,7 +84,7 @@ promote(Node *np)
 static void
 arithconv(Node **p1, Node **p2)
 {
-	int n, to = 0, s1, s2;
+	int to = 0, s1, s2;
 	unsigned r1, r2;
 	Type *tp1, *tp2;
 	Node *np1, *np2;
