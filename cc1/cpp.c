@@ -304,7 +304,8 @@ getpars(Symbol *args[NR_MACROARG])
 	if (accept(')'))
 		return 0;
 
-	for (n = 0; ; ++n) {
+	n = 0;
+	do {
 		if (n == NR_MACROARG) {
 			cpperror("too much parameters in macro");
 			return NR_MACROARG;
@@ -315,11 +316,9 @@ getpars(Symbol *args[NR_MACROARG])
 		}
 		sym = install(NS_IDEN, yylval.sym);
 		sym->flags |= SUSED;
-		args[n] = sym;
+		args[n++] = sym;
 		next();
-		if (!accept(','))
-			break;
-	}
+	} while (accept(','));
 	expect(')');
 
 	return n;
