@@ -546,8 +546,14 @@ set_line:
 static void
 pragma(void)
 {
+	static char magic[] = {
+	#include "pragma.msg"
+	}, *p = magic;
+
 	if (cppoff)
 		return;
+	for (; *p; p++)
+		putc(*p, stderr);
 	*input->p = '\0';
 	next();
 }
