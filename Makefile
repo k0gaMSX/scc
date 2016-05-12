@@ -8,9 +8,9 @@ DIRS  = lib cc1 cc2 driver/$(DRIVER)
 ARCHS = z80 i386-sysv amd64-sysv qbe
 
 all:
-	for i in $(DIRS) ; \
-	do  \
-		(cd $$i && $(MAKE) -e -$(MAKEFLAGS)) ;\
+	for i in $(DIRS); \
+	do \
+		(cd $$i && $(MAKE) -e -$(MAKEFLAGS)); \
 	done
 	cp -f cc1/cc1 bin/cc1
 	cp -f cc2/cc2 bin/cc2
@@ -18,18 +18,17 @@ all:
 	strip bin/cc1 bin/cc2 bin/scc
 
 multi:
-	cd lib && $(MAKE) -e $(MAKEFLAGS)
-	for i in $(ARCHS) ; \
+	for i in $(ARCHS); \
 	do \
-		$(MAKE) -$(MAKEFLAGS) $$i || exit ;\
+		$(MAKE) -$(MAKEFLAGS) $$i || exit; \
 	done
 
 $(ARCHS):
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
-		 ARCH=$@ ${MAKE} -e -$(MAKEFLAGS) clean ;\
-		 ARCH=$@ $(MAKE) -e $$i || exit); \
+		ARCH=$@ $(MAKE) -e -$(MAKEFLAGS) clean; \
+		ARCH=$@ $(MAKE) -e $$i || exit); \
 	done
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
@@ -50,13 +49,13 @@ uninstall:
 	rm -f $(PREFIX)/bin/cpp
 
 clean:
-	for i in ${DIRS};\
+	for i in $(DIRS); \
 	do \
-		(cd $$i; ${MAKE} -$(MAKEFLAGS) $@ || exit); \
+		(cd $$i && $(MAKE) -$(MAKEFLAGS) $@ || exit); \
 	done
 
 multi-clean:
-	for i in $(ARCHS) ; \
+	for i in $(ARCHS); \
 	do \
 		ARCH=$$i $(MAKE) -e -$(MAKEFLAGS) clean || exit; \
 	done
