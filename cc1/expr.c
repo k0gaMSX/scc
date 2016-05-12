@@ -530,6 +530,7 @@ incdec(Node *np, char op)
 	Node *inc;
 
 	chklvalue(np);
+	np->flags |= NEFFECT;
 
 	if (!tp->defined) {
 		errorp("invalid use of undefined type");
@@ -739,6 +740,7 @@ postfix(Node *lp)
 			break;
 		case '(':
 			lp = arguments(lp);
+			lp->flags |= NEFFECT;
 			break;
 		default:
 			return lp;
@@ -1047,6 +1049,7 @@ assign(void)
 		default: return np;
 		}
 		chklvalue(np);
+		np->flags |= NEFFECT;
 		next();
 		np = (fun)(op, np, assign());
 	}

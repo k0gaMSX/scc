@@ -38,6 +38,8 @@ label(void)
 static void
 stmtexp(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
+	Node *np;
+
 	if (accept(';'))
 		return;
 	if (yytoken == IDEN && ahead() == ':') {
@@ -45,7 +47,10 @@ stmtexp(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 		stmt(lbreak, lcont, lswitch);
 		return;
 	}
-	emit(OEXPR, expr());
+	np = expr();
+	if ((np->flags & NEFFECT) == 0)
+		warn("expression without side effects");
+	emit(OEXPR, np);
 	expect(';');
 }
 

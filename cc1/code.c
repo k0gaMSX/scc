@@ -466,6 +466,10 @@ node(unsigned op, Type *tp, Node *lp, Node *rp)
 	np->left = lp;
 	np->right = rp;
 
+	if (lp)
+		np->flags |= lp->flags & NEFFECT;
+	if (rp)
+		np->flags |= rp->flags & NEFFECT;
 	return np;
 }
 
