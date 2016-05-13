@@ -547,13 +547,18 @@ static void
 pragma(void)
 {
 	static char magic[] = {
-	#include "pragma.msg"
+	#include "stallman.msg"
 	}, *p = magic;
+	extern int warnings;
 
 	if (cppoff)
 		return;
-	for (; *p; p++)
-		putc(*p, stderr);
+	next();
+	if (!strcmp(yytext, "GCC") && warnings) {
+		for (; *p; p++)
+			putc(*p, stderr);
+	}
+	warn("ignoring pragma '%s'", input->begin);
 	*input->p = '\0';
 	next();
 }
