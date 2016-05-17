@@ -3,6 +3,7 @@ name: TEST001
 description: Basic hello world test
 error:
 output:
+X4	I	F	"printf
 G6	I	F	"main
 {
 \

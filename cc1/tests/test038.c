@@ -3,12 +3,13 @@
 name: TEST038
 description: Basic test for tentative definitions
 error:
-test038.c:43: error: redeclaration of 'x'
+test038.c:44: error: redeclaration of 'x'
 output:
 G1	I	"x
 G1	I	"x	(
 	#I0
 )
+X3	I	F	"main
 G5	P	F	"foo
 {
 \
