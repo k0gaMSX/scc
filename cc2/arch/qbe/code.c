@@ -303,7 +303,7 @@ writeout(void)
 
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
-	printf("function %s %s(", size2asm(&rtype), symname(curfun));
+	printf("function %s %s(", size2asm(&curfun->rtype), symname(curfun));
 
 	/* declare formal parameters */
 	for (sep = "", p = locals; p; p = p->next, sep = ",") {

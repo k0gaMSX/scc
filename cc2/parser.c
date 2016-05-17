@@ -513,7 +513,7 @@ vardecl(void)
 	sym->name = name;
 	sym->type = *tp;
 	if (tp->flags & FUNF)
-		rtype = *rp;
+		sym->rtype = *rp;
 	sym->kind = sclass;
 
 	if (ininit)

@@ -133,6 +133,7 @@ struct type {
 
 struct symbol {
 	Type type;
+	Type rtype;
 	unsigned short id;
 	unsigned short numid;
 	char *name;
@@ -223,7 +224,6 @@ extern void pushctx(void);
 extern void freesym(Symbol *sym);
 
 /* globals */
-extern Type rtype;
 extern Symbol *curfun;
 extern Symbol *locals;
 extern Inst *pc, *prog;
