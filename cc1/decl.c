@@ -366,7 +366,7 @@ static Type *
 specifier(int *sclass, int *qualifier)
 {
 	Type *tp = NULL;
-	int spec, qlf, sign, type, cls, size;
+	unsigned spec, qlf, sign, type, cls, size;
 
 	spec = qlf = sign = type = cls = size = 0;
 
