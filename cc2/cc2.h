@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 enum tflags {
 	SIGNF   =    1,
 	INTF    =    2,

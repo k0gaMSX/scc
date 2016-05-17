@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 #include <stddef.h>
 #include <setjmp.h>
 #include <stdio.h>

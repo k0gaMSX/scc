@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 #define _POSIX_SOURCE
 #include <sys/types.h>
 #include <sys/wait.h>

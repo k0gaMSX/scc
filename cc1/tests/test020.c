@@ -1,3 +1,4 @@
+/* See LICENSE file for copyright and license details. */
 
 /*
 name: TEST020
@@ -60,7 +61,7 @@ main(void)
 	i = i << 0;
 	i = 0 << i;
 	i = i >> 0;
-	i = 0 >> i;	
+	i = 0 >> i;
 	i = i + 0;
 	i = 0 + i;
 	i = i - 0;

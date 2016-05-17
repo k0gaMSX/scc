@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 #include <ctype.h>
 #include <errno.h>
 #include <setjmp.h>

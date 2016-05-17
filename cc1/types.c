@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>

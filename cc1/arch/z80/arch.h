@@ -1,4 +1,4 @@
-
+/* See LICENSE file for copyright and license details. */
 #define RANK_BOOL    0
 #define RANK_SCHAR   1
 #define RANK_UCHAR   1
