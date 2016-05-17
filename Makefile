@@ -1,4 +1,5 @@
 # scc - Suckless C Compiler
+# See LICENSE file for copyright and license details.
 .POSIX:
 
 include config.mk
