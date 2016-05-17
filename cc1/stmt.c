@@ -244,7 +244,7 @@ Case(Symbol *lbreak, Symbol *lcont, Switch *sw)
 	if (!sw) {
 		errorp("case label not within a switch statement");
 	} else if (sw->nr >= 0 && ++sw->nr == NR_SWITCH) {
-		errorp("too case labels for a switch statement");
+		errorp("too many case labels for a switch statement");
 		sw->nr = -1;
 	}
 	expect(':');
@@ -322,7 +322,7 @@ compound(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	expect('{');
 
 	if (nested == NR_BLOCK)
-		error("too nesting levels of compound statements");
+		error("too many nesting levels of compound statements");
 
 	++nested;
 	for (;;) {

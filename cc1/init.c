@@ -65,7 +65,7 @@ fielddesig(Init *ip)
 		unexpected();
 	sym = yylval.sym;
 	if ((sym->flags & SDECLARED) == 0) {
-		errorp(" unknown field '%s' specified in initializer",
+		errorp("unknown field '%s' specified in initializer",
 		      sym->name);
 		return 0;
 	}
@@ -292,7 +292,7 @@ initializer(Symbol *sym, Type *tp)
 	int flags = sym->flags;
 
 	if (tp->op == FTN) {
-		errorp("function '%s' is initialized like a variable",
+		errorp("function '%s' initialized like a variable",
 		       sym->name);
 		tp = inttype;
 	}

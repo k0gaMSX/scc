@@ -42,7 +42,7 @@ push(struct declarators *dp, int op, ...)
 
 	va_start(va, op);
 	if ((n = dp->nr++) == NR_DECLARATORS)
-		error("too much declarators");
+		error("too many declarators");
 
 	p = &dp->d[n];
 	p->op = op;
@@ -268,7 +268,7 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 			continue;
 		}
 		if (!toomany)
-			errorp("too much parameters in function definition");
+			errorp("too many parameters in function definition");
 		toomany = 1;
 	} while (accept(','));
 
@@ -320,7 +320,7 @@ directdcl(struct declarators *dp, unsigned ns)
 
 	if (accept('(')) {
 		if (nested == NR_SUBTYPE)
-			error("too declarators nested by parentheses");
+			error("too many declarators nested by parentheses");
 		++nested;
 		declarator(dp, ns);
 		--nested;
@@ -482,7 +482,7 @@ newtag(void)
 		Type *tp;
 
 		if (ns == NS_STRUCTS + NR_MAXSTRUCTS)
-			error("too much tags declared");
+			error("too many tags declared");
 		tp = mktype(NULL, tag, 0, NULL);
 		tp->ns = ns++;
 		sym->type = tp;
@@ -523,7 +523,7 @@ structdcl(void)
 	tp->defined = 1;
 
 	if (nested == NR_STRUCT_LEVEL)
-		error("too levels of nested structure or union definitions");
+		error("too many levels of nested structure or union definitions");
 
 	++nested;
 	while (yytoken != '}') {
@@ -639,7 +639,7 @@ field(struct decl *dcl)
 
 	sym->flags |= SFIELD;
 	if (n == NR_FIELDS)
-		error("too much fields in struct/union");
+		error("too many fields in struct/union");
 	DBG("New field '%s' in namespace %d\n", name, structp->ns);
 	structp->p.fields = xrealloc(structp->p.fields, ++n * sizeof(*sym));
 	structp->p.fields[n-1] = sym;

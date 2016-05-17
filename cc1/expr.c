@@ -370,7 +370,7 @@ pcompare(char op, Node *lp, Node *rp)
 		err = 1;
 	}
 	if (err)
-		errorp("incompatibles type in comparision");
+		errorp("incompatible types in comparison");
 	return simplify(op, inttype, lp, rp);
 }
 
@@ -391,7 +391,7 @@ compare(char op, Node *lp, Node *rp)
 		arithconv(&lp, &rp);
 		return simplify(op, inttype, lp, rp);
 	} else {
-		errorp("incompatibles type in comparision");
+		errorp("incompatible types in comparison");
 		freetree(lp);
 		freetree(rp);
 		return constnode(zero);
@@ -836,18 +836,18 @@ cast(void)
 
 		switch (tp->op) {
 		case ARY:
-			error("cast specify an array type");
+			error("cast specifies an array type");
 		default:
 			lp = cast();
 			if ((rp = convert(lp,  tp, 1)) == NULL)
-				error("bad type convertion requested");
+				error("bad type conversion requested");
 			rp->flags &= ~NLVAL;
 			rp->flags |= lp->flags & NLVAL;
 		}
 		break;
 	default:
 		if (nested == NR_SUBEXPR)
-			error("too expressions nested by parentheses");
+			error("too many expressions nested by parentheses");
 		++nested;
 		rp = expr();
 		--nested;

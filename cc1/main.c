@@ -79,7 +79,7 @@ main(int argc, char *argv[])
 	}
 
 	if (output && !freopen(output, "w", stdout))
-		die("error opening output:%s", strerror(errno));
+		die("error opening output: %s", strerror(errno));
 	if (argc > 1)
 		usage();
 

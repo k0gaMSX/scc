@@ -73,7 +73,7 @@ void
 pushctx(void)
 {
 	if (++curctx == NR_BLOCK+1)
-		error("too much nested blocks");
+		error("too many nested blocks");
 }
 
 void

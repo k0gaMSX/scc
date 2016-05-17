@@ -85,7 +85,7 @@ ilex(char *fname)
 		fname = "<stdin>";
 	} else {
 		if ((fp = fopen(fname, "r")) == NULL) {
-			die("error opening input '%s':%s",
+			die("error: failed to open input file '%s': %s",
 			    fname, strerror(errno));
 		}
 	}
@@ -112,7 +112,7 @@ delinput(void)
 	if (!ip->next)
 		eof = 1;
 	if (fclose(ip->fp))
-		die("error reading from input file '%s'", ip->fname);
+		die("error: failed to read from input file '%s'", ip->fname);
 	if (eof)
 		return;
 	input = ip->next;
@@ -124,7 +124,7 @@ static void
 newline(void)
 {
 	if (++input->nline == 0)
-		die("error:input file '%s' too long", input->fname);
+		die("error: input file '%s' too long", input->fname);
 }
 
 static char
