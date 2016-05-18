@@ -45,7 +45,7 @@ struct type {
 	char ns;                    /* namespace for struct members */
 	short id;                   /* type id, used in dcls */
 	char letter;                /* letter of the type */
-	enum typeprops prop;        /* type properties */
+	unsigned char prop;         /* type properties */
 	TSIZE size;                 /* sizeof the type */
 	TSIZE align;                /* align of the type */
 	Type *type;                 /* base type */
