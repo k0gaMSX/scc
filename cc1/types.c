@@ -81,7 +81,7 @@ getlimits(Type *tp)
 	switch (tp->op) {
 	case ENUM:
 	case INT:
-		ntable = tp->sign;
+		ntable = ((tp->prop & TSIGNED) != 0);
 		switch (tp->size) {
 		case 1: ntype = 0; break;
 		case 2: ntype = 1; break;
@@ -259,13 +259,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	type.type = tp;
 	type.op = op;
-	type.defined = 0;
-	type.arith = 0;
-	type.sign = 0;
-	type.integer = 0;
-	type.printed = 0;
-	type.aggreg = 0;
-	type.k_r = k_r;
+	type.prop = k_r ? TK_R : 0;
 	type.letter = c;
 	type.p.pars = pars;
 	type.n.elem = nelem;
@@ -278,17 +272,15 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		/* PASSTROUGH */
 	case FTN:
 	case PTR:
-		type.defined = 1;
+		type.prop |= TDEFINED;
 		break;
 	case ENUM:
-		type.printed = 1;
-		type.integer = 1;
-		type.arith = 1;
+		type.prop |= TPRINTED | TINTEGER | TARITH;
 		type.n.rank = RANK_INT;
 		break;
 	case STRUCT:
 	case UNION:
-		type.aggreg = 1;
+		type.prop |= TAGGREG;
 		break;
 	}
 

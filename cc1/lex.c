@@ -278,7 +278,7 @@ readint(char *s, int base, int sign, Symbol *sym)
 	repeat:
 		if (u <= max/base && u*base <= max - val)
 			continue;
-		if (tp->sign) {
+		if (tp->prop & TSIGNED) {
 			if (tp == inttype)
 				tp = (base==10) ? longtype : uinttype;
 			else if (tp == longtype)
@@ -299,7 +299,7 @@ readint(char *s, int base, int sign, Symbol *sym)
 		goto repeat;
 	}
 
-	if (tp->sign)
+	if (tp->prop & TSIGNED)
 		sym->u.i = u;
 	else
 		sym->u.u = u;

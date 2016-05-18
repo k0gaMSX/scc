@@ -194,7 +194,7 @@ emitconst(Node *np)
 	case PTR:
 	case INT:
 	case ENUM:
-		u = (tp->sign) ? (TUINT) sym->u.i : sym->u.u;
+		u = (tp->prop & TSIGNED) ? (TUINT) sym->u.i : sym->u.u;
 		printf("#%c%llX",
 		       np->type->letter,
 		       (long long) sym->u.i & ones(tp->size));
@@ -240,9 +240,9 @@ emittype(Type *tp)
 	Symbol **sp;
 	char *tag;
 
-	if (tp->printed || !tp->defined)
+	if ((tp->prop & TPRINTED) || !(tp->prop & TDEFINED))
 		return;
-	tp->printed = 1;
+	tp->prop |= TPRINTED;
 
 	switch (tp->op) {
 	case ARY:

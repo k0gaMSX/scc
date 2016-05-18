@@ -30,18 +30,22 @@ struct keyword {
 	unsigned char token, value;
 };
 
+enum typeprops {
+	TDEFINED = 1 << 0,    /* type defined */
+	TSIGNED  = 1 << 1,    /* signedness of the type */
+	TPRINTED = 1 << 2,    /* the type was already printed */
+	TINTEGER = 1 << 3,    /* the type is INT of enum */
+	TARITH   = 1 << 4,    /* the type is INT, ENUM or FLOAT */
+	TAGGREG  = 1 << 5,    /* the type is struct or union */
+	TK_R     = 1 << 6,    /* this is a K&R-function */
+};
+
 struct type {
 	unsigned char op;           /* type builder operator */
 	char ns;                    /* namespace for struct members */
 	short id;                   /* type id, used in dcls */
 	char letter;                /* letter of the type */
-	bool defined : 1;           /* type defined */
-	bool sign : 1;              /* signess of the type */
-	bool printed : 1;           /* the type already was printed */
-	bool integer : 1;           /* this type is INT or enum */
-	bool arith : 1;             /* this type is INT, ENUM, FLOAT */
-	bool aggreg : 1;            /* this type is struct or union */
-	bool k_r : 1;               /* This is a k&r function */
+	enum typeprops prop;        /* type properties */
 	TSIZE size;                 /* sizeof the type */
 	TSIZE align;                /* align of the type */
 	Type *type;                 /* base type */

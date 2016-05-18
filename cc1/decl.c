@@ -160,7 +160,7 @@ parameter(struct decl *dcl)
 
 	switch (tp->op) {
 	case VOID:
-		if (n != 0 || funtp->k_r) {
+		if (n != 0 || (funtp->prop & TK_R)) {
 			errorp("incorrect void parameter");
 			return NULL;
 		}
@@ -177,11 +177,11 @@ parameter(struct decl *dcl)
 	}
 	if (!empty(sym, tp)) {
 		Symbol *p = install(NS_IDEN, sym);
-		if (!p && !funtp->k_r) {
+		if (!p && !(funtp->prop & TK_R)) {
 			errorp("redefinition of parameter '%s'", name);
 			return NULL;
 		}
-		if (p && funtp->k_r) {
+		if (p && (funtp->prop & TK_R)) {
 			errorp("declaration for parameter ‘%s’ but no such parameter",
 			       sym->name);
 			return NULL;
@@ -287,7 +287,7 @@ fundcl(struct declarators *dp)
 	pushctx();
 	expect('(');
 	type.n.elem = 0;
-	type.k_r = 0;
+	type.prop = 0;
 
 	k_r = (yytoken == ')' || yytoken == IDEN);
 	(*(k_r ? krfun : ansifun))(&type, types, syms, &ntypes, &nsyms);
@@ -518,9 +518,9 @@ structdcl(void)
 		return tp;
 	}
 
-	if (tp->defined)
+	if (tp->prop & TDEFINED)
 		error("redefinition of struct/union '%s'", sym->name);
-	tp->defined = 1;
+	tp->prop |= TDEFINED;
 
 	if (nested == NR_STRUCT_LEVEL)
 		error("too many levels of nested structure or union definitions");
@@ -551,9 +551,9 @@ enumdcl(void)
 
 	if (!accept('{'))
 		goto restore_name;
-	if (tp->defined)
+	if (tp->prop & TDEFINED)
 		errorp("redefinition of enumeration '%s'", tagsym->name);
-	tp->defined = 1;
+	tp->prop |= TDEFINED;
 	namespace = NS_IDEN;
 
 	/* TODO: check incorrect values in val */
@@ -626,7 +626,7 @@ field(struct decl *dcl)
 		errorp("storage class in struct/union field");
 		err = 1;
 	}
-	if (!tp->defined) {
+	if (!(tp->prop & TDEFINED)) {
 		error("field '%s' has incomplete type", name);
 		err = 1;
 	}
@@ -729,7 +729,7 @@ identifier(struct decl *dcl)
 		return sym;
 
 	/* TODO: Add warning about ANSI limits */
-	if (!tp->defined                          &&
+	if (!(tp->prop & TDEFINED)                &&
 	    sclass != EXTERN && sclass != TYPEDEF &&
 	    !(tp->op == ARY && yytoken == '=')) {
 		errorp("declared variable '%s' of incomplete type", name);
@@ -860,7 +860,7 @@ decl(void)
 		curfun = ocurfun;
 		return;
 	}
-	if (sym->type->k_r) {
+	if (sym->type->prop & TK_R) {
 		while (yytoken != '{') {
 			par = dodcl(1, parameter, NS_IDEN, sym->type);
 			expect(';');

@@ -335,7 +335,7 @@ fold(int op, Type *tp, Node *lp, Node *rp)
 	switch (type = optype->op) {
 	case ENUM:
 	case INT:
-		if (!optype->sign)
+		if (!(optype->prop & TSIGNED))
 			type = UNSIGNED;
 	case PTR:
 	case FLOAT:
@@ -549,7 +549,7 @@ castcode(Node *np, Type *newtp)
 		case PTR:
 		case INT:
 		case ENUM:
-			u = (oldtp->sign) ? osym->u.i : osym->u.u;
+			u = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
 			break;
 		case FLOAT:
 			oldtp = newtp;
@@ -559,7 +559,7 @@ castcode(Node *np, Type *newtp)
 			goto noconstant;
 		}
 		mask = ones(newtp->size);
-		if (newtp->sign) {
+		if (newtp->prop & TSIGNED) {
 			negmask = ~mask;
 			if (u & (negmask >> 1) & mask)
 				u |= negmask;
@@ -570,7 +570,7 @@ castcode(Node *np, Type *newtp)
 		break;
 	case FLOAT:
 		/* FIXME: The cast can be from another float type */
-		aux.u.f = (oldtp->sign) ? osym->u.i : osym->u.u;
+		aux.u.f = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
 		break;
 	default:
 		goto noconstant;
