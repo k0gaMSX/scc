@@ -7,10 +7,10 @@ comments: f(2) will expand to 2*g, which will expand to 2*f, and in this
           moment f will not be expanded because the macro definition is
           a function alike macro, and in this case there is no arguments.
 error:
-test029.c:31: warning: expression without side effects
-test029.c:36: error: redefinition of 'f1'
-test029.c:37: error: 'f' undeclared
-test029.c:37: warning: expression without side effects
+test029.c:32: warning: expression without side effects
+test029.c:37: error: redefinition of 'f1'
+test029.c:38: error: 'f' undeclared
+test029.c:38: warning: expression without side effects
 output:
 G3	I	F	"f1
 {
