@@ -261,7 +261,7 @@ defglobal(Symbol *sym)
 	printf("data %s = {\n", symname(sym));
 	if (sym->type.flags & INITF)
 		return;
-	printf("\tz\t%llu\n}\n", (unsigned long long) sym->type.size);
+	printf("\tz\t%lu\n}\n", sym->type.size);
 }
 
 void
@@ -289,9 +289,8 @@ alloc(Symbol *sym)
 {
 	Type *tp = &sym->type;
 
-	printf("\t%s %s=\talloc%lld\t%lld\n",
-	       symname(sym), size2asm(tp),
-	       (long long) tp->size, (long long) tp->align);
+	printf("\t%s %s=\talloc%lu\t%lu\n",
+	       symname(sym), size2asm(tp), tp->size, tp->align);
 }
 
 void

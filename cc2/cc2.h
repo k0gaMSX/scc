@@ -126,8 +126,8 @@ typedef struct addr Addr;
 typedef struct inst Inst;
 
 struct type {
-	TSIZE size;
-	TSIZE align;
+	unsigned long size;
+	unsigned long align;
 	char flags;
 };
 
@@ -139,7 +139,7 @@ struct symbol {
 	char *name;
 	char kind;
 	union {
-		TSIZE off;
+		unsigned long off;
 		Node *stmt;
 		Inst *inst;
 	} u;
