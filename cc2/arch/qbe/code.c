@@ -121,7 +121,7 @@ static struct opdata {
 	[ASSLTOS] = {.fun = unary, .txt = "sltof", .letter = 's'},
 
 	[ASEXTS] = {.fun = unary, .txt = "exts", .letter = 'd'},
-	[ASSLTOS]= {.fun = unary, .txt = "truncd", .letter = 's'},
+	[ASTRUNCD] = {.fun = unary, .txt = "truncd", .letter = 's'},
 
 	[ASBRANCH] = {.fun = branch},
 	[ASJMP]  = {.fun = jmp},
