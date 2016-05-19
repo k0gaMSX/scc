@@ -171,7 +171,9 @@ typesize(Type *tp)
 {
 	Symbol **sp;
 	Type *aux;
-	unsigned long n, size, align, a;
+	unsigned long size;
+	int align, a;
+	TINT n;
 
 	switch (tp->op) {
 	case ARY:

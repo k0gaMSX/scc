@@ -37,7 +37,7 @@ struct type {
 	char letter;                /* letter of the type */
 	unsigned char prop;         /* type properties */
 	unsigned long size;         /* sizeof the type */
-	unsigned long align;        /* align of the type */
+	unsigned char align;        /* align of the type */
 	Type *type;                 /* base type */
 	Symbol *tag;                /* symbol of the strug tag */
 	Type *next;                 /* next element in the hash */

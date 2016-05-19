@@ -263,7 +263,7 @@ emittype(Type *tp)
 			emittype((*sp)->type);
 		emitletter(tp);
 		tag = tp->tag->name;
-		printf("\t\"%s\t#%c%lX\t#%c%lX\n",
+		printf("\t\"%s\t#%c%lX\t#%c%X\n",
 		       (tag) ? tag : "",
 		       sizettype->letter,
 		       tp->size,
