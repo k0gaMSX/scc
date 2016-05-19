@@ -83,7 +83,7 @@ static struct decoc {
 	['\t']  = {     stmt,    NULL,                     0},
 
 	['~']   = {     NULL,   unary, .u.op =          OCPL},
-	['-']   = {     NULL,   unary, .u.op =          ONEG},
+	['_']   = {     NULL,   unary, .u.op =          ONEG},
 	['\'']  = {     NULL,   unary, .u.op =         OADDR},
 	['@']   = {     NULL,   unary, .u.op =          OPTR},
 	['g']   = {     NULL,   unary, .u.op =         OCAST},
