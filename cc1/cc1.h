@@ -30,16 +30,6 @@ struct keyword {
 	unsigned char token, value;
 };
 
-enum typeprops {
-	TDEFINED = 1 << 0,    /* type defined */
-	TSIGNED  = 1 << 1,    /* signedness of the type */
-	TPRINTED = 1 << 2,    /* the type was already printed */
-	TINTEGER = 1 << 3,    /* the type is INT of enum */
-	TARITH   = 1 << 4,    /* the type is INT, ENUM or FLOAT */
-	TAGGREG  = 1 << 5,    /* the type is struct or union */
-	TK_R     = 1 << 6,    /* this is a K&R-function */
-};
-
 struct type {
 	unsigned char op;           /* type builder operator */
 	char ns;                    /* namespace for struct members */
@@ -111,6 +101,16 @@ struct input {
 /*
  * Definition of enumerations
  */
+
+enum typeprops {
+	TDEFINED = 1 << 0,    /* type defined */
+	TSIGNED  = 1 << 1,    /* signedness of the type */
+	TPRINTED = 1 << 2,    /* the type was already printed */
+	TINTEGER = 1 << 3,    /* the type is INT of enum */
+	TARITH   = 1 << 4,    /* the type is INT, ENUM or FLOAT */
+	TAGGREG  = 1 << 5,    /* the type is struct or union */
+	TK_R     = 1 << 6,    /* this is a K&R-function */
+};
 
 /* data type letters */
 enum {
