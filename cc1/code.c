@@ -263,12 +263,12 @@ emittype(Type *tp)
 			emittype((*sp)->type);
 		emitletter(tp);
 		tag = tp->tag->name;
-		printf("\t\"%s\t#%c%llX\t#%c%llX\n",
+		printf("\t\"%s\t#%c%lX\t#%c%lX\n",
 		       (tag) ? tag : "",
 		       sizettype->letter,
-		       (unsigned long long) tp->size,
+		       tp->size,
 		       sizettype->letter,
-		       (unsigned long long) tp->align);
+		       tp->align);
 		n = tp->n.elem;
 		for (sp = tp->p.fields; n-- > 0; ++sp)
 			emit(ODECL, *sp);

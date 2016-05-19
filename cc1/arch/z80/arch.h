@@ -18,6 +18,5 @@
 #define TINT        long long
 #define TUINT       unsigned long long
 #define TFLOAT      double
-#define TSIZE       unsigned short
 
 #define L_ENUM      L_INT16
