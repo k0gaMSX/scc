@@ -290,7 +290,7 @@ fundcl(struct declarators *dp)
 	type.prop = 0;
 
 	k_r = (yytoken == ')' || yytoken == IDEN);
-	(*(k_r ? krfun : ansifun))(&type, types, syms, &ntypes, &nsyms);
+	(k_r ? krfun : ansifun)(&type, types, syms, &ntypes, &nsyms);
 	expect(')');
 
 	type.n.elem = ntypes;
