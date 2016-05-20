@@ -312,18 +312,13 @@ eqtype(Type *tp1, Type *tp2)
 	TINT n;
 	Type **p1, **p2;
 
-	if (!tp1 || !tp2)
-		return 0;
 	if (tp1 == tp2)
 		return 1;
+	if (!tp1 || !tp2)
+		return 0;
 	if (tp1->op != tp2->op)
 		return 0;
 	switch (tp1->op) {
-	case ARY:
-		if (tp1->n.elem != tp2->n.elem)
-			return 0;
-	case PTR:
-		return eqtype(tp1->type, tp2->type);
 	case UNION:
 	case STRUCT:
 	case FTN:
@@ -334,7 +329,13 @@ eqtype(Type *tp1, Type *tp2)
 			if (!eqtype(*p1++, *p2++))
 				return 0;
 		}
-		return 1;
+		goto check_base;
+	case ARY:
+		if (tp1->n.elem != tp2->n.elem)
+			return 0;
+	case PTR:
+	check_base:
+		return eqtype(tp1->type, tp2->type);
 	case VOID:
 	case ENUM:
 		return 0;
