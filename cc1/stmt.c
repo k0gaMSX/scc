@@ -158,7 +158,7 @@ Return(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 		if (tp == voidtype)
 			warn("function returning void returns a value");
 		else if ((np = convert(np, tp, 0)) == NULL)
-			error("incorrect type in return");
+			errorp("incorrect type in return");
 	}
 	emit(ORET, NULL);
 	emit(OEXPR, np);
