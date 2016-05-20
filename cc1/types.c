@@ -284,6 +284,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	case UNION:
 		type.prop |= TAGGREG;
 		break;
+	default:
+		abort();
 	}
 
 	t = (op ^ (uintptr_t) tp >> 3) & NR_TYPE_HASH-1;
@@ -342,5 +344,7 @@ eqtype(Type *tp1, Type *tp2)
 	case INT:
 	case FLOAT:
 		return tp1->letter == tp2->letter;
+	default:
+		abort();
 	}
 }
