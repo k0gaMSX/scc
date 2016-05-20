@@ -4,100 +4,6 @@
 
 #define GLOBALCTX 0
 
-
-/*
- * Definition of structures
- */
-typedef struct type Type;
-typedef struct symbol Symbol;
-typedef struct swtch Switch;
-typedef struct node Node;
-typedef struct input Input;
-
-struct limits {
-	union {
-		TUINT i;
-		TFLOAT f;
-	} max;
-	union {
-		TUINT i;
-		TFLOAT f;
-	} min;
-};
-
-struct keyword {
-	char *str;
-	unsigned char token, value;
-};
-
-struct type {
-	unsigned char op;           /* type builder operator */
-	char ns;                    /* namespace for struct members */
-	short id;                   /* type id, used in dcls */
-	char letter;                /* letter of the type */
-	unsigned char prop;         /* type properties */
-	unsigned long size;         /* sizeof the type */
-	unsigned char align;        /* align of the type */
-	Type *type;                 /* base type */
-	Symbol *tag;                /* symbol of the strug tag */
-	Type *next;                 /* next element in the hash */
-	union {
-		Type **pars;            /* Function type parameters */
-		Symbol **fields;        /* fields of aggregate type */
-	} p;
-	union {
-		unsigned char rank;     /* convertion rank */
-		TINT elem;              /* number of type parameters */
-	} n;
-};
-
-struct symbol {
-	char *name;
-	Type *type;
-	unsigned short id;
-	unsigned char ctx;
-	char ns;
-	unsigned char token;
-	short flags;
-	union {
-		TINT i;
-		TUINT u;
-		TFLOAT f;
-		char *s;
-		unsigned char token;
-		Node **init;
-		Symbol **pars;
-	} u;
-	struct symbol *next;
-	struct symbol *hash;
-};
-
-struct node {
-	unsigned char op;
-	Type *type;
-	Symbol *sym;
-	char flags;
-	struct node *left, *right;
-};
-
-struct swtch {
-	short nr;
-	char hasdef;
-};
-
-struct yystype {
-	Symbol *sym;
-	unsigned char token;
-};
-
-struct input {
-	char *fname;
-	FILE *fp;
-	char *line, *begin, *p;
-	struct input *next;
-	unsigned short nline;
-};
-
 /*
  * Definition of enumerations
  */
@@ -338,6 +244,99 @@ enum op {
 	OBSWITCH,
 	OESWITCH,
 	OINIT
+};
+
+/*
+ * Definition of structures
+ */
+typedef struct type Type;
+typedef struct symbol Symbol;
+typedef struct swtch Switch;
+typedef struct node Node;
+typedef struct input Input;
+
+struct limits {
+	union {
+		TUINT i;
+		TFLOAT f;
+	} max;
+	union {
+		TUINT i;
+		TFLOAT f;
+	} min;
+};
+
+struct keyword {
+	char *str;
+	unsigned char token, value;
+};
+
+struct type {
+	unsigned char op;           /* type builder operator */
+	char ns;                    /* namespace for struct members */
+	short id;                   /* type id, used in dcls */
+	char letter;                /* letter of the type */
+	unsigned int prop;          /* type properties */
+	unsigned long size;         /* sizeof the type */
+	unsigned char align;        /* align of the type */
+	Type *type;                 /* base type */
+	Symbol *tag;                /* symbol of the strug tag */
+	Type *next;                 /* next element in the hash */
+	union {
+		Type **pars;            /* Function type parameters */
+		Symbol **fields;        /* fields of aggregate type */
+	} p;
+	union {
+		unsigned char rank;     /* convertion rank */
+		TINT elem;              /* number of type parameters */
+	} n;
+};
+
+struct symbol {
+	char *name;
+	Type *type;
+	unsigned short id;
+	unsigned char ctx;
+	char ns;
+	unsigned char token;
+	short flags;
+	union {
+		TINT i;
+		TUINT u;
+		TFLOAT f;
+		char *s;
+		unsigned char token;
+		Node **init;
+		Symbol **pars;
+	} u;
+	struct symbol *next;
+	struct symbol *hash;
+};
+
+struct node {
+	unsigned char op;
+	Type *type;
+	Symbol *sym;
+	char flags;
+	struct node *left, *right;
+};
+
+struct swtch {
+	short nr;
+	char hasdef;
+};
+
+struct yystype {
+	Symbol *sym;
+	unsigned char token;
+};
+
+struct input {
+	char *fname;
+	FILE *fp;
+	char *line, *begin, *p;
+	struct input *next;
+	unsigned short nline;
 };
 
 /* error.c */
