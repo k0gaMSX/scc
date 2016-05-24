@@ -39,7 +39,8 @@ spawn(char *tool, char *args[NARGS], pid_t *pid_tool, int fd, int stdfd)
 	char archtool[16], *fmt = "%s/libexec/scc/%s";
 	int r;
 
-	r = snprintf(archtool, sizeof(archtool), arch ? "%s-%s" : "%s", tool, arch);
+	r = snprintf(archtool, sizeof(archtool),
+	             arch ? "%s-%s" : "%s", tool, arch);
 	if (r == -1 || r >= sizeof(archtool))
 		die("scc: incorrect target arch");
 
