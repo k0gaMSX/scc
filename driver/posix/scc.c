@@ -18,8 +18,7 @@ char *argv0;
 
 #define NARGS 64
 static char cmd[FILENAME_MAX];
-static char *argcc1[NARGS];
-static char *argcc2[NARGS];
+static char *argcc1[NARGS], *argcc2[NARGS];
 
 static pid_t pid_cc1, pid_cc2;
 static char *arch;
@@ -34,53 +33,30 @@ terminate(void)
 }
 
 void
-cc1(int fd)
+spawn(char *tool, char *args[NARGS], pid_t *pid_tool, int fd, int stdfd)
 {
 	pid_t pid;
-	char *fmt;
+	char archtool[16], *fmt = "%s/libexec/scc/%s";
 	int r;
+
+	r = snprintf(archtool, sizeof(archtool), arch ? "%s-%s" : "%s", tool, arch);
+	if (r == -1 || r >= sizeof(archtool))
+		die("scc: incorrect target arch");
 
 	switch (pid = fork()) {
 	case -1:
-		die("scc: cc1: %s", strerror(errno));
-		exit(1);
+		die("scc: %s: %s", archtool, strerror(errno));
 	case 0:
-		dup2(fd, 1);
-		fmt = (arch) ? "%s/libexec/scc/cc1-%s" : "%s/libexec/scc/cc1";
-		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
-		if (r == sizeof(cmd))
-			die("scc: incorrect prefix\n");
-		execv(cmd, argcc1);
-		fprintf(stderr, "scc: execv cc1: %s\n", strerror(errno));
-		_exit(1);
-	default:
-		pid_cc1 = pid;
-		close(fd);
-		break;
-	}
-}
-
-pid_t
-cc2(int fd)
-{
-	pid_t pid;
-	char *fmt;
-	int r;
-
-	switch (pid = fork()) {
-	case -1:
-		die("scc: cc2: %s", strerror(errno));
-	case 0:
-		dup2(fd, 0);
-		fmt = (arch) ? "%s/libexec/scc/cc2-%s" : "%s/libexec/scc/cc2";
-		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
-		if (r == sizeof(cmd))
+		dup2(fd, stdfd);
+		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, archtool);
+		if (r == - 1 || r >= sizeof(cmd))
 			die("scc: incorrect prefix");
-		execv(cmd, argcc2);
-		fprintf(stderr, "scc: execv cc2: %s\n", strerror(errno));
+		args[0] = archtool;
+		execv(cmd, args);
+		fprintf(stderr, "scc: execv %s: %s\n", cmd, strerror(errno));
 		_exit(1);
 	default:
-		pid_cc2 = pid;
+		*pid_tool = pid;
 		close(fd);
 		break;
 	}
@@ -119,12 +95,9 @@ main(int argc, char *argv[])
 	if (pipe(fds))
 		die("scc: pipe: %s", strerror(errno));
 
-	argcc1[0] = "cc1";
 	argcc1[1] = *argv;
-	argcc2[0] = "cc2";
-
-	cc1(fds[1]);
-	cc2(fds[0]);
+	spawn("cc1", argcc1, &pid_cc1, fds[1], 1);
+	spawn("cc2", argcc2, &pid_cc2, fds[0], 0);
 
 	for (i = 0; i < 2; ++i) {
 		pid = wait(&st);
