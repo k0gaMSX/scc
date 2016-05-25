@@ -96,13 +96,11 @@ int
 main(int argc, char *argv[])
 {
 	int fds[2], st, i;
-	char *p;
 	pid_t pid;
 
 	atexit(terminate);
 
-	if (p = getenv("ARCH"))
-		arch = p;
+	arch = getenv("ARCH");
 
 	ARGBEGIN {
 	case 'm':
