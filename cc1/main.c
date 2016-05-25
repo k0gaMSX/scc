@@ -5,9 +5,9 @@
 #include <string.h>
 #include <errno.h>
 
+#include "../arg.h"
 #include "../inc/cc.h"
 #include "arch.h"
-#include "arg.h"
 #include "cc1.h"
 
 char *argv0;
