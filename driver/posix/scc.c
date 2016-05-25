@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../arg.h"
+#include "../../inc/arg.h"
 #include "../../inc/cc.h"
 
 char *argv0;

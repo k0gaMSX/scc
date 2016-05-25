@@ -5,7 +5,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "../arg.h"
+#include "../inc/arg.h"
 #include "../inc/cc.h"
 #include "arch.h"
 #include "cc1.h"
