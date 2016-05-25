@@ -93,7 +93,7 @@ ilex(char *fname)
 	keywords(keys, NS_KEYWORD);
 }
 
-bool
+int
 addinput(char *fname)
 {
 	FILE *fp;
@@ -174,7 +174,7 @@ comment(char type)
 		error("unterminated comment");
 }
 
-static bool
+static int
 readline(void)
 {
 	char *bp, *lim;
@@ -212,7 +212,7 @@ repeat:
 	return 1;
 }
 
-bool
+int
 moreinput(void)
 {
 	static char file[FILENAME_MAX];

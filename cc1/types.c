@@ -308,7 +308,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	return *tbl = bp;
 }
 
-bool
+int
 eqtype(Type *tp1, Type *tp2)
 {
 	TINT n;

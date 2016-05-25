@@ -347,7 +347,7 @@ extern void errorp(char *fmt, ...);
 extern void cpperror(char *fmt, ...);
 
 /* types.c */
-extern bool eqtype(Type *tp1, Type *tp2);
+extern int eqtype(Type *tp1, Type *tp2);
 extern Type *ctype(unsigned type, unsigned sign, unsigned size);
 extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
@@ -376,10 +376,10 @@ extern void decl(void);
 /* lex.c */
 extern char ahead(void);
 extern unsigned next(void);
-extern bool moreinput(void);
+extern int moreinput(void);
 extern void expect(unsigned tok);
 extern void discard(void);
-extern bool addinput(char *fname);
+extern int addinput(char *fname);
 extern void setsafe(int type);
 extern void ilex(char *fname);
 #define accept(t) ((yytoken == (t)) ? next() : 0)
@@ -402,9 +402,9 @@ extern TUINT ones(int nbytes);
 extern Node *decay(Node *), *negate(Node *np), *assign(void);
 extern Node *convert(Node *np, Type *tp1, char iscast);
 extern Node *iconstexpr(void), *condexpr(void), *expr(void);
-extern bool isnodecmp(int op);
+extern int isnodecmp(int op);
 extern int negop(int op);
-extern bool cmpnode(Node *np, TUINT val);
+extern int cmpnode(Node *np, TUINT val);
 
 /* init.c */
 extern void initializer(Symbol *sym, Type *tp);
@@ -412,8 +412,8 @@ extern Node *initlist(Type *tp);
 
 /* cpp.c */
 extern void icpp(void);
-extern bool cpp(void);
-extern bool expand(char *begin, Symbol *sym);
+extern int cpp(void);
+extern int expand(char *begin, Symbol *sym);
 extern void incdir(char *dir);
 extern void outcpp(void);
 extern Symbol *defmacro(char *s);

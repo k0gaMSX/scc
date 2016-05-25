@@ -226,7 +226,7 @@ expansion_too_long:
 }
 
 #define BUFSIZE ((INPUTSIZ > FILENAME_MAX+2) ? INPUTSIZ : FILENAME_MAX+2)
-bool
+int
 expand(char *begin, Symbol *sym)
 {
 	size_t total, elen, rlen, llen, ilen;
@@ -324,7 +324,7 @@ getpars(Symbol *args[NR_MACROARG])
 	return n;
 }
 
-static bool
+static int
 getdefs(Symbol *args[NR_MACROARG], int nargs, char *bp, size_t bufsiz)
 {
 	Symbol **argp;
@@ -425,7 +425,7 @@ incdir(char *dir)
 	dirinclude[ninclude-1] = dir;
 }
 
-static bool
+static int
 includefile(char *dir, char *file, size_t filelen)
 {
 	size_t dirlen;
@@ -684,7 +684,7 @@ undef(void)
 	next();
 }
 
-bool
+int
 cpp(void)
 {
 	static struct {

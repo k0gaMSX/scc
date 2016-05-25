@@ -12,7 +12,7 @@
 
 Node *expr(void);
 
-bool
+int
 cmpnode(Node *np, TUINT val)
 {
 	Symbol *sym;
@@ -36,7 +36,7 @@ cmpnode(Node *np, TUINT val)
 	return 0;
 }
 
-bool
+int
 isnodecmp(int op)
 {
 	switch (op) {

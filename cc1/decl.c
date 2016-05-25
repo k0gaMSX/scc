@@ -65,7 +65,7 @@ push(struct declarators *dp, int op, ...)
 	va_end(va);
 }
 
-static bool
+static int
 pop(struct declarators *dp, struct decl *dcl)
 {
 	struct declarator *p;

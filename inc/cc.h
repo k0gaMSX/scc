@@ -1,12 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-#ifndef __bool_true_and_false_defined
-#ifdef NBOOL
-typedef unsigned bool;
-#else
-#include <stdbool.h>
-#endif
-#endif
-
 #ifndef NDEBUG
 extern int debug;
 #define DBG(fmt, ...) dbg(fmt, __VA_ARGS__)
