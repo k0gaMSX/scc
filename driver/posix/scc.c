@@ -48,12 +48,11 @@ cc1(int fd)
 		dup2(fd, 1);
 		fmt = (arch) ? "%s/libexec/scc/cc1-%s" : "%s/libexec/scc/cc1";
 		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
-		if (r == sizeof(cmd)) {
+		if (r == sizeof(cmd))
 			die("scc: incorrect prefix\n");
-		}
 		execv(cmd, argcc1);
-		die("scc: execv cc1: %s", strerror(errno));
-		abort();
+		fprintf(stderr, "scc: execv cc1: %s\n", strerror(errno));
+		_exit(1);
 	default:
 		pid_cc1 = pid;
 		close(fd);
@@ -75,12 +74,11 @@ cc2(int fd)
 		dup2(fd, 0);
 		fmt = (arch) ? "%s/libexec/scc/cc2-%s" : "%s/libexec/scc/cc2";
 		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, arch);
-		if (r == sizeof(cmd)) {
+		if (r == sizeof(cmd))
 			die("scc: incorrect prefix");
-		}
 		execv(cmd, argcc2);
 		fprintf(stderr, "scc: execv cc2: %s\n", strerror(errno));
-		abort();
+		_exit(1);
 	default:
 		pid_cc2 = pid;
 		close(fd);
