@@ -257,18 +257,18 @@ foldfloat(int op, Symbol *res, TFLOAT l, TFLOAT r)
 	case OSUB: f = l - r;  break;
 	case OMUL: f = l * r;  break;
 	case ODIV: f = l / r;  break;
-	case OLT:  i = l < r;  goto comparision;
-	case OGT:  i = l > r;  goto comparision;
-	case OGE:  i = l >= r; goto comparision;
-	case OLE:  i = l <= r; goto comparision;
-	case OEQ:  i = l == r; goto comparision;
-	case ONE:  i = l != r; goto comparision;
+	case OLT:  i = l < r;  goto comparison;
+	case OGT:  i = l > r;  goto comparison;
+	case OGE:  i = l >= r; goto comparison;
+	case OLE:  i = l <= r; goto comparison;
+	case OEQ:  i = l == r; goto comparison;
+	case ONE:  i = l != r; goto comparison;
 	default:   return 0;
 	}
 	res->u.f = f;
 	return 1;
 
-comparision:
+comparison:
 	res->u.i = i;
 	return 1;
 }
