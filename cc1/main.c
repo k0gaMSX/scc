@@ -30,8 +30,8 @@ clean(void)
 static void
 usage(void)
 {
-	die("usage: %s [-E] [-Dmacro[=value]] [-Idir] [-w] [-d] [-o output]"
-	    "          [input]\n", argv0);
+	die("usage: %s [-E] [-D macro[=value]] ... [-I dir] [-w] [-d]"
+	    "[-o output] [input]", argv0);
 }
 
 int
