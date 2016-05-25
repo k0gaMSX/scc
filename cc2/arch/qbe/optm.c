@@ -5,7 +5,7 @@
 #include "../../cc2.h"
 
 Node *
-optm(Node *np)
+optm_dep(Node *np)
 {
 	int op = np->op;
 	Node *p, *dst, *next = np->next;

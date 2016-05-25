@@ -3,7 +3,7 @@
 
 include ../config.mk
 
-OBJS = main.o parser.o peep.o symbol.o node.o code.o\
+OBJS = main.o parser.o peep.o symbol.o node.o code.o optm.o\
        arch/$(ARCH)/code.o arch/$(ARCH)/cgen.o \
        arch/$(ARCH)/types.o arch/$(ARCH)/optm.o
 

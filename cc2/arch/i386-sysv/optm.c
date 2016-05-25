@@ -3,7 +3,7 @@
 #include "../../cc2.h"
 
 Node *
-optm(Node *np)
+optm_dep(Node *np)
 {
 	return np;
 }

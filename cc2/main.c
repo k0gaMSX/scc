@@ -38,7 +38,8 @@ main(void)
 
 	while (moreinput()) {
 		parse();
-		apply(optm);
+		apply(optm_ind);
+		apply(optm_dep);
 		apply(sethi);
 		apply(cgen);
 		peephole();
