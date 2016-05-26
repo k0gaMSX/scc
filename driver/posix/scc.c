@@ -41,7 +41,7 @@ spawn(char *tool, char *args[NARGS], pid_t *pid_tool, int fd, int stdfd)
 
 	r = snprintf(archtool, sizeof(archtool),
 	             arch ? "%s-%s" : "%s", tool, arch);
-	if (r == -1 || r >= sizeof(archtool))
+	if (r < 0 || r >= sizeof(archtool))
 		die("scc: incorrect target arch");
 
 	switch (pid = fork()) {
@@ -50,7 +50,7 @@ spawn(char *tool, char *args[NARGS], pid_t *pid_tool, int fd, int stdfd)
 	case 0:
 		dup2(fd, stdfd);
 		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, archtool);
-		if (r == - 1 || r >= sizeof(cmd))
+		if (r < 0 || r >= sizeof(cmd))
 			die("scc: incorrect prefix");
 		args[0] = archtool;
 		execv(cmd, args);
