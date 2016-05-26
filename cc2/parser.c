@@ -337,15 +337,18 @@ static void
 waft(Node *np)
 {
 	Node *p;
+	struct swtch *cur;
 
 	if (swp == swtbl)
 		error(EWTACKU);
-	p = swp[-1].last;
 
+	cur = swp - 1;
+	p = cur->last;
 	np->next = p->next;
 	np->prev = p;
 	p->next = np;
-	swp[-1].last = np;
+	cur->last = np;
+	cur->nr++;
 }
 
 static void
