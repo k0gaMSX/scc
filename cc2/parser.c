@@ -30,10 +30,18 @@ union tokenop {
 	unsigned op;
 };
 
+struct swtch {
+	int nr;
+	Node *last;
+};
+
+static struct swtch swtbl[NR_BLOCK], *swp = swtbl;
+
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
                 constant, composed, binit, einit,
-                jump, oreturn, loop, assign, casetbl;
+                jump, oreturn, loop, assign,
+                ocase, bswitch, eswitch;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,
@@ -123,22 +131,21 @@ static struct decoc {
 	['b']   = {     NULL,    loop, .u.op =        OBLOOP},
 	['e']   = {     NULL,    loop, .u.op =        OELOOP},
 
-	['v']   = {     NULL,    jump, .u.op =         OCASE},
-	['s']   = {     NULL,    jump, .u.op =       OSWITCH},
-
-	['f']   = {     NULL, casetbl, .u.op =      ODEFAULT},
-	['t']   = {     NULL, casetbl, .u.op =        OTABLE}
+	['v']   = {     NULL,   ocase, .u.op =         OCASE},
+	['f']   = {     NULL,   ocase, .u.op =      ODEFAULT},
+	['t']   = {     NULL, eswitch, .u.op =      OESWITCH},
+	['s']   = {     NULL, bswitch, .u.op =      OBSWITCH},
 };
 
 static int sclass, inpars, ininit, endf, lineno;
 static void *stack[STACKSIZ], **sp = stack;
 
-static void
+static Node *
 push(void *elem)
 {
 	if (sp == stack[STACKSIZ])
 		error(ESTACKO);
-	*sp++ = elem;
+	return *sp++ = elem;
 }
 
 static void *
@@ -327,27 +334,59 @@ oreturn(char *token, union tokenop u)
 }
 
 static void
+waft(Node *np)
+{
+	Node *p;
+
+	if (swp == swtbl)
+		error(EWTACKU);
+	p = swp[-1].last;
+
+	np->next = p->next;
+	np->prev = p;
+	p->next = np;
+	swp[-1].last = np;
+}
+
+static void
+bswitch(char *token, union tokenop u)
+{
+	if (swp++ == &swtbl[NR_BLOCK+1])
+		error(EWTACKO);
+	jump(token, u);
+	swp->nr = 0;
+	swp->last = push(pop());
+}
+
+static void
+eswitch(char *token, union tokenop u)
+{
+	if (swp == swtbl)
+		error(EWTACKU);
+	jump(token, u);
+	waft(pop());
+	--swp;
+}
+
+static void
+ocase(char *token, union tokenop u)
+{
+	jump(token, u);
+	waft(pop());
+}
+
+static void
 jump(char *token, union tokenop u)
 {
 	Node *aux, *np = newnode(u.op);
 
 	eval(strtok(NULL, "\t\n"));
 
-	if (u.op != OJMP)
+	if (u.op == OBRANCH || u.op == OCASE)
 		np->left = pop();
 	aux = pop();
 	np->u.sym = aux->u.sym;
 	delnode(aux);
-	push(np);
-}
-
-static void
-casetbl(char *token, union tokenop u)
-{
-	Node *np = newnode(u.op);
-
-	eval(strtok(NULL, "\t\n"));
-	np->left = pop();
 	push(np);
 }
 
@@ -564,6 +603,8 @@ stmt(void)
 {
 	Node *np;
 
+	if (empty())
+		return;
 	np = pop();
 	if (ininit) {
 		data(np);

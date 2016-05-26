@@ -387,8 +387,8 @@ cgen(Node *np)
 		return NULL;
 	case OCASE:
 	case ODEFAULT:
-	case OTABLE:
-	case OSWITCH:
+	case OESWITCH:
+	case OBSWITCH:
 	default:
 		abort();
 	}

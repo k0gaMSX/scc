@@ -99,8 +99,8 @@ enum op {
 	OELOOP   = 'e',
 	OCASE    = 'v',
 	ODEFAULT = 'f',
-	OTABLE   = 't',
-	OSWITCH  = 's',
+	OBSWITCH = 's',
+	OESWITCH = 't',
 };
 
 enum nerrors {
@@ -116,6 +116,9 @@ enum nerrors {
 	ELNBLNE,       /* line without new line */
 	EFERROR,       /* error reading from file:%s*/
 	EBADID,        /* incorrect symbol id */
+	EWTACKO,       /* switch stack overflow */
+	EWTACKU,       /* switch stack underflow */
+	ENOSWTC,       /* Out of switch statement */
 	ENUMERR
 };
 
