@@ -29,7 +29,7 @@ warn_error(int flag, char *fmt, va_list va)
 			fclose(stdout);
 		}
 		failure = 1;
-		if (nerrors++ == MAXERRNUM) {
+		if (++nerrors == MAXERRNUM) {
 			fputs("too many errors\n", stderr);
 			exit(1);
 		}
