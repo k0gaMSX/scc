@@ -32,6 +32,7 @@ union tokenop {
 
 struct swtch {
 	int nr;
+	Node *first;
 	Node *last;
 };
 
@@ -354,21 +355,27 @@ waft(Node *np)
 static void
 bswitch(char *token, union tokenop u)
 {
-	if (swp++ == &swtbl[NR_BLOCK+1])
+	struct swtch *cur;
+
+	if (swp == &swtbl[NR_BLOCK+1])
 		error(EWTACKO);
+	cur = swp++;
+	cur->nr = 0;
 	jump(token, u);
-	swp->nr = 0;
-	swp->last = push(pop());
+	cur->first = cur->last = push(pop());
 }
 
 static void
 eswitch(char *token, union tokenop u)
 {
+	struct swtch *cur;
+
 	if (swp == swtbl)
 		error(EWTACKU);
 	jump(token, u);
 	waft(pop());
-	--swp;
+	cur = swp--;
+	cur->first->u.i = cur->nr;
 }
 
 static void
