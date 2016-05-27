@@ -371,7 +371,7 @@ specifier(int *sclass, int *qualifier)
 	spec = qlf = sign = type = cls = size = 0;
 
 	for (;;) {
-		unsigned *p;
+		unsigned *p = NULL;
 		Type *(*dcl)(void) = NULL;
 
 		switch (yytoken) {
@@ -415,7 +415,6 @@ specifier(int *sclass, int *qualifier)
 				if (size == LONG) {
 					yylval.token = LLONG;
 					size = 0;
-					break;
 				}
 			case SHORT:
 				p = &size;
