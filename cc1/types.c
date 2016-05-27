@@ -97,6 +97,8 @@ getlimits(Type *tp)
 		case 16: ntype = 2; break;
 		}
 		break;
+	default:
+		abort();
 	}
 
 	return &limits[ntable][ntype];
