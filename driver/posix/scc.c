@@ -14,51 +14,91 @@
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 
-char *argv0;
-
 #define NARGS 64
-static char cmd[FILENAME_MAX];
-static char *argcc1[NARGS], *argcc2[NARGS];
 
-static pid_t pid_cc1, pid_cc2;
+struct tool {
+	char cmd[FILENAME_MAX];
+	char *args[NARGS];
+	char bin[16];
+	char name[8];
+	int in, out;
+	pid_t pid;
+};
+
+typedef struct tool Tool;
+
+char *argv0;
+static Tool cc1 = { .name = "cc1" },
+            cc2 = { .name = "cc2" },
+            qbe = { .name = "qbe", .bin = "qbe", .cmd = "qbe" };
 static char *arch;
 
 static void
 terminate(void)
 {
-	if (pid_cc1)
-		kill(pid_cc1, SIGTERM);
-	if (pid_cc2)
-		kill(pid_cc2, SIGTERM);
+	if (cc1.pid)
+		kill(cc1.pid, SIGTERM);
+	if (cc2.pid)
+		kill(cc2.pid, SIGTERM);
+	if (qbe.pid)
+		kill(qbe.pid, SIGTERM);
+}
+
+Tool *
+settool(Tool *tool, int pipeout)
+{
+	char *namefmt, *cmdfmt;
+	int fds[2], n;
+	static int fdin;
+
+	if (tool != &qbe) {
+		n = snprintf(tool->bin, sizeof(tool->bin),
+		             arch ? "%s-%s" : "%s", tool->name, arch);
+		if (n < 0 || n >= sizeof(tool->bin))
+			die("scc: target tool name too long");
+
+		n = snprintf(tool->cmd, sizeof(tool->cmd),
+		             "%s/libexec/scc/%s", PREFIX, tool->bin);
+		if (n < 0 || n >= sizeof(tool->cmd))
+			die("scc: target tool path too long");
+	}
+
+	tool->args[0] = tool->bin;
+
+	if (fdin) {
+		tool->in = fdin;
+		fdin = 0;
+	}
+	if (pipeout) {
+		if (pipe(fds))
+			die("scc: pipe: %s", strerror(errno));
+		tool->out = fds[1];
+		fdin = fds[0];
+	}
+
+	return tool;
 }
 
 void
-spawn(char *tool, char *args[NARGS], pid_t *pid_tool, int fd, int stdfd)
+spawn(Tool *tool)
 {
-	pid_t pid;
-	char archtool[16], *fmt = "%s/libexec/scc/%s";
-	int r;
-
-	r = snprintf(archtool, sizeof(archtool),
-	             arch ? "%s-%s" : "%s", tool, arch);
-	if (r < 0 || r >= sizeof(archtool))
-		die("scc: incorrect target arch");
-
-	switch (pid = fork()) {
+	switch (tool->pid = fork()) {
 	case -1:
-		die("scc: %s: %s", archtool, strerror(errno));
+		die("scc: %s: %s", tool->name, strerror(errno));
 	case 0:
-		dup2(fd, stdfd);
-		r = snprintf(cmd, sizeof(cmd), fmt, PREFIX, archtool);
-		if (r < 0 || r >= sizeof(cmd))
-			die("scc: incorrect prefix");
-		args[0] = archtool;
-		execv(cmd, args);
-		fprintf(stderr, "scc: execv %s: %s\n", cmd, strerror(errno));
+		if (tool->out)
+			dup2(tool->out, 1);
+		if (tool->in)
+			dup2(tool->in, 0);
+		execvp(tool->cmd, tool->args);
+		fprintf(stderr, "scc: execv %s: %s\n",
+		        tool->cmd, strerror(errno));
 		_exit(1);
 	default:
-		*pid_tool = pid;
-		close(fd);
+		if (tool->in)
+			close(tool->in);
+		if (tool->out)
+			close(tool->out);
 		break;
 	}
 }
@@ -72,7 +112,7 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	int fds[2], st, i;
+	int st, i;
 	pid_t pid;
 
 	atexit(terminate);
@@ -93,19 +133,25 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	if (pipe(fds))
-		die("scc: pipe: %s", strerror(errno));
+	cc1.args[1] = *argv;
 
-	argcc1[1] = *argv;
-	spawn("cc1", argcc1, &pid_cc1, fds[1], 1);
-	spawn("cc2", argcc2, &pid_cc2, fds[0], 0);
+	spawn(settool(&cc1, 1));
+	if (!arch || strcmp(arch, "qbe")) {
+		spawn(settool(&cc2, 0));
+	} else {
+		spawn(settool(&cc2, 1));
+		spawn(settool(&qbe, 0));
+	}
 
-	for (i = 0; i < 2; ++i) {
-		pid = wait(&st);
-		if (pid == pid_cc1)
-			pid_cc1 = 0;
-		else if (pid == pid_cc2)
-			pid_cc2 = 0;
+	for (i = 0; i < 3; ++i) {
+		if ((pid = wait(&st)) < 0)
+			break;
+		if (pid == cc1.pid)
+			cc1.pid = 0;
+		else if (pid == cc2.pid)
+			cc2.pid = 0;
+		else if (pid == qbe.pid)
+			qbe.pid = 0;
 		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
 			exit(-1);
 	}
