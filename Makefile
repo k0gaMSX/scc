@@ -15,7 +15,6 @@ all:
 	cp -f cc1/cc1 bin/cc1
 	cp -f cc2/cc2 bin/cc2
 	cp -f driver/$(DRIVER)/scc bin/scc
-	strip bin/cc1 bin/cc2 bin/scc
 
 multi:
 	for i in $(ARCHS); \
@@ -32,7 +31,6 @@ $(ARCHS):
 	done
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
-	strip bin/cc1-$@ bin/cc2-$@
 
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
@@ -40,8 +38,8 @@ install: all
 	cp -f bin/cc* $(PREFIX)/libexec/scc/
 	cp -f bin/cc1 $(PREFIX)/bin/cpp
 	cp -f bin/scc $(PREFIX)/bin/
-	cd $(PREFIX)/libexec/scc/ && chmod 755 cc*
-	cd $(PREFIX)/bin && chmod 755 cpp scc
+	cd $(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
+	cd $(PREFIX)/bin && chmod 755 cpp scc && strip cpp
 
 uninstall:
 	rm -rf $(PREFIX)/libexec/scc/
