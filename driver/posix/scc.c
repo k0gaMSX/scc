@@ -30,7 +30,7 @@ static struct {
 	char name[8];
 	int in, out;
 	pid_t pid;
-} tools[] = {
+} tools[NR_TOOLS] = {
 	[CC1] = { .name = "cc1", },
 	[CC2] = { .name = "cc2", },
 	[QBE] = { .name = "qbe", .bin = "qbe", .cmd = "qbe", },
