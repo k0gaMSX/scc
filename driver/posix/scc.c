@@ -16,63 +16,68 @@
 
 #define NARGS 64
 
-struct tool {
+enum {
+	CC1,
+	CC2,
+	QBE,
+};
+
+static struct {
 	char cmd[FILENAME_MAX];
 	char *args[NARGS];
 	char bin[16];
 	char name[8];
 	int in, out;
 	pid_t pid;
+} tools[] = {
+	[CC1] = { .name = "cc1", },
+	[CC2] = { .name = "cc2", },
+	[QBE] = { .name = "qbe", .bin = "qbe", .cmd = "qbe", },
 };
 
-typedef struct tool Tool;
-
 char *argv0;
-static Tool cc1 = { .name = "cc1" },
-            cc2 = { .name = "cc2" },
-            qbe = { .name = "qbe", .bin = "qbe", .cmd = "qbe" };
 static char *arch;
 
 static void
 terminate(void)
 {
-	if (cc1.pid)
-		kill(cc1.pid, SIGTERM);
-	if (cc2.pid)
-		kill(cc2.pid, SIGTERM);
-	if (qbe.pid)
-		kill(qbe.pid, SIGTERM);
+	if (tools[CC1].pid)
+		kill(tools[CC1].pid, SIGTERM);
+	if (tools[CC2].pid)
+		kill(tools[CC2].pid, SIGTERM);
+	if (tools[QBE].pid)
+		kill(tools[QBE].pid, SIGTERM);
 }
 
-Tool *
-settool(Tool *tool, int pipeout)
+int
+settool(int tool, int pipeout)
 {
 	char *namefmt, *cmdfmt;
 	int fds[2], n;
 	static int fdin;
 
-	if (tool != &qbe) {
-		n = snprintf(tool->bin, sizeof(tool->bin),
-		             arch ? "%s-%s" : "%s", tool->name, arch);
-		if (n < 0 || n >= sizeof(tool->bin))
+	if (tool != QBE) {
+		n = snprintf(tools[tool].bin, sizeof(tools[tool].bin),
+		             arch ? "%s-%s" : "%s", tools[tool].name, arch);
+		if (n < 0 || n >= sizeof(tools[tool].bin))
 			die("scc: target tool name too long");
 
-		n = snprintf(tool->cmd, sizeof(tool->cmd),
-		             "%s/libexec/scc/%s", PREFIX, tool->bin);
-		if (n < 0 || n >= sizeof(tool->cmd))
+		n = snprintf(tools[tool].cmd, sizeof(tools[tool].cmd),
+		             "%s/libexec/scc/%s", PREFIX, tools[tool].bin);
+		if (n < 0 || n >= sizeof(tools[tool].cmd))
 			die("scc: target tool path too long");
 	}
 
-	tool->args[0] = tool->bin;
+	tools[tool].args[0] = tools[tool].bin;
 
 	if (fdin) {
-		tool->in = fdin;
+		tools[tool].in = fdin;
 		fdin = 0;
 	}
 	if (pipeout) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
-		tool->out = fds[1];
+		tools[tool].out = fds[1];
 		fdin = fds[0];
 	}
 
@@ -80,25 +85,25 @@ settool(Tool *tool, int pipeout)
 }
 
 void
-spawn(Tool *tool)
+spawn(int tool)
 {
-	switch (tool->pid = fork()) {
+	switch (tools[tool].pid = fork()) {
 	case -1:
-		die("scc: %s: %s", tool->name, strerror(errno));
+		die("scc: %s: %s", tools[tool].name, strerror(errno));
 	case 0:
-		if (tool->out)
-			dup2(tool->out, 1);
-		if (tool->in)
-			dup2(tool->in, 0);
-		execvp(tool->cmd, tool->args);
+		if (tools[tool].out)
+			dup2(tools[tool].out, 1);
+		if (tools[tool].in)
+			dup2(tools[tool].in, 0);
+		execvp(tools[tool].cmd, tools[tool].args);
 		fprintf(stderr, "scc: execv %s: %s\n",
-		        tool->cmd, strerror(errno));
+		        tools[tool].cmd, strerror(errno));
 		_exit(1);
 	default:
-		if (tool->in)
-			close(tool->in);
-		if (tool->out)
-			close(tool->out);
+		if (tools[tool].in)
+			close(tools[tool].in);
+		if (tools[tool].out)
+			close(tools[tool].out);
 		break;
 	}
 }
@@ -133,25 +138,25 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	cc1.args[1] = *argv;
+	tools[CC1].args[1] = *argv;
 
-	spawn(settool(&cc1, 1));
+	spawn(settool(CC1, 1));
 	if (!arch || strcmp(arch, "qbe")) {
-		spawn(settool(&cc2, 0));
+		spawn(settool(CC2, 0));
 	} else {
-		spawn(settool(&cc2, 1));
-		spawn(settool(&qbe, 0));
+		spawn(settool(CC2, 1));
+		spawn(settool(QBE, 0));
 	}
 
 	for (i = 0; i < 3; ++i) {
 		if ((pid = wait(&st)) < 0)
 			break;
-		if (pid == cc1.pid)
-			cc1.pid = 0;
-		else if (pid == cc2.pid)
-			cc2.pid = 0;
-		else if (pid == qbe.pid)
-			qbe.pid = 0;
+		if (pid == tools[CC1].pid)
+			tools[CC1].pid = 0;
+		else if (pid == tools[CC2].pid)
+			tools[CC2].pid = 0;
+		else if (pid == tools[QBE].pid)
+			tools[QBE].pid = 0;
 		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
 			exit(-1);
 	}
