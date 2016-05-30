@@ -20,6 +20,7 @@ enum {
 	CC1,
 	CC2,
 	QBE,
+	NR_TOOLS,
 };
 
 static struct {
@@ -41,12 +42,12 @@ static char *arch;
 static void
 terminate(void)
 {
-	if (tools[CC1].pid)
-		kill(tools[CC1].pid, SIGTERM);
-	if (tools[CC2].pid)
-		kill(tools[CC2].pid, SIGTERM);
-	if (tools[QBE].pid)
-		kill(tools[QBE].pid, SIGTERM);
+	int i;
+
+	for (i = 0; i < NR_TOOLS; ++i) {
+		if (tools[i].pid)
+			kill(tools[i].pid, SIGTERM);
+	}
 }
 
 int
@@ -148,15 +149,11 @@ main(int argc, char *argv[])
 		spawn(settool(QBE, 0));
 	}
 
-	for (i = 0; i < 3; ++i) {
+	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = wait(&st)) < 0)
 			break;
-		if (pid == tools[CC1].pid)
-			tools[CC1].pid = 0;
-		else if (pid == tools[CC2].pid)
-			tools[CC2].pid = 0;
-		else if (pid == tools[QBE].pid)
-			tools[QBE].pid = 0;
+		if (pid == tools[i].pid)
+			tools[i].pid = 0;
 		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
 			exit(-1);
 	}
