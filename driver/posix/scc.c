@@ -57,7 +57,9 @@ settool(int tool, int pipeout)
 	int fds[2], n;
 	static int fdin;
 
-	if (tool != QBE) {
+	switch (tool) {
+	case CC1:
+	case CC2:
 		n = snprintf(tools[tool].bin, sizeof(tools[tool].bin),
 		             arch ? "%s-%s" : "%s", tools[tool].name, arch);
 		if (n < 0 || n >= sizeof(tools[tool].bin))
@@ -67,6 +69,9 @@ settool(int tool, int pipeout)
 		             "%s/libexec/scc/%s", PREFIX, tools[tool].bin);
 		if (n < 0 || n >= sizeof(tools[tool].cmd))
 			die("scc: target tool path too long");
+		break;
+	default:
+		break;
 	}
 
 	tools[tool].args[0] = tools[tool].bin;
