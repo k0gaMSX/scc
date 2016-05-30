@@ -26,6 +26,7 @@ enum {
 static struct {
 	char cmd[PATH_MAX];
 	char *args[NARGS];
+	int nargs;
 	char bin[16];
 	char name[8];
 	int in, out;
@@ -38,6 +39,7 @@ static struct {
 
 char *argv0;
 static char *arch;
+static int Eflag;
 
 static void
 terminate(void)
@@ -53,7 +55,6 @@ terminate(void)
 int
 settool(int tool, int pipeout)
 {
-	char *namefmt, *cmdfmt;
 	int fds[2], n;
 	static int fdin;
 
@@ -131,6 +132,10 @@ main(int argc, char *argv[])
 	arch = getenv("ARCH");
 
 	ARGBEGIN {
+	case 'E':
+		Eflag = 1;
+		tools[CC1].args[++tools[CC1].nargs] = "-E";
+		break;
 	case 'm':
 		arch = EARGF(usage());
 		break;
@@ -144,14 +149,19 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	tools[CC1].args[1] = *argv;
+	tools[CC1].args[++tools[CC1].nargs] = *argv;
 
-	spawn(settool(CC1, 1));
-	if (!arch || strcmp(arch, "qbe")) {
-		spawn(settool(CC2, 0));
+	if (Eflag) {
+		spawn(settool(CC1, 0));
 	} else {
-		spawn(settool(CC2, 1));
-		spawn(settool(QBE, 0));
+		spawn(settool(CC1, 1));
+
+		if (!arch || strcmp(arch, "qbe")) {
+			spawn(settool(CC2, 0));
+		} else {
+			spawn(settool(CC2, 1));
+			spawn(settool(QBE, 0));
+		}
 	}
 
 	for (i = 0; i < NR_TOOLS; ++i) {
