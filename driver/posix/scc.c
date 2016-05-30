@@ -24,7 +24,7 @@ enum {
 };
 
 static struct {
-	char cmd[FILENAME_MAX];
+	char cmd[PATH_MAX];
 	char *args[NARGS];
 	char bin[16];
 	char name[8];
