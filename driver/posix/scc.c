@@ -14,6 +14,7 @@
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 
+#define ADDARG(t, p) ((tools[t].args[++tools[t].nargs]) = (p))
 #define NARGS 64
 
 enum {
@@ -23,7 +24,7 @@ enum {
 	NR_TOOLS,
 };
 
-static struct {
+static struct tool {
 	char cmd[PATH_MAX];
 	char *args[NARGS];
 	int nargs;
@@ -53,64 +54,67 @@ terminate(void)
 }
 
 int
-settool(int tool, int pipeout)
+settool(int t, int pipeout)
 {
+	struct tool *tool = &tools[t];
 	int fds[2], n;
 	static int fdin;
 
-	switch (tool) {
+	switch (t) {
 	case CC1:
 	case CC2:
-		n = snprintf(tools[tool].bin, sizeof(tools[tool].bin),
-		             arch ? "%s-%s" : "%s", tools[tool].name, arch);
-		if (n < 0 || n >= sizeof(tools[tool].bin))
+		n = snprintf(tool->bin, sizeof(tool->bin),
+		             arch ? "%s-%s" : "%s", tool->name, arch);
+		if (n < 0 || n >= sizeof(tool->bin))
 			die("scc: target tool name too long");
 
-		n = snprintf(tools[tool].cmd, sizeof(tools[tool].cmd),
-		             "%s/libexec/scc/%s", PREFIX, tools[tool].bin);
-		if (n < 0 || n >= sizeof(tools[tool].cmd))
+		n = snprintf(tool->cmd, sizeof(tool->cmd),
+		             "%s/libexec/scc/%s", PREFIX, tool->bin);
+		if (n < 0 || n >= sizeof(tool->cmd))
 			die("scc: target tool path too long");
 		break;
 	default:
 		break;
 	}
 
-	tools[tool].args[0] = tools[tool].bin;
+	tool->args[0] = tool->bin;
 
 	if (fdin) {
-		tools[tool].in = fdin;
+		tool->in = fdin;
 		fdin = 0;
 	}
 	if (pipeout) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
-		tools[tool].out = fds[1];
+		tool->out = fds[1];
 		fdin = fds[0];
 	}
 
-	return tool;
+	return t;
 }
 
 void
-spawn(int tool)
+spawn(int t)
 {
-	switch (tools[tool].pid = fork()) {
+	struct tool *tool = &tools[t];
+
+	switch (tool->pid = fork()) {
 	case -1:
-		die("scc: %s: %s", tools[tool].name, strerror(errno));
+		die("scc: %s: %s", tool->name, strerror(errno));
 	case 0:
-		if (tools[tool].out)
-			dup2(tools[tool].out, 1);
-		if (tools[tool].in)
-			dup2(tools[tool].in, 0);
-		execvp(tools[tool].cmd, tools[tool].args);
+		if (tool->out)
+			dup2(tool->out, 1);
+		if (tool->in)
+			dup2(tool->in, 0);
+		execvp(tool->cmd, tool->args);
 		fprintf(stderr, "scc: execv %s: %s\n",
-		        tools[tool].cmd, strerror(errno));
+		        tool->cmd, strerror(errno));
 		_exit(1);
 	default:
-		if (tools[tool].in)
-			close(tools[tool].in);
-		if (tools[tool].out)
-			close(tools[tool].out);
+		if (tool->in)
+			close(tool->in);
+		if (tool->out)
+			close(tool->out);
 		break;
 	}
 }
@@ -134,7 +138,7 @@ main(int argc, char *argv[])
 	ARGBEGIN {
 	case 'E':
 		Eflag = 1;
-		tools[CC1].args[++tools[CC1].nargs] = "-E";
+		ADDARG(CC1, "-E");
 		break;
 	case 'm':
 		arch = EARGF(usage());
@@ -149,7 +153,7 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	tools[CC1].args[++tools[CC1].nargs] = *argv;
+	ADDARG(CC1, *argv);
 
 	if (Eflag) {
 		spawn(settool(CC1, 0));
