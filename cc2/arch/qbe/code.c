@@ -351,6 +351,10 @@ addr2txt(Addr *a)
 	case SAUTO:
 	case SLABEL:
 	case STMP:
+	case SGLOB:
+	case SEXTRN:
+	case SPRIV:
+	case SLOCAL:
 		return symname(a->u.sym);
 	default:
 		abort();
