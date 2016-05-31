@@ -10,7 +10,7 @@
 #define ADDR_LEN (INTIDENTSIZ+64)
 
 static void binary(void), unary(void), store(void), jmp(void), ret(void),
-            branch(void);
+            branch(void), call(void), ecall(void);
 
 static struct opdata {
 	void (*fun)(void);
@@ -126,6 +126,13 @@ static struct opdata {
 	[ASBRANCH] = {.fun = branch},
 	[ASJMP]  = {.fun = jmp},
 	[ASRET]  = {.fun = ret},
+	[ASCALLB] = {.fun = call, .letter = 'b'},
+	[ASCALLH] = {.fun = call, .letter = 'h'},
+	[ASCALLW] = {.fun = call, .letter = 'w'},
+	[ASCALLS] = {.fun = call, .letter = 's'},
+	[ASCALLL] = {.fun = call, .letter = 'l'},
+	[ASCALLD] = {.fun = call, .letter = 'd'},
+	[ASCALL] = {.fun = ecall},
 };
 
 static char buff[ADDR_LEN];
@@ -393,6 +400,23 @@ unary(void)
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from, addr2txt(&pc->from1));
 	printf("\t%s %c=\t%s\t%s\n", to, p->letter, p->txt, from);
+}
+
+static void
+call(void)
+{
+       struct opdata *p = &optbl[pc->op];
+       char to[ADDR_LEN], from[ADDR_LEN];
+
+       strcpy(to, addr2txt(&pc->to));
+       strcpy(from, addr2txt(&pc->from1));
+       printf("\t%s =%c\tcall\t%s(", to, p->letter, from);
+}
+
+static void
+ecall(void)
+{
+	puts(")");
 }
 
 static void

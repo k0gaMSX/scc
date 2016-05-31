@@ -4,6 +4,7 @@
 
 #include "arch.h"
 #include "../../cc2.h"
+#include "../../../inc/sizes.h"
 
 enum lflags {
 	FORCE = 1 << 0,
@@ -232,6 +233,38 @@ cast(Node *nd)
 }
 
 static Node *
+call(Node *np)
+{
+	int n, op;
+	Type *tp = &np->type;
+	Node *tmp, *p, *pars[NR_FUNPARAM];
+
+	for (n = 0, p = np->right; p; p = p->right)
+		pars[n] = cgen(p->left);
+
+	switch (tp->size) {
+	case 1:
+		op = ASCALLB;
+		break;
+	case 2:
+		op = ASCALLH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASCALLW : ASCALLS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASCALLL : ASCALLD;
+		break;
+	default:
+		abort();
+	}
+	code(op, tmpnode(np), np->left, NULL);
+	code(ASCALL, NULL, NULL, NULL);
+
+	return np;
+}
+
+static Node *
 abbrev(Node *np)
 {
 	Node *tmp;
@@ -259,8 +292,10 @@ cgen(Node *np)
 		return NULL;
 
 	setlabel(np->label);
-	np->left = cgen(np->left);
-	np->right = cgen(np->right);
+	 if (np->op != OCALL) {
+		np->left = cgen(np->left);
+		np->right = cgen(np->right);
+	}
 	tp = &np->type;
 
 	switch (np->op) {
@@ -354,6 +389,7 @@ cgen(Node *np)
 	case OCOMMA:
 		return np->right;
 	case OCALL:
+		return call(np);
 	case OFIELD:
 	case OASK:
 	case OCOLON:
