@@ -243,6 +243,10 @@ call(Node *np)
 		pars[n] = cgen(p->left);
 
 	switch (tp->size) {
+	case 0:
+		np->left = tmpnode(newnode(OTMP));
+		op = ASCALLW;
+		break;
 	case 1:
 		op = ASCALLB;
 		break;
