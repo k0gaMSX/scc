@@ -87,19 +87,17 @@ inittool(int tool)
 }
 
 int
-settool(int t, int pipeout)
+settool(int t, int output)
 {
 	struct tool *tool = &tools[t];
 	int fds[2], n;
 	static int fdin;
 
-	inittool(t);
-
 	if (fdin) {
 		tool->in = fdin;
 		fdin = 0;
 	}
-	if (pipeout) {
+	if (output < NR_TOOLS) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
 		tool->out = fds[1];
@@ -132,6 +130,31 @@ spawn(int t)
 		if (tool->out)
 			close(tool->out);
 		break;
+	}
+}
+
+void
+build(char *file)
+{
+	int tool, out;
+
+	for (tool = CC1; tool < NR_TOOLS; tool = out) {
+		switch (tool) {
+		case CC1:
+			out = CC2;
+			ADDARG(tool, file);
+			break;
+		case CC2:
+			out = (!arch || strcmp(arch, "qbe")) ? NR_TOOLS : QBE;
+			break;
+		case QBE:
+			out = NR_TOOLS;
+			break;
+		default:
+			break;
+		}
+
+		spawn(settool(inittool(tool), out));
 	}
 }
 
@@ -169,20 +192,7 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	ADDARG(CC1, *argv);
-
-	if (Eflag) {
-		spawn(settool(CC1, 0));
-	} else {
-		spawn(settool(CC1, 1));
-
-		if (!arch || strcmp(arch, "qbe")) {
-			spawn(settool(CC2, 0));
-		} else {
-			spawn(settool(CC2, 1));
-			spawn(settool(QBE, 0));
-		}
-	}
+	build(*argv);
 
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = wait(&st)) < 0)
