@@ -164,7 +164,7 @@ build(char *file)
 				keepfile = (Sflag || kflag);
 			} else {
 				out = QBE;
-				keepfile = Sflag;
+				keepfile = kflag;
 			}
 			break;
 		case QBE:
