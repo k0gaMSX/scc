@@ -25,17 +25,15 @@ enum {
 };
 
 static struct tool {
-	char cmd[PATH_MAX];
+	char  cmd[PATH_MAX];
 	char *args[NARGS];
-	int nargs;
-	char bin[16];
-	char name[8];
-	int in, out;
+	char  bin[16];
+	int   nargs, in, out;
 	pid_t pid;
 } tools[NR_TOOLS] = {
-	[CC1] = { .name = "cc1", },
-	[CC2] = { .name = "cc2", },
-	[QBE] = { .name = "qbe", .bin = "qbe", .cmd = "qbe", },
+	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
+	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
+	[QBE] = { .bin = "qbe", .bin = "qbe", .cmd = "qbe", },
 };
 
 char *argv0;
@@ -54,30 +52,48 @@ terminate(void)
 }
 
 int
+inittool(int tool)
+{
+	struct tool *t = &tools[tool];
+	size_t binln;
+	int n;
+
+	if (!t->args[0]) {
+		switch (tool) {
+		case CC1:
+		case CC2:
+			binln = strlen(t->bin);
+			if (arch) {
+				n = snprintf(t->bin + binln,
+					     sizeof(t->bin) - binln,
+					     "-%s", arch);
+				if (n < 0 || n >= sizeof(t->bin))
+					die("scc: target tool bin too long");
+				binln = strlen(t->bin);
+			}
+
+			if (strlen(t->cmd) + binln + 1 > sizeof(t->cmd))
+				die("scc: target tool path too long");
+			strcat(t->cmd, t->bin);
+			break;
+		default:
+			break;
+		}
+
+		t->args[0] = t->bin;
+	}
+
+	return tool;
+}
+
+int
 settool(int t, int pipeout)
 {
 	struct tool *tool = &tools[t];
 	int fds[2], n;
 	static int fdin;
 
-	switch (t) {
-	case CC1:
-	case CC2:
-		n = snprintf(tool->bin, sizeof(tool->bin),
-		             arch ? "%s-%s" : "%s", tool->name, arch);
-		if (n < 0 || n >= sizeof(tool->bin))
-			die("scc: target tool name too long");
-
-		n = snprintf(tool->cmd, sizeof(tool->cmd),
-		             "%s/libexec/scc/%s", PREFIX, tool->bin);
-		if (n < 0 || n >= sizeof(tool->cmd))
-			die("scc: target tool path too long");
-		break;
-	default:
-		break;
-	}
-
-	tool->args[0] = tool->bin;
+	inittool(t);
 
 	if (fdin) {
 		tool->in = fdin;
@@ -100,7 +116,7 @@ spawn(int t)
 
 	switch (tool->pid = fork()) {
 	case -1:
-		die("scc: %s: %s", tool->name, strerror(errno));
+		die("scc: %s: %s", tool->bin, strerror(errno));
 	case 0:
 		if (tool->out)
 			dup2(tool->out, 1);
