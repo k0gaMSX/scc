@@ -194,7 +194,7 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-m arch] input ...");
+	die("usage: %s [-E|-kS] [-m arch] input ...", argv0);
 }
 
 int
@@ -227,6 +227,9 @@ main(int argc, char *argv[])
 	default:
 		usage();
 	} ARGEND
+
+	if (Eflag && (Sflag || kflag))
+		usage();
 
 	if (!argc)
 		die("scc: fatal error: no input files");
