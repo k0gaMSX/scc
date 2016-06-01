@@ -42,7 +42,7 @@ static struct tool {
 
 char *argv0;
 static char *arch;
-static int Eflag, kflag;
+static int Eflag, Sflag, kflag;
 
 static void
 terminate(void)
@@ -159,13 +159,17 @@ build(char *file)
 			ADDARG(tool, file);
 			break;
 		case CC2:
-			out = (!arch || strcmp(arch, "qbe")) ? AS : QBE;
-			if (out != QBE)
-				keepfile = kflag;
+			if (!arch || strcmp(arch, "qbe")) {
+				out = Sflag ? NR_TOOLS : AS;
+				keepfile = (Sflag || kflag);
+			} else {
+				out = QBE;
+				keepfile = Sflag;
+			}
 			break;
 		case QBE:
-			out = AS;
-			keepfile = kflag;
+			out = Sflag ? NR_TOOLS : AS;
+			keepfile = (Sflag || kflag);
 			break;
 		case AS:
 			out = NR_TOOLS;
@@ -207,6 +211,9 @@ main(int argc, char *argv[])
 	case 'E':
 		Eflag = 1;
 		ADDARG(CC1, "-E");
+		break;
+	case 'S':
+		Sflag = 1;
 		break;
 	case 'k':
 		kflag = 1;
