@@ -21,6 +21,8 @@ enum {
 	CC1,
 	CC2,
 	QBE,
+	AS,
+	TEE,
 	NR_TOOLS,
 };
 
@@ -34,11 +36,13 @@ static struct tool {
 	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
 	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
 	[QBE] = { .bin = "qbe", .bin = "qbe", .cmd = "qbe", },
+	[AS]  = { .bin = "cat", .bin = "cat", .cmd = "cat", },
+	[TEE] = { .bin = "tee", .bin = "tee", .cmd = "tee", },
 };
 
 char *argv0;
 static char *arch;
-static int Eflag;
+static int Eflag, kflag;
 
 static void
 terminate(void)
@@ -87,24 +91,28 @@ inittool(int tool)
 }
 
 int
-settool(int t, int output)
+settool(int tool, int output)
 {
-	struct tool *tool = &tools[t];
-	int fds[2], n;
+	struct tool *t = &tools[tool];
+	int fds[2];
 	static int fdin;
 
+	if (tool == TEE)
+		t->args[1] = "out.ir";
+
 	if (fdin) {
-		tool->in = fdin;
+		t->in = fdin;
 		fdin = 0;
 	}
+
 	if (output < NR_TOOLS) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
-		tool->out = fds[1];
+		t->out = fds[1];
 		fdin = fds[0];
 	}
 
-	return t;
+	return tool;
 }
 
 void
@@ -136,25 +144,46 @@ spawn(int t)
 void
 build(char *file)
 {
-	int tool, out;
+	int tool, out, keepfile;
+	static int in = NR_TOOLS, preout;
 
 	for (tool = CC1; tool < NR_TOOLS; tool = out) {
+		keepfile = 0;
+
 		switch (tool) {
 		case CC1:
-			out = CC2;
+			in = NR_TOOLS;
+			out = Eflag ? NR_TOOLS : CC2;
+			if (!Eflag)
+				keepfile = kflag;
 			ADDARG(tool, file);
 			break;
 		case CC2:
-			out = (!arch || strcmp(arch, "qbe")) ? NR_TOOLS : QBE;
+			out = (!arch || strcmp(arch, "qbe")) ? AS : QBE;
+			if (out != QBE)
+				keepfile = kflag;
 			break;
 		case QBE:
+			out = AS;
+			keepfile = kflag;
+			break;
+		case AS:
 			out = NR_TOOLS;
+			break;
+		case TEE:
+			out = preout;
 			break;
 		default:
 			break;
 		}
 
+		if (keepfile) {
+			preout = out;
+			out = TEE;
+		}
+
 		spawn(settool(inittool(tool), out));
+		in = tool;
 	}
 }
 
@@ -178,6 +207,9 @@ main(int argc, char *argv[])
 	case 'E':
 		Eflag = 1;
 		ADDARG(CC1, "-E");
+		break;
+	case 'k':
+		kflag = 1;
 		break;
 	case 'm':
 		arch = EARGF(usage());
