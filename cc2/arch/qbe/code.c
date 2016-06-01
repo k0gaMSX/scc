@@ -296,7 +296,7 @@ alloc(Symbol *sym)
 {
 	Type *tp = &sym->type;
 
-	printf("\t%s %s=\talloc%lu\t%lu\n",
+	printf("\t%s =%s\talloc%lu\t%lu\n",
 	       symname(sym), size2asm(tp), tp->size, tp->align);
 }
 
