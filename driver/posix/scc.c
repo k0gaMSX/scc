@@ -123,7 +123,7 @@ settool(int tool, char *input, int output)
 
 	switch (tool) {
 	case CC1:
-		ADDARG(tool, input);
+		t->args[1] = input;
 		break;
 	case TEE:
 		switch (output) {
@@ -285,7 +285,8 @@ main(int argc, char *argv[])
 	if (!argc)
 		die("scc: fatal error: no input files");
 
-	build(*argv);
+	for (; *argv; ++argv)
+		build(*argv);
 
 	return 0;
 }
