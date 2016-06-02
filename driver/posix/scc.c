@@ -52,9 +52,12 @@ cleanup(void)
 	int i;
 
 	for (i = 0; i < NR_TOOLS; ++i) {
-		if (i > failedtool && outfiles[i])
-			unlink(outfiles[i]);
-		free(outfiles[i]);
+		if (outfiles[i]) {
+			if (i > failedtool)
+				unlink(outfiles[i]);
+			free(outfiles[i]);
+			outfiles[i] = NULL;
+		}
 	}
 }
 
