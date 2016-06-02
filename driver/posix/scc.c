@@ -35,9 +35,9 @@ static struct tool {
 } tools[NR_TOOLS] = {
 	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
 	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[QBE] = { .bin = "qbe", .bin = "qbe", .cmd = "qbe", },
-	[AS]  = { .bin = "cat", .bin = "cat", .cmd = "cat", },
-	[TEE] = { .bin = "tee", .bin = "tee", .cmd = "tee", },
+	[QBE] = { .bin = "qbe", .cmd = "qbe", },
+	[AS]  = { .bin = "as",  .cmd = "as", },
+	[TEE] = { .bin = "tee", .cmd = "tee", },
 };
 
 char *argv0;
@@ -144,15 +144,15 @@ spawn(int t)
 void
 build(char *file)
 {
-	int tool, out, keepfile;
-	static int in = NR_TOOLS, preout;
+	pid_t pid;
+	int i, st, tool, out, keepfile;
+	static int preout;
 
 	for (tool = CC1; tool < NR_TOOLS; tool = out) {
 		keepfile = 0;
 
 		switch (tool) {
 		case CC1:
-			in = NR_TOOLS;
 			out = Eflag ? NR_TOOLS : CC2;
 			if (!Eflag)
 				keepfile = kflag;
@@ -187,7 +187,6 @@ build(char *file)
 		}
 
 		spawn(settool(inittool(tool), out));
-		in = tool;
 	}
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = tools[i].pid) == 0)
@@ -209,9 +208,6 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	int st, i;
-	pid_t pid;
-
 	atexit(terminate);
 
 	arch = getenv("ARCH");
