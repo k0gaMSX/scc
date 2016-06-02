@@ -128,7 +128,7 @@ newfileext(char *name, char *ext)
 
 	n = snprintf(new, newsz, "%.*s.%s", nameln, name, ext);
 	if (n < 0 || n >= newsz)
-		die("wrong output filename");
+		die("scc: wrong output filename");
 
 	return new;
 }
@@ -197,7 +197,7 @@ spawn(int t)
 		if (tool->in)
 			dup2(tool->in, 0);
 		execvp(tool->cmd, tool->args);
-		fprintf(stderr, "scc: execv %s: %s\n",
+		fprintf(stderr, "scc: execp %s: %s\n",
 		        tool->cmd, strerror(errno));
 		_exit(1);
 	default:
@@ -286,7 +286,7 @@ addarg(int tool, char *arg) {
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-m arch] [-D macro=val]... "
+	die("usage: %s [-E|-kS] [-m arch] [-D macro[=val]]... "
 	    "[-I dir]... file ...", argv0);
 }
 
@@ -331,7 +331,7 @@ main(int argc, char *argv[])
 		usage();
 
 	if (!argc)
-		die("scc: fatal error: no input files");
+		die("scc: fatal error: no input file");
 
 	for (; *argv; ++argv)
 		build(*argv);
