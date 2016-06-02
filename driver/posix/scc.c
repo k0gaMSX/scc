@@ -45,7 +45,7 @@ static char *outfiles[NR_TOOLS + 1];
 static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
 
-void
+static void
 cleanup(void)
 {
 	int i;
@@ -73,7 +73,7 @@ terminate(void)
 	cleanup();
 }
 
-int
+static int
 inittool(int tool)
 {
 	struct tool *t = &tools[tool];
@@ -111,7 +111,7 @@ inittool(int tool)
 	return tool;
 }
 
-char *
+static char *
 newfileext(char *name, char *ext)
 {
 	char *new, *dot;
@@ -133,7 +133,7 @@ newfileext(char *name, char *ext)
 	return new;
 }
 
-int
+static int
 settool(int tool, char *input, int output)
 {
 	struct tool *t = &tools[tool];
@@ -183,7 +183,7 @@ settool(int tool, char *input, int output)
 	return tool;
 }
 
-void
+static void
 spawn(int t)
 {
 	struct tool *tool = &tools[t];
@@ -209,7 +209,7 @@ spawn(int t)
 	}
 }
 
-void
+static void
 build(char *file)
 {
 	pid_t pid;
@@ -273,7 +273,7 @@ build(char *file)
 	cleanup();
 }
 
-void
+static void
 addarg(int tool, char *arg) {
 	struct tool *t = &tools[tool];
 
