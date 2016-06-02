@@ -30,7 +30,6 @@ static struct tool {
 	char  cmd[PATH_MAX];
 	char *args[NARGS];
 	char  bin[16];
-	char *outfile;
 	int   nargs, in, out;
 	pid_t pid;
 } tools[NR_TOOLS] = {
@@ -43,7 +42,21 @@ static struct tool {
 
 char *argv0;
 static char *arch;
+static char *outfiles[NR_TOOLS];
+static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
+
+void
+cleanup(void)
+{
+	int i;
+
+	for (i = 0; i < NR_TOOLS; ++i) {
+		if (i > failedtool && outfiles[i])
+			unlink(outfiles[i]);
+		free(outfiles[i]);
+	}
+}
 
 static void
 terminate(void)
@@ -54,6 +67,8 @@ terminate(void)
 		if (tools[i].pid)
 			kill(tools[i].pid, SIGTERM);
 	}
+
+	cleanup();
 }
 
 int
@@ -137,8 +152,8 @@ settool(int tool, char *input, int output)
 		case AS:
 			ext = "as"; break;
 		}
-		t->outfile = newfileext(input, ext);
-		t->args[1] = t->outfile;
+		outfiles[output] = newfileext(input, ext);
+		t->args[1] = outfiles[output];
 		break;
 	default:
 		break;
@@ -230,18 +245,23 @@ build(char *file)
 		}
 
 		spawn(settool(inittool(tool), file, out));
-
-		free(tools[tool].outfile);
 	}
+
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = tools[i].pid) == 0)
 			continue;
-		if (waitpid(pid, &st, 0) < 0)
+		if (waitpid(pid, &st, 0) < 0) {
+			failedtool = i;
 			exit(-1);
+		}
 		tools[i].pid = 0;
-		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
+		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0) {
+			failedtool = i;
 			exit(-1);
+		}
 	}
+
+	cleanup();
 }
 
 static void
