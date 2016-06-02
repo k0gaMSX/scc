@@ -133,8 +133,8 @@ static struct opdata {
 	[ASCALLL] = {.fun = call, .letter = 'l'},
 	[ASCALLD] = {.fun = call, .letter = 'd'},
 	[ASCALL] = {.fun = ecall},
-	[ASPAR] = {.fun = param, .txt = "\t\t%s,\n"},
-	[ASPARE] = {.fun = param, .txt = "\t\t%s\n"},
+	[ASPAR] = {.fun = param, .txt = "\t\t%s %s,\n"},
+	[ASPARE] = {.fun = param, .txt = "\t\t%s %s\n"},
 };
 
 static char buff[ADDR_LEN];
@@ -421,7 +421,10 @@ call(void)
 static void
 param(void)
 {
-	printf(optbl[pc->op].txt, addr2txt(&pc->from1));
+	Symbol *sym = pc->from2.u.sym;
+
+	printf(optbl[pc->op].txt,
+	       size2asm(&sym->type), addr2txt(&pc->from1));
 }
 
 static void

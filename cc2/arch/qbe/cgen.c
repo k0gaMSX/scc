@@ -266,7 +266,9 @@ call(Node *np)
 
 	for (q = pars; q < &pars[n]; ++q) {
 		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
-		code(op, NULL, *q, NULL);
+		p = newnode(OTMP);
+		p->type = (*q)->type;
+		code(op, NULL, *q, tmpnode(p));
 	}
 	code(ASCALL, NULL, NULL, NULL);
 
