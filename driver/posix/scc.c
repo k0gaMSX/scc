@@ -231,7 +231,8 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case '-':
-		fprintf(stderr, "scc: ignored parameter --%s\n", EARGF(usage()));
+		fprintf(stderr,
+		        "scc: ignored parameter --%s\n", EARGF(usage()));
 		break;
 	default:
 		usage();
