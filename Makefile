@@ -39,7 +39,7 @@ install: all
 	cp -f bin/cc1 $(PREFIX)/bin/cpp
 	cp -f bin/scc $(PREFIX)/bin/
 	cd $(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
-	cd $(PREFIX)/bin && chmod 755 cpp scc && strip cpp
+	cd $(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
 
 uninstall:
 	rm -rf $(PREFIX)/libexec/scc/
