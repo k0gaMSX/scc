@@ -295,9 +295,10 @@ static void
 alloc(Symbol *sym)
 {
 	Type *tp = &sym->type;
+	extern Type ptrtype;
 
 	printf("\t%s =%s\talloc%lu\t%lu\n",
-	       symname(sym), size2asm(tp), tp->size, tp->align);
+	       symname(sym), size2asm(&ptrtype), tp->size, tp->align);
 }
 
 void
