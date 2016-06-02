@@ -317,7 +317,7 @@ writeout(void)
 			break;
 		printf("%s%s %s.val", sep, size2asm(&p->type), symname(p));
 	}
-	puts(")\n{");
+	puts(")\n{\n@.start");
 
 	/* allocate stack space for parameters */
 	for (p = locals; p && (p->type.flags & PARF) != 0; p = p->next)
@@ -344,6 +344,8 @@ writeout(void)
 		if (pc->op)
 			(*optbl[pc->op].fun)();
 	}
+	if (!prog)
+		puts("\t\tret");
 
 	puts("}");
 }
