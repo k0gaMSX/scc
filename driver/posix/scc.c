@@ -277,7 +277,8 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-m arch] [-I dir]... input ...", argv0);
+	die("usage: %s [-E|-kS] [-m arch] [-D macro=val]... "
+	    "[-I dir]... file ...", argv0);
 }
 
 int
