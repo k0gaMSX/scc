@@ -144,7 +144,7 @@ settool(int tool, char *input, int output)
 
 	switch (tool) {
 	case CC1:
-		t->args[1] = input;
+		t->args[t->nargs + 1] = input;
 		break;
 	case AS:
 		outfiles[output] = newfileext(input, "o");
@@ -277,7 +277,7 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-m arch] input ...", argv0);
+	die("usage: %s [-E|-kS] [-m arch] [-I dir]... input ...", argv0);
 }
 
 int
@@ -291,6 +291,10 @@ main(int argc, char *argv[])
 	case 'E':
 		Eflag = 1;
 		ADDARG(CC1, "-E");
+		break;
+	case 'I':
+		ADDARG(CC1, "-I");
+		ADDARG(CC1, EARGF(usage()));
 		break;
 	case 'S':
 		Sflag = 1;
