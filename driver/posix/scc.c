@@ -35,9 +35,9 @@ static struct tool {
 } tools[NR_TOOLS] = {
 	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
 	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[QBE] = { .bin = "qbe", .bin = "qbe", .cmd = "qbe", },
-	[AS]  = { .bin = "cat", .bin = "cat", .cmd = "cat", },
-	[TEE] = { .bin = "tee", .bin = "tee", .cmd = "tee", },
+	[QBE] = { .bin = "qbe", .cmd = "qbe", },
+	[AS]  = { .bin = "cat", .cmd = "cat", },
+	[TEE] = { .bin = "tee", .cmd = "tee", },
 };
 
 char *argv0;
@@ -145,14 +145,13 @@ void
 build(char *file)
 {
 	int tool, out, keepfile;
-	static int in = NR_TOOLS, preout;
+	static int preout;
 
 	for (tool = CC1; tool < NR_TOOLS; tool = out) {
 		keepfile = 0;
 
 		switch (tool) {
 		case CC1:
-			in = NR_TOOLS;
 			out = Eflag ? NR_TOOLS : CC2;
 			if (!Eflag)
 				keepfile = kflag;
@@ -187,7 +186,6 @@ build(char *file)
 		}
 
 		spawn(settool(inittool(tool), out));
-		in = tool;
 	}
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = tools[i].pid) == 0)
