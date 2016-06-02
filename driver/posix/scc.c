@@ -99,6 +99,7 @@ inittool(int tool)
 			strcat(t->cmd, t->bin);
 			break;
 		case AS:
+			t->nargs = 2;
 			t->args[1] = "-o";
 			break;
 		default:
@@ -142,12 +143,10 @@ settool(int tool, char *input, int output)
 	static int fdin;
 
 	switch (tool) {
-	case CC1:
-		t->args[t->nargs + 1] = input;
-		break;
 	case AS:
 		outfiles[output] = newfileext(input, "o");
-		t->args[2] = outfiles[output];
+		t->args[t->nargs] = outfiles[output];
+		t->args[3] = NULL;
 		break;
 	case TEE:
 		switch (output) {
@@ -171,6 +170,8 @@ settool(int tool, char *input, int output)
 	if (fdin) {
 		t->in = fdin;
 		fdin = 0;
+	} else {
+		t->args[t->nargs + 1] = input;
 	}
 
 	if (output < NR_TOOLS) {
@@ -208,6 +209,22 @@ spawn(int t)
 		break;
 	}
 }
+static int
+toolfor(char *file)
+{
+	char *dot = strrchr(file, '.');
+
+	if (dot) {
+		if (!strcmp(dot, ".c"))
+			return CC1;
+		if (!strcmp(dot, ".qbe"))
+			return QBE;
+		if (!strcmp(dot, ".as"))
+			return AS;
+	}
+
+	die("scc: do not recognize filetype of %s", file);
+}
 
 static void
 build(char *file)
@@ -216,7 +233,7 @@ build(char *file)
 	int i, st, tool, out, keepfile;
 	static int preout;
 
-	for (tool = CC1; tool < NR_TOOLS; tool = out) {
+	for (tool = toolfor(file); tool < NR_TOOLS; tool = out) {
 		keepfile = 0;
 
 		switch (tool) {
