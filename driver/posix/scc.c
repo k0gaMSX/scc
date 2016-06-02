@@ -144,7 +144,8 @@ spawn(int t)
 void
 build(char *file)
 {
-	int tool, out, keepfile;
+	pid_t pid;
+	int i, st, tool, out, keepfile;
 	static int preout;
 
 	for (tool = CC1; tool < NR_TOOLS; tool = out) {
@@ -207,9 +208,6 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	int st, i;
-	pid_t pid;
-
 	atexit(terminate);
 
 	arch = getenv("ARCH");
