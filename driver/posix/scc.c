@@ -288,6 +288,10 @@ main(int argc, char *argv[])
 	arch = getenv("ARCH");
 
 	ARGBEGIN {
+	case 'D':
+		ADDARG(CC1, "-D");
+		ADDARG(CC1, EARGF(usage()));
+		break;
 	case 'E':
 		Eflag = 1;
 		ADDARG(CC1, "-E");
