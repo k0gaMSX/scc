@@ -30,6 +30,7 @@ static struct tool {
 	char  cmd[PATH_MAX];
 	char *args[NARGS];
 	char  bin[16];
+	char *outfile;
 	int   nargs, in, out;
 	pid_t pid;
 } tools[NR_TOOLS] = {
@@ -90,15 +91,58 @@ inittool(int tool)
 	return tool;
 }
 
+char *
+newfileext(char *name, char *ext)
+{
+	char *new, *dot;
+	size_t newsz, nameln = strlen(name);
+	int n;
+
+	if (!(dot = strrchr(name, '.')))
+		dot = &name[nameln];
+
+	nameln = nameln - strlen(dot);
+	newsz  = nameln + strlen(ext) + 1 + 1;
+
+	new = xmalloc(newsz);
+
+	n = snprintf(new, newsz, "%.*s.%s", nameln, name, ext);
+	if (n < 0 || n >= newsz)
+		die("wrong output filename");
+
+	return new;
+}
+
 int
-settool(int tool, int output)
+settool(int tool, char *input, int output)
 {
 	struct tool *t = &tools[tool];
 	int fds[2];
+	char *ext;
 	static int fdin;
 
-	if (tool == TEE)
-		t->args[1] = "out.ir";
+	switch (tool) {
+	case CC1:
+		ADDARG(tool, input);
+		break;
+	case TEE:
+		switch (output) {
+		case CC2:
+			ext = "ir"; break;
+		case QBE:
+			ext = "qbe"; break;
+		case NR_TOOLS:
+			if (!Sflag)
+				break;
+		case AS:
+			ext = "as"; break;
+		}
+		t->outfile = newfileext(input, ext);
+		t->args[1] = t->outfile;
+		break;
+	default:
+		break;
+	}
 
 	if (fdin) {
 		t->in = fdin;
@@ -156,7 +200,6 @@ build(char *file)
 			out = Eflag ? NR_TOOLS : CC2;
 			if (!Eflag)
 				keepfile = kflag;
-			ADDARG(tool, file);
 			break;
 		case CC2:
 			if (!arch || strcmp(arch, "qbe")) {
@@ -186,7 +229,9 @@ build(char *file)
 			out = TEE;
 		}
 
-		spawn(settool(inittool(tool), out));
+		spawn(settool(inittool(tool), file, out));
+
+		free(tools[tool].outfile);
 	}
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if ((pid = tools[i].pid) == 0)
