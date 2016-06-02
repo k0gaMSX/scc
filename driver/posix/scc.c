@@ -42,7 +42,7 @@ static struct tool {
 
 char *argv0;
 static char *arch;
-static char *outfiles[NR_TOOLS];
+static char *outfiles[NR_TOOLS + 1];
 static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
 
@@ -51,7 +51,7 @@ cleanup(void)
 {
 	int i;
 
-	for (i = 0; i < NR_TOOLS; ++i) {
+	for (i = 0; i < NR_TOOLS + 1; ++i) {
 		if (outfiles[i]) {
 			if (i > failedtool)
 				unlink(outfiles[i]);
@@ -99,6 +99,9 @@ inittool(int tool)
 				die("scc: target tool path too long");
 			strcat(t->cmd, t->bin);
 			break;
+		case AS:
+			t->args[1] = "-o";
+			break;
 		default:
 			break;
 		}
@@ -142,6 +145,10 @@ settool(int tool, char *input, int output)
 	switch (tool) {
 	case CC1:
 		t->args[1] = input;
+		break;
+	case AS:
+		outfiles[output] = newfileext(input, "o");
+		t->args[2] = outfiles[output];
 		break;
 	case TEE:
 		switch (output) {
