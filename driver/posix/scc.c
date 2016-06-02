@@ -14,7 +14,6 @@
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 
-#define ADDARG(t, p) ((tools[t].args[++tools[t].nargs]) = (p))
 #define NARGS 64
 
 enum {
@@ -274,6 +273,16 @@ build(char *file)
 	cleanup();
 }
 
+void
+addarg(int tool, char *arg) {
+	struct tool *t = &tools[tool];
+
+	if (t->nargs >= NARGS - 3) /* 3: argv0, filename, NULL terminator */
+		die("scc: too many parameters given");
+
+	t->args[++t->nargs] = arg;
+}
+
 static void
 usage(void)
 {
@@ -290,16 +299,16 @@ main(int argc, char *argv[])
 
 	ARGBEGIN {
 	case 'D':
-		ADDARG(CC1, "-D");
-		ADDARG(CC1, EARGF(usage()));
+		addarg(CC1, "-D");
+		addarg(CC1, EARGF(usage()));
 		break;
 	case 'E':
 		Eflag = 1;
-		ADDARG(CC1, "-E");
+		addarg(CC1, "-E");
 		break;
 	case 'I':
-		ADDARG(CC1, "-I");
-		ADDARG(CC1, EARGF(usage()));
+		addarg(CC1, "-I");
+		addarg(CC1, EARGF(usage()));
 		break;
 	case 'S':
 		Sflag = 1;
