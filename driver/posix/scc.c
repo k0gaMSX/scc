@@ -189,6 +189,15 @@ build(char *file)
 		spawn(settool(inittool(tool), out));
 		in = tool;
 	}
+	for (i = 0; i < NR_TOOLS; ++i) {
+		if ((pid = tools[i].pid) == 0)
+			continue;
+		if (waitpid(pid, &st, 0) < 0)
+			exit(-1);
+		tools[i].pid = 0;
+		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
+			exit(-1);
+	}
 }
 
 static void
@@ -235,15 +244,6 @@ main(int argc, char *argv[])
 		die("scc: fatal error: no input files");
 
 	build(*argv);
-
-	for (i = 0; i < NR_TOOLS; ++i) {
-		if ((pid = wait(&st)) < 0)
-			break;
-		if (pid == tools[i].pid)
-			tools[i].pid = 0;
-		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
-			exit(-1);
-	}
 
 	return 0;
 }
