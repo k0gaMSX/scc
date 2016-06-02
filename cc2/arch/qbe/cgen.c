@@ -237,10 +237,10 @@ call(Node *np)
 {
 	int n, op;
 	Type *tp = &np->type;
-	Node *tmp, *p, *pars[NR_FUNPARAM];
+	Node **q, *tmp, *p, *pars[NR_FUNPARAM];
 
 	for (n = 0, p = np->right; p; p = p->right)
-		pars[n] = cgen(p->left);
+		pars[n++] = cgen(p->left);
 
 	switch (tp->size) {
 	case 0:
@@ -263,6 +263,11 @@ call(Node *np)
 		abort();
 	}
 	code(op, tmpnode(np), np->left, NULL);
+
+	for (q = pars; q < &pars[n]; ++q) {
+		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
+		code(op, NULL, *q, NULL);
+	}
 	code(ASCALL, NULL, NULL, NULL);
 
 	return np;
