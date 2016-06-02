@@ -36,7 +36,7 @@ static struct tool {
 	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
 	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
 	[QBE] = { .bin = "qbe", .cmd = "qbe", },
-	[AS]  = { .bin = "cat", .cmd = "cat", },
+	[AS]  = { .bin = "as",  .cmd = "as", },
 	[TEE] = { .bin = "tee", .cmd = "tee", },
 };
 
