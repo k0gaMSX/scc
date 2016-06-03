@@ -113,11 +113,18 @@ inittool(int tool)
 }
 
 static char *
-newfileext(char *name, char *ext)
+outfilename(char *path, char *ext)
 {
-	char *new, *dot;
-	size_t newsz, nameln = strlen(name);
+	char *new, *name, *dot;
+	size_t newsz, nameln;
 	int n;
+
+	if (!(name = strrchr(path, '/')))
+		name = path;
+	else
+		++name;
+
+	nameln = strlen(name);
 
 	if (!(dot = strrchr(name, '.')))
 		dot = &name[nameln];
@@ -144,7 +151,7 @@ settool(int tool, char *input, int output)
 
 	switch (tool) {
 	case AS:
-		outfiles[output] = newfileext(input, "o");
+		outfiles[output] = outfilename(input, "o");
 		t->args[t->nargs] = outfiles[output];
 		t->args[3] = NULL;
 		break;
@@ -160,7 +167,7 @@ settool(int tool, char *input, int output)
 		case AS:
 			ext = "as"; break;
 		}
-		outfiles[output] = newfileext(input, ext);
+		outfiles[output] = outfilename(input, ext);
 		t->args[1] = outfiles[output];
 		break;
 	default:
