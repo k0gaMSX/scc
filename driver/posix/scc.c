@@ -217,6 +217,8 @@ toolfor(char *file)
 	if (dot) {
 		if (!strcmp(dot, ".c"))
 			return CC1;
+		if (!strcmp(dot, ".ir"))
+			return CC2;
 		if (!strcmp(dot, ".qbe"))
 			return QBE;
 		if (!strcmp(dot, ".as"))
