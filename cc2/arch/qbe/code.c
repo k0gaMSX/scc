@@ -282,6 +282,8 @@ defpar(Symbol *sym)
 void
 defvar(Symbol *sym)
 {
+	if (sym->kind == SREG)
+		sym->kind = SAUTO;
 }
 
 void
