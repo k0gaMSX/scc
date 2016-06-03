@@ -68,7 +68,9 @@ main(int argc, char *argv[])
 		usage();
 
 	/* if run as cpp, only run the preprocessor */
-	if (!(base = strrchr(argv0, '/')))
+	if ((base = strrchr(argv0, '/')))
+		++base;
+	else
 		base = argv0;
 	if (!strcmp(base, "cpp"))
 		onlycpp = 1;
