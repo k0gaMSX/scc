@@ -330,7 +330,7 @@ writeout(void)
 
 	/* allocate stack space for local variables) */
 	for ( ; p && p->id != TMPSYM; p = p->next) {
-		if (p->kind && p->kind != SLABEL)
+		if (p->kind == SAUTO)
 			alloc(p);
 	}
 	/* store formal parameters in parameters */
