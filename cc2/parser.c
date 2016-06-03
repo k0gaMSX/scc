@@ -505,7 +505,7 @@ array(void)
 	size = pop();
 	base = pop();
 	tp = pop();
-	tp->size = size->u.i;
+	tp->size = size->u.i * base->size; /* FIXME check for overflow */
 	tp->align = base->align;
 
 	delnode(size);
