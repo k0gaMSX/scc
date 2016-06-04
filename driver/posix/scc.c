@@ -29,6 +29,7 @@ static struct tool {
 	char  cmd[PATH_MAX];
 	char *args[NARGS];
 	char  bin[16];
+	char *outfile;
 	int   nargs, in, out;
 	pid_t pid;
 } tools[NR_TOOLS] = {
@@ -41,21 +42,22 @@ static struct tool {
 
 char *argv0;
 static char *arch;
-static char *outfiles[NR_TOOLS + 1];
 static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
 
 static void
 cleanup(void)
 {
+	struct tool *t;
 	int i;
 
 	for (i = 0; i < NR_TOOLS + 1; ++i) {
-		if (outfiles[i]) {
+		t = &tools[i];
+		if (t->outfile) {
 			if (i > failedtool)
-				unlink(outfiles[i]);
-			free(outfiles[i]);
-			outfiles[i] = NULL;
+				unlink(t->outfile);
+			free(t->outfile);
+			t->outfile = NULL;
 		}
 	}
 }
@@ -63,14 +65,16 @@ cleanup(void)
 static void
 terminate(void)
 {
+	struct tool *t;
 	int i;
 
 	for (i = 0; i < NR_TOOLS; ++i) {
-		if (tools[i].pid)
-			kill(tools[i].pid, SIGTERM);
+		t = &tools[i];
+		if (t->pid)
+			kill(t->pid, SIGTERM);
+		if (i >= failedtool && t->outfile)
+			unlink(t->outfile);
 	}
-
-	cleanup();
 }
 
 static int
@@ -145,30 +149,30 @@ static int
 settool(int tool, char *input, int output)
 {
 	struct tool *t = &tools[tool];
-	int fds[2];
+	int fds[2], proxiedtool;
 	char *ext;
 	static int fdin;
 
 	switch (tool) {
 	case AS:
-		outfiles[output] = outfilename(input, "o");
-		t->args[t->nargs] = outfiles[output];
-		t->args[3] = NULL;
+		t->outfile = outfilename(input, "o");
+		t->args[2] = t->outfile;
 		break;
 	case TEE:
 		switch (output) {
 		case CC2:
+			proxiedtool = CC1;
 			ext = "ir"; break;
 		case QBE:
+			proxiedtool = CC2;
 			ext = "qbe"; break;
 		case NR_TOOLS:
-			if (!Sflag)
-				break;
 		case AS:
+			proxiedtool = CC2;
 			ext = "as"; break;
 		}
-		outfiles[output] = outfilename(input, ext);
-		t->args[1] = outfiles[output];
+		tools[proxiedtool].outfile = outfilename(input, ext);
+		t->args[1] = tools[proxiedtool].outfile;
 		break;
 	default:
 		break;
