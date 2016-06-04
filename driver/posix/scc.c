@@ -46,23 +46,6 @@ static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
 
 static void
-cleanup(void)
-{
-	struct tool *t;
-	int i;
-
-	for (i = 0; i < NR_TOOLS + 1; ++i) {
-		t = &tools[i];
-		if (t->outfile) {
-			if (i > failedtool)
-				unlink(t->outfile);
-			free(t->outfile);
-			t->outfile = NULL;
-		}
-	}
-}
-
-static void
 terminate(void)
 {
 	struct tool *t;
@@ -306,7 +289,10 @@ build(char *file)
 	for (i = 0; i < NR_TOOLS; ++i)
 		checktool(i);
 
-	cleanup();
+	for (i = 0; i < NR_TOOLS; ++i) {
+		free(tools[i].outfile);
+		tools[i].outfile = NULL;
+	}
 }
 
 static void
