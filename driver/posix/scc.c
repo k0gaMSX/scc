@@ -21,6 +21,7 @@ enum {
 	CC2,
 	QBE,
 	AS,
+	LD,
 	TEE,
 	NR_TOOLS,
 };
@@ -37,11 +38,14 @@ static struct tool {
 	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
 	[QBE] = { .bin = "qbe", .cmd = "qbe", },
 	[AS]  = { .bin = "as",  .cmd = "as", },
+	[LD]  = { .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
 	[TEE] = { .bin = "tee", .cmd = "tee", },
 };
 
 char *argv0;
 static char *arch;
+static char *tmpobjs[NARGS - 2];
+static int nobjs;
 static int failedtool = NR_TOOLS;
 static int Eflag, Sflag, kflag;
 
@@ -89,6 +93,10 @@ inittool(int tool)
 			t->nargs = 2;
 			t->args[1] = "-o";
 			break;
+		case LD:
+			t->nargs = 2;
+			t->args[1] = "-o";
+			break;
 		default:
 			break;
 		}
@@ -128,8 +136,18 @@ outfilename(char *path, char *ext)
 	return new;
 }
 
+static void
+addarg(int tool, char *arg) {
+	struct tool *t = &tools[tool];
+
+	if (t->nargs >= NARGS - 3) /* 3: argv0, filename, NULL terminator */
+		die("scc: too many parameters given");
+
+	t->args[++t->nargs] = arg;
+}
+
 static int
-settool(int tool, char *input, int output)
+settool(int tool, char *input, int nexttool)
 {
 	struct tool *t = &tools[tool];
 	int fds[2], proxiedtool;
@@ -141,8 +159,14 @@ settool(int tool, char *input, int output)
 		t->outfile = outfilename(input, "o");
 		t->args[2] = t->outfile;
 		break;
+	case LD:
+		if (!t->outfile) {
+			t->outfile = "a.out";
+			t->args[2] = t->outfile;
+		}
+		break;
 	case TEE:
-		switch (output) {
+		switch (nexttool) {
 		case CC2:
 			proxiedtool = CC1;
 			ext = "ir"; break;
@@ -168,7 +192,7 @@ settool(int tool, char *input, int output)
 		t->args[t->nargs + 1] = input;
 	}
 
-	if (output < NR_TOOLS) {
+	if (nexttool < NR_TOOLS && nexttool != LD) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
 		t->out = fds[1];
@@ -241,68 +265,90 @@ checktool(int tool)
 }
 
 static void
+linkobjs(void)
+{
+	int i;
+
+	settool(inittool(LD), NULL, NR_TOOLS);
+
+	for (i = 0; tmpobjs[i] && i < nobjs; ++i)
+		addarg(LD, tmpobjs[i]);
+
+	spawn(LD);
+
+	checktool(LD);
+
+	if (!kflag) {
+		for (i = 0; i < nobjs; ++i)
+			unlink(tmpobjs[i]);
+	}
+
+	return;
+}
+
+static void
 build(char *file)
 {
-	int i, tool, out, keepfile;
-	static int preout;
+	int i, tool, nexttool, keepfile;
+	int backtool;
 
-	for (tool = toolfor(file); tool < NR_TOOLS; tool = out) {
+	for (tool = toolfor(file); tool < NR_TOOLS; tool = nexttool) {
 		keepfile = 0;
 
 		switch (tool) {
 		case CC1:
-			out = Eflag ? NR_TOOLS : CC2;
+			nexttool = Eflag ? NR_TOOLS : CC2;
 			if (!Eflag)
 				keepfile = kflag;
 			break;
 		case CC2:
 			if (!arch || strcmp(arch, "qbe")) {
-				out = Sflag ? NR_TOOLS : AS;
+				nexttool = Sflag ? NR_TOOLS : AS;
 				keepfile = (Sflag || kflag);
 			} else {
-				out = QBE;
+				nexttool = QBE;
 				keepfile = kflag;
 			}
 			break;
 		case QBE:
-			out = Sflag ? NR_TOOLS : AS;
+			nexttool = Sflag ? NR_TOOLS : AS;
 			keepfile = (Sflag || kflag);
 			break;
 		case AS:
-			out = NR_TOOLS;
+			backtool = AS;
+			nexttool = LD;
 			break;
+		case LD:
+			if (backtool == AS)
+				tmpobjs[nobjs++] = xstrdup(tools[AS].outfile);
+			else
+				addarg(LD, file);
+			nexttool = NR_TOOLS;
+			continue;
 		case TEE:
-			out = preout;
+			nexttool = backtool;
 			break;
 		default:
 			break;
 		}
 
 		if (keepfile) {
-			preout = out;
-			out = TEE;
+			backtool = nexttool;
+			nexttool = TEE;
 		}
 
-		spawn(settool(inittool(tool), file, out));
+		spawn(settool(inittool(tool), file, nexttool));
 	}
 
 	for (i = 0; i < NR_TOOLS; ++i)
 		checktool(i);
 
 	for (i = 0; i < NR_TOOLS; ++i) {
-		free(tools[i].outfile);
-		tools[i].outfile = NULL;
+		if (i != LD) {
+			free(tools[i].outfile);
+			tools[i].outfile = NULL;
+		}
 	}
-}
-
-static void
-addarg(int tool, char *arg) {
-	struct tool *t = &tools[tool];
-
-	if (t->nargs >= NARGS - 3) /* 3: argv0, filename, NULL terminator */
-		die("scc: too many parameters given");
-
-	t->args[++t->nargs] = arg;
 }
 
 static void
@@ -357,6 +403,9 @@ main(int argc, char *argv[])
 
 	for (; *argv; ++argv)
 		build(*argv);
+
+	if (!(Eflag || Sflag))
+		linkobjs();
 
 	return 0;
 }
