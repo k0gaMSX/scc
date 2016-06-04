@@ -236,10 +236,27 @@ toolfor(char *file)
 }
 
 static void
+checktool(int tool)
+{
+	struct tool *t = &tools[tool];
+	int st;
+
+	if (!t->pid)
+		return;
+
+	if (waitpid(t->pid, &st, 0) < 0 ||
+	    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
+		failedtool = tool;
+		exit(-1);
+	}
+
+	t->pid = 0;
+}
+
+static void
 build(char *file)
 {
-	pid_t pid;
-	int i, st, tool, out, keepfile;
+	int i, tool, out, keepfile;
 	static int preout;
 
 	for (tool = toolfor(file); tool < NR_TOOLS; tool = out) {
@@ -282,19 +299,8 @@ build(char *file)
 		spawn(settool(inittool(tool), file, out));
 	}
 
-	for (i = 0; i < NR_TOOLS; ++i) {
-		if ((pid = tools[i].pid) == 0)
-			continue;
-		if (waitpid(pid, &st, 0) < 0) {
-			failedtool = i;
-			exit(-1);
-		}
-		tools[i].pid = 0;
-		if (!WIFEXITED(st) || WEXITSTATUS(st) != 0) {
-			failedtool = i;
-			exit(-1);
-		}
-	}
+	for (i = 0; i < NR_TOOLS; ++i)
+		checktool(i);
 
 	cleanup();
 }
