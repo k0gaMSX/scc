@@ -353,8 +353,8 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-m arch] [-o binout] [-D macro[=val]]... "
-	    "[-I dir]... file ...", argv0);
+	die("usage: %s [-E|-kS] [-w] [-m arch] [-o binout]\n"
+	    "       [-D macro[=val]]... [-I dir]... file...", argv0);
 }
 
 int
@@ -388,6 +388,9 @@ main(int argc, char *argv[])
 		break;
 	case 'o':
 		tools[LD].outfile = EARGF(usage());
+		break;
+	case 'w':
+		addarg(CC1, "-w");
 		break;
 	case '-':
 		fprintf(stderr,
