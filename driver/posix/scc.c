@@ -140,7 +140,7 @@ static void
 addarg(int tool, char *arg) {
 	struct tool *t = &tools[tool];
 
-	if (t->nargs >= NARGS - 3) /* 3: argv0, filename, NULL terminator */
+	if (!(t->nargs < NARGS - 2)) /* 2: argv0, NULL terminator */
 		die("scc: too many parameters given");
 
 	t->args[++t->nargs] = arg;
