@@ -160,10 +160,9 @@ settool(int tool, char *input, int nexttool)
 		t->args[2] = t->outfile;
 		break;
 	case LD:
-		if (!t->outfile) {
+		if (!t->outfile)
 			t->outfile = "a.out";
-			t->args[2] = t->outfile;
-		}
+		t->args[2] = t->outfile;
 		break;
 	case TEE:
 		switch (nexttool) {
@@ -354,7 +353,7 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-m arch] [-D macro[=val]]... "
+	die("usage: %s [-E|-kS] [-m arch] [-o binout] [-D macro[=val]]... "
 	    "[-I dir]... file ...", argv0);
 }
 
@@ -386,6 +385,9 @@ main(int argc, char *argv[])
 		break;
 	case 'm':
 		arch = EARGF(usage());
+		break;
+	case 'o':
+		tools[LD].outfile = EARGF(usage());
 		break;
 	case '-':
 		fprintf(stderr,
