@@ -18,12 +18,14 @@
 
 enum {
 	CC1,
+	TEEIR,
 	CC2,
+	TEEQBE,
 	QBE,
+	TEEAS,
 	AS,
 	LD,
-	TEE,
-	NR_TOOLS,
+	LAST_TOOL,
 };
 
 typedef struct tool Tool;
@@ -37,19 +39,21 @@ struct tool {
 };
 
 static Tool *tools[] = {
-	[CC1] = &(Tool){ .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
-	[CC2] = &(Tool){ .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[QBE] = &(Tool){ .bin = "qbe", .cmd = "qbe", },
-	[AS]  = &(Tool){ .bin = "as",  .cmd = "as", },
-	[LD]  = &(Tool){ .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
-	[TEE] = &(Tool){ .bin = "tee", .cmd = "tee", },
+	[CC1]    = &(Tool){ .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
+	[TEEIR]  = &(Tool){ .bin = "tee", .cmd = "tee", },
+	[CC2]    = &(Tool){ .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
+	[TEEQBE] = &(Tool){ .bin = "tee", .cmd = "tee", },
+	[QBE]    = &(Tool){ .bin = "qbe", .cmd = "qbe", },
+	[TEEAS]  = &(Tool){ .bin = "tee", .cmd = "tee", },
+	[AS]     = &(Tool){ .bin = "as",  .cmd = "as", },
+	[LD]     = &(Tool){ .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
 };
 
 char *argv0;
 static char *arch;
 static char *tmpobjs[NARGS - 2];
 static int nobjs;
-static int failedtool = NR_TOOLS;
+static int failedtool = LAST_TOOL;
 static int Eflag, Sflag, kflag;
 
 static void
@@ -58,7 +62,7 @@ terminate(void)
 	Tool *t;
 	int i;
 
-	for (i = 0; i < NR_TOOLS; ++i) {
+	for (i = 0; i < LAST_TOOL; ++i) {
 		t = tools[i];
 		if (t->pid)
 			kill(t->pid, SIGTERM);
@@ -150,38 +154,33 @@ addarg(int tool, char *arg) {
 }
 
 static int
-settool(int tool, char *input, int nexttool)
+settool(int tool, char *infile, int nexttool)
 {
 	Tool *t = tools[tool];
-	int fds[2], proxiedtool;
-	char *ext;
+	int fds[2];
 	static int fdin;
 
 	switch (tool) {
+	case TEEIR:
+		t->outfile = outfilename(infile, "ir");
+		t->args[1] = t->outfile;
+		break;
+	case TEEQBE:
+		t->outfile = outfilename(infile, "qbe");
+		t->args[1] = t->outfile;
+		break;
+	case TEEAS:
+		t->outfile = outfilename(infile, "as");
+		t->args[1] = t->outfile;
+		break;
 	case AS:
-		t->outfile = outfilename(input, "o");
+		t->outfile = outfilename(infile, "o");
 		t->args[2] = t->outfile;
 		break;
 	case LD:
 		if (!t->outfile)
 			t->outfile = "a.out";
 		t->args[2] = t->outfile;
-		break;
-	case TEE:
-		switch (nexttool) {
-		case CC2:
-			proxiedtool = CC1;
-			ext = "ir"; break;
-		case QBE:
-			proxiedtool = CC2;
-			ext = "qbe"; break;
-		case NR_TOOLS:
-		case AS:
-			proxiedtool = CC2;
-			ext = "as"; break;
-		}
-		tools[proxiedtool]->outfile = outfilename(input, ext);
-		t->args[1] = tools[proxiedtool]->outfile;
 		break;
 	default:
 		break;
@@ -191,10 +190,10 @@ settool(int tool, char *input, int nexttool)
 		t->in = fdin;
 		fdin = 0;
 	} else {
-		t->args[t->nargs + 1] = input;
+		t->args[t->nargs + 1] = infile;
 	}
 
-	if (nexttool < NR_TOOLS && nexttool != LD) {
+	if (nexttool < LAST_TOOL && tool != AS) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
 		t->out = fds[1];
@@ -271,7 +270,7 @@ linkobjs(void)
 {
 	int i;
 
-	settool(inittool(LD), NULL, NR_TOOLS);
+	settool(inittool(LD), NULL, LAST_TOOL);
 
 	for (i = 0; tmpobjs[i] && i < nobjs; ++i)
 		addarg(LD, tmpobjs[i]);
@@ -291,61 +290,54 @@ linkobjs(void)
 static void
 build(char *file)
 {
-	int i, tool, nexttool, keepfile;
-	int backtool;
+	int i, tool = toolfor(file), nexttool, argfile = (tool == LD) ? 1 : 0;
 
-	for (tool = toolfor(file); tool < NR_TOOLS; tool = nexttool) {
-		keepfile = 0;
-
+	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
 		case CC1:
-			nexttool = Eflag ? NR_TOOLS : CC2;
-			if (!Eflag)
-				keepfile = kflag;
+			if (Eflag)
+				nexttool = LAST_TOOL;
+			else
+				nexttool = kflag ? TEEIR : CC2;
+			break;
+		case TEEIR:
+			nexttool = CC2;
 			break;
 		case CC2:
-			if (!arch || strcmp(arch, "qbe")) {
-				nexttool = Sflag ? NR_TOOLS : AS;
-				keepfile = (Sflag || kflag);
-			} else {
-				nexttool = QBE;
-				keepfile = kflag;
-			}
+			if (!arch || strcmp(arch, "qbe"))
+				nexttool = (Sflag || kflag) ? TEEAS : AS;
+			else
+				nexttool = kflag ? TEEQBE : QBE;
+			break;
+		case TEEQBE:
+			nexttool = QBE;
 			break;
 		case QBE:
-			nexttool = Sflag ? NR_TOOLS : AS;
-			keepfile = (Sflag || kflag);
+			nexttool = (Sflag || kflag) ? TEEAS : AS;
+			break;
+		case TEEAS:
+			nexttool = Sflag ? LAST_TOOL : AS;
 			break;
 		case AS:
-			backtool = AS;
 			nexttool = LD;
 			break;
-		case LD:
-			if (backtool == AS)
-				tmpobjs[nobjs++] = xstrdup(tools[AS]->outfile);
-			else
+		case LD: /* FALLTHROUGH */
+			if (argfile)
 				addarg(LD, file);
-			nexttool = NR_TOOLS;
-			continue;
-		case TEE:
-			nexttool = backtool;
-			break;
+			else
+				tmpobjs[nobjs++] = xstrdup(tools[AS]->outfile);
 		default:
-			break;
-		}
-
-		if (keepfile) {
-			backtool = nexttool;
-			nexttool = TEE;
+			nexttool = LAST_TOOL;
+			continue;
 		}
 
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	for (i = 0; i < NR_TOOLS; ++i)
+	for (i = 0; i < LAST_TOOL; ++i)
 		checktool(i);
 
-	for (i = 0; i < NR_TOOLS; ++i) {
+	for (i = 0; i < LAST_TOOL; ++i) {
 		if (i != LD) {
 			free(tools[i]->outfile);
 			tools[i]->outfile = NULL;
