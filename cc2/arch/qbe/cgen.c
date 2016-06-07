@@ -410,11 +410,8 @@ cgen(Node *np)
 	case OBRANCH:
 		next = np->next;
 		load(np, LOADL);
-		if (next->label) {
-			sym = getsym(TMPSYM);
-			sym->kind = SLABEL;
-			next->label = sym;
-		}
+		if (!next->label)
+			next->label = newlabel();
 		ifyes = label2node(np->u.sym);
 		ifno = label2node(next->label);
 		op = ASBRANCH;

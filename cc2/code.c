@@ -57,6 +57,15 @@ addr(Node *np, Addr *addr)
 	}
 }
 
+Symbol *
+newlabel(void)
+{
+	Symbol *sym = getsym(TMPSYM);
+
+	sym->kind = SLABEL;
+	return sym;
+}
+
 Node *
 label2node(Symbol *sym)
 {
