@@ -434,7 +434,6 @@ cgen(Node *np)
 		load(np, LOADL|FORCE);
 		return tmpnode(np);
 	case OCPL:
-	case OPAR:
 	case ONEG:
 	case OINC:
 	case ODEC:
