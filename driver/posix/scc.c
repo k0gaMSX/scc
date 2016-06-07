@@ -26,20 +26,23 @@ enum {
 	NR_TOOLS,
 };
 
-static struct tool {
+typedef struct tool Tool;
+struct tool {
 	char  cmd[PATH_MAX];
 	char *args[NARGS];
 	char  bin[16];
 	char *outfile;
 	int   nargs, in, out;
 	pid_t pid;
-} tools[NR_TOOLS] = {
-	[CC1] = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
-	[CC2] = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[QBE] = { .bin = "qbe", .cmd = "qbe", },
-	[AS]  = { .bin = "as",  .cmd = "as", },
-	[LD]  = { .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
-	[TEE] = { .bin = "tee", .cmd = "tee", },
+};
+
+static Tool *tools[] = {
+	[CC1] = &(Tool){ .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
+	[CC2] = &(Tool){ .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
+	[QBE] = &(Tool){ .bin = "qbe", .cmd = "qbe", },
+	[AS]  = &(Tool){ .bin = "as",  .cmd = "as", },
+	[LD]  = &(Tool){ .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
+	[TEE] = &(Tool){ .bin = "tee", .cmd = "tee", },
 };
 
 char *argv0;
@@ -52,11 +55,11 @@ static int Eflag, Sflag, kflag;
 static void
 terminate(void)
 {
-	struct tool *t;
+	Tool *t;
 	int i;
 
 	for (i = 0; i < NR_TOOLS; ++i) {
-		t = &tools[i];
+		t = tools[i];
 		if (t->pid)
 			kill(t->pid, SIGTERM);
 		if (i >= failedtool && t->outfile)
@@ -67,7 +70,7 @@ terminate(void)
 static int
 inittool(int tool)
 {
-	struct tool *t = &tools[tool];
+	Tool *t = tools[tool];
 	size_t binln;
 	int n;
 
@@ -138,7 +141,7 @@ outfilename(char *path, char *ext)
 
 static void
 addarg(int tool, char *arg) {
-	struct tool *t = &tools[tool];
+	Tool *t = tools[tool];
 
 	if (!(t->nargs < NARGS - 2)) /* 2: argv0, NULL terminator */
 		die("scc: too many parameters given");
@@ -149,7 +152,7 @@ addarg(int tool, char *arg) {
 static int
 settool(int tool, char *input, int nexttool)
 {
-	struct tool *t = &tools[tool];
+	Tool *t = tools[tool];
 	int fds[2], proxiedtool;
 	char *ext;
 	static int fdin;
@@ -177,8 +180,8 @@ settool(int tool, char *input, int nexttool)
 			proxiedtool = CC2;
 			ext = "as"; break;
 		}
-		tools[proxiedtool].outfile = outfilename(input, ext);
-		t->args[1] = tools[proxiedtool].outfile;
+		tools[proxiedtool]->outfile = outfilename(input, ext);
+		t->args[1] = tools[proxiedtool]->outfile;
 		break;
 	default:
 		break;
@@ -204,7 +207,7 @@ settool(int tool, char *input, int nexttool)
 static void
 spawn(int t)
 {
-	struct tool *tool = &tools[t];
+	Tool *tool = tools[t];
 
 	switch (tool->pid = fork()) {
 	case -1:
@@ -248,7 +251,7 @@ toolfor(char *file)
 static void
 checktool(int tool)
 {
-	struct tool *t = &tools[tool];
+	Tool *t = tools[tool];
 	int st;
 
 	if (!t->pid)
@@ -319,7 +322,7 @@ build(char *file)
 			break;
 		case LD:
 			if (backtool == AS)
-				tmpobjs[nobjs++] = xstrdup(tools[AS].outfile);
+				tmpobjs[nobjs++] = xstrdup(tools[AS]->outfile);
 			else
 				addarg(LD, file);
 			nexttool = NR_TOOLS;
@@ -344,8 +347,8 @@ build(char *file)
 
 	for (i = 0; i < NR_TOOLS; ++i) {
 		if (i != LD) {
-			free(tools[i].outfile);
-			tools[i].outfile = NULL;
+			free(tools[i]->outfile);
+			tools[i]->outfile = NULL;
 		}
 	}
 }
@@ -387,7 +390,7 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case 'o':
-		tools[LD].outfile = EARGF(usage());
+		tools[LD]->outfile = EARGF(usage());
 		break;
 	case 'w':
 		addarg(CC1, "-w");
