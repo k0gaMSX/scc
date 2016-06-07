@@ -315,6 +315,43 @@ assign(Node *to, Node *from)
 	return from;
 }
 
+static Node *
+ternary(Node *np)
+{
+	Symbol *yes, *no, *phi;
+	Node *ifyes, *ifno, *phinode, *yesval, *colon;
+
+	tmpnode(np);
+	phi = newlabel();
+	yes = newlabel();
+	no = newlabel();
+
+	ifyes = label2node(yes);
+	ifno = label2node(no);
+	phinode = label2node(phi);
+
+	colon = np->right;
+	cgen(np->left);
+	load(np, LOADL);
+	code(ASBRANCH, np->left, ifyes, ifno);
+
+	setlabel(yes);
+	cgen(colon->left);
+	assign(np, load(colon, LOADL));
+	code(ASJMP, NULL, phinode, NULL);
+
+	setlabel(no);
+	cgen(colon->right);
+	assign(np, load(colon, LOADR));
+	setlabel(phi);
+
+	deltree(ifyes);
+	deltree(ifno);
+	deltree(phinode);
+
+	return np;
+}
+
 /* TODO: Fix "memory leaks" */
 Node *
 cgen(Node *np)
@@ -329,7 +366,7 @@ cgen(Node *np)
 		return NULL;
 
 	setlabel(np->label);
-	 if (np->op != OCALL) {
+	 if (np->op != OCALL && np->op != OASK) {
 		np->left = cgen(np->left);
 		np->right = cgen(np->right);
 	}
@@ -411,11 +448,11 @@ cgen(Node *np)
 	case OCALL:
 		return call(np);
 	case OFIELD:
-	case OASK:
-	case OCOLON:
 	case OAND:
 	case OOR:
 		abort();
+	case OASK:
+		return ternary(np);
 	case OBRANCH:
 		next = np->next;
 		load(np, LOADL);
