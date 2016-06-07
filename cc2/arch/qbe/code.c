@@ -384,7 +384,7 @@ binary(void)
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from1, addr2txt(&pc->from1));
 	strcpy(from2, addr2txt(&pc->from2));
-	printf("\t%s %c=\t%s\t%s,%s\n", to, p->letter, p->txt, from1, from2);
+	printf("\t%s =%c\t%s\t%s,%s\n", to, p->letter, p->txt, from1, from2);
 }
 
 static void
@@ -406,7 +406,7 @@ unary(void)
 
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from, addr2txt(&pc->from1));
-	printf("\t%s %c=\t%s\t%s\n", to, p->letter, p->txt, from);
+	printf("\t%s =%c\t%s\t%s\n", to, p->letter, p->txt, from);
 }
 
 static void
