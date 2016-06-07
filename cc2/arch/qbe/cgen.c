@@ -289,6 +289,32 @@ abbrev(Node *np)
 	return np->right = cgen(tmp);
 }
 
+static Node *
+assign(Node *to, Node *from)
+{
+	Type *tp = &to->type;
+	int op;
+
+	switch (tp->size) {
+	case 1:
+		op = ASSTB;
+		break;
+	case 2:
+		op = ASSTH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASSTW : ASSTS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASSTL : ASSTD;
+		break;
+	default:
+		abort();
+	}
+	code(op, to, from, NULL);
+	return from;
+}
+
 /* TODO: Fix "memory leaks" */
 Node *
 cgen(Node *np)
@@ -379,24 +405,7 @@ cgen(Node *np)
 		abort();
 	case OASSIG:
 		abbrev(np);
-		switch (tp->size) {
-		case 1:
-			op = ASSTB;
-			break;
-		case 2:
-			op = ASSTH;
-			break;
-		case 4:
-			op = (tp->flags & INTF) ? ASSTW : ASSTS;
-			break;
-		case 8:
-			op = (tp->flags & INTF) ? ASSTL : ASSTD;
-			break;
-		default:
-			abort();
-		}
-		code(op, np->left, load(np, LOADR), NULL);
-		return np->right;
+		return assign(np->left, load(np, LOADR));
 	case OCOMMA:
 		return np->right;
 	case OCALL:
