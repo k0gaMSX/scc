@@ -206,27 +206,27 @@ settool(int tool, char *infile, int nexttool)
 }
 
 static void
-spawn(int t)
+spawn(int tool)
 {
-	Tool *tool = tools[t];
+	Tool *t = tools[tool];
 
-	switch (tool->pid = fork()) {
+	switch (t->pid = fork()) {
 	case -1:
-		die("scc: %s: %s", tool->bin, strerror(errno));
+		die("scc: %s: %s", t->bin, strerror(errno));
 	case 0:
-		if (tool->out)
-			dup2(tool->out, 1);
-		if (tool->in)
-			dup2(tool->in, 0);
-		execvp(tool->cmd, tool->args);
-		fprintf(stderr, "scc: execp %s: %s\n",
-		        tool->cmd, strerror(errno));
+		if (t->out)
+			dup2(t->out, 1);
+		if (t->in)
+			dup2(t->in, 0);
+		execvp(t->cmd, t->args);
+		fprintf(stderr, "scc: execvp %s: %s\n",
+		        t->cmd, strerror(errno));
 		_exit(1);
 	default:
-		if (tool->in)
-			close(tool->in);
-		if (tool->out)
-			close(tool->out);
+		if (t->in)
+			close(t->in);
+		if (t->out)
+			close(t->out);
 		break;
 	}
 }
