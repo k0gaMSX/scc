@@ -282,12 +282,11 @@ linkobjs(void)
 	spawn(LD);
 	validatetools();
 
-	if (!kflag) {
-		for (i = 0; i < nobjs; ++i)
-			unlink(tmpobjs[i]);
-	}
+	if (kflag)
+		return;
 
-	return;
+	for (i = 0; i < nobjs; ++i)
+		unlink(tmpobjs[i]);
 }
 
 static void
