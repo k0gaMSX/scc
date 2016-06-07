@@ -34,7 +34,7 @@ struct tool {
 	char *args[NARGS];
 	char  bin[16];
 	char *outfile;
-	int   nargs, in, out;
+	int   nargs, in, out, error;
 	pid_t pid;
 };
 
@@ -53,21 +53,23 @@ char *argv0;
 static char *arch;
 static char *tmpobjs[NARGS - 2];
 static int nobjs;
-static int failedtool = LAST_TOOL;
 static int Eflag, Sflag, kflag;
 
 static void
 terminate(void)
 {
 	Tool *t;
-	int i;
+	int tool, failed;
 
-	for (i = 0; i < LAST_TOOL; ++i) {
-		t = tools[i];
-		if (t->pid)
+	for (tool = 0; tool < LAST_TOOL; ++tool) {
+		t = tools[tool];
+		if (t->pid) {
 			kill(t->pid, SIGTERM);
-		if (i >= failedtool && t->outfile)
-			unlink(t->outfile);
+			if (t->error)
+				failed = tool;
+			if (tool >= failed && t->outfile)
+				unlink(t->outfile);
+		}
 	}
 }
 
@@ -179,7 +181,7 @@ settool(int tool, char *infile, int nexttool)
 		break;
 	case LD:
 		if (!t->outfile)
-			t->outfile = "a.out";
+			t->outfile = xstrdup("a.out");
 		t->args[2] = t->outfile;
 		break;
 	default:
@@ -248,21 +250,24 @@ toolfor(char *file)
 }
 
 static void
-checktool(int tool)
+validatetools(void)
 {
-	Tool *t = tools[tool];
-	int st;
-
-	if (!t->pid)
-		return;
-
-	if (waitpid(t->pid, &st, 0) < 0 ||
-	    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
-		failedtool = tool;
-		exit(-1);
+	Tool *t;
+	int tool, st;
+	for (tool = 0; tool < LAST_TOOL; ++tool) {
+		t = tools[tool];
+		if (t->pid) {
+			if (waitpid(t->pid, &st, 0) < 0 ||
+			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
+				t->error = 1;
+				exit(-1);
+			}
+			free(t->outfile);
+			t->outfile = NULL;
+			t->pid = 0;
+			t->error = 0;
+		}
 	}
-
-	t->pid = 0;
 }
 
 static void
@@ -276,8 +281,7 @@ linkobjs(void)
 		addarg(LD, tmpobjs[i]);
 
 	spawn(LD);
-
-	checktool(LD);
+	validatetools();
 
 	if (!kflag) {
 		for (i = 0; i < nobjs; ++i)
@@ -290,7 +294,7 @@ linkobjs(void)
 static void
 build(char *file)
 {
-	int i, tool = toolfor(file), nexttool, argfile = (tool == LD) ? 1 : 0;
+	int tool = toolfor(file), nexttool, argfile = (tool == LD) ? 1 : 0;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
@@ -334,15 +338,7 @@ build(char *file)
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	for (i = 0; i < LAST_TOOL; ++i)
-		checktool(i);
-
-	for (i = 0; i < LAST_TOOL; ++i) {
-		if (i != LD) {
-			free(tools[i]->outfile);
-			tools[i]->outfile = NULL;
-		}
-	}
+	validatetools();
 }
 
 static void
