@@ -28,25 +28,22 @@ enum {
 	LAST_TOOL,
 };
 
-typedef struct tool Tool;
-struct tool {
+static struct tool {
 	char  cmd[PATH_MAX];
 	char *args[NARGS];
 	char  bin[16];
 	char *outfile;
 	int   nargs, in, out, error;
 	pid_t pid;
-};
-
-static Tool *tools[] = {
-	[CC1]    = &(Tool){ .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
-	[TEEIR]  = &(Tool){ .bin = "tee", .cmd = "tee", },
-	[CC2]    = &(Tool){ .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[TEEQBE] = &(Tool){ .bin = "tee", .cmd = "tee", },
-	[QBE]    = &(Tool){ .bin = "qbe", .cmd = "qbe", },
-	[TEEAS]  = &(Tool){ .bin = "tee", .cmd = "tee", },
-	[AS]     = &(Tool){ .bin = "as",  .cmd = "as", },
-	[LD]     = &(Tool){ .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
+} tools[] = {
+	[CC1]    = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
+	[TEEIR]  = { .bin = "tee", .cmd = "tee", },
+	[CC2]    = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
+	[TEEQBE] = { .bin = "tee", .cmd = "tee", },
+	[QBE]    = { .bin = "qbe", .cmd = "qbe", },
+	[TEEAS]  = { .bin = "tee", .cmd = "tee", },
+	[AS]     = { .bin = "as",  .cmd = "as", },
+	[LD]     = { .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
 };
 
 char *argv0;
@@ -58,11 +55,11 @@ static int Eflag, Sflag, kflag;
 static void
 terminate(void)
 {
-	Tool *t;
+	struct tool *t;
 	int tool, failed;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
-		t = tools[tool];
+		t = &tools[tool];
 		if (t->pid) {
 			kill(t->pid, SIGTERM);
 			if (t->error)
@@ -76,7 +73,7 @@ terminate(void)
 static int
 inittool(int tool)
 {
-	Tool *t = tools[tool];
+	struct tool *t = &tools[tool];
 	size_t binln;
 	int n;
 
@@ -147,7 +144,7 @@ outfilename(char *path, char *ext)
 
 static void
 addarg(int tool, char *arg) {
-	Tool *t = tools[tool];
+	struct tool *t = &tools[tool];
 
 	if (!(t->nargs < NARGS - 2)) /* 2: argv0, NULL terminator */
 		die("scc: too many parameters given");
@@ -158,7 +155,7 @@ addarg(int tool, char *arg) {
 static int
 settool(int tool, char *infile, int nexttool)
 {
-	Tool *t = tools[tool];
+	struct tool *t = &tools[tool];
 	int fds[2];
 	static int fdin;
 
@@ -208,7 +205,7 @@ settool(int tool, char *infile, int nexttool)
 static void
 spawn(int tool)
 {
-	Tool *t = tools[tool];
+	struct tool *t = &tools[tool];
 
 	switch (t->pid = fork()) {
 	case -1:
@@ -254,10 +251,10 @@ toolfor(char *file)
 static void
 validatetools(void)
 {
-	Tool *t;
+	struct tool *t;
 	int tool, st;
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
-		t = tools[tool];
+		t = &tools[tool];
 		if (t->pid) {
 			if (waitpid(t->pid, &st, 0) < 0 ||
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
@@ -331,7 +328,7 @@ build(char *file)
 			if (argfile)
 				addarg(LD, file);
 			else
-				tmpobjs[nobjs++] = xstrdup(tools[AS]->outfile);
+				tmpobjs[nobjs++] = xstrdup(tools[AS].outfile);
 		default:
 			nexttool = LAST_TOOL;
 			continue;
@@ -380,7 +377,7 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case 'o':
-		tools[LD]->outfile = EARGF(usage());
+		tools[LD].outfile = EARGF(usage());
 		break;
 	case 'w':
 		addarg(CC1, "-w");
