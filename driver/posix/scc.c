@@ -244,6 +244,8 @@ toolfor(char *file)
 			return QBE;
 		if (!strcmp(dot, ".as"))
 			return AS;
+		if (!strcmp(dot, ".o"))
+			return LD;
 	}
 
 	die("scc: do not recognize filetype of %s", file);
