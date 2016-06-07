@@ -319,7 +319,7 @@ static Node *
 ternary(Node *np)
 {
 	Symbol *yes, *no, *phi;
-	Node *ifyes, *ifno, *phinode, *yesval, *colon;
+	Node *ifyes, *ifno, *phinode, *colon;
 
 	tmpnode(np);
 	phi = newlabel();
@@ -332,8 +332,7 @@ ternary(Node *np)
 
 	colon = np->right;
 	cgen(np->left);
-	load(np, LOADL);
-	code(ASBRANCH, np->left, ifyes, ifno);
+	code(ASBRANCH, load(np, LOADL), ifyes, ifno);
 
 	setlabel(yes);
 	cgen(colon->left);
