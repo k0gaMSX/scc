@@ -272,7 +272,7 @@ assign(char *token, union tokenop u)
 static void
 ternary(char *token, union tokenop u)
 {
-	Node *ask = newnode(OCOLON), *colon = newnode(OASK);
+	Node *ask = newnode(OASK), *colon = newnode(OCOLON);
 	Type *tp = gettype(token+1);
 
 	colon->right = pop();
@@ -280,6 +280,7 @@ ternary(char *token, union tokenop u)
 
 	ask->type = *tp;
 	ask->left = pop();
+	ask->right = colon;
 	push(ask);
 }
 
