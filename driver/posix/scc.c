@@ -51,10 +51,24 @@ static int nobjs;
 static int Eflag, Sflag, kflag;
 
 static void
+cleanfiles(int tool)
+{
+	struct tool *t = &tools[tool];
+	int i;
+
+	if (tool == LD && !kflag) {
+		for (i = 0; i < nobjs; ++i)
+			unlink(tmpobjs[i]);
+	} else if (t->outfile) {
+		unlink(t->outfile);
+	}
+}
+
+static void
 terminate(void)
 {
 	struct tool *t;
-	int tool, failed;
+	int tool, failed = 0;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
@@ -63,7 +77,7 @@ terminate(void)
 			if (t->error)
 				failed = tool;
 			if (tool >= failed && t->outfile)
-				unlink(t->outfile);
+				cleanfiles(tool);
 		}
 	}
 }
@@ -303,11 +317,8 @@ linkobjs(void)
 	spawn(settool(inittool(LD), NULL, LAST_TOOL));
 	validatetools();
 
-	if (kflag)
-		return;
-
-	for (i = 0; i < nobjs; ++i)
-		unlink(tmpobjs[i]);
+	if (!kflag)
+		cleanfiles(LD);
 }
 
 static void
