@@ -406,6 +406,10 @@ main(int argc, char *argv[])
 	case 'k':
 		kflag = 1;
 		break;
+	case 'l':
+		addarg(LD, "-l");
+		addarg(LD, EARGF(usage()));
+		break;
 	case 'm':
 		arch = EARGF(usage());
 		break;
