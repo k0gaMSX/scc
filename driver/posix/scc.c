@@ -14,8 +14,6 @@
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 
-#define NARGS 64
-
 enum {
 	CC1,
 	TEEIR,
@@ -29,12 +27,12 @@ enum {
 };
 
 static struct tool {
-	char  cmd[PATH_MAX];
-	char *args[NARGS];
-	char  bin[16];
-	char *outfile;
-	int   nargs, in, out, error;
-	pid_t pid;
+	char   cmd[PATH_MAX];
+	char **args;
+	char   bin[16];
+	char  *outfile;
+	int    nparams, nargs, in, out, init, error;
+	pid_t  pid;
 } tools[] = {
 	[CC1]    = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
 	[TEEIR]  = { .bin = "tee", .cmd = "tee", },
@@ -48,7 +46,7 @@ static struct tool {
 
 char *argv0;
 static char *arch;
-static char *tmpobjs[NARGS - 2];
+static char **tmpobjs;
 static int nobjs;
 static int Eflag, Sflag, kflag;
 
@@ -70,6 +68,38 @@ terminate(void)
 	}
 }
 
+static char **
+newitem(char **array, int num, char *item)
+{
+	char **ar = xrealloc(array, (num + 1) * sizeof(char **));
+
+	ar[num] = item;
+
+	return ar;
+}
+
+static void
+addarg(int tool, char *arg)
+{
+	struct tool *t = &tools[tool];
+
+	if (t->nargs < 1)
+		t->nargs = 1;
+
+	t->args = newitem(t->args, t->nargs++, arg);
+}
+
+static void
+setargv0(int tool, char *arg)
+{
+	struct tool *t = &tools[tool];
+
+	if (t->nargs > 0)
+		t->args[0] = arg;
+	else
+		t->args = newitem(t->args, t->nargs++, arg);
+}
+
 static int
 inittool(int tool)
 {
@@ -77,38 +107,42 @@ inittool(int tool)
 	size_t binln;
 	int n;
 
-	if (!t->args[0]) {
-		switch (tool) {
-		case CC1:
-		case CC2:
-			binln = strlen(t->bin);
-			if (arch) {
-				n = snprintf(t->bin + binln,
-					     sizeof(t->bin) - binln,
-					     "-%s", arch);
-				if (n < 0 || n >= sizeof(t->bin))
-					die("scc: target tool bin too long");
-				binln = strlen(t->bin);
-			}
+	if (t->init)
+		return tool;
 
-			if (strlen(t->cmd) + binln + 1 > sizeof(t->cmd))
-				die("scc: target tool path too long");
-			strcat(t->cmd, t->bin);
-			break;
-		case AS:
-			t->nargs = 2;
-			t->args[1] = "-o";
-			break;
-		case LD:
-			t->nargs = 2;
-			t->args[1] = "-o";
-			break;
-		default:
-			break;
+	switch (tool) {
+	case CC1: /* FALLTHROUGH */
+	case CC2:
+		binln = strlen(t->bin);
+		if (arch) {
+			n = snprintf(t->bin + binln,
+				     sizeof(t->bin) - binln,
+				     "-%s", arch);
+			if (n < 0 || n >= sizeof(t->bin))
+				die("scc: target tool bin too long");
+			binln = strlen(t->bin);
 		}
 
-		t->args[0] = t->bin;
+		if (strlen(t->cmd) + binln + 1 > sizeof(t->cmd))
+			die("scc: target tool path too long");
+		strcat(t->cmd, t->bin);
+		break;
+	case LD:
+		addarg(tool, "-o");
+		if (!t->outfile)
+			t->outfile = xstrdup("a.out");
+		addarg(tool, t->outfile);
+		break;
+	case AS:
+		addarg(tool, "-o");
+		break;
+	default:
+		break;
 	}
+
+	setargv0(tool, t->bin);
+	t->nparams = t->nargs;
+	t->init = 1;
 
 	return tool;
 }
@@ -142,44 +176,33 @@ outfilename(char *path, char *ext)
 	return new;
 }
 
-static void
-addarg(int tool, char *arg) {
-	struct tool *t = &tools[tool];
-
-	if (!(t->nargs < NARGS - 2)) /* 2: argv0, NULL terminator */
-		die("scc: too many parameters given");
-
-	t->args[++t->nargs] = arg;
-}
-
 static int
 settool(int tool, char *infile, int nexttool)
 {
 	struct tool *t = &tools[tool];
-	int fds[2];
+	int i, fds[2];
 	static int fdin;
 
 	switch (tool) {
 	case TEEIR:
 		t->outfile = outfilename(infile, "ir");
-		t->args[1] = t->outfile;
+		addarg(tool, t->outfile);
 		break;
 	case TEEQBE:
 		t->outfile = outfilename(infile, "qbe");
-		t->args[1] = t->outfile;
+		addarg(tool, t->outfile);
 		break;
 	case TEEAS:
 		t->outfile = outfilename(infile, "as");
-		t->args[1] = t->outfile;
+		addarg(tool, t->outfile);
 		break;
 	case AS:
 		t->outfile = outfilename(infile, "o");
-		t->args[2] = t->outfile;
+		addarg(tool, t->outfile);
 		break;
 	case LD:
-		if (!t->outfile)
-			t->outfile = xstrdup("a.out");
-		t->args[2] = t->outfile;
+		for (i = 0; i < nobjs; ++i)
+			addarg(tool, xstrdup(tmpobjs[i]));
 		break;
 	default:
 		break;
@@ -188,8 +211,8 @@ settool(int tool, char *infile, int nexttool)
 	if (fdin) {
 		t->in = fdin;
 		fdin = 0;
-	} else {
-		t->args[t->nargs + 1] = infile;
+	} else if (infile) {
+		addarg(tool, xstrdup(infile));
 	}
 
 	if (nexttool < LAST_TOOL && tool != AS) {
@@ -198,6 +221,8 @@ settool(int tool, char *infile, int nexttool)
 		t->out = fds[1];
 		fdin = fds[0];
 	}
+
+	addarg(tool, NULL);
 
 	return tool;
 }
@@ -227,6 +252,7 @@ spawn(int tool)
 		break;
 	}
 }
+
 static int
 toolfor(char *file)
 {
@@ -252,7 +278,7 @@ static void
 validatetools(void)
 {
 	struct tool *t;
-	int tool, st;
+	int i, tool, st;
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
 		if (t->pid) {
@@ -261,8 +287,10 @@ validatetools(void)
 				t->error = 1;
 				exit(-1);
 			}
-			free(t->outfile);
+			for (i = t->nparams; i < t->nargs; ++i)
+				free(t->args[i]);
 			t->outfile = NULL;
+			t->nargs = t->nparams;
 			t->pid = 0;
 			t->error = 0;
 		}
@@ -272,14 +300,7 @@ validatetools(void)
 static void
 linkobjs(void)
 {
-	int i;
-
-	settool(inittool(LD), NULL, LAST_TOOL);
-
-	for (i = 0; tmpobjs[i] && i < nobjs; ++i)
-		addarg(LD, tmpobjs[i]);
-
-	spawn(LD);
+	spawn(settool(inittool(LD), NULL, LAST_TOOL));
 	validatetools();
 
 	if (kflag)
@@ -324,10 +345,12 @@ build(char *file)
 			nexttool = LD;
 			break;
 		case LD: /* FALLTHROUGH */
-			if (argfile)
-				addarg(LD, file);
-			else
-				tmpobjs[nobjs++] = xstrdup(tools[AS].outfile);
+			if (argfile) {
+				addarg(tool, xstrdup(file));
+			} else {
+				tmpobjs = newitem(tmpobjs, nobjs++,
+				                  xstrdup(tools[AS].outfile));
+			}
 		default:
 			nexttool = LAST_TOOL;
 			continue;
@@ -376,7 +399,7 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case 'o':
-		tools[LD].outfile = EARGF(usage());
+		tools[LD].outfile = xstrdup(EARGF(usage()));
 		break;
 	case 'w':
 		addarg(CC1, "-w");
