@@ -400,6 +400,10 @@ main(int argc, char *argv[])
 		addarg(CC1, "-I");
 		addarg(CC1, EARGF(usage()));
 		break;
+	case 'L':
+		addarg(LD, "-L");
+		addarg(LD, EARGF(usage()));
+		break;
 	case 'S':
 		Sflag = 1;
 		break;
