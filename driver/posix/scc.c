@@ -48,7 +48,7 @@ char *argv0;
 static char *arch;
 static char **tmpobjs;
 static int nobjs;
-static int Eflag, Sflag, kflag;
+static int Eflag, Sflag, cflag, kflag;
 
 static void
 cleanfiles(int tool)
@@ -353,7 +353,7 @@ build(char *file)
 			nexttool = Sflag ? LAST_TOOL : AS;
 			break;
 		case AS:
-			nexttool = LD;
+			nexttool = cflag ? LAST_TOOL : LD;
 			break;
 		case LD: /* FALLTHROUGH */
 			if (argfile) {
@@ -376,7 +376,7 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-w] [-m arch] [-o binout]\n"
+	die("usage: %s [-E|-kS] [-w] [-m arch] [-c] [-o binout]\n"
 	    "       [-D macro[=val]]... [-I dir]... file...", argv0);
 }
 
@@ -406,6 +406,9 @@ main(int argc, char *argv[])
 		break;
 	case 'S':
 		Sflag = 1;
+		break;
+	case 'c':
+		cflag = 1;
 		break;
 	case 'k':
 		kflag = 1;
@@ -440,7 +443,7 @@ main(int argc, char *argv[])
 	for (; *argv; ++argv)
 		build(*argv);
 
-	if (!(Eflag || Sflag))
+	if (!(Eflag || Sflag || cflag))
 		linkobjs();
 
 	return 0;
