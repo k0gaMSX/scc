@@ -307,6 +307,8 @@ validatetools(void)
 			t->nargs = t->nparams;
 			t->pid = 0;
 			t->error = 0;
+			t->in = 0;
+			t->out = 0;
 		}
 	}
 }
