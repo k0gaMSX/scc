@@ -345,7 +345,7 @@ writeout(void)
 	/* emit assembler instructions */
 	for (pc = prog; pc; pc = pc->next) {
 		if (pc->label)
-			printf("%s:\n", symname(pc->label));
+			printf("%s\n", symname(pc->label));
 		if (pc->op)
 			(*optbl[pc->op].fun)();
 	}
