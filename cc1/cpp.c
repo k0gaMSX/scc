@@ -26,15 +26,24 @@ defmacro(char *s)
 {
 	char *p, *q;
 	Symbol *sym;
+	char def[] = "=1";
 
-	if ((p = strchr(s, '=')) != NULL) {
-		*p++='\0';
-		q = xmalloc(strlen(p) + 4);
-		sprintf(q, "-1#%s", p);
-		p = q;
+	if ((p = strchr(s, '=')) == NULL)
+		p = def;
+	*p++='\0';
+	q = xmalloc(strlen(p) + 4);
+	sprintf(q, "-1#%s", p);
+
+	sym = lookup(NS_CPP, s);
+	if (sym->flags & SDECLARED) {
+		warn("'%s' redefined");
+		free(sym->u.s);
+	} else {
+		install(NS_CPP, sym);
+		sym->flags |= SDECLARED|SSTRING;
 	}
-	sym = install(NS_CPP, lookup(NS_CPP, s));
-	sym->u.s = p;
+
+	sym->u.s = q;
 	return sym;
 }
 
