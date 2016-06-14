@@ -33,7 +33,7 @@ optm_dep(Node *np)
 			sym = np->u.sym;
 			osym = next->u.sym;
 			osym->id = sym->id;
-			osym->numid = sym->id;
+			osym->numid = sym->numid;
 			osym->u.stmt = sym->u.stmt;
 			return NULL;
 		}
