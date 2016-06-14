@@ -38,8 +38,10 @@ int
 main(int argc, char *argv[])
 {
 	char *base;
+	static char *uvec[NR_USWITCHES], **umacro = uvec;
 
 	atexit(clean);
+	icpp();
 
 	ARGBEGIN {
 	case 'w':
@@ -50,6 +52,11 @@ main(int argc, char *argv[])
 		break;
 	case 'D':
 		defmacro(EARGF(usage()));
+		break;
+	case 'U':
+		if (umacro == &uvec[NR_USWITCHES])
+			die("too many -U switches");
+		*umacro++ = EARGF(usage());
 		break;
 	case 'd':
 		DBGON();
@@ -63,6 +70,9 @@ main(int argc, char *argv[])
 	default:
 		usage();
 	} ARGEND
+
+	for (umacro = uvec; *umacro; umacro++)
+		undefmacro(*umacro);
 
 	if (argc > 1)
 		usage();
@@ -78,9 +88,7 @@ main(int argc, char *argv[])
 	if (output && !freopen(output, "w", stdout))
 		die("error opening output: %s", strerror(errno));
 
-	icpp();
 	ilex(*argv);
-
 	if (onlycpp) {
 		outcpp();
 	} else {

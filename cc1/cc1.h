@@ -4,6 +4,8 @@
 
 #define GLOBALCTX 0
 
+#define NR_USWITCHES 20
+
 /*
  * Definition of enumerations
  */
@@ -417,6 +419,7 @@ extern int expand(char *begin, Symbol *sym);
 extern void incdir(char *dir);
 extern void outcpp(void);
 extern Symbol *defmacro(char *s);
+extern void undefmacro(char *s);
 
 /*
  * Definition of global variables

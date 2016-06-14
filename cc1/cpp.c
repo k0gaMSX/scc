@@ -39,6 +39,12 @@ defmacro(char *s)
 }
 
 void
+undefmacro(char *s)
+{
+	killsym(lookup(NS_CPP, s));
+}
+
+void
 icpp(void)
 {
 	static char sdate[17], stime[14];
