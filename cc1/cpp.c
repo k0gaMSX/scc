@@ -255,6 +255,8 @@ expand(char *begin, Symbol *sym)
 		elen = sprintf(buffer, "%d ", input->nline);
 		goto substitute;
 	}
+	if (!s)
+		return 1;
 
 	if (!parsepars(arguments, arglist, atoi(s)))
 		return 0;
