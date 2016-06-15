@@ -9,6 +9,7 @@ all: libcc.a
 
 libcc.a: $(OBJS)
 	ar r $@ $?
+	ranlib $@
 
 clean:
 	rm -f *.o *.a
