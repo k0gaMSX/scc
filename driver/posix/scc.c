@@ -196,7 +196,7 @@ settool(int tool, char *infile, int nexttool)
 {
 	struct tool *t = &tools[tool];
 	int i, fds[2];
-	static int fdin;
+	static int fdin = -1;
 
 	switch (tool) {
 	case TEEIR:
@@ -233,9 +233,9 @@ settool(int tool, char *infile, int nexttool)
 		break;
 	}
 
-	if (fdin) {
+	if (fdin > -1) {
 		t->in = fdin;
-		fdin = 0;
+		fdin = -1;
 	} else if (infile) {
 		addarg(tool, xstrdup(infile));
 	}
@@ -261,18 +261,18 @@ spawn(int tool)
 	case -1:
 		die("scc: %s: %s", t->bin, strerror(errno));
 	case 0:
-		if (t->out)
+		if (t->out > -1)
 			dup2(t->out, 1);
-		if (t->in)
+		if (t->in > -1)
 			dup2(t->in, 0);
 		execvp(t->cmd, t->args);
 		fprintf(stderr, "scc: execvp %s: %s\n",
 		        t->cmd, strerror(errno));
 		_exit(1);
 	default:
-		if (t->in)
+		if (t->in > -1)
 			close(t->in);
-		if (t->out)
+		if (t->out > -1)
 			close(t->out);
 		break;
 	}
@@ -317,8 +317,8 @@ validatetools(void)
 			t->nargs = t->nparams;
 			t->pid = 0;
 			t->error = 0;
-			t->in = 0;
-			t->out = 0;
+			t->in = -1;
+			t->out = -1;
 		}
 	}
 }
