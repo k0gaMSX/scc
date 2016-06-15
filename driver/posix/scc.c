@@ -23,6 +23,7 @@ enum {
 	TEEAS,
 	AS,
 	LD,
+	STRIP,
 	LAST_TOOL,
 };
 
@@ -34,34 +35,34 @@ static struct tool {
 	int    nparams, nargs, in, out, init, error;
 	pid_t  pid;
 } tools[] = {
-	[CC1]    = { .bin = "cc1", .cmd = PREFIX "/libexec/scc/", },
-	[TEEIR]  = { .bin = "tee", .cmd = "tee", },
-	[CC2]    = { .bin = "cc2", .cmd = PREFIX "/libexec/scc/", },
-	[TEEQBE] = { .bin = "tee", .cmd = "tee", },
-	[QBE]    = { .bin = "qbe", .cmd = "qbe", },
-	[TEEAS]  = { .bin = "tee", .cmd = "tee", },
-	[AS]     = { .bin = "as",  .cmd = "as", },
-	[LD]     = { .bin = "gcc", .cmd = "gcc", }, /* TODO replace with ld */
+	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
+	[TEEIR]  = { .bin = "tee",   .cmd = "tee", },
+	[CC2]    = { .bin = "cc2",   .cmd = PREFIX "/libexec/scc/", },
+	[TEEQBE] = { .bin = "tee",   .cmd = "tee", },
+	[QBE]    = { .bin = "qbe",   .cmd = "qbe", },
+	[TEEAS]  = { .bin = "tee",   .cmd = "tee", },
+	[AS]     = { .bin = "as",    .cmd = "as", },
+	[LD]     = { .bin = "gcc",   .cmd = "gcc", }, /* TODO use ld */
+	[STRIP]  = { .bin = "strip", .cmd = "strip", },
+};
+
+struct objects {
+	char **f;
+	int n;
 };
 
 char *argv0;
 static char *arch;
-static char **tmpobjs;
-static int nobjs;
-static int Eflag, Sflag, cflag, kflag;
+static struct objects objtmp, objout;
+static int Eflag, Sflag, cflag, kflag, sflag;
 
 static void
-cleanfiles(int tool)
+cleanobjects(void)
 {
-	struct tool *t = &tools[tool];
 	int i;
 
-	if (tool == LD && !kflag) {
-		for (i = 0; i < nobjs; ++i)
-			unlink(tmpobjs[i]);
-	} else if (t->outfile) {
-		unlink(t->outfile);
-	}
+	for (i = 0; i < objtmp.n; ++i)
+		unlink(objtmp.f[i]);
 }
 
 static void
@@ -77,7 +78,7 @@ terminate(void)
 			if (t->error)
 				failed = tool;
 			if (tool >= failed && t->outfile)
-				cleanfiles(tool);
+				unlink(t->outfile);
 		}
 	}
 }
@@ -215,8 +216,18 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case LD:
-		for (i = 0; i < nobjs; ++i)
-			addarg(tool, xstrdup(tmpobjs[i]));
+		for (i = 0; i < objtmp.n; ++i)
+			addarg(tool, xstrdup(objtmp.f[i]));
+		for (i = 0; i < objout.n; ++i)
+			addarg(tool, xstrdup(objout.f[i]));
+		break;
+	case STRIP:
+		if (cflag || kflag) {
+			for (i = 0; i < objout.n; ++i)
+				addarg(tool, xstrdup(objout.f[i]));
+		}
+		if (!cflag && tools[LD].outfile)
+			addarg(tool, tools[LD].outfile);
 		break;
 	default:
 		break;
@@ -229,7 +240,7 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, xstrdup(infile));
 	}
 
-	if (nexttool < LAST_TOOL && tool != AS) {
+	if (nexttool < LAST_TOOL) {
 		if (pipe(fds))
 			die("scc: pipe: %s", strerror(errno));
 		t->out = fds[1];
@@ -303,7 +314,6 @@ validatetools(void)
 			}
 			for (i = t->nparams; i < t->nargs; ++i)
 				free(t->args[i]);
-			t->outfile = NULL;
 			t->nargs = t->nparams;
 			t->pid = 0;
 			t->error = 0;
@@ -314,19 +324,11 @@ validatetools(void)
 }
 
 static void
-linkobjs(void)
-{
-	spawn(settool(inittool(LD), NULL, LAST_TOOL));
-	validatetools();
-
-	if (!kflag)
-		cleanfiles(LD);
-}
-
-static void
 build(char *file)
 {
-	int tool = toolfor(file), nexttool, argfile = (tool == LD) ? 1 : 0;
+	int tool = toolfor(file), nexttool;
+	struct objects *objs = (tool == LD || cflag || kflag) ?
+	                       &objout : &objtmp;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
@@ -355,15 +357,8 @@ build(char *file)
 			nexttool = Sflag ? LAST_TOOL : AS;
 			break;
 		case AS:
-			nexttool = cflag ? LAST_TOOL : LD;
+			nexttool = LAST_TOOL;
 			break;
-		case LD: /* FALLTHROUGH */
-			if (argfile) {
-				addarg(tool, xstrdup(file));
-			} else {
-				tmpobjs = newitem(tmpobjs, nobjs++,
-				                  xstrdup(tools[AS].outfile));
-			}
 		default:
 			nexttool = LAST_TOOL;
 			continue;
@@ -373,12 +368,14 @@ build(char *file)
 	}
 
 	validatetools();
+
+	objs->f = newitem(objs->f, objs->n++, outfilename(file, "o"));
 }
 
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-w] [-m arch] [-c] [-o binout]\n"
+	die("usage: %s [-E|-kS] [-w] [-m arch] [-c] [-o binout] [-s]\n"
 	    "       [-D macro[=val]]... [-I dir]... file...", argv0);
 }
 
@@ -425,6 +422,9 @@ main(int argc, char *argv[])
 	case 'o':
 		tools[LD].outfile = xstrdup(EARGF(usage()));
 		break;
+	case 's':
+		sflag = 1;
+		break;
 	case 'w':
 		addarg(CC1, "-w");
 		break;
@@ -445,8 +445,21 @@ main(int argc, char *argv[])
 	for (; *argv; ++argv)
 		build(*argv);
 
-	if (!(Eflag || Sflag || cflag))
-		linkobjs();
+	if (Eflag || Sflag)
+		return 0;
+
+	if (!cflag) {
+		spawn(settool(inittool(LD), NULL, LAST_TOOL));
+		validatetools();
+	}
+
+	if (sflag) {
+		spawn(settool(inittool(STRIP), NULL, LAST_TOOL));
+		validatetools();
+	}
+
+	if (!kflag)
+		cleanobjects();
 
 	return 0;
 }
