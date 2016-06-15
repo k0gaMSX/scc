@@ -18,11 +18,11 @@ jmp_buf recover;
 static char *output;
 int onlycpp;
 
+extern int failure;
+
 static void
 clean(void)
 {
-	extern int failure;
-
 	if (failure && output)
 		remove(output);
 }
@@ -98,5 +98,5 @@ main(int argc, char *argv[])
 			decl();
 	}
 
-	return 0;
+	return failure;
 }
