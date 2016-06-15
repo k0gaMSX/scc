@@ -8,7 +8,7 @@ all: libcc.a
 
 
 libcc.a: $(OBJS)
-	ar r $@ $?
+	ar $(ARFLAGS) $@ $?
 	ranlib $@
 
 clean:
