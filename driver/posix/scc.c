@@ -406,6 +406,10 @@ main(int argc, char *argv[])
 	case 'S':
 		Sflag = 1;
 		break;
+	case 'U':
+		addarg(CC1, "-U");
+		addarg(CC1, EARGF(usage()));
+		break;
 	case 'c':
 		cflag = 1;
 		break;
