@@ -52,7 +52,7 @@ struct objects {
 };
 
 char *argv0;
-static char *arch;
+static char *arch, *outfile;
 static struct objects objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
@@ -144,8 +144,7 @@ inittool(int tool)
 		break;
 	case LD:
 		addarg(tool, "-o");
-		if (!t->outfile)
-			t->outfile = xstrdup("a.out");
+		t->outfile = outfile ? outfile : xstrdup("a.out");
 		addarg(tool, t->outfile);
 		break;
 	case AS:
@@ -212,7 +211,7 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case AS:
-		t->outfile = outfilename(infile, "o");
+		t->outfile = outfile ? outfile : outfilename(infile, "o");
 		addarg(tool, t->outfile);
 		break;
 	case LD:
@@ -375,8 +374,15 @@ build(char *file)
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-w] [-m arch] [-c] [-o binout] [-s]\n"
-	    "       [-D macro[=val]]... [-I dir]... file...", argv0);
+	die("usage: scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] [-E|-S] [-o outfile] file...\n"
+	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] [-E|-S] -c file...\n"
+	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] -c -o outfile file");
 }
 
 int
@@ -424,7 +430,7 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case 'o':
-		tools[LD].outfile = xstrdup(EARGF(usage()));
+		outfile = xstrdup(EARGF(usage()));
 		break;
 	case 's':
 		sflag = 1;
@@ -440,7 +446,7 @@ main(int argc, char *argv[])
 		usage();
 	} ARGEND
 
-	if (Eflag && (Sflag || kflag))
+	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile)
 		usage();
 
 	if (!argc)
