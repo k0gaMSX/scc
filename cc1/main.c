@@ -16,6 +16,7 @@ int warnings;
 jmp_buf recover;
 
 static char *base, *output;
+static struct items uflags;
 int onlycpp;
 
 extern int failure;
@@ -41,7 +42,7 @@ int
 main(int argc, char *argv[])
 {
 	char *base;
-	static char *uvec[NR_USWITCHES], **umacro = uvec;
+	int i;
 
 	atexit(clean);
 	icpp();
@@ -63,9 +64,7 @@ main(int argc, char *argv[])
 		incdir(EARGF(usage()));
 		break;
 	case 'U':
-		if (umacro == &uvec[NR_USWITCHES])
-			die("too many -U switches");
-		*umacro++ = EARGF(usage());
+		uflags.s = newitem(uflags.s, uflags.n++, EARGF(usage()));
 		break;
 	case 'd':
 		DBGON();
@@ -89,8 +88,8 @@ main(int argc, char *argv[])
 	if (!strcmp(base, "cpp"))
 		onlycpp = 1;
 
-	for (umacro = uvec; *umacro; umacro++)
-		undefmacro(*umacro);
+	for (i = 0; i < uflags.n; ++i)
+		undefmacro(uflags.s[i]);
 
 	ilex(*argv);
 	if (onlycpp) {
