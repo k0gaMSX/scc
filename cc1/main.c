@@ -15,7 +15,7 @@ char *argv0;
 int warnings;
 jmp_buf recover;
 
-static char *output;
+static char *base, *output;
 int onlycpp;
 
 extern int failure;
@@ -30,8 +30,11 @@ clean(void)
 static void
 usage(void)
 {
-	die("usage: %s [-E] [-D macro[=value]] ... [-I dir] [-w] [-d]"
-	    "[-o output] [input]", argv0);
+	die(!strcmp(base, "cpp") ?
+	    "usage: cpp [-wd] [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[input]" :
+	    "usage: cc1 [-Ewd] [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-o output] [input]");
 }
 
 int
@@ -43,15 +46,21 @@ main(int argc, char *argv[])
 	atexit(clean);
 	icpp();
 
+	/* if run as cpp, only run the preprocessor */
+	if ((base = strrchr(argv0, '/')))
+		++base;
+	else
+		base = argv0;
+
 	ARGBEGIN {
-	case 'w':
-		warnings = 1;
+	case 'D':
+		defmacro(EARGF(usage()));
 		break;
 	case 'E':
 		onlycpp = 1;
 		break;
-	case 'D':
-		defmacro(EARGF(usage()));
+	case 'I':
+		incdir(EARGF(usage()));
 		break;
 	case 'U':
 		if (umacro == &uvec[NR_USWITCHES])
@@ -61,32 +70,27 @@ main(int argc, char *argv[])
 	case 'd':
 		DBGON();
 		break;
-	case 'I':
-		incdir(EARGF(usage()));
-		break;
 	case 'o':
 		output = EARGF(usage());
+		break;
+	case 'w':
+		warnings = 1;
 		break;
 	default:
 		usage();
 	} ARGEND
 
-	for (umacro = uvec; *umacro; umacro++)
-		undefmacro(*umacro);
-
 	if (argc > 1)
 		usage();
 
-	/* if run as cpp, only run the preprocessor */
-	if ((base = strrchr(argv0, '/')))
-		++base;
-	else
-		base = argv0;
+	if (output && !freopen(output, "w", stdout))
+		die("error opening output: %s", strerror(errno));
+
 	if (!strcmp(base, "cpp"))
 		onlycpp = 1;
 
-	if (output && !freopen(output, "w", stdout))
-		die("error opening output: %s", strerror(errno));
+	for (umacro = uvec; *umacro; umacro++)
+		undefmacro(*umacro);
 
 	ilex(*argv);
 	if (onlycpp) {
