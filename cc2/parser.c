@@ -284,7 +284,7 @@ ternary(char *token, union tokenop u)
 	push(ask);
 }
 
-static Node *
+static void
 eval(char *tok)
 {
 	struct decoc *dp;
