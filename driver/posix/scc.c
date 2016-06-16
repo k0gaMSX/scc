@@ -446,11 +446,8 @@ main(int argc, char *argv[])
 		usage();
 	} ARGEND
 
-	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile)
+	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile || !argc)
 		usage();
-
-	if (!argc)
-		die("scc: fatal error: no input file");
 
 	for (; *argv; ++argv)
 		build(*argv);
