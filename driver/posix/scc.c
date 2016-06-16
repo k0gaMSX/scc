@@ -60,7 +60,7 @@ static void
 terminate(void)
 {
 	struct tool *t;
-	int i, tool, failed = -1;
+	int i, tool, failed = LAST_TOOL;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
