@@ -57,19 +57,10 @@ static struct objects objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
 static void
-cleanobjects(void)
-{
-	int i;
-
-	for (i = 0; i < objtmp.n; ++i)
-		unlink(objtmp.f[i]);
-}
-
-static void
 terminate(void)
 {
 	struct tool *t;
-	int tool, failed = -1;
+	int i, tool, failed = -1;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
@@ -80,6 +71,11 @@ terminate(void)
 			if (tool >= failed && t->outfile)
 				unlink(t->outfile);
 		}
+	}
+
+	if (!kflag) {
+		for (i = 0; i < objtmp.n; ++i)
+			unlink(objtmp.f[i]);
 	}
 }
 
@@ -464,9 +460,6 @@ main(int argc, char *argv[])
 		spawn(settool(inittool(STRIP), NULL, LAST_TOOL));
 		validatetools();
 	}
-
-	if (!kflag)
-		cleanobjects();
 
 	return 0;
 }
