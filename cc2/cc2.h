@@ -1,4 +1,9 @@
 /* See LICENSE file for copyright and license details. */
+
+enum iflags {
+	BBENTRY =    1,
+};
+
 enum tflags {
 	SIGNF   =    1,
 	INTF    =    2,
@@ -179,9 +184,10 @@ struct addr {
 
 struct inst {
         unsigned char op;
+	unsigned char flags;
 	Symbol *label;
-        Addr from1, from2, to;
         Inst *next, *prev;
+        Addr from1, from2, to;
 };
 
 /* main.c */
@@ -205,7 +211,7 @@ extern void data(Node *np);
 extern void writeout(void), endinit(void), newfun(void);
 extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
-extern void setlabel(Symbol *sym);
+extern void setlabel(Symbol *sym), getbblocks(void);
 extern Node *label2node(Symbol *sym);
 extern Symbol *newlabel(void);
 

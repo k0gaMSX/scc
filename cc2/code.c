@@ -22,6 +22,7 @@ nextpc(void)
         }
 
         new->prev = pc;
+	new->flags = 0;
         new->to.kind = new->from2.kind = new->from1.kind = SNONE;
         pc = new;
 }

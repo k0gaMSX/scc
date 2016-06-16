@@ -466,3 +466,34 @@ endinit(void)
 {
 	puts("}");
 }
+
+void
+getbblocks(void)
+{
+	Inst *i;
+
+	if (!prog)
+		return;
+
+	prog->flags |= BBENTRY;
+	for (pc = prog; pc; pc = pc->next) {
+		switch (pc->op) {
+		case ASBRANCH:
+			i = pc->from2.u.sym->u.inst;
+			i->flags |= BBENTRY;
+		case ASJMP:
+			i = pc->from1.u.sym->u.inst;
+			i->flags |= BBENTRY;
+		case ASRET:
+		case ASCALLB:
+		case ASCALLH:
+		case ASCALLW:
+		case ASCALLS:
+		case ASCALLL:
+		case ASCALLD:
+		case ASCALL:
+			pc->flags |= BBENTRY;
+			break;
+		}
+	}
+}
