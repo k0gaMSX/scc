@@ -46,14 +46,9 @@ static struct tool {
 	[STRIP]  = { .bin = "strip", .cmd = "strip", },
 };
 
-struct objects {
-	char **f;
-	int n;
-};
-
 char *argv0;
 static char *arch, *outfile;
-static struct objects objtmp, objout;
+static struct items objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
 static void
@@ -75,18 +70,8 @@ terminate(void)
 
 	if (!kflag) {
 		for (i = 0; i < objtmp.n; ++i)
-			unlink(objtmp.f[i]);
+			unlink(objtmp.s[i]);
 	}
-}
-
-static char **
-newitem(char **array, int num, char *item)
-{
-	char **ar = xrealloc(array, (num + 1) * sizeof(char **));
-
-	ar[num] = item;
-
-	return ar;
 }
 
 static void
@@ -212,14 +197,14 @@ settool(int tool, char *infile, int nexttool)
 		break;
 	case LD:
 		for (i = 0; i < objtmp.n; ++i)
-			addarg(tool, xstrdup(objtmp.f[i]));
+			addarg(tool, xstrdup(objtmp.s[i]));
 		for (i = 0; i < objout.n; ++i)
-			addarg(tool, xstrdup(objout.f[i]));
+			addarg(tool, xstrdup(objout.s[i]));
 		break;
 	case STRIP:
 		if (cflag || kflag) {
 			for (i = 0; i < objout.n; ++i)
-				addarg(tool, xstrdup(objout.f[i]));
+				addarg(tool, xstrdup(objout.s[i]));
 		}
 		if (!cflag && tools[LD].outfile)
 			addarg(tool, tools[LD].outfile);
@@ -322,7 +307,7 @@ static void
 build(char *file)
 {
 	int tool = toolfor(file), nexttool;
-	struct objects *objs = (tool == LD || cflag || kflag) ?
+	struct items *objs = (tool == LD || cflag || kflag) ?
 	                       &objout : &objtmp;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
@@ -364,7 +349,7 @@ build(char *file)
 
 	validatetools();
 
-	objs->f = newitem(objs->f, objs->n++, outfilename(file, "o"));
+	objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
 }
 
 static void

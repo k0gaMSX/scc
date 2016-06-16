@@ -2,7 +2,7 @@
 .POSIX:
 include ../config.mk
 
-OBJS = die.o xcalloc.o xmalloc.o xrealloc.o xstrdup.o debug.o
+OBJS = debug.o die.o newitem.o xcalloc.o xmalloc.o xrealloc.o xstrdup.o
 
 all: libcc.a
 
