@@ -206,8 +206,10 @@ settool(int tool, char *infile, int nexttool)
 	if (fdin > -1) {
 		t->in = fdin;
 		fdin = -1;
-	} else if (infile) {
-		addarg(tool, xstrdup(infile));
+	} else {
+		t->in = -1;
+		if (infile)
+			addarg(tool, xstrdup(infile));
 	}
 
 	if (nexttool < LAST_TOOL) {
@@ -215,6 +217,8 @@ settool(int tool, char *infile, int nexttool)
 			die("scc: pipe: %s", strerror(errno));
 		t->out = fds[1];
 		fdin = fds[0];
+	} else {
+		t->out = -1;
 	}
 
 	addarg(tool, NULL);
@@ -289,8 +293,6 @@ validatetools(void)
 				free(t->args[i]);
 			t->nargs = t->nparams;
 			t->pid = 0;
-			t->in = -1;
-			t->out = -1;
 		}
 	}
 
