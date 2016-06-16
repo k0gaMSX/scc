@@ -14,7 +14,7 @@ all: cc1
 $(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h arch/$(ARCH)/arch.h
 
 ../lib/libcc.a:
-	cd ../lib && $(MAKE) -e -$(MAKEFLAGS)
+	cd ../lib && $(MAKE) -e
 
 cc1: $(OBJS) ../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../lib/libcc.a -o $@

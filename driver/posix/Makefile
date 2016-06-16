@@ -10,7 +10,7 @@ all: scc
 $(OBJS): ../../inc/cc.h
 
 ../../lib/libcc.a:
-	cd ../../lib && $(MAKE) -e -$(MAKEFLAGS)
+	cd ../../lib && $(MAKE) -e
 
 scc: $(OBJS) ../../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../../lib/libcc.a -o $@
