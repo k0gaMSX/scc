@@ -32,7 +32,7 @@ static struct tool {
 	char **args;
 	char   bin[16];
 	char  *outfile;
-	int    nparams, nargs, in, out, init, error;
+	int    nparams, nargs, in, out, init;
 	pid_t  pid;
 } tools[] = {
 	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
@@ -51,22 +51,12 @@ static char *arch, *outfile;
 static struct items objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
+extern int failure;
+
 static void
 terminate(void)
 {
-	struct tool *t;
-	int i, tool, failed = LAST_TOOL;
-
-	for (tool = 0; tool < LAST_TOOL; ++tool) {
-		t = &tools[tool];
-		if (t->pid) {
-			kill(t->pid, SIGTERM);
-			if (t->error)
-				failed = tool;
-			if (tool >= failed && t->outfile)
-				unlink(t->outfile);
-		}
-	}
+	int i;
 
 	if (!kflag) {
 		for (i = 0; i < objtmp.n; ++i)
@@ -279,28 +269,32 @@ toolfor(char *file)
 	die("scc: do not recognize filetype of %s", file);
 }
 
-static void
+static int
 validatetools(void)
 {
 	struct tool *t;
-	int i, tool, st;
+	int i, tool, st, failed = LAST_TOOL;
+
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
 		if (t->pid) {
 			if (waitpid(t->pid, &st, 0) < 0 ||
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
-				t->error = 1;
-				exit(-1);
+				failure = 1;
+				failed = tool;
 			}
+			if (tool >= failed && t->outfile)
+				unlink(t->outfile);
 			for (i = t->nparams; i < t->nargs; ++i)
 				free(t->args[i]);
 			t->nargs = t->nparams;
 			t->pid = 0;
-			t->error = 0;
 			t->in = -1;
 			t->out = -1;
 		}
 	}
+
+	return failed == LAST_TOOL;
 }
 
 static void
@@ -347,9 +341,8 @@ build(char *file)
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	validatetools();
-
-	objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
+	if (validatetools())
+		objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
 }
 
 static void
@@ -434,9 +427,9 @@ main(int argc, char *argv[])
 		build(*argv);
 
 	if (Eflag || Sflag)
-		return 0;
+		return failure;
 
-	if (!cflag) {
+	if (!cflag && !failure) {
 		spawn(settool(inittool(LD), NULL, LAST_TOOL));
 		validatetools();
 	}
@@ -446,5 +439,5 @@ main(int argc, char *argv[])
 		validatetools();
 	}
 
-	return 0;
+	return failure;
 }
