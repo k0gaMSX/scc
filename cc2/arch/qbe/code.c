@@ -304,6 +304,7 @@ writeout(void)
 	Symbol *p;
 	Type *tp;
 	char *sep, *name;
+	int haslabel;
 
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
@@ -315,14 +316,21 @@ writeout(void)
 			break;
 		printf("%s%s %s.val", sep, size2asm(&p->type), symname(p));
 	}
-	puts(")\n{\n@.start");
+	puts(")\n{");
 
 	/* emit assembler instructions */
 	for (pc = prog; pc; pc = pc->next) {
-		if (pc->label)
+		if (pc->label) {
+			haslabel = 1;
 			printf("%s\n", symname(pc->label));
-		if (pc->op)
-			(*optbl[pc->op].fun)();
+		}
+		if (!pc->op)
+			continue;
+		if (pc->flags&BBENTRY && !haslabel)
+			printf("%s\n", symname(newlabel()));
+		(*optbl[pc->op].fun)();
+		if (!pc->label)
+			haslabel = 0;
 	}
 
 	puts("}");
@@ -486,7 +494,8 @@ getbblocks(void)
 		case ASCALLL:
 		case ASCALLD:
 		case ASCALL:
-			pc->flags |= BBENTRY;
+			if (pc->next)
+				pc->next->flags |= BBENTRY;
 			break;
 		}
 	}
