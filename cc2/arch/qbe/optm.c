@@ -11,7 +11,8 @@ optm_dep(Node *np)
 	Node *p, *dst, *next = np->next;
 	Symbol *sym, *osym;
 
-	if (!next) {
+	switch (op) {
+	case OEFUN:
 		/*
 		 * In QBE we need at the end of a basic block
 		 * a jump, so we have to ensure that the last
@@ -22,12 +23,10 @@ optm_dep(Node *np)
 		 * a ret there, and in the case of branches
 		 * we need a label for the next statement
 		 */
-		if (op == ONOP || op == OBRANCH || (op != ORET && op != OJMP))
+		op = (np->prev) ? np->prev->op : 0;
+		if (!op || op == ONOP || op == OBRANCH || (op != ORET && op != OJMP))
 			addstmt(newnode(ORET), KEEPCUR);
-		next = np->next;
-	}
-
-	switch (op) {
+		break;
 	case ONOP:
 		if (next->op == ONOP) {
 			sym = np->u.sym;
