@@ -106,6 +106,8 @@ enum op {
 	ODEFAULT = 'f',
 	OBSWITCH = 's',
 	OESWITCH = 't',
+	OBFUN    = 'x',
+	OEFUN    = 'k',
 };
 
 enum nerrors {

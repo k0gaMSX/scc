@@ -630,12 +630,14 @@ beginfun(void)
 {
 	inpars = 1;
 	pushctx();
+	addstmt(newnode(OBFUN), SETCUR);
 }
 
 static void
 endfun(void)
 {
 	endf = 1;
+	addstmt(newnode(OEFUN), SETCUR);
 }
 
 void
