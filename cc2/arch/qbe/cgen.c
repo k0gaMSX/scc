@@ -458,9 +458,8 @@ cgen(Node *np)
 		return np;
 	case OPTR:
 		load(np, LOADL);
-		/* FIXME: The type of the loaded value is not np->type */
 		load(np, LOADL|FORCE);
-		return tmpnode(np);
+		return np->left;
 	case OCPL:
 	case ONEG:
 	case OINC:
