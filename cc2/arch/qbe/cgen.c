@@ -389,7 +389,7 @@ cgen(Node *np)
 		return NULL;
 
 	setlabel(np->label);
-	 if (np->op != OCALL && np->op != OASK) {
+	if (np->op != OCALL && np->op != OASK) {
 		np->left = cgen(np->left);
 		np->right = cgen(np->right);
 	}
