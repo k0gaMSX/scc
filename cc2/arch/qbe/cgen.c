@@ -239,8 +239,10 @@ call(Node *np)
 	Type *tp = &np->type;
 	Node **q, *tmp, *p, *pars[NR_FUNPARAM];
 
-	for (n = 0, p = np->right; p; p = p->right)
-		pars[n++] = cgen(p->left);
+	for (n = 0, p = np->right; p; p = p->right) {
+		cgen(p->left);
+		pars[n++] = load(p, LOADL);
+	}
 
 	switch (tp->size) {
 	case 0:
