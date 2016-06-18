@@ -21,7 +21,7 @@ struct items {
 
 extern void die(const char *fmt, ...);
 extern void dbg(const char *fmt, ...);
-extern char **newitem(char **array, unsigned num, char *item);
+extern void newitem(struct items *items, char *item);
 extern void *xmalloc(size_t size);
 extern void *xcalloc(size_t nmemb, size_t size);
 extern char *xstrdup(const char *s);

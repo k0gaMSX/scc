@@ -73,7 +73,7 @@ addarg(int tool, char *arg)
 	if (t->args.n < 1)
 		t->args.n = 1;
 
-	t->args.s = newitem(t->args.s, t->args.n++, arg);
+	newitem(&t->args, arg);
 }
 
 static void
@@ -84,7 +84,7 @@ setargv0(int tool, char *arg)
 	if (t->args.n > 0)
 		t->args.s[0] = arg;
 	else
-		t->args.s = newitem(t->args.s, t->args.n++, arg);
+		newitem(&t->args, arg);
 }
 
 static int
@@ -347,7 +347,7 @@ build(char *file)
 	}
 
 	if (validatetools())
-		objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
+		newitem(objs, outfilename(file, "o"));
 }
 
 static void

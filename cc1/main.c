@@ -61,7 +61,7 @@ main(int argc, char *argv[])
 		incdir(EARGF(usage()));
 		break;
 	case 'U':
-		uflags.s = newitem(uflags.s, uflags.n++, EARGF(usage()));
+		newitem(&uflags, EARGF(usage()));
 		break;
 	case 'd':
 		DBGON();
