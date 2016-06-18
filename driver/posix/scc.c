@@ -32,7 +32,8 @@ static struct tool {
 	char   bin[16];
 	char  *outfile;
 	struct items args;
-	int    nparams, in, out, init;
+	unsigned nparams;
+	int    in, out, init;
 	pid_t  pid;
 } tools[] = {
 	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
@@ -56,7 +57,7 @@ extern int failure;
 static void
 terminate(void)
 {
-	int i;
+	unsigned i;
 
 	if (!kflag) {
 		for (i = 0; i < objtmp.n; ++i)
@@ -165,7 +166,8 @@ static int
 settool(int tool, char *infile, int nexttool)
 {
 	struct tool *t = &tools[tool];
-	int i, fds[2];
+	unsigned i;
+	int fds[2];
 	static int fdin = -1;
 
 	switch (tool) {
@@ -277,7 +279,8 @@ static int
 validatetools(void)
 {
 	struct tool *t;
-	int i, tool, st, failed = LAST_TOOL;
+	unsigned i;
+	int tool, st, failed = LAST_TOOL;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
