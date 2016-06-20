@@ -32,7 +32,7 @@ static struct tool {
 	char **args;
 	char   bin[16];
 	char  *outfile;
-	int    nparams, nargs, in, out, init, error;
+	int    nparams, nargs, in, out, init;
 	pid_t  pid;
 } tools[] = {
 	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
@@ -46,51 +46,22 @@ static struct tool {
 	[STRIP]  = { .bin = "strip", .cmd = "strip", },
 };
 
-struct objects {
-	char **f;
-	int n;
-};
-
 char *argv0;
-static char *arch;
-static struct objects objtmp, objout;
+static char *arch, *outfile;
+static struct items objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
-static void
-cleanobjects(void)
-{
-	int i;
-
-	for (i = 0; i < objtmp.n; ++i)
-		unlink(objtmp.f[i]);
-}
+extern int failure;
 
 static void
 terminate(void)
 {
-	struct tool *t;
-	int tool, failed = -1;
+	int i;
 
-	for (tool = 0; tool < LAST_TOOL; ++tool) {
-		t = &tools[tool];
-		if (t->pid) {
-			kill(t->pid, SIGTERM);
-			if (t->error)
-				failed = tool;
-			if (tool >= failed && t->outfile)
-				unlink(t->outfile);
-		}
+	if (!kflag) {
+		for (i = 0; i < objtmp.n; ++i)
+			unlink(objtmp.s[i]);
 	}
-}
-
-static char **
-newitem(char **array, int num, char *item)
-{
-	char **ar = xrealloc(array, (num + 1) * sizeof(char **));
-
-	ar[num] = item;
-
-	return ar;
 }
 
 static void
@@ -144,8 +115,7 @@ inittool(int tool)
 		break;
 	case LD:
 		addarg(tool, "-o");
-		if (!t->outfile)
-			t->outfile = xstrdup("a.out");
+		t->outfile = outfile ? outfile : xstrdup("a.out");
 		addarg(tool, t->outfile);
 		break;
 	case AS:
@@ -212,19 +182,19 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case AS:
-		t->outfile = outfilename(infile, "o");
+		t->outfile = outfile ? outfile : outfilename(infile, "o");
 		addarg(tool, t->outfile);
 		break;
 	case LD:
 		for (i = 0; i < objtmp.n; ++i)
-			addarg(tool, xstrdup(objtmp.f[i]));
+			addarg(tool, xstrdup(objtmp.s[i]));
 		for (i = 0; i < objout.n; ++i)
-			addarg(tool, xstrdup(objout.f[i]));
+			addarg(tool, xstrdup(objout.s[i]));
 		break;
 	case STRIP:
 		if (cflag || kflag) {
 			for (i = 0; i < objout.n; ++i)
-				addarg(tool, xstrdup(objout.f[i]));
+				addarg(tool, xstrdup(objout.s[i]));
 		}
 		if (!cflag && tools[LD].outfile)
 			addarg(tool, tools[LD].outfile);
@@ -236,8 +206,10 @@ settool(int tool, char *infile, int nexttool)
 	if (fdin > -1) {
 		t->in = fdin;
 		fdin = -1;
-	} else if (infile) {
-		addarg(tool, xstrdup(infile));
+	} else {
+		t->in = -1;
+		if (infile)
+			addarg(tool, xstrdup(infile));
 	}
 
 	if (nexttool < LAST_TOOL) {
@@ -245,6 +217,8 @@ settool(int tool, char *infile, int nexttool)
 			die("scc: pipe: %s", strerror(errno));
 		t->out = fds[1];
 		fdin = fds[0];
+	} else {
+		t->out = -1;
 	}
 
 	addarg(tool, NULL);
@@ -299,35 +273,37 @@ toolfor(char *file)
 	die("scc: do not recognize filetype of %s", file);
 }
 
-static void
+static int
 validatetools(void)
 {
 	struct tool *t;
-	int i, tool, st;
+	int i, tool, st, failed = LAST_TOOL;
+
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
 		if (t->pid) {
 			if (waitpid(t->pid, &st, 0) < 0 ||
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
-				t->error = 1;
-				exit(-1);
+				failure = 1;
+				failed = tool;
 			}
+			if (tool >= failed && t->outfile)
+				unlink(t->outfile);
 			for (i = t->nparams; i < t->nargs; ++i)
 				free(t->args[i]);
 			t->nargs = t->nparams;
 			t->pid = 0;
-			t->error = 0;
-			t->in = -1;
-			t->out = -1;
 		}
 	}
+
+	return failed == LAST_TOOL;
 }
 
 static void
 build(char *file)
 {
 	int tool = toolfor(file), nexttool;
-	struct objects *objs = (tool == LD || cflag || kflag) ?
+	struct items *objs = (tool == LD || cflag || kflag) ?
 	                       &objout : &objtmp;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
@@ -367,16 +343,22 @@ build(char *file)
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	validatetools();
-
-	objs->f = newitem(objs->f, objs->n++, outfilename(file, "o"));
+	if (validatetools())
+		objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
 }
 
 static void
 usage(void)
 {
-	die("usage: %s [-E|-kS] [-w] [-m arch] [-c] [-o binout] [-s]\n"
-	    "       [-D macro[=val]]... [-I dir]... file...", argv0);
+	die("usage: scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] [-E|-S] [-o outfile] file...\n"
+	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] [-E|-S] -c file...\n"
+	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-L dir]... [-l dir]...\n"
+	    "           [-ksw] [-m arch] -c -o outfile file");
 }
 
 int
@@ -424,7 +406,7 @@ main(int argc, char *argv[])
 		arch = EARGF(usage());
 		break;
 	case 'o':
-		tools[LD].outfile = xstrdup(EARGF(usage()));
+		outfile = xstrdup(EARGF(usage()));
 		break;
 	case 's':
 		sflag = 1;
@@ -440,19 +422,16 @@ main(int argc, char *argv[])
 		usage();
 	} ARGEND
 
-	if (Eflag && (Sflag || kflag))
+	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile || !argc)
 		usage();
-
-	if (!argc)
-		die("scc: fatal error: no input file");
 
 	for (; *argv; ++argv)
 		build(*argv);
 
 	if (Eflag || Sflag)
-		return 0;
+		return failure;
 
-	if (!cflag) {
+	if (!cflag && !failure) {
 		spawn(settool(inittool(LD), NULL, LAST_TOOL));
 		validatetools();
 	}
@@ -462,8 +441,5 @@ main(int argc, char *argv[])
 		validatetools();
 	}
 
-	if (!kflag)
-		cleanobjects();
-
-	return 0;
+	return failure;
 }

@@ -15,7 +15,8 @@ char *argv0;
 int warnings;
 jmp_buf recover;
 
-static char *output;
+static char *base, *output;
+static struct items uflags;
 int onlycpp;
 
 extern int failure;
@@ -30,63 +31,65 @@ clean(void)
 static void
 usage(void)
 {
-	die("usage: %s [-E] [-D macro[=value]] ... [-I dir] [-w] [-d]"
-	    "[-o output] [input]", argv0);
+	die(!strcmp(base, "cpp") ?
+	    "usage: cpp [-wd] [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[input]" :
+	    "usage: cc1 [-Ewd] [-D def[=val]]... [-U def]... [-I dir]... "
+	    "[-o output] [input]");
 }
 
 int
 main(int argc, char *argv[])
 {
 	char *base;
-	static char *uvec[NR_USWITCHES], **umacro = uvec;
+	int i;
 
 	atexit(clean);
 	icpp();
-
-	ARGBEGIN {
-	case 'w':
-		warnings = 1;
-		break;
-	case 'E':
-		onlycpp = 1;
-		break;
-	case 'D':
-		defmacro(EARGF(usage()));
-		break;
-	case 'U':
-		if (umacro == &uvec[NR_USWITCHES])
-			die("too many -U switches");
-		*umacro++ = EARGF(usage());
-		break;
-	case 'd':
-		DBGON();
-		break;
-	case 'I':
-		incdir(EARGF(usage()));
-		break;
-	case 'o':
-		output = EARGF(usage());
-		break;
-	default:
-		usage();
-	} ARGEND
-
-	for (umacro = uvec; *umacro; umacro++)
-		undefmacro(*umacro);
-
-	if (argc > 1)
-		usage();
 
 	/* if run as cpp, only run the preprocessor */
 	if ((base = strrchr(argv0, '/')))
 		++base;
 	else
 		base = argv0;
-	if (!strcmp(base, "cpp"))
+
+	ARGBEGIN {
+	case 'D':
+		defmacro(EARGF(usage()));
+		break;
+	case 'E':
 		onlycpp = 1;
+		break;
+	case 'I':
+		incdir(EARGF(usage()));
+		break;
+	case 'U':
+		uflags.s = newitem(uflags.s, uflags.n++, EARGF(usage()));
+		break;
+	case 'd':
+		DBGON();
+		break;
+	case 'o':
+		output = EARGF(usage());
+		break;
+	case 'w':
+		warnings = 1;
+		break;
+	default:
+		usage();
+	} ARGEND
+
+	if (argc > 1)
+		usage();
 
 	if (output && !freopen(output, "w", stdout))
 		die("error opening output: %s", strerror(errno));
+
+	if (!strcmp(base, "cpp"))
+		onlycpp = 1;
+
+	for (i = 0; i < uflags.n; ++i)
+		undefmacro(uflags.s[i]);
 
 	ilex(*argv);
 	if (onlycpp) {
