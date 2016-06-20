@@ -3,7 +3,7 @@
 #define _STDLIB_H
 
 #ifndef _SIZET
-typedef unsigned size_t;
+typedef unsigned long size_t;
 #define _SIZET
 #endif
 

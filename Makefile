@@ -35,9 +35,12 @@ $(ARCHS):
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
 	mkdir -p $(PREFIX)/bin/
+	mkdir -p $(PREFIX)/include/scc
 	cp -f bin/cc* $(PREFIX)/libexec/scc/
 	cp -f bin/cc1 $(PREFIX)/bin/cpp
 	cp -f bin/scc $(PREFIX)/bin/
+	cp -fr libc/include/* $(PREFIX)/include/scc/
+	find $(PREFIX)/include/scc/ -type f | xargs chmod 644
 	cd $(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
 	cd $(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
 
