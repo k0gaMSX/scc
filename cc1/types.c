@@ -145,7 +145,10 @@ ctype(unsigned type, unsigned sign, unsigned size)
 	case DOUBLE:
 		if (size == LLONG)
 			goto invalid_type;
-		size += LONG;
+		if (size == LONG)
+			size = LLONG;
+		else
+			size = LONG;
 		goto floating;
 	case FLOAT:
 		if (size == LLONG)
