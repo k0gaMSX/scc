@@ -1,12 +1,12 @@
 #include "../inc/cc.h"
 
-char **
-newitem(char **array, int num, char *item)
+void
+newitem(struct items *items, char *item)
 {
-	char **ar = xrealloc(array, (num + 1) * sizeof(char **));
+	if ((items->n + 1) < items->n)
+		die("newitem: overflow (%u + 1)", items->n);
 
-	ar[num] = item;
-
-	return ar;
+	items->s = xrealloc(items->s, (items->n + 1) * sizeof(char **));
+	items->s[items->n++] = item;
 }
 

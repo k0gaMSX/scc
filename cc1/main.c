@@ -15,7 +15,7 @@ char *argv0;
 int warnings;
 jmp_buf recover;
 
-static char *base, *output;
+static char *name, *output;
 static struct items uflags;
 int onlycpp;
 
@@ -31,7 +31,7 @@ clean(void)
 static void
 usage(void)
 {
-	die(!strcmp(base, "cpp") ?
+	die(!strcmp(name, "cpp") ?
 	    "usage: cpp [-wd] [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[input]" :
 	    "usage: cc1 [-Ewd] [-D def[=val]]... [-U def]... [-I dir]... "
@@ -41,17 +41,14 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	char *base;
+	char *cp;
 	int i;
 
 	atexit(clean);
 	icpp();
 
 	/* if run as cpp, only run the preprocessor */
-	if ((base = strrchr(argv0, '/')))
-		++base;
-	else
-		base = argv0;
+	name = (cp = strrchr(*argv, '/')) ? cp + 1 : *argv;
 
 	ARGBEGIN {
 	case 'D':
@@ -64,7 +61,7 @@ main(int argc, char *argv[])
 		incdir(EARGF(usage()));
 		break;
 	case 'U':
-		uflags.s = newitem(uflags.s, uflags.n++, EARGF(usage()));
+		newitem(&uflags, EARGF(usage()));
 		break;
 	case 'd':
 		DBGON();
@@ -85,7 +82,7 @@ main(int argc, char *argv[])
 	if (output && !freopen(output, "w", stdout))
 		die("error opening output: %s", strerror(errno));
 
-	if (!strcmp(base, "cpp"))
+	if (!strcmp(name, "cpp"))
 		onlycpp = 1;
 
 	for (i = 0; i < uflags.n; ++i)

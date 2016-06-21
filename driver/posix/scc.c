@@ -29,10 +29,11 @@ enum {
 
 static struct tool {
 	char   cmd[PATH_MAX];
-	char **args;
 	char   bin[16];
 	char  *outfile;
-	int    nparams, nargs, in, out, init;
+	struct items args;
+	unsigned nparams;
+	int    in, out, init;
 	pid_t  pid;
 } tools[] = {
 	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
@@ -56,7 +57,7 @@ extern int failure;
 static void
 terminate(void)
 {
-	int i;
+	unsigned i;
 
 	if (!kflag) {
 		for (i = 0; i < objtmp.n; ++i)
@@ -69,10 +70,10 @@ addarg(int tool, char *arg)
 {
 	struct tool *t = &tools[tool];
 
-	if (t->nargs < 1)
-		t->nargs = 1;
+	if (t->args.n < 1)
+		t->args.n = 1;
 
-	t->args = newitem(t->args, t->nargs++, arg);
+	newitem(&t->args, arg);
 }
 
 static void
@@ -80,10 +81,10 @@ setargv0(int tool, char *arg)
 {
 	struct tool *t = &tools[tool];
 
-	if (t->nargs > 0)
-		t->args[0] = arg;
+	if (t->args.n > 0)
+		t->args.s[0] = arg;
 	else
-		t->args = newitem(t->args, t->nargs++, arg);
+		newitem(&t->args, arg);
 }
 
 static int
@@ -126,7 +127,7 @@ inittool(int tool)
 	}
 
 	setargv0(tool, t->bin);
-	t->nparams = t->nargs;
+	t->nparams = t->args.n;
 	t->init = 1;
 
 	return tool;
@@ -165,7 +166,8 @@ static int
 settool(int tool, char *infile, int nexttool)
 {
 	struct tool *t = &tools[tool];
-	int i, fds[2];
+	unsigned i;
+	int fds[2];
 	static int fdin = -1;
 
 	switch (tool) {
@@ -239,7 +241,7 @@ spawn(int tool)
 			dup2(t->out, 1);
 		if (t->in > -1)
 			dup2(t->in, 0);
-		execvp(t->cmd, t->args);
+		execvp(t->cmd, t->args.s);
 		fprintf(stderr, "scc: execvp %s: %s\n",
 		        t->cmd, strerror(errno));
 		_exit(1);
@@ -277,7 +279,8 @@ static int
 validatetools(void)
 {
 	struct tool *t;
-	int i, tool, st, failed = LAST_TOOL;
+	unsigned i;
+	int tool, st, failed = LAST_TOOL;
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
@@ -289,9 +292,9 @@ validatetools(void)
 			}
 			if (tool >= failed && t->outfile)
 				unlink(t->outfile);
-			for (i = t->nparams; i < t->nargs; ++i)
-				free(t->args[i]);
-			t->nargs = t->nparams;
+			for (i = t->nparams; i < t->args.n; ++i)
+				free(t->args.s[i]);
+			t->args.n = t->nparams;
 			t->pid = 0;
 		}
 	}
@@ -344,7 +347,7 @@ build(char *file)
 	}
 
 	if (validatetools())
-		objs->s = newitem(objs->s, objs->n++, outfilename(file, "o"));
+		newitem(objs, outfilename(file, "o"));
 }
 
 static void
