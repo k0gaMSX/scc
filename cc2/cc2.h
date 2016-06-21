@@ -27,7 +27,7 @@ enum sclass {
 	SMEMB     = 'M',
 	SCONST    = '#',
 	STRING    = '"',
-	SNONE     = 0
+	SNONE     = 0 /* cc2 relies on SNONE being 0 in nextpc() */
 };
 
 enum types {

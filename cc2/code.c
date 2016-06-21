@@ -11,19 +11,17 @@ nextpc(void)
 {
         Inst *new;
 
-        new = malloc(sizeof(*new)); /* TODO: create an arena */
+        new = xcalloc(sizeof(*new)); /* TODO: create an arena */
 
         if (!pc) {
-                new->next = NULL;
                 prog = new;
         } else {
                 new->next = pc->next;
                 pc->next = new;
         }
 
+	/* SNONE being 0, calloc initialized {from1,from2,to}.kind for us */
         new->prev = pc;
-	new->flags = 0;
-        new->to.kind = new->from2.kind = new->from1.kind = SNONE;
         pc = new;
 }
 
