@@ -14,7 +14,7 @@ extern char *strcpy(char *dst, const char *src);
 extern char *strncpy(char *dst, const char *src, size_t n);
 extern char *strcat(char *dst, const char *src);
 extern char *strncat(char *dst, const char *src, size_t n);
-extern size_t strxfrm(char *dst, const *char *src, size_t n);
+extern size_t strxfrm(char *dst, const char *src, size_t n);
 extern size_t strlen(const char *s);
 extern int strcmp(const char *s1, const char *s2);
 extern int strcoll(const char *s1, const char *s2);
@@ -30,6 +30,6 @@ extern void *memset(void *s, int c, size_t n);
 extern void *memcpy(void *dst, const void *src, size_t n);
 extern void *memmove(void *dst, const void *src, size_t n);
 extern int memcmp(const void *s1, const void *s2, size_t n);
-extern coid *memchr(const void *s, int c, size_t n);
+extern void *memchr(const void *s, int c, size_t n);
 
 #endif
