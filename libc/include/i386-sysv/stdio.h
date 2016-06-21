@@ -35,7 +35,7 @@ extern void setbuf(FILE *fp, char *buf);
 extern int setvbuf(FILE *fp, char *buf, size_t size);
 
 extern size_t fread(void *ptr, size_t size, size_t n, FILE *fp);
-extern size_t fwrite(const void *ptr, size_t size, size n, FILE *fp);
+extern size_t fwrite(const void *ptr, size_t size, size_t n, FILE *fp);
 
 extern int fgetc(FILE *fp);
 extern int getc(FILE *fp);
