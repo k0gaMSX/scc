@@ -304,7 +304,7 @@ writeout(void)
 	Symbol *p;
 	Type *tp;
 	char *sep, *name;
-	int haslabel;
+	int haslabel = 0;
 
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
