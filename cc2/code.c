@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdlib.h>
 
+#include "../inc/cc.h"
 #include "arch.h"
 #include "cc2.h"
 
@@ -11,7 +12,7 @@ nextpc(void)
 {
         Inst *new;
 
-        new = xcalloc(sizeof(*new)); /* TODO: create an arena */
+        new = xcalloc(1, sizeof(*new)); /* TODO: create an arena */
 
         if (!pc) {
                 prog = new;
