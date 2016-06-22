@@ -84,6 +84,7 @@ setlabel(Symbol *sym)
 		return;
 	code(0, NULL, NULL, NULL);
 	pc->label = sym;
+	sym->u.inst = pc;
 }
 
 void
