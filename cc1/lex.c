@@ -127,13 +127,15 @@ newline(void)
 		die("error: input file '%s' too long", input->fname);
 }
 
-static char
+static int
 readchar(void)
 {
 	int c;
 	FILE *fp;
 
 repeat:
+	if (eof)
+		return 0;
 	fp = input->fp;
 
 	switch (c = getc(fp)) {
@@ -157,21 +159,24 @@ repeat:
 }
 
 static void
-comment(char type)
+comment(int type)
 {
-	if (type == '*') {
-		while (!eof) {
-			while (readchar() != '*' && !eof)
-				/* nothing */;
-			if (readchar() == '/')
-				break;
-		}
-	} else {
-		while (readchar() != '\n' && !eof)
-			/* nothing */;
+	int c;
+
+	c = -1;
+repeat:
+	do {
+		if (!c)
+			delinput();
+	} while (!eof && (c = readchar()) != type);
+
+	if (eof) {
+		errorp("unterminated comment");
+		return;
 	}
-	if (eof)
-		error("unterminated comment");
+
+	if (type == '*' && (c = readchar()) != '/')
+		goto repeat;
 }
 
 static int
@@ -201,6 +206,8 @@ repeat:
 			peekc = c;
 			c = '/';
 		} else {
+			if (c == '/')
+				c = '\n';
 			comment(c);
 			c = ' ';
 		}
