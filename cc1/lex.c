@@ -201,17 +201,11 @@ repeat:
 		peekc = 0;
 		if (c == '\n' || c == '\0')
 			break;
-		if (c != '/')
+		if (c != '/' || (peekc = readchar()) != '*' && peekc != '/')
 			continue;
-		if ((c = readchar()) != '*' && c != '/') {
-			peekc = c;
-			c = '/';
-		} else {
-			if (c == '/')
-				c = '\n';
-			comment(c);
-			c = ' ';
-		}
+		comment((peekc == '/') ? '\n' : peekc);
+		peekc = 0;
+		c = ' ';
 	}
 
 	if (bp == lim)
