@@ -165,6 +165,7 @@ struct node {
 	unsigned char flags;
 	union {
 		TUINT i;
+		TFLOAT f;
 		char reg;
 		char *s;
 		Symbol *sym;
