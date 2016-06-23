@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -416,6 +417,7 @@ negop(int op)
 	case OGE:  return OLT;
 	case OLE:  return OGT;
 	case OGT:  return OLE;
+	default:   abort();
 	}
 	return op;
 }
@@ -423,7 +425,13 @@ negop(int op)
 Node *
 negate(Node *np)
 {
-	np->op = negop(np->op);
+	if (np->op == OSYM) {
+		assert(np->flags&NCONST && np->type->prop&TINTEGER);
+		np->sym = (np->sym->u.i) ? zero : one;
+	} else {
+		np->op = negop(np->op);
+	}
+
 	return np;
 }
 
