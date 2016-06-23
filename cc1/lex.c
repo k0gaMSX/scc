@@ -166,18 +166,14 @@ comment(int type)
 	c = -1;
 repeat:
 	do {
-		if (!c)
-			goto unterminated;
-	} while (!eof && (c = readchar()) != type);
+		if (!c || eof) {
+			errorp("unterminated comment");
+			return;
+		}
+	} while ((c = readchar()) != type);
 
-	if (eof)
-		goto unterminated;
 	if (type == '*' && (c = readchar()) != '/')
 		goto repeat;
-	return;
-
-unterminated:
-	errorp("unterminated comment");
 }
 
 static int
