@@ -60,10 +60,12 @@ sethi(Node *np)
 		np->address = 11;
 		break;
 	default:
-		sethi(lp);
-		sethi(rp);
+		lp = sethi(lp);
+		rp = sethi(rp);
 		break;
 	}
+	np->left = lp;
+	np->right = rp;
 
 	if (np->address > 10)
 		return np;
