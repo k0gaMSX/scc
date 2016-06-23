@@ -59,7 +59,24 @@ sethi(Node *np)
 	case OCONST:
 		np->address = 11;
 		break;
+	case OCPL:
+		np->op = OAND;
+		rp = newnode(OCONST);
+		rp->type = np->type;
+		rp->u.i = 0;
+		rp->u.i = ~np->u.i;
+		goto binary;
+	case ONEG:
+		np->op = OSUB;
+		rp = lp;
+		lp = newnode(OCONST);
+		lp->type = np->type;
+		if (np->type.flags & INTF)
+			lp->u.i = 0;
+		else
+			lp->u.f = 0.0;
 	default:
+	binary:
 		lp = sethi(lp);
 		rp = sethi(rp);
 		break;
