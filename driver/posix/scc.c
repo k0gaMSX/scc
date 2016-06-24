@@ -355,13 +355,13 @@ usage(void)
 {
 	die("usage: scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-ksw] [-m arch] [-E|-S] [-o outfile] file...\n"
+	    "           [-gksw] [-m arch] [-E|-S] [-o outfile] file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-ksw] [-m arch] [-E|-S] -c file...\n"
+	    "           [-gksw] [-m arch] [-E|-S] -c file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-ksw] [-m arch] -c -o outfile file");
+	    "           [-gksw] [-m arch] -c -o outfile file");
 }
 
 int
@@ -397,6 +397,10 @@ main(int argc, char *argv[])
 		break;
 	case 'c':
 		cflag = 1;
+		break;
+	case 'g':
+		addarg(AS, "-g");
+		addarg(LD, "-g");
 		break;
 	case 'k':
 		kflag = 1;
