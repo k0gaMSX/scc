@@ -573,7 +573,7 @@ pragma(void)
 	next();
 	if (!strcmp(yytext, "GCC"))
 		warn(magic);
-	warn("ignoring pragma '%s'", input->begin);
+	warn("ignoring pragma '%s'", yytext);
 	*input->p = '\0';
 	next();
 }
