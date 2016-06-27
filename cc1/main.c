@@ -46,6 +46,7 @@ main(int argc, char *argv[])
 
 	atexit(clean);
 	icpp();
+	ilex();
 
 	/* if run as cpp, only run the preprocessor */
 	name = (cp = strrchr(*argv, '/')) ? cp + 1 : *argv;
@@ -88,7 +89,10 @@ main(int argc, char *argv[])
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);
 
-	ilex(*argv);
+	if (!addinput(*argv)) {
+		die("error: failed to open input file '%s': %s",
+		    *argv, strerror(errno));
+	}
 	if (onlycpp) {
 		outcpp();
 	} else {

@@ -383,7 +383,7 @@ extern void expect(unsigned tok);
 extern void discard(void);
 extern int addinput(char *fname);
 extern void setsafe(int type);
-extern void ilex(char *fname);
+extern void ilex(void);
 #define accept(t) ((yytoken == (t)) ? next() : 0)
 
 /* code.c */

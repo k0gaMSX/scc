@@ -38,7 +38,7 @@ allocinput(char *fname, FILE *fp)
 }
 
 void
-ilex(char *fname)
+ilex(void)
 {
 	static struct keyword keys[] = {
 		{"auto", SCLASS, AUTO},
@@ -78,18 +78,6 @@ ilex(char *fname)
 		{"while", WHILE, WHILE},
 		{NULL, 0, 0},
 	};
-	FILE *fp;
-
-	if (!fname) {
-		fp = stdin;
-		fname = "<stdin>";
-	} else {
-		if ((fp = fopen(fname, "r")) == NULL) {
-			die("error: failed to open input file '%s': %s",
-			    fname, strerror(errno));
-		}
-	}
-	allocinput(fname, fp);
 	keywords(keys, NS_KEYWORD);
 }
 
@@ -98,8 +86,13 @@ addinput(char *fname)
 {
 	FILE *fp;
 
-	if ((fp = fopen(fname, "r")) == NULL)
-		return 0;
+	if (fname) {
+		if ((fp = fopen(fname, "r")) == NULL)
+			return 0;
+	} else {
+		fp = stdin;
+		fname = "<stdin>";
+	}
 	allocinput(fname, fp);
 	return 1;
 }
