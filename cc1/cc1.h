@@ -382,6 +382,8 @@ extern int moreinput(void);
 extern void expect(unsigned tok);
 extern void discard(void);
 extern int addinput(char *fname);
+extern void allocinput(char *fname, FILE *fp, char *s);
+extern void delinput(void);
 extern void setsafe(int type);
 extern void ilex(void);
 #define accept(t) ((yytoken == (t)) ? next() : 0)
@@ -418,7 +420,7 @@ extern int cpp(void);
 extern int expand(char *begin, Symbol *sym);
 extern void incdir(char *dir);
 extern void outcpp(void);
-extern Symbol *defmacro(char *s);
+extern void defdefine(char *macro, char *val);
 extern void undefmacro(char *s);
 
 /*

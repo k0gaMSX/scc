@@ -22,16 +22,20 @@ int namespace = NS_IDEN;
 static int safe, eof;
 Input *input;
 
-static void
-allocinput(char *fname, FILE *fp)
+void
+allocinput(char *fname, FILE *fp, char *s)
 {
-	Input *ip;
+	Input *ip = xmalloc(sizeof(Input));
 
-	ip = xmalloc(sizeof(Input));
+	if (s) {
+		ip->p = ip->begin = ip->line = s;
+		ip->nline = 1;
+	} else {
+		ip->p = ip->begin = ip->line = xmalloc(INPUTSIZ);
+		ip->p[0] = '\0';
+		ip->nline = 0;
+	}
 	ip->fname = xstrdup(fname);
-	ip->p = ip->begin = ip->line = xmalloc(INPUTSIZ);
-	ip->p[0] = '\0';
-	ip->nline = 0;
 	ip->next = input;
 	ip->fp = fp;
 	input = ip;
@@ -93,19 +97,22 @@ addinput(char *fname)
 		fp = stdin;
 		fname = "<stdin>";
 	}
-	allocinput(fname, fp);
+	allocinput(fname, fp, NULL);
 	return 1;
 }
 
-static void
+void
 delinput(void)
 {
 	Input *ip = input;
 
-	if (!ip->next)
-		eof = 1;
-	if (fclose(ip->fp))
-		die("error: failed to read from input file '%s'", ip->fname);
+	if (ip->fp) {
+		if (fclose(ip->fp))
+			die("error: failed to read from input file '%s'",
+			    ip->fname);
+		if (!ip->next)
+			eof = 1;
+	}
 	if (eof)
 		return;
 	input = ip->next;
@@ -123,14 +130,12 @@ newline(void)
 static int
 readchar(void)
 {
+	FILE *fp = input->fp;
 	int c;
-	FILE *fp;
 
-repeat:
-	if (eof)
+	if (eof || !fp)
 		return 0;
-	fp = input->fp;
-
+repeat:
 	switch (c = getc(fp)) {
 	case EOF:
 		c = '\0';

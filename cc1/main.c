@@ -29,6 +29,19 @@ clean(void)
 }
 
 static void
+defmacro(char *macro)
+{
+	char *p = strchr(macro, '=');
+
+	if (p)
+		*p++ = '\0';
+	else
+		p = "1";
+
+	defdefine(macro, p);
+}
+
+static void
 usage(void)
 {
 	die(!strcmp(name, "cpp") ?
