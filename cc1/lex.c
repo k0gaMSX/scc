@@ -23,18 +23,16 @@ static int safe, eof;
 Input *input;
 
 void
-allocinput(char *fname, FILE *fp, char *s)
+allocinput(char *fname, FILE *fp, char *line)
 {
 	Input *ip = xmalloc(sizeof(Input));
 
-	if (s) {
-		ip->p = ip->begin = ip->line = s;
-		ip->nline = 1;
-	} else {
-		ip->p = ip->begin = ip->line = xmalloc(INPUTSIZ);
-		ip->p[0] = '\0';
-		ip->nline = 0;
+	if (!line) {
+		line = xmalloc(INPUTSIZ);
+		line[0] = '\0';
 	}
+	ip->p = ip->begin = ip->line = line;
+	ip->nline = 0;
 	ip->fname = xstrdup(fname);
 	ip->next = input;
 	ip->fp = fp;

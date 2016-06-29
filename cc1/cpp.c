@@ -13,6 +13,7 @@
 
 static char *argp, *macroname;
 static unsigned arglen;
+static unsigned ncmdlines;
 static Symbol *symline, *symfile;
 static unsigned char ifstatus[NR_COND];
 static int ninclude;
@@ -32,6 +33,7 @@ defdefine(char *macro, char *val)
 
 	sprintf(def, fmt, macro, val);
 	allocinput("command-line", NULL, def);
+	input->nline = ++ncmdlines;
 	cpp();
 	delinput();
 }
@@ -87,6 +89,8 @@ icpp(void)
 
 	for (bp = list; *bp; ++bp)
 		defdefine(*bp, NULL);
+
+	ncmdlines = 0;
 }
 
 static void
