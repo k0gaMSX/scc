@@ -184,7 +184,8 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case AS:
-		t->outfile = outfile ? outfile : outfilename(infile, "o");
+		t->outfile = (cflag && outfile) ? outfile :
+		             outfilename(infile, "o");
 		addarg(tool, t->outfile);
 		break;
 	case LD:
