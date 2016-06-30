@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #define _POSIX_SOURCE
+#define _XOPEN_SOURCE 500
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -48,7 +49,9 @@ static struct tool {
 };
 
 char *argv0;
-static char *arch, *outfile;
+static char *arch, *objfile, *outfile;
+static char *tmpdir;
+static size_t tmpdirln;
 static struct items objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
@@ -136,28 +139,31 @@ inittool(int tool)
 static char *
 outfilename(char *path, char *ext)
 {
-	char *new, *name, *dot;
-	size_t newsz, nameln;
-	int n;
+	char *new, *fmt, *p;
+	size_t newsz, pathln;
+	int tmpfd, n;
 
-	if (!(name = strrchr(path, '/')))
-		name = path;
-	else
-		++name;
-
-	nameln = strlen(name);
-
-	if (!(dot = strrchr(name, '.')))
-		dot = &name[nameln];
-
-	nameln = nameln - strlen(dot);
-	newsz  = nameln + strlen(ext) + 1 + 1;
+	if (path) {
+		fmt = "%.0s%.*4$s.%s";
+		if (p = strrchr(path, '/'))
+			path = p + 1;
+		pathln = strlen(path);
+		if (p = strrchr(path, '.'))
+			pathln -= strlen(p);
+		newsz = pathln + 1 + strlen(ext) + 1;
+	} else {
+		fmt = "%s/%s";
+		path = "scc-XXXXXX";
+		newsz = tmpdirln + 1 + strlen(path) + 1;
+	}
 
 	new = xmalloc(newsz);
-
-	n = snprintf(new, newsz, "%.*s.%s", nameln, name, ext);
+	n = snprintf(new, newsz, fmt, tmpdir, path, ext, pathln);
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
+	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
+		die("scc: could not create output file");
+	close(tmpfd);
 
 	return new;
 }
@@ -184,8 +190,13 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case AS:
-		t->outfile = (cflag && outfile) ? outfile :
-		             outfilename(infile, "o");
+		if (cflag && outfile) {
+			objfile = outfile;
+		} else {
+			objfile = (cflag || kflag) ? infile : NULL;
+			objfile = outfilename(objfile, "o");
+		}
+		t->outfile = xstrdup(objfile);
 		addarg(tool, t->outfile);
 		break;
 	case LD:
@@ -290,6 +301,8 @@ validatetools(void)
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
 				failure = 1;
 				failed = tool;
+				free(objfile);
+				objfile = NULL;
 			}
 			if (tool >= failed && t->outfile)
 				unlink(t->outfile);
@@ -348,7 +361,7 @@ build(char *file)
 	}
 
 	if (validatetools())
-		newitem(objs, outfilename(file, "o"));
+		newitem(objs, objfile);
 }
 
 static void
@@ -432,6 +445,10 @@ main(int argc, char *argv[])
 
 	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile || !argc)
 		usage();
+
+	if (!(tmpdir = getenv("TMPDIR")) || !tmpdir[0])
+		tmpdir = ".";
+	tmpdirln = strlen(tmpdir);
 
 	for (; *argv; ++argv)
 		build(*argv);
