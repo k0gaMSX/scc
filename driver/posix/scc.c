@@ -162,7 +162,8 @@ outfilename(char *path, char *ext)
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
 	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
-		die("scc: could not create output file");
+		die("scc: could not create output file '%s': %s",
+		    new, strerror(errno));
 	close(tmpfd);
 
 	return new;
