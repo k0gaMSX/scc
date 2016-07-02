@@ -200,12 +200,6 @@ settool(int tool, char *infile, int nexttool)
 		t->outfile = xstrdup(objfile);
 		addarg(tool, t->outfile);
 		break;
-	case LD:
-		for (i = 0; i < objtmp.n; ++i)
-			addarg(tool, xstrdup(objtmp.s[i]));
-		for (i = 0; i < objout.n; ++i)
-			addarg(tool, xstrdup(objout.s[i]));
-		break;
 	case STRIP:
 		if (cflag || kflag) {
 			for (i = 0; i < objout.n; ++i)
@@ -302,6 +296,7 @@ validatetools(void)
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
 				failure = 1;
 				failed = tool;
+				unlink(objfile);
 				free(objfile);
 				objfile = NULL;
 			}
@@ -317,12 +312,10 @@ validatetools(void)
 	return failed == LAST_TOOL;
 }
 
-static void
-build(char *file)
+static int
+buildfile(char *file, int tool)
 {
-	int tool = toolfor(file), nexttool;
-	struct items *objs = (tool == LD || cflag || kflag) ?
-	                       &objout : &objtmp;
+	int nexttool;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
@@ -361,8 +354,39 @@ build(char *file)
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	if (validatetools())
-		newitem(objs, objfile);
+	return validatetools();
+}
+
+static void
+build(struct items *chain, int link)
+{
+	int i, tool;
+
+	if (link)
+		inittool(LD);
+
+	for (i = 0; i < chain->n; ++i) {
+		if (!strcmp(chain->s[i], "-l")) {
+			if (link) {
+				addarg(LD, xstrdup(chain->s[i++]));
+				addarg(LD, xstrdup(chain->s[i]));
+			} else {
+				++i;
+			}
+			continue;
+		}
+		tool = toolfor(chain->s[i]);
+		if (tool == LD) {
+			if (link)
+				addarg(LD, xstrdup(chain->s[i]));
+			continue;
+		}
+		if (buildfile(chain->s[i], tool)) {
+			if (link)
+				addarg(LD, xstrdup(objfile));
+			newitem((!link || kflag) ? &objout : &objtmp, objfile);
+		}
+	}
 }
 
 static void
@@ -382,6 +406,9 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
+	struct items linkchain = { .n = 0, };
+	int link;
+
 	atexit(terminate);
 
 	arch = getenv("ARCH");
@@ -421,8 +448,8 @@ main(int argc, char *argv[])
 		kflag = 1;
 		break;
 	case 'l':
-		addarg(LD, "-l");
-		addarg(LD, EARGF(usage()));
+		newitem(&linkchain, "-l");
+		newitem(&linkchain, EARGF(usage()));
 		break;
 	case 'm':
 		arch = EARGF(usage());
@@ -442,23 +469,25 @@ main(int argc, char *argv[])
 		break;
 	default:
 		usage();
+	} ARGOPERAND {
+		newitem(&linkchain, ARGOP());
 	} ARGEND
 
-	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile || !argc)
+	if (Eflag && (Sflag || kflag) || linkchain.n == 0 ||
+	    linkchain.n > 1 && cflag && outfile)
 		usage();
 
 	if (!(tmpdir = getenv("TMPDIR")) || !tmpdir[0])
 		tmpdir = ".";
 	tmpdirln = strlen(tmpdir);
 
-	for (; *argv; ++argv)
-		build(*argv);
+	build(&linkchain, (link = !(Eflag || Sflag || cflag)));
 
-	if (Eflag || Sflag)
+	if (!(link || cflag))
 		return failure;
 
-	if (!cflag && !failure) {
-		spawn(settool(inittool(LD), NULL, LAST_TOOL));
+	if (link && !failure) {
+		spawn(settool(LD, NULL, LAST_TOOL));
 		validatetools();
 	}
 
