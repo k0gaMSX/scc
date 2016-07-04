@@ -159,7 +159,7 @@ outfname(char *path, char *type)
 
 	newsz = pathln + 1 + strlen(type) + 1;
 	new = xmalloc(newsz);
-	n = snprintf(new, newsz, "%.*s%c%s", path, pathln, sep, type);
+	n = snprintf(new, newsz, "%.*s%c%s", pathln, path, sep, type);
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
 	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
