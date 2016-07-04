@@ -474,8 +474,12 @@ main(int argc, char *argv[])
 	default:
 		usage();
 	} ARGOPERAND {
+operand:
 		newitem(&linkchain, ARGOP());
 	} ARGEND
+
+	for (; *argv; --argc, ++argv)
+		goto operand;
 
 	if (Eflag && (Sflag || kflag) || linkchain.n == 0 ||
 	    linkchain.n > 1 && cflag && outfile)
