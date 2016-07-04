@@ -32,9 +32,13 @@ for (argv0 = *argv, argv++, argc--;\
 
 #define ARGOPERAND \
 		}\
-	} else if (argv[0][0] != '\0')
+	} else if (argv[0][0] != '\0') {\
+		{
 
-#define ARGEND }
+#define ARGEND \
+		}\
+	}\
+}
 
 #define ARGC() argc_
 
