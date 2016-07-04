@@ -137,28 +137,29 @@ inittool(int tool)
 }
 
 static char *
-outfilename(char *path, char *ext)
+outfname(char *path, char *type)
 {
-	char *new, *fmt, *p;
+	char *new, sep, *p;
 	size_t newsz, pathln;
 	int tmpfd, n;
 
 	if (path) {
-		fmt = "%.0s%.*4$s.%s";
+		sep = '.';
 		if (p = strrchr(path, '/'))
 			path = p + 1;
 		pathln = strlen(path);
 		if (p = strrchr(path, '.'))
 			pathln -= strlen(p);
-		newsz = pathln + 1 + strlen(ext) + 1;
 	} else {
-		fmt = "%s/%s";
-		path = "scc-XXXXXX";
-		newsz = tmpdirln + 1 + strlen(path) + 1;
+		sep = '/';
+		type = "scc-XXXXXX";
+		path = tmpdir;
+		pathln = tmpdirln;
 	}
 
+	newsz = pathln + 1 + strlen(type) + 1;
 	new = xmalloc(newsz);
-	n = snprintf(new, newsz, fmt, tmpdir, path, ext, pathln);
+	n = snprintf(new, newsz, "%.*s%c%s", path, pathln, sep, type);
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
 	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
@@ -179,15 +180,15 @@ settool(int tool, char *infile, int nexttool)
 
 	switch (tool) {
 	case TEEIR:
-		t->outfile = outfilename(infile, "ir");
+		t->outfile = outfname(infile, "ir");
 		addarg(tool, t->outfile);
 		break;
 	case TEEQBE:
-		t->outfile = outfilename(infile, "qbe");
+		t->outfile = outfname(infile, "qbe");
 		addarg(tool, t->outfile);
 		break;
 	case TEEAS:
-		t->outfile = outfilename(infile, "as");
+		t->outfile = outfname(infile, "as");
 		addarg(tool, t->outfile);
 		break;
 	case AS:
@@ -195,7 +196,7 @@ settool(int tool, char *infile, int nexttool)
 			objfile = outfile;
 		} else {
 			objfile = (cflag || kflag) ? infile : NULL;
-			objfile = outfilename(objfile, "o");
+			objfile = outfname(objfile, "o");
 		}
 		t->outfile = xstrdup(objfile);
 		addarg(tool, t->outfile);
