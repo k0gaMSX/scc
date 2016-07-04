@@ -296,9 +296,6 @@ validatetools(void)
 			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
 				failure = 1;
 				failed = tool;
-				unlink(objfile);
-				free(objfile);
-				objfile = NULL;
 			}
 			if (tool >= failed && t->outfile)
 				unlink(t->outfile);
@@ -308,8 +305,14 @@ validatetools(void)
 			t->pid = 0;
 		}
 	}
+	if (failed < LAST_TOOL) {
+		unlink(objfile);
+		free(objfile);
+		objfile = NULL;
+		return 0;
+	}
 
-	return failed == LAST_TOOL;
+	return 1;
 }
 
 static int
