@@ -163,7 +163,9 @@ parsepars(char *buffer, char **listp, int nargs)
 	n = 0;
 	argp = buffer;
 	arglen = INPUTSIZ;
-	if (yytoken != ')') {
+	if (ahead() == ')') {
+		next();
+	} else {
 		do {
 			*listp++ = argp;
 			parameter();
