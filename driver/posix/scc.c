@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #define _POSIX_SOURCE
+#define _XOPEN_SOURCE 500
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -48,7 +49,9 @@ static struct tool {
 };
 
 char *argv0;
-static char *arch, *outfile;
+static char *arch, *objfile, *outfile;
+static char *tmpdir;
+static size_t tmpdirln;
 static struct items objtmp, objout;
 static int Eflag, Sflag, cflag, kflag, sflag;
 
@@ -134,30 +137,35 @@ inittool(int tool)
 }
 
 static char *
-outfilename(char *path, char *ext)
+outfname(char *path, char *type)
 {
-	char *new, *name, *dot;
-	size_t newsz, nameln;
-	int n;
+	char *new, sep, *p;
+	size_t newsz, pathln;
+	int tmpfd, n;
 
-	if (!(name = strrchr(path, '/')))
-		name = path;
-	else
-		++name;
+	if (path) {
+		sep = '.';
+		if (p = strrchr(path, '/'))
+			path = p + 1;
+		pathln = strlen(path);
+		if (p = strrchr(path, '.'))
+			pathln -= strlen(p);
+	} else {
+		sep = '/';
+		type = "scc-XXXXXX";
+		path = tmpdir;
+		pathln = tmpdirln;
+	}
 
-	nameln = strlen(name);
-
-	if (!(dot = strrchr(name, '.')))
-		dot = &name[nameln];
-
-	nameln = nameln - strlen(dot);
-	newsz  = nameln + strlen(ext) + 1 + 1;
-
+	newsz = pathln + 1 + strlen(type) + 1;
 	new = xmalloc(newsz);
-
-	n = snprintf(new, newsz, "%.*s.%s", nameln, name, ext);
+	n = snprintf(new, newsz, "%.*s%c%s", pathln, path, sep, type);
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
+	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
+		die("scc: could not create output file '%s': %s",
+		    new, strerror(errno));
+	close(tmpfd);
 
 	return new;
 }
@@ -172,26 +180,26 @@ settool(int tool, char *infile, int nexttool)
 
 	switch (tool) {
 	case TEEIR:
-		t->outfile = outfilename(infile, "ir");
+		t->outfile = outfname(infile, "ir");
 		addarg(tool, t->outfile);
 		break;
 	case TEEQBE:
-		t->outfile = outfilename(infile, "qbe");
+		t->outfile = outfname(infile, "qbe");
 		addarg(tool, t->outfile);
 		break;
 	case TEEAS:
-		t->outfile = outfilename(infile, "as");
+		t->outfile = outfname(infile, "as");
 		addarg(tool, t->outfile);
 		break;
 	case AS:
-		t->outfile = outfile ? outfile : outfilename(infile, "o");
+		if (cflag && outfile) {
+			objfile = outfile;
+		} else {
+			objfile = (cflag || kflag) ? infile : NULL;
+			objfile = outfname(objfile, "o");
+		}
+		t->outfile = xstrdup(objfile);
 		addarg(tool, t->outfile);
-		break;
-	case LD:
-		for (i = 0; i < objtmp.n; ++i)
-			addarg(tool, xstrdup(objtmp.s[i]));
-		for (i = 0; i < objout.n; ++i)
-			addarg(tool, xstrdup(objout.s[i]));
 		break;
 	case STRIP:
 		if (cflag || kflag) {
@@ -298,16 +306,20 @@ validatetools(void)
 			t->pid = 0;
 		}
 	}
+	if (failed < LAST_TOOL) {
+		unlink(objfile);
+		free(objfile);
+		objfile = NULL;
+		return 0;
+	}
 
-	return failed == LAST_TOOL;
+	return 1;
 }
 
-static void
-build(char *file)
+static int
+buildfile(char *file, int tool)
 {
-	int tool = toolfor(file), nexttool;
-	struct items *objs = (tool == LD || cflag || kflag) ?
-	                       &objout : &objtmp;
+	int nexttool;
 
 	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
@@ -346,8 +358,39 @@ build(char *file)
 		spawn(settool(inittool(tool), file, nexttool));
 	}
 
-	if (validatetools())
-		newitem(objs, outfilename(file, "o"));
+	return validatetools();
+}
+
+static void
+build(struct items *chain, int link)
+{
+	int i, tool;
+
+	if (link)
+		inittool(LD);
+
+	for (i = 0; i < chain->n; ++i) {
+		if (!strcmp(chain->s[i], "-l")) {
+			if (link) {
+				addarg(LD, xstrdup(chain->s[i++]));
+				addarg(LD, xstrdup(chain->s[i]));
+			} else {
+				++i;
+			}
+			continue;
+		}
+		tool = toolfor(chain->s[i]);
+		if (tool == LD) {
+			if (link)
+				addarg(LD, xstrdup(chain->s[i]));
+			continue;
+		}
+		if (buildfile(chain->s[i], tool)) {
+			if (link)
+				addarg(LD, xstrdup(objfile));
+			newitem((!link || kflag) ? &objout : &objtmp, objfile);
+		}
+	}
 }
 
 static void
@@ -367,6 +410,9 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
+	struct items linkchain = { .n = 0, };
+	int link;
+
 	atexit(terminate);
 
 	arch = getenv("ARCH");
@@ -406,8 +452,8 @@ main(int argc, char *argv[])
 		kflag = 1;
 		break;
 	case 'l':
-		addarg(LD, "-l");
-		addarg(LD, EARGF(usage()));
+		newitem(&linkchain, "-l");
+		newitem(&linkchain, EARGF(usage()));
 		break;
 	case 'm':
 		arch = EARGF(usage());
@@ -427,19 +473,29 @@ main(int argc, char *argv[])
 		break;
 	default:
 		usage();
+	} ARGOPERAND {
+operand:
+		newitem(&linkchain, ARGOP());
 	} ARGEND
 
-	if (Eflag && (Sflag || kflag) || argc > 1 && cflag && outfile || !argc)
+	for (; *argv; --argc, ++argv)
+		goto operand;
+
+	if (Eflag && (Sflag || kflag) || linkchain.n == 0 ||
+	    linkchain.n > 1 && cflag && outfile)
 		usage();
 
-	for (; *argv; ++argv)
-		build(*argv);
+	if (!(tmpdir = getenv("TMPDIR")) || !tmpdir[0])
+		tmpdir = ".";
+	tmpdirln = strlen(tmpdir);
 
-	if (Eflag || Sflag)
+	build(&linkchain, (link = !(Eflag || Sflag || cflag)));
+
+	if (!(link || cflag))
 		return failure;
 
-	if (!cflag && !failure) {
-		spawn(settool(inittool(LD), NULL, LAST_TOOL));
+	if (link && !failure) {
+		spawn(settool(LD, NULL, LAST_TOOL));
 		validatetools();
 	}
 

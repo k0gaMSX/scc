@@ -29,6 +29,19 @@ clean(void)
 }
 
 static void
+defmacro(char *macro)
+{
+	char *p = strchr(macro, '=');
+
+	if (p)
+		*p++ = '\0';
+	else
+		p = "1";
+
+	defdefine(macro, p);
+}
+
+static void
 usage(void)
 {
 	die(!strcmp(name, "cpp") ?
@@ -46,6 +59,7 @@ main(int argc, char *argv[])
 
 	atexit(clean);
 	icpp();
+	ilex();
 
 	/* if run as cpp, only run the preprocessor */
 	name = (cp = strrchr(*argv, '/')) ? cp + 1 : *argv;
@@ -88,7 +102,10 @@ main(int argc, char *argv[])
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);
 
-	ilex(*argv);
+	if (!addinput(*argv)) {
+		die("error: failed to open input file '%s': %s",
+		    *argv, strerror(errno));
+	}
 	if (onlycpp) {
 		outcpp();
 	} else {
