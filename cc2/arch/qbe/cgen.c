@@ -130,12 +130,40 @@ bool(Node *np, Node *new, Symbol *true, Symbol *false)
 }
 
 static Node *
+function(void)
+{
+	Symbol *p;
+
+	/* allocate stack space for parameters */
+	for (p = locals; p && (p->type.flags & PARF) != 0; p = p->next)
+		code(ASALLOC, label2node(p), NULL, NULL);
+
+	/* allocate stack space for local variables) */
+	for ( ; p && p->id != TMPSYM; p = p->next) {
+		if (p->kind != SAUTO)
+			continue;
+		code(ASALLOC, label2node(p), NULL, NULL);
+	}
+	/* store formal parameters in parameters */
+	for (p = locals; p; p = p->next) {
+		if ((p->type.flags & PARF) == 0)
+			break;
+		code(ASFORM, label2node(p), NULL, NULL);
+	}
+	return NULL;
+}
+
+static Node *
 rhs(Node *np, Node *new)
 {
 	Node aux;
 	Symbol *label1, *label2;
 
 	switch (np->op) {
+	case OBFUN:
+		return function();
+	case OEFUN:
+		return NULL;
 	case OMEM:
 	case OAUTO:
 		return load(np, new);
