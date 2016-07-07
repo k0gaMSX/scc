@@ -6,24 +6,164 @@
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 
-Node
-rhs(Node *np)
+enum sflags {
+	ISTMP  = 1,
+	ISCONS = 2
+};
+
+static Node *
+tmpnode(Node *np)
 {
+	Symbol *sym;
+
+	sym = getsym(TMPSYM);
+	sym->type = np->type;
+	sym->kind = STMP;
+	np->u.sym = sym;
+	np->op = OTMP;
+	np->flags |= ISTMP;
+	return np;
 }
 
-Node
-lhs(Node *np)
+static Node *
+load(Node *np, Node *new)
 {
+	int op;
+	Type *tp;
+
+	tp = &np->type;
+	new->type = *tp;
+	tmpnode(new);
+
+	switch (tp->size) {
+	case 1:
+		op = ASLDB;
+		break;
+	case 2:
+		op = ASLDH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASLDW : ASLDS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASLDL : ASLDD;
+		break;
+	default:
+		abort();
+	}
+	code(op, new, np, NULL);
+	return new;
 }
 
-Node
-expr(Node *np)
+static Node *
+assign(Node *np, Node *new)
 {
+	Node *to, *from;
+	Type *tp;
+	int op;
+
+	to = np->left;
+	from = np->right;
+
+	tp = &to->type;
+	switch (tp->size) {
+	case 1:
+		op = ASSTB;
+		break;
+	case 2:
+		op = ASSTH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASSTW : ASSTS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASSTL : ASSTD;
+		break;
+	default:
+		abort();
+	}
+	code(op, to, from, NULL);
+	return from;
+}
+
+static Node *rhs(Node *np, Node *new);
+
+static Node *
+lhs(Node *np, Node *new)
+{
+	switch (np->op) {
+	case OMEM:
+	case OAUTO:
+		return np;
+	case OPTR:
+		return rhs(np->left, new);
+	default:
+		abort();
+	}
+}
+
+static Node *
+bool(Node *np, Node *new, Symbol *true, Symbol *false)
+{
+	Node *l = np->left, *r = np->right;
+	Symbol *label;
+
+	switch (np->op) {
+	case OAND:
+		label = newlabel();
+		bool(l, new, label, true);
+		setlabel(label);
+		bool(r, new, true, false);
+		break;
+	case OOR:
+		label = newlabel();
+		bool(l, new, true, label);
+		setlabel(label);
+		bool(r, new, true, false);
+		break;
+	default:
+		rhs(np, new);
+		code(ASBRANCH, new, label2node(true), label2node(false));
+		break;
+	}
+	return new;
+}
+
+static Node *
+rhs(Node *np, Node *new)
+{
+	Node aux;
+	Symbol *label1, *label2;
+
+	switch (np->op) {
+	case OMEM:
+	case OAUTO:
+		return load(np, new);
+	case OJMP:
+	case OBRANCH:
+	case ORET:
+		label1 = newlabel();
+		label2 = newlabel();
+		bool(np, new, label1, label2);
+		setlabel(label1);
+		return NULL;
+	case OASSIG:
+		lhs(np->left, new);
+		rhs(np->right, &aux);
+		assign(&aux, new);
+		return new;
+	default:
+		abort();
+	}
 }
 
 Node *
 cgen(Node *np)
 {
+	Node n;
+
+	rhs(np, &n);
+	return NULL;
 }
 
 /*
