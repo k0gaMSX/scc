@@ -37,6 +37,8 @@ for (argv0 = *argv, argv++, argc--;\
 
 #define ARGEND \
 		}\
+	} else {\
+		break;\
 	}\
 }
 
