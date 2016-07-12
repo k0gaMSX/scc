@@ -106,6 +106,7 @@ static Node *
 bool(Node *np, Node *new, Symbol *true, Symbol *false)
 {
 	Node *l = np->left, *r = np->right;
+	Node *ifyes, *ifno;
 	Symbol *label;
 
 	switch (np->op) {
@@ -122,8 +123,12 @@ bool(Node *np, Node *new, Symbol *true, Symbol *false)
 		bool(r, new, true, false);
 		break;
 	default:
-		rhs(np, new);
-		code(ASBRANCH, new, label2node(true), label2node(false));
+		ifyes = label2node(true);
+		ifno = label2node(false);
+		rhs(l, new);
+		code(ASBRANCH, new, ifyes, ifno);
+		deltree(ifyes);
+		deltree(ifno);
 		break;
 	}
 	return new;
@@ -157,7 +162,6 @@ static Node *
 rhs(Node *np, Node *new)
 {
 	Node aux;
-	Symbol *label1, *label2;
 
 	switch (np->op) {
 	case OBFUN:
@@ -167,14 +171,6 @@ rhs(Node *np, Node *new)
 	case OMEM:
 	case OAUTO:
 		return load(np, new);
-	case OJMP:
-	case OBRANCH:
-	case ORET:
-		label1 = newlabel();
-		label2 = newlabel();
-		bool(np, new, label1, label2);
-		setlabel(label1);
-		return NULL;
 	case OASSIG:
 		lhs(np->left, new);
 		rhs(np->right, &aux);
@@ -188,9 +184,23 @@ rhs(Node *np, Node *new)
 Node *
 cgen(Node *np)
 {
-	Node n;
+	Node n, *aux;
+	Symbol *label1, *label2;
 
-	rhs(np, &n);
+	switch (np->op) {
+	case OJMP:
+		code(ASJMP, NULL, NULL, NULL);
+		break;
+	case OBRANCH:
+		break;
+	case ORET:
+		aux = (np->left) ? rhs(np->left, &n) : NULL;
+		code(ASRET, aux, NULL, NULL);
+		break;
+	default:
+		rhs(np, &n);
+		break;
+	}
 	return NULL;
 }
 
