@@ -13,6 +13,7 @@
 
 static char *argp, *macroname;
 static unsigned arglen;
+static unsigned ncmdlines;
 static Symbol *symline, *symfile;
 static unsigned char ifstatus[NR_COND];
 static int ninclude;
@@ -21,30 +22,20 @@ static char **dirinclude;
 unsigned cppctx;
 int disexpand;
 
-Symbol *
-defmacro(char *s)
+void
+defdefine(char *macro, char *val)
 {
-	char *p, *q;
-	Symbol *sym;
-	char def[] = "=1";
+	char *def, *fmt = "#define %s %s";
 
-	if ((p = strchr(s, '=')) == NULL)
-		p = def;
-	*p++='\0';
-	q = xmalloc(strlen(p) + 4);
-	sprintf(q, "-1#%s", p);
+	if (!val)
+		val = "";
+	def = xmalloc(strlen(fmt) + strlen(macro) + strlen(val));
 
-	sym = lookup(NS_CPP, s);
-	if (sym->flags & SDECLARED) {
-		warn("'%s' redefined");
-		free(sym->u.s);
-	} else {
-		install(NS_CPP, sym);
-		sym->flags |= SDECLARED|SSTRING;
-	}
-
-	sym->u.s = q;
-	return sym;
+	sprintf(def, fmt, macro, val);
+	allocinput("command-line", NULL, def);
+	input->nline = ++ncmdlines;
+	cpp();
+	delinput();
 }
 
 void
@@ -56,7 +47,7 @@ undefmacro(char *s)
 void
 icpp(void)
 {
-	static char sdate[17], stime[14];
+	static char sdate[14], stime[11];
 	struct tm *tm;
 	time_t t;
 	static char **bp, *list[] = {
@@ -81,20 +72,25 @@ icpp(void)
 		{NULL, 0, 0}
 	};
 
+	keywords(keys, NS_CPPCLAUSES);
+
 	t = time(NULL);
 	tm = localtime(&t);
-	strftime(sdate, sizeof(sdate), "-1#\"%b %d %Y\"", tm);
-	strftime(stime, sizeof(stime), "-1#\"%H:%M:%S\"", tm);
-	defmacro("__DATE__")->u.s = sdate;
-	defmacro("__TIME__")->u.s = stime;
+	strftime(sdate, sizeof(sdate), "\"%b %d %Y\"", tm);
+	strftime(stime, sizeof(stime), "\"%H:%M:%S\"", tm);
+	defdefine("__DATE__", sdate);
+	defdefine("__TIME__", stime);
+	defdefine("__STDC_VERSION__", "199409L");
+	defdefine("__LINE__", NULL);
+	defdefine("__FILE__", NULL);
 
-	defmacro("__STDC_VERSION__")->u.s = "-1#199409L";
-	symline = defmacro("__LINE__");
-	symfile = defmacro("__FILE__");
+	symline = lookup(NS_CPP, "__LINE__");
+	symfile = lookup(NS_CPP, "__FILE__");
 
 	for (bp = list; *bp; ++bp)
-		defmacro(*bp)->u.s = "-1#1";
-	keywords(keys, NS_CPPCLAUSES);
+		defdefine(*bp, NULL);
+
+	ncmdlines = 0;
 }
 
 static void
@@ -163,7 +159,9 @@ parsepars(char *buffer, char **listp, int nargs)
 	n = 0;
 	argp = buffer;
 	arglen = INPUTSIZ;
-	if (yytoken != ')') {
+	if (ahead() == ')') {
+		next();
+	} else {
 		do {
 			*listp++ = argp;
 			parameter();
@@ -573,7 +571,7 @@ pragma(void)
 	next();
 	if (!strcmp(yytext, "GCC"))
 		warn(magic);
-	warn("ignoring pragma '%s'", input->begin);
+	warn("ignoring pragma '%s'", yytext);
 	*input->p = '\0';
 	next();
 }

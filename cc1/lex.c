@@ -22,23 +22,25 @@ int namespace = NS_IDEN;
 static int safe, eof;
 Input *input;
 
-static void
-allocinput(char *fname, FILE *fp)
+void
+allocinput(char *fname, FILE *fp, char *line)
 {
-	Input *ip;
+	Input *ip = xmalloc(sizeof(Input));
 
-	ip = xmalloc(sizeof(Input));
-	ip->fname = xstrdup(fname);
-	ip->p = ip->begin = ip->line = xmalloc(INPUTSIZ);
-	ip->p[0] = '\0';
+	if (!line) {
+		line = xmalloc(INPUTSIZ);
+		line[0] = '\0';
+	}
+	ip->p = ip->begin = ip->line = line;
 	ip->nline = 0;
+	ip->fname = xstrdup(fname);
 	ip->next = input;
 	ip->fp = fp;
 	input = ip;
 }
 
 void
-ilex(char *fname)
+ilex(void)
 {
 	static struct keyword keys[] = {
 		{"auto", SCLASS, AUTO},
@@ -78,18 +80,6 @@ ilex(char *fname)
 		{"while", WHILE, WHILE},
 		{NULL, 0, 0},
 	};
-	FILE *fp;
-
-	if (!fname) {
-		fp = stdin;
-		fname = "<stdin>";
-	} else {
-		if ((fp = fopen(fname, "r")) == NULL) {
-			die("error: failed to open input file '%s': %s",
-			    fname, strerror(errno));
-		}
-	}
-	allocinput(fname, fp);
 	keywords(keys, NS_KEYWORD);
 }
 
@@ -98,21 +88,29 @@ addinput(char *fname)
 {
 	FILE *fp;
 
-	if ((fp = fopen(fname, "r")) == NULL)
-		return 0;
-	allocinput(fname, fp);
+	if (fname) {
+		if ((fp = fopen(fname, "r")) == NULL)
+			return 0;
+	} else {
+		fp = stdin;
+		fname = "<stdin>";
+	}
+	allocinput(fname, fp, NULL);
 	return 1;
 }
 
-static void
+void
 delinput(void)
 {
 	Input *ip = input;
 
-	if (!ip->next)
-		eof = 1;
-	if (fclose(ip->fp))
-		die("error: failed to read from input file '%s'", ip->fname);
+	if (ip->fp) {
+		if (fclose(ip->fp))
+			die("error: failed to read from input file '%s'",
+			    ip->fname);
+		if (!ip->next)
+			eof = 1;
+	}
 	if (eof)
 		return;
 	input = ip->next;
@@ -130,14 +128,12 @@ newline(void)
 static int
 readchar(void)
 {
+	FILE *fp = input->fp;
 	int c;
-	FILE *fp;
 
-repeat:
-	if (eof)
+	if (eof || !fp)
 		return 0;
-	fp = input->fp;
-
+repeat:
 	switch (c = getc(fp)) {
 	case EOF:
 		c = '\0';

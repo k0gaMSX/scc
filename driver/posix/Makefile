@@ -7,7 +7,7 @@ OBJS = scc.o
 
 all: scc
 
-$(OBJS): ../../inc/cc.h
+$(OBJS): ../../inc/cc.h ../../inc/arg.h
 
 ../../lib/libcc.a:
 	cd ../../lib && $(MAKE) -e

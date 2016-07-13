@@ -329,7 +329,8 @@ oreturn(char *token, union tokenop u)
 {
 	Node *np = newnode(u.op);
 
-	eval(strtok(NULL, "\t\n"));
+	if (token = strtok(NULL, "\t\n"))
+		eval(token);
 	if (!empty())
 		np->left = pop();
 	push(np);
