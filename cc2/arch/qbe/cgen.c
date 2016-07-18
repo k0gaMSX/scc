@@ -11,6 +11,85 @@ enum sflags {
 	ISCONS = 2
 };
 
+static char opasmw[] = {
+	[OADD] = ASADDW,
+	[OSUB] = ASSUBW,
+	[OMUL] = ASMULW,
+	[OMOD] = ASMODW,
+	[ODIV] = ASDIVW,
+	[OSHL] = ASSHLW,
+	[OSHR] = ASSHRW,
+	[OLT] = ASLTW,
+	[OGT] = ASGTW,
+	[OLE] = ASLEW,
+	[OGE] = ASGEW,
+	[OEQ] = ASEQW,
+	[ONE] = ASNEW,
+	[OBAND] = ASBANDW,
+	[OBOR] = ASBORW,
+	[OBXOR] = ASBXORW,
+	[OCPL] = ASCPLW
+};
+
+static char opasml[] = {
+	[OADD] = ASADDL,
+	[OSUB] = ASSUBL,
+	[OMUL] = ASMULL,
+	[OMOD] = ASMODL,
+	[ODIV] = ASDIVL,
+	[OSHL] = ASSHLL,
+	[OSHR] = ASSHRL,
+	[OLT] = ASLTL,
+	[OGT] = ASGTL,
+	[OLE] = ASLEL,
+	[OGE] = ASGEL,
+	[OEQ] = ASEQL,
+	[ONE] = ASNEL,
+	[OBAND] = ASBANDL,
+	[OBOR] = ASBORL,
+	[OBXOR] = ASBXORL,
+	[OCPL] = ASCPLL
+};
+
+static char opasms[] = {
+	[OADD] = ASADDS,
+	[OSUB] = ASSUBS,
+	[OMUL] = ASMULS,
+	[OMOD] = ASMODS,
+	[ODIV] = ASDIVS,
+	[OSHL] = ASSHLS,
+	[OSHR] = ASSHRS,
+	[OLT] = ASLTS,
+	[OGT] = ASGTS,
+	[OLE] = ASLES,
+	[OGE] = ASGES,
+	[OEQ] = ASEQS,
+	[ONE] = ASNES,
+	[OBAND] = ASBANDS,
+	[OBOR] = ASBORS,
+	[OBXOR] = ASBXORS,
+	[OCPL] = ASCPLS
+};
+static char opasmd[] = {
+	[OADD] = ASADDD,
+	[OSUB] = ASSUBD,
+	[OMUL] = ASMULD,
+	[OMOD] = ASMODD,
+	[ODIV] = ASDIVD,
+	[OSHL] = ASSHLD,
+	[OSHR] = ASSHRD,
+	[OLT] = ASLTD,
+	[OGT] = ASGTD,
+	[OLE] = ASLED,
+	[OGE] = ASGED,
+	[OEQ] = ASEQD,
+	[ONE] = ASNED,
+	[OBAND] = ASBANDD,
+	[OBOR] = ASBORD,
+	[OBXOR] = ASBXORD,
+	[OCPL] = ASCPLD
+};
+
 static Node *
 tmpnode(Node *np)
 {
@@ -56,14 +135,10 @@ load(Node *np, Node *new)
 }
 
 static Node *
-assign(Node *np, Node *new)
+assign(Node *to, Node *from)
 {
-	Node *to, *from;
 	Type *tp;
 	int op;
-
-	to = np->left;
-	from = np->right;
 
 	tp = &to->type;
 	switch (tp->size) {
@@ -159,40 +234,115 @@ function(void)
 }
 
 static Node *
-rhs(Node *np, Node *new)
+rhs(Node *np, Node *ret)
 {
-	Node aux;
+	Node aux1, aux2, *l = np->left, *r = np->right;
+	Type *tp;
+	int off, op;
+	char *tbl;
+	Symbol *true, *false;
+
+	setlabel(np->label);
+	tp = &np->type;
 
 	switch (np->op) {
 	case OBFUN:
 		return function();
+	case ONOP:
 	case OEFUN:
 		return NULL;
+	case OCONST:
 	case OMEM:
 	case OAUTO:
-		return load(np, new);
+		return load(np, ret);
+	case OAND:
+	case OOR:
+		true = newlabel();
+		false = newlabel();
+		bool(np, ret, true, false);
+		setlabel(true);
+		setlabel(false);
+		return ret;
+        case OSHR:
+        case OMOD:
+        case ODIV:
+        case OLT:
+        case OGT:
+        case OLE:
+        case OGE:
+                /*
+                 * unsigned version of operations are always +1 the
+                 * signed version
+                 */
+                off = (tp->flags & SIGNF) == 0;
+                goto binary;
+        case OADD:
+        case OSUB:
+        case OMUL:
+        case OSHL:
+        case OBAND:
+        case OBOR:
+        case OBXOR:
+        case OEQ:
+        case ONE:
+                off = 0;
+        binary:
+		if (l->complex >= r->complex) {
+			rhs(l, &aux1);
+			rhs(r, &aux2);
+		} else {
+			rhs(r, &aux2);
+			rhs(l, &aux1);
+		}
+                switch (tp->size) {
+                case 4:
+                        tbl = (tp->flags & INTF) ? opasmw : opasms;
+                        break;
+                case 8:
+                        tbl = (tp->flags & INTF) ? opasml : opasmd;
+                        break;
+                default:
+                        abort();
+                }
+                op = tbl[np->op] + off;
+		ret = tmpnode(ret);
+                code(op, ret, &aux1, &aux2);
+                return ret;
 	case OASSIG:
-		lhs(np->left, new);
-		rhs(np->right, &aux);
-		assign(&aux, new);
-		return new;
+		lhs(l, &aux1);
+		rhs(r, ret);
+		return assign(&aux1, ret);
 	default:
 		abort();
 	}
+	abort();
 }
 
 Node *
 cgen(Node *np)
 {
-	Node n, *aux;
+	Node n, *aux, *next, *ifyes, *ifno;
 	Symbol *label1, *label2;
 
 	switch (np->op) {
 	case OJMP:
-		code(ASJMP, NULL, NULL, NULL);
+		ifyes = label2node(np->u.sym);
+		code(ASJMP, NULL, ifyes, NULL);
+		deltree(ifyes);
 		break;
-	case OBRANCH:
-		break;
+        case OBRANCH:
+                next = np->next;
+                if (!next->label)
+                        next->label = newlabel();
+                ifyes = label2node(np->u.sym);
+                ifno = label2node(next->label);
+		bool(np->left, &n, ifyes->u.sym, ifno->u.sym);
+		code(ASBRANCH, &n, ifyes, ifno);
+		setlabel(ifyes->u.sym);
+		setlabel(ifno->u.sym);
+                deltree(ifyes);
+                deltree(ifno);
+                break;
 	case ORET:
 		aux = (np->left) ? rhs(np->left, &n) : NULL;
 		code(ASRET, aux, NULL, NULL);
