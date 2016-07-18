@@ -177,36 +177,35 @@ lhs(Node *np, Node *new)
 	}
 }
 
-static Node *
-bool(Node *np, Node *new, Symbol *true, Symbol *false)
+static void
+bool(Node *np, Symbol *true, Symbol *false)
 {
 	Node *l = np->left, *r = np->right;
-	Node *ifyes, *ifno;
+	Node ret, *ifyes, *ifno;
 	Symbol *label;
 
 	switch (np->op) {
 	case OAND:
 		label = newlabel();
-		bool(l, new, label, true);
+		bool(l, label, true);
 		setlabel(label);
-		bool(r, new, true, false);
+		bool(r, true, false);
 		break;
 	case OOR:
 		label = newlabel();
-		bool(l, new, true, label);
+		bool(l, true, label);
 		setlabel(label);
-		bool(r, new, true, false);
+		bool(r, true, false);
 		break;
 	default:
 		ifyes = label2node(true);
 		ifno = label2node(false);
-		rhs(l, new);
-		code(ASBRANCH, new, ifyes, ifno);
+		rhs(l, &ret);
+		code(ASBRANCH, &ret, ifyes, ifno);
 		deltree(ifyes);
 		deltree(ifno);
 		break;
 	}
-	return new;
 }
 
 static Node *
@@ -259,7 +258,7 @@ rhs(Node *np, Node *ret)
 	case OOR:
 		true = newlabel();
 		false = newlabel();
-		bool(np, ret, true, false);
+		bool(np, true, false);
 		setlabel(true);
 		setlabel(false);
 		return ret;
@@ -336,7 +335,7 @@ cgen(Node *np)
                         next->label = newlabel();
                 ifyes = label2node(np->u.sym);
                 ifno = label2node(next->label);
-		bool(np->left, &n, ifyes->u.sym, ifno->u.sym);
+		bool(np->left, ifyes->u.sym, ifno->u.sym);
 		code(ASBRANCH, &n, ifyes, ifno);
 		setlabel(ifyes->u.sym);
 		setlabel(ifno->u.sym);
