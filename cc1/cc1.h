@@ -420,7 +420,7 @@ extern int cpp(void);
 extern int expand(char *begin, Symbol *sym);
 extern void incdir(char *dir);
 extern void outcpp(void);
-extern void defdefine(char *macro, char *val);
+extern void defdefine(char *macro, char *val, char *source);
 extern void undefmacro(char *s);
 
 /*
