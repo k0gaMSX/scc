@@ -88,7 +88,7 @@ icpp(void)
 	symfile = lookup(NS_CPP, "__FILE__");
 
 	for (bp = list; *bp; ++bp)
-		defdefine(*bp, NULL);
+		defdefine(*bp, "1");
 
 	ncmdlines = 0;
 }
