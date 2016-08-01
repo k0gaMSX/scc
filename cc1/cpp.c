@@ -652,8 +652,10 @@ elseclause(void)
 {
 	int status;
 
-	if (cppctx == 0)
-		error("#else without #ifdef/ifndef");
+	if (cppctx == 0) {
+		cpperror("#else without #ifdef/ifndef");
+		return;
+	}
 
 	status = (ifstatus[cppctx-1] ^= 1);
 	cppoff += (status) ? -1 : 1;
