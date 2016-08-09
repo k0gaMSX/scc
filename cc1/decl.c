@@ -710,6 +710,19 @@ redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
 		break;
 	}
 	sym->flags = flags;
+	if (tp->op == ARY &&
+	    !(sym->type->prop&TDEFINED) &&
+	    tp->prop&TDEFINED) {
+		/*
+		 * The symbol was already emitted, but in case of being an
+		 * array it was emitted with an incorrect type, so the most
+		 * simple solution is to emit twice the symbol, and let to
+		 * the second declaration to have the correct type.
+		 */
+		sym->type = tp;
+		sym->flags &= ~SEMITTED;
+		emit(ODECL, sym);
+	}
 
 	return sym;
 
