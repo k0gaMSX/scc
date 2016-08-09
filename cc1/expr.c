@@ -316,7 +316,12 @@ parithmetic(char op, Node *lp, Node *rp)
 	if (lp->type->op != PTR)
 		XCHG(lp, rp, np);
 
+	tp = rp->type;
+	if (tp->op == PTR && !(tp->type->prop & TDEFINED))
+		goto incomplete;
 	tp = lp->type;
+	if (!(tp->type->prop & TDEFINED))
+		goto incomplete;
 	size = sizeofnode(tp->type);
 
 	if (op == OSUB && BTYPE(rp) == PTR) {
@@ -334,9 +339,13 @@ parithmetic(char op, Node *lp, Node *rp)
 
 	return simplify(OADD, tp, lp, rp);
 
+incomplete:
+	errorp("invalid use of undefined type");
+	return lp;
 incorrect:
 	errorp("incorrect arithmetic operands");
-	return node(OADD, tp, lp, rp);
+	return lp;
+
 }
 
 static Node *
@@ -541,6 +550,10 @@ incdec(Node *np, char op)
 
 	if (!(tp->prop & TDEFINED)) {
 		errorp("invalid use of undefined type");
+		return np;
+	} else if (tp->op == PTR && !(tp->type->prop & TDEFINED)) {
+		errorp("%s of pointer to an incomplete type",
+		       (op == OINC) ? "increment" : "decrement");
 		return np;
 	} else if (tp->prop & TARITH) {
 		inc = constnode(one);
