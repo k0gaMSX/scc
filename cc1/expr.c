@@ -566,16 +566,21 @@ incdec(Node *np, char op)
 static Node *
 address(char op, Node *np)
 {
-	Node *new, *left;
+	Node *new;
 
 	/*
 	 * ansi c accepts & applied to a function name, and it generates
 	 * a function pointer
 	 */
-	left = np->left;
-	if (np->op == OADDR && left->sym && left->type->op == FTN)
-		return np;
+	if (np->op == OSYM) {
+		if (np->type->op == FTN)
+			return decay(np);
+		if (np->type->op == ARY)
+			goto dont_check_lvalue;
+	}
 	chklvalue(np);
+
+dont_check_lvalue:
 	if (np->sym && (np->sym->flags & SREGISTER))
 		errorp("address of register variable '%s' requested", yytext);
 	if (np->op == OPTR) {
