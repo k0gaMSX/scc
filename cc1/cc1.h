@@ -349,7 +349,7 @@ extern void errorp(char *fmt, ...);
 extern void cpperror(char *fmt, ...);
 
 /* types.c */
-extern int eqtype(Type *tp1, Type *tp2);
+extern int eqtype(Type *tp1, Type *tp2, int eqflag);
 extern Type *ctype(unsigned type, unsigned sign, unsigned size);
 extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
