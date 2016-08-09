@@ -292,7 +292,8 @@ convert(Node *np, Type *newtp, char iscast)
 				return NULL;
 			break;
 		case PTR:
-			if (iscast ||
+			if (eqtype(newtp, oldtp, 1) ||
+			    iscast ||
 			    newtp == pvoidtype || oldtp == pvoidtype) {
 				np->type = newtp;
 				return np;
