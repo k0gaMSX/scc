@@ -2,27 +2,40 @@
 
 /*
 name: TEST034
-description: Basic test for incomplete structures
+description: Basic test for incomplete types
 error:
-test034.c:46: error: declared variable 'bar' of incomplete type
-test034.c:46: error: redeclaration of 'bar'
+test034.c:59: error: declared variable 'bar' of incomplete type
+test034.c:59: error: redeclaration of 'bar'
 output:
-X3	S2	"x
-X5	I	F	"foo
-G6	I	F	"main
+G2	V1	"v
+V3	I	#N10
+G2	V3	"v
+Y4	V1	"p
+Y4	V3	"p
+X7	S6	"x
+X9	I	F	"foo
+G10	I	F	"main
 {
 \
-X7	S2	"x
-	h	X7	'P	#P0	!I
+X11	S6	"x
+	h	X11	'P	#P0	!I
 }
-G5	I	F	"foo
+G9	I	F	"foo
 {
 \
-	X3	M9	.I	#I0	:I
-	h	X3	M9	.I
+	X7	M13	.I	#I0	:I
+	h	X7	M13	.I
 }
-X13	S11	"bar2
+X17	S15	"bar2
 */
+
+int v[];
+int v[10];
+static int p[];
+static int p[10];
+static int p[10];
+int v[10];
+int v[];
 
 extern struct X x;
 int foo();
