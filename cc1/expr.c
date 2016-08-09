@@ -739,43 +739,6 @@ no_pars:
 	return node(OCALL, rettype, np, par);
 }
 
-static Node *
-postfix(Node *lp, int issizeof)
-{
-	Node *rp;
-
-	if (!lp)
-		lp = primary();
-	for (;;) {
-		if (!issizeof)
-			lp = decay(lp);
-		switch (yytoken) {
-		case '[':
-			next();
-			rp = expr();
-			lp = array(lp, rp);
-			expect(']');
-			break;
-		case DEC:
-		case INC:
-			lp = incdec(lp, (yytoken == INC) ? OINC : ODEC);
-			next();
-			break;
-		case INDIR:
-			lp = content(OPTR, lp);
-		case '.':
-			lp = field(lp);
-			break;
-		case '(':
-			lp = arguments(lp);
-			lp->flags |= NEFFECT;
-			break;
-		default:
-			return lp;
-		}
-	}
-}
-
 static Node *unary(int);
 
 static Type *
@@ -802,26 +765,75 @@ sizeexp(void)
 		tp = typename();
 		break;
 	default:
-		tp = typeof(unary(1));
+		tp = typeof(unary(0));
 		break;
 	}
 	expect(')');
 	return tp;
 }
 
-static Node *cast(void);
+static Node *
+postfix(Node *lp)
+{
+	Node *rp;
+
+	for (;;) {
+		switch (yytoken) {
+		case '[':
+		case DEC:
+		case INC:
+		case INDIR:
+		case '.':
+		case '(':
+			lp = decay(lp);
+			switch (yytoken) {
+			case '[':
+				next();
+				rp = expr();
+				expect(']');
+				lp = array(lp, rp);
+				break;
+			case DEC:
+			case INC:
+				lp = incdec(lp, (yytoken == INC) ? OINC : ODEC);
+				next();
+				break;
+			case INDIR:
+				lp = content(OPTR, lp);
+			case '.':
+				lp = field(lp);
+				break;
+			case '(':
+				lp = arguments(lp);
+				lp->flags |= NEFFECT;
+				break;
+			}
+			break;
+		default:
+			return lp;
+		}
+	}
+}
+
+static Node *cast(int);
 
 static Node *
-unary(int issizeof)
+unary(int needdecay)
 {
-	Node *(*fun)(char, Node *);
+	Node *(*fun)(char, Node *), *np;
 	char op;
 	Type *tp;
 
 	switch (yytoken) {
+	case '!': op = 0;     fun = negation;     break;
+	case '+': op = OADD;  fun = numericaluop; break;
+	case '-': op = ONEG;  fun = numericaluop; break;
+	case '~': op = OCPL;  fun = integeruop;   break;
+	case '&': op = OADDR; fun = address;      break;
+	case '*': op = OPTR;  fun = content;      break;
 	case SIZEOF:
 		next();
-		tp = (yytoken == '(') ? sizeexp() : typeof(unary(1));
+		tp = (yytoken == '(') ? sizeexp() : typeof(unary(0));
 		if (!(tp->prop & TDEFINED))
 			errorp("sizeof applied to an incomplete type");
 		return sizeofnode(tp);
@@ -829,29 +841,31 @@ unary(int issizeof)
 	case DEC:
 		op = (yytoken == INC) ? OA_ADD : OA_SUB;
 		next();
-		return incdec(unary(issizeof), op);
-	case '!': op = 0;     fun = negation;     break;
-	case '+': op = OADD;  fun = numericaluop; break;
-	case '-': op = ONEG;  fun = numericaluop; break;
-	case '~': op = OCPL;  fun = integeruop;   break;
-	case '&': op = OADDR; fun = address;      break;
-	case '*': op = OPTR;  fun = content;      break;
-	default:  return postfix(NULL, issizeof);
+		np = incdec(unary(1), op);
+		goto chk_decay;
+	default:
+		np = postfix(primary());
+		goto chk_decay;
 	}
 
 	next();
-	return (*fun)(op, cast());
+	np = (*fun)(op, cast(op != OADDR));
+
+chk_decay:
+	if (needdecay)
+		np = decay(np);
+	return np;
 }
 
 static Node *
-cast(void)
+cast(int needdecay)
 {
 	Node *lp, *rp;
 	Type *tp;
 	static int nested;
 
 	if (!accept('('))
-		return unary(0);
+		return unary(needdecay);
 
 	switch (yytoken) {
 	case TQUALIFIER:
@@ -866,7 +880,7 @@ cast(void)
 		case ARY:
 			error("cast specifies an array type");
 		default:
-			lp = cast();
+			lp = cast(needdecay);
 			if ((rp = convert(lp,  tp, 1)) == NULL)
 				error("bad type conversion requested");
 			rp->flags &= ~NLVAL;
@@ -880,7 +894,7 @@ cast(void)
 		rp = expr();
 		--nested;
 		expect(')');
-		rp = postfix(rp, 0);
+		rp = postfix(rp);
 		break;
 	}
 
@@ -893,7 +907,7 @@ mul(void)
 	Node *np, *(*fun)(char, Node *, Node *);
 	char op;
 
-	np = cast();
+	np = cast(1);
 	for (;;) {
 		switch (yytoken) {
 		case '*': op = OMUL; fun = arithmetic; break;
@@ -902,7 +916,7 @@ mul(void)
 		default: return np;
 		}
 		next();
-		np = (*fun)(op, np, cast());
+		np = (*fun)(op, np, cast(1));
 	}
 }
 
