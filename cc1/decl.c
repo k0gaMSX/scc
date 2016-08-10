@@ -745,7 +745,7 @@ identifier(struct decl *dcl)
 	/* TODO: Add warning about ANSI limits */
 	if (!(tp->prop & TDEFINED)                &&
 	    sclass != EXTERN && sclass != TYPEDEF &&
-	    (tp->op != ARY || yytoken != '=' && curctx != GLOBALCTX)) {
+	    !(tp->op == ARY && yytoken == '=')) {
 		errorp("declared variable '%s' of incomplete type", name);
 	}
 
