@@ -37,22 +37,6 @@ cmpnode(Node *np, TUINT val)
 	return 0;
 }
 
-int
-isnodecmp(int op)
-{
-	switch (op) {
-	case OEQ:
-	case ONE:
-	case OLT:
-	case OGE:
-	case OLE:
-	case OGT:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
 static Node *
 promote(Node *np)
 {
@@ -251,7 +235,7 @@ numericaluop(char op, Node *np)
 	if (!(np->type->prop & TARITH))
 		error("unary operator requires numerical operand");
 	np = promote(np);
-	if (op == ONEG && np->op == ONEG)
+	if (op == OSNEG && np->op == OSNEG)
 		return np->left;
 	if (op == OADD)
 		return np;
@@ -413,8 +397,6 @@ int
 negop(int op)
 {
 	switch (op) {
-	case OAND: return OOR;
-	case OOR:  return OAND;
 	case OEQ:  return ONE;
 	case ONE:  return OEQ;
 	case OLT:  return OGE;
@@ -429,11 +411,32 @@ negop(int op)
 Node *
 negate(Node *np)
 {
-	if (np->op == OSYM) {
+	int op = np->op;
+
+	switch (np->op) {
+	case OSYM:
 		assert(np->flags&NCONST && np->type->prop&TINTEGER);
 		np->sym = (np->sym->u.i) ? zero : one;
-	} else {
-		np->op = negop(np->op);
+		break;
+	case OOR:
+	case OAND:
+		if (np->op == ONEG) {
+			Node *new = np->left;
+			free(np);
+			return new;
+		}
+		np = node(ONEG, inttype, np, NULL);
+		break;
+	case OEQ:
+	case ONE:
+	case OLT:
+	case OGE:
+	case OLE:
+	case OGT:
+		np->op = negop(op);
+		break;
+	default:
+		abort();
 	}
 
 	return np;
@@ -444,11 +447,21 @@ exp2cond(Node *np, char neg)
 {
 	if (np->type->prop & TAGGREG) {
 		errorp("used struct/union type value where scalar is required");
-		np = constnode(zero);
+		return constnode(zero);
 	}
-	if (isnodecmp(np->op))
+	switch (np->op) {
+	case OOR:
+	case OAND:
+	case OEQ:
+	case ONE:
+	case OLT:
+	case OGE:
+	case OLE:
+	case OGT:
 		return (neg) ? negate(np) : np;
-	return compare((neg) ?  OEQ : ONE, np, constnode(zero));
+	default:
+		return compare((neg) ?  OEQ : ONE, np, constnode(zero));
+	}
 }
 
 static Node *
@@ -827,7 +840,7 @@ unary(int needdecay)
 	switch (yytoken) {
 	case '!': op = 0;     fun = negation;     break;
 	case '+': op = OADD;  fun = numericaluop; break;
-	case '-': op = ONEG;  fun = numericaluop; break;
+	case '-': op = OSNEG; fun = numericaluop; break;
 	case '~': op = OCPL;  fun = integeruop;   break;
 	case '&': op = OADDR; fun = address;      break;
 	case '*': op = OPTR;  fun = content;      break;

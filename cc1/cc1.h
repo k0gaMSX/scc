@@ -200,6 +200,7 @@ enum op {
 	OBAND,
 	OBXOR,
 	OBOR,
+	OSNEG,
 	ONEG,
 	OCPL,
 	OAND,
