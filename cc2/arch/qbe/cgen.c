@@ -241,7 +241,6 @@ rhs(Node *np, Node *ret)
 	char *tbl;
 	Symbol *true, *false;
 
-	setlabel(np->label);
 	tp = &np->type;
 
 	switch (np->op) {
@@ -323,6 +322,7 @@ cgen(Node *np)
 	Node n, *aux, *next, *ifyes, *ifno;
 	Symbol *label1, *label2;
 
+	setlabel(np->label);
 	switch (np->op) {
 	case OJMP:
 		ifyes = label2node(np->u.sym);
