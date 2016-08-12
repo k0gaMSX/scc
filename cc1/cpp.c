@@ -23,7 +23,7 @@ unsigned cppctx;
 int disexpand;
 
 void
-defdefine(char *macro, char *val)
+defdefine(char *macro, char *val, char *source)
 {
 	char *def, *fmt = "#define %s %s";
 
@@ -32,7 +32,7 @@ defdefine(char *macro, char *val)
 	def = xmalloc(strlen(fmt) + strlen(macro) + strlen(val));
 
 	sprintf(def, fmt, macro, val);
-	allocinput("command-line", NULL, def);
+	allocinput(source, NULL, def);
 	input->nline = ++ncmdlines;
 	cpp();
 	delinput();
@@ -78,17 +78,17 @@ icpp(void)
 	tm = localtime(&t);
 	strftime(sdate, sizeof(sdate), "\"%b %d %Y\"", tm);
 	strftime(stime, sizeof(stime), "\"%H:%M:%S\"", tm);
-	defdefine("__DATE__", sdate);
-	defdefine("__TIME__", stime);
-	defdefine("__STDC_VERSION__", "199409L");
-	defdefine("__LINE__", NULL);
-	defdefine("__FILE__", NULL);
+	defdefine("__DATE__", sdate, "built-in");
+	defdefine("__TIME__", stime, "built-in");
+	defdefine("__STDC_VERSION__", "199409L", "built-in");
+	defdefine("__LINE__", NULL, "built-in");
+	defdefine("__FILE__", NULL, "built-in");
 
 	symline = lookup(NS_CPP, "__LINE__");
 	symfile = lookup(NS_CPP, "__FILE__");
 
 	for (bp = list; *bp; ++bp)
-		defdefine(*bp, NULL);
+		defdefine(*bp, "1", "built-in");
 
 	ncmdlines = 0;
 }
@@ -652,8 +652,10 @@ elseclause(void)
 {
 	int status;
 
-	if (cppctx == 0)
-		error("#else without #ifdef/ifndef");
+	if (cppctx == 0) {
+		cpperror("#else without #ifdef/ifndef");
+		return;
+	}
 
 	status = (ifstatus[cppctx-1] ^= 1);
 	cppoff += (status) ? -1 : 1;

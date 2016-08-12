@@ -92,11 +92,12 @@ static struct decoc {
 	['\t']  = {     stmt,    NULL,                     0},
 
 	['~']   = {     NULL,   unary, .u.op =          OCPL},
-	['_']   = {     NULL,   unary, .u.op =          ONEG},
+	['_']   = {     NULL,   unary, .u.op =         OSNEG},
 	['\'']  = {     NULL,   unary, .u.op =         OADDR},
 	['@']   = {     NULL,   unary, .u.op =          OPTR},
 	['g']   = {     NULL,   unary, .u.op =         OCAST},
 	['p']   = {     NULL,   unary, .u.op =          OPAR},
+	['n']   = {     NULL,   unary, .u.op =          ONEG},
 
 	['a']   = {     NULL,  binary, .u.op =          OAND},
 	['o']   = {     NULL,  binary, .u.op =           OOR},

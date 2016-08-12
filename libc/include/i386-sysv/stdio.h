@@ -75,5 +75,5 @@ extern int rename(const char *old, const char *new);
 extern FILE *tmpfile(void);
 extern FILE *tmpnam(char *s);
 
-extern FILE *stdin, *stdio, *stderr;
+extern FILE *stdin, *stdout, *stderr;
 #endif

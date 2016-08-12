@@ -38,7 +38,7 @@ defmacro(char *macro)
 	else
 		p = "1";
 
-	defdefine(macro, p);
+	defdefine(macro, p, "command-line");
 }
 
 static void
