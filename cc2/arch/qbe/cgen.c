@@ -402,7 +402,7 @@ sethi(Node *np)
 		np->op = OAND;
 		rp = constnode(~(TUINT) 0, &np->type);
 		goto binary;
-	case ONEG:
+	case OSNEG:
 		np->op = OSUB;
 		rp = lp;
 		lp = constnode(0, &np->type);
