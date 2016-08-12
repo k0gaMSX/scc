@@ -90,6 +90,8 @@ static char opasmd[] = {
 	[OCPL] = ASCPLD
 };
 
+extern Type int32type;
+
 static Node *
 tmpnode(Node *np)
 {
@@ -235,7 +237,7 @@ function(void)
 static Node *
 rhs(Node *np, Node *ret)
 {
-	Node aux1, aux2, *l = np->left, *r = np->right;
+	Node aux1, aux2, *phi, *l = np->left, *r = np->right;
 	Type *tp;
 	int off, op;
 	char *tbl;
@@ -257,9 +259,20 @@ rhs(Node *np, Node *ret)
 	case OOR:
 		true = newlabel();
 		false = newlabel();
+		phi = label2node(newlabel());
+		tmpnode(ret);
+
 		bool(np, true, false);
+
 		setlabel(true);
+		assign(ret, constnode(1, &int32type));
+		code(ASJMP, NULL, phi, NULL);
+
 		setlabel(false);
+		assign(ret, constnode(0, &int32type));
+
+		setlabel(phi->u.sym);
+		deltree(phi);
 		return ret;
         case OSHR:
         case OMOD:
@@ -319,8 +332,7 @@ rhs(Node *np, Node *ret)
 Node *
 cgen(Node *np)
 {
-	Node n, *aux, *next, *ifyes, *ifno;
-	Symbol *label1, *label2;
+	Node ret, *aux, *next, *phi, *ifyes, *ifno;
 
 	setlabel(np->label);
 	switch (np->op) {
@@ -333,21 +345,20 @@ cgen(Node *np)
                 next = np->next;
                 if (!next->label)
                         next->label = newlabel();
+
                 ifyes = label2node(np->u.sym);
                 ifno = label2node(next->label);
-		bool(np->left, ifyes->u.sym, ifno->u.sym);
-		code(ASBRANCH, &n, ifyes, ifno);
-		setlabel(ifyes->u.sym);
-		setlabel(ifno->u.sym);
+		rhs(np->left, &ret);
+		code(ASBRANCH, &ret, ifyes, ifno);
                 deltree(ifyes);
                 deltree(ifno);
                 break;
 	case ORET:
-		aux = (np->left) ? rhs(np->left, &n) : NULL;
-		code(ASRET, aux, NULL, NULL);
+		aux = (np->left) ? rhs(np->left, &ret) : NULL;
+		code(ASRET, NULL, aux, NULL);
 		break;
 	default:
-		rhs(np, &n);
+		rhs(np, &ret);
 		break;
 	}
 	return NULL;
