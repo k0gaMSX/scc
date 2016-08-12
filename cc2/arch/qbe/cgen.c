@@ -187,6 +187,9 @@ bool(Node *np, Symbol *true, Symbol *false)
 	Symbol *label;
 
 	switch (np->op) {
+	case ONEG:
+		bool(l, false, true);
+		break;
 	case OAND:
 		label = newlabel();
 		bool(l, label, true);
@@ -255,6 +258,7 @@ rhs(Node *np, Node *ret)
 	case OMEM:
 	case OAUTO:
 		return load(np, ret);
+	case ONEG:
 	case OAND:
 	case OOR:
 		true = newlabel();
