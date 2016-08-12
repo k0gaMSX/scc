@@ -77,6 +77,17 @@ label2node(Symbol *sym)
 	return np;
 }
 
+Node *
+constnode(TUINT n, Type *tp)
+{
+	Node *np;
+
+	np = newnode(OCONST);
+	np->type = *tp;
+	np->u.i = n;
+	return np;
+}
+
 void
 setlabel(Symbol *sym)
 {

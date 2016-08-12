@@ -388,19 +388,13 @@ sethi(Node *np)
 		break;
 	case OCPL:
 		np->op = OAND;
-		rp = newnode(OCONST);
-		rp->type = np->type;
-		rp->u.i = 0;
-		rp->u.i = ~np->u.i;
+		rp = constnode(~(TUINT) 0, &np->type);
 		goto binary;
 	case ONEG:
 		np->op = OSUB;
 		rp = lp;
-		lp = newnode(OCONST);
-		lp->type = np->type;
-		if (np->type.flags & INTF)
-			lp->u.i = 0;
-		else
+		lp = constnode(0, &np->type);
+		if ((np->type.flags & INTF) == 0)
 			lp->u.f = 0.0;
 	default:
 	binary:
