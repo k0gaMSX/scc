@@ -337,7 +337,7 @@ rhs(Node *np, Node *ret)
 Node *
 cgen(Node *np)
 {
-	Node ret, *aux, *next, *phi, *ifyes, *ifno;
+	Node ret, *aux, *next, *ifyes, *ifno;
 
 	setlabel(np->label);
 	switch (np->op) {
