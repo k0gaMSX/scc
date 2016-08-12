@@ -260,6 +260,7 @@ rhs(Node *np, Node *ret)
 		true = newlabel();
 		false = newlabel();
 		phi = label2node(newlabel());
+		ret->type = int32type;
 		tmpnode(ret);
 
 		bool(np, true, false);
