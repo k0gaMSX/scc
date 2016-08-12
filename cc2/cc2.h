@@ -97,7 +97,7 @@ enum op {
 	OINC     = 'i',
 	ODEC     = 'd',
 	/*statements */
-	ONOP     = 'n',
+	ONOP     = 'q',
 	OJMP     = 'j',
 	OBRANCH  = 'y',
 	ORET     = 'h',
