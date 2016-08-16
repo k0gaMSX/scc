@@ -90,7 +90,7 @@ static char opasmd[] = {
 	[OCPL] = ASCPLD
 };
 
-extern Type int32type;
+extern Type int32type, uint32type;
 
 static Node *
 tmpnode(Node *np, Type *tp)
@@ -134,6 +134,80 @@ load(Node *np, Node *new)
 	code(op, tmpnode(new, tp), np, NULL);
 
 	return new;
+}
+
+static Node *rhs(Node *np, Node *new);
+
+static Node *
+cast(Type *td, Node *ns, Node *nd)
+{
+	Type *ts;
+	Node aux1, aux2;
+	int op, d_isint, s_isint;
+
+	ts = &ns->type;
+	d_isint = (td->flags & INTF) != 0;
+	s_isint = (ts->flags & INTF) != 0;
+
+	if (d_isint && s_isint) {
+		if (td->size <= ts->size)
+			return nd;
+		assert(td->size == 4 || td->size == 8);
+		switch (ts->size) {
+		case 1:
+			op = (td->size == 4) ? ASEXTBW : ASEXTBL;
+			break;
+		case 2:
+			op = (td->size == 4) ? ASEXTHW : ASEXTHL;
+			break;
+		case 4:
+			op = ASEXTWL;
+			break;
+		default:
+			abort();
+		}
+		/*
+		 * unsigned version of operations are always +1 the
+		 * signed version
+		 */
+		op += (td->flags & SIGNF) == 0;
+	} else if (d_isint) {
+		/* conversion from float to int */
+		switch (ts->size) {
+		case 4:
+			op = (td->size == 8) ? ASSTOL : ASSTOW;
+			break;
+		case 8:
+			op = (td->size == 8) ? ASDTOL : ASDTOW;
+			break;
+		default:
+			abort();
+		}
+		/* TODO: Add signess */
+	} else if (s_isint) {
+		/* conversion from int to float */
+		switch (ts->size) {
+		case 1:
+		case 2:
+			ts = (ts->flags&SIGNF) ? &int32type : &uint32type;
+			ns = cast(ts, ns, tmpnode(&aux2, ts));
+		case 4:
+			op = (td->size == 8) ? ASSWTOD : ASSWTOS;
+			break;
+		case 8:
+			op = (td->size == 8) ? ASSLTOD : ASSLTOS;
+			break;
+		default:
+			abort();
+		}
+		/* TODO: Add signess */
+	} else {
+		/* conversion from float to float */
+		op = (td->size == 4) ? ASEXTS : ASTRUNCD;
+	}
+
+	code(op, tmpnode(nd, td), ns, NULL);
+	return nd;
 }
 
 static Node *
@@ -323,6 +397,8 @@ rhs(Node *np, Node *ret)
 		tmpnode(ret, tp);
                 code(op, ret, &aux1, &aux2);
                 return ret;
+	case OCAST:
+		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
 		lhs(l, &aux1);
 		rhs(r, ret);
