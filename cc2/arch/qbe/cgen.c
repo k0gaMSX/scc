@@ -350,6 +350,34 @@ bool(Node *np, Symbol *true, Symbol *false)
 }
 
 static Node *
+ternary(Node *np, Node *ret)
+{
+	Node *yes, *no, *phi, *colon, aux1, aux2, aux3;
+
+	tmpnode(ret, &np->type);
+	yes = label2node(NULL);
+	no = label2node(NULL);
+	phi = label2node(NULL);
+
+	colon = np->right;
+	code(ASBRANCH, rhs(np->left, &aux1), yes, no);
+
+	setlabel(yes->u.sym);
+	assign(ret, rhs(colon->left, &aux2));
+	code(ASJMP, NULL, phi, NULL);
+
+	setlabel(no->u.sym);
+	assign(ret, rhs(colon->right, &aux3));
+	setlabel(phi->u.sym);
+
+	deltree(yes);
+	deltree(no);
+	deltree(phi);
+
+	return ret;
+}
+
+static Node *
 function(void)
 {
 	Symbol *p;
@@ -470,6 +498,8 @@ rhs(Node *np, Node *ret)
 		lhs(l, &aux2);
 		rhs(r, ret);
 		return assign(&aux2, ret);
+	case OASK:
+		return ternary(np, ret);
 	default:
 		abort();
 	}
