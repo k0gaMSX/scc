@@ -210,6 +210,27 @@ cast(Type *td, Node *ns, Node *nd)
 	return nd;
 }
 
+
+static Node *rhs(Node *np, Node *new);
+
+static Node *
+abbrev(Node *np, Node *ret)
+{
+	Node *tmp;
+
+	if (np->u.subop == 0)
+		return np->right;
+
+	tmp = newnode(np->u.subop);
+	tmp->type = np->type;
+	tmp->right = np->right;
+	tmp->left = np->left;
+	rhs(tmp, ret);
+	deltree(tmp);
+
+	return ret;
+}
+
 static Node *
 assign(Node *to, Node *from)
 {
@@ -236,8 +257,6 @@ assign(Node *to, Node *from)
 	code(op, to, from, NULL);
 	return from;
 }
-
-static Node *rhs(Node *np, Node *new);
 
 static Node *
 lhs(Node *np, Node *new)
@@ -400,9 +419,10 @@ rhs(Node *np, Node *ret)
 	case OCAST:
 		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
-		lhs(l, &aux1);
+		r = abbrev(np, &aux1);
+		lhs(l, &aux2);
 		rhs(r, ret);
-		return assign(&aux1, ret);
+		return assign(&aux2, ret);
 	default:
 		abort();
 	}
