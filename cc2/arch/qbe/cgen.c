@@ -210,8 +210,51 @@ cast(Type *td, Node *ns, Node *nd)
 	return nd;
 }
 
-
 static Node *rhs(Node *np, Node *new);
+
+static Node *
+call(Node *np, Node *ret)
+{
+	int n, op;
+	Type *tp;
+	Node aux, **q, *p, *pars[NR_FUNPARAM];
+
+	for (n = 0, p = np->right; p; p = p->right)
+		pars[n++] = rhs(p->left, newnode(OTMP));
+
+	tp = &np->type;
+	switch (tp->size) {
+	case 0:
+		np->left = tmpnode(NULL, tp);
+		op = ASCALLW;
+		break;
+	case 1:
+		op = ASCALLB;
+		break;
+	case 2:
+		op = ASCALLH;
+		break;
+	case 4:
+		op = (tp->flags & INTF) ? ASCALLW : ASCALLS;
+		break;
+	case 8:
+		op = (tp->flags & INTF) ? ASCALLL : ASCALLD;
+		break;
+	default:
+		abort();
+	}
+	code(op, tmpnode(ret, tp), np->left, NULL);
+
+	for (q = pars; q < &pars[n]; ++q) {
+		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
+		p = tmpnode(NULL, &(*q)->type);
+		code(op, NULL, *q, p);
+		deltree(p);
+	}
+	code(ASCALL, NULL, NULL, NULL);
+
+	return ret;
+}
 
 static Node *
 abbrev(Node *np, Node *ret)
@@ -416,6 +459,10 @@ rhs(Node *np, Node *ret)
 		tmpnode(ret, tp);
                 code(op, ret, &aux1, &aux2);
                 return ret;
+	case OCALL:
+		if (np->left->op == OPTR)
+			np = rhs(l, &aux1);
+		return call(np, ret);
 	case OCAST:
 		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
