@@ -7,5 +7,6 @@ ulimit -c 0
 for i in $@
 do
 	printf "%s\t" $i
+	rm -f a.out
 	(scc -m qbe "$i" && ./a.out) 2>/dev/null && echo [OK] || echo [FAILED]
 done
