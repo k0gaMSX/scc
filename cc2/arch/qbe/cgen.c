@@ -504,6 +504,8 @@ rhs(Node *np, Node *ret)
 		return ternary(np, ret);
 	case OCOMMA:
 		return rhs(np, ret);
+	case OPTR:
+		return load(rhs(l, &aux1), ret);
 	default:
 		abort();
 	}
