@@ -506,6 +506,14 @@ rhs(Node *np, Node *ret)
 		return load(rhs(l, &aux1), ret);
 	case OADDR:
 		return lhs(l, ret);
+	case OFIELD:
+	case OINC:
+	case ODEC:
+	case OCASE:
+	case ODEFAULT:
+	case OESWITCH:
+	case OBSWITCH:
+		/* TODO: implement these operators */
 	default:
 		abort();
 	}
