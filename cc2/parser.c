@@ -218,7 +218,7 @@ constant(char *token, union tokenop u)
 	unsigned c;
 
 	++token;
-	if (*token == OSTRING) {
+	if (*token == '"') {
 		++token;
 		np = newnode(OSTRING);
 		np->type.flags = STRF;
