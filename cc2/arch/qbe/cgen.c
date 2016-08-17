@@ -307,6 +307,7 @@ lhs(Node *np, Node *new)
 	switch (np->op) {
 	case OMEM:
 	case OAUTO:
+		*new = *np;
 		return np;
 	case OPTR:
 		return rhs(np->left, new);
