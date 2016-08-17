@@ -115,8 +115,6 @@ load(Node *np, Node *new)
 	Type *tp;
 
 	tp = &np->type;
-	tmpnode(new, tp);
-
 	switch (tp->size) {
 	case 1:
 		op = ASLDB;
@@ -133,7 +131,8 @@ load(Node *np, Node *new)
 	default:
 		abort();
 	}
-	code(op, new, np, NULL);
+	code(op, tmpnode(new, tp), np, NULL);
+
 	return new;
 }
 
