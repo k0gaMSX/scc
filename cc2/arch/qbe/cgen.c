@@ -259,19 +259,12 @@ call(Node *np, Node *ret)
 static Node *
 abbrev(Node *np, Node *ret)
 {
-	Node *tmp;
+	Node aux;
 
-	if (np->u.subop == 0)
-		return np->right;
-
-	tmp = newnode(np->u.subop);
-	tmp->type = np->type;
-	tmp->right = np->right;
-	tmp->left = np->left;
-	rhs(tmp, ret);
-	deltree(tmp);
-
-	return ret;
+	tmpnode(&aux, &np->type);
+	aux.right = np->right;
+	aux.left = np->left;
+	return rhs(&aux, ret);
 }
 
 static Node *
@@ -499,7 +492,9 @@ rhs(Node *np, Node *ret)
 	case OCAST:
 		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
-		r = abbrev(np, &aux1);
+		/* TODO: see what is the more difficult */
+		if (np->u.subop != 0)
+			r = abbrev(np, &aux1);
 		lhs(l, &aux2);
 		rhs(r, ret);
 		return assign(&aux2, ret);
