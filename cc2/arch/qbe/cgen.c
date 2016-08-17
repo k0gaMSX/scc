@@ -502,6 +502,8 @@ rhs(Node *np, Node *ret)
 		return assign(&aux2, ret);
 	case OASK:
 		return ternary(np, ret);
+	case OCOMMA:
+		return rhs(np, ret);
 	default:
 		abort();
 	}
