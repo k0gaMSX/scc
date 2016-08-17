@@ -422,6 +422,8 @@ rhs(Node *np, Node *ret)
 	case OEFUN:
 		return NULL;
 	case OCONST:
+		*ret = *np;
+		return np;
 	case OMEM:
 	case OAUTO:
 		return load(np, ret);
