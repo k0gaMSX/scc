@@ -507,6 +507,8 @@ rhs(Node *np, Node *ret)
 		return rhs(np, ret);
 	case OPTR:
 		return load(rhs(l, &aux1), ret);
+	case OADDR:
+		return lhs(l, ret);
 	default:
 		abort();
 	}
