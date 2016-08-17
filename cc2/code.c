@@ -71,6 +71,8 @@ label2node(Symbol *sym)
 {
 	Node *np;
 
+	if(!sym)
+		sym = newlabel();
 	np = newnode(OLABEL);
 	np->u.sym = sym;
 
