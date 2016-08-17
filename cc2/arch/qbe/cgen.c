@@ -93,12 +93,12 @@ static char opasmd[] = {
 extern Type int32type;
 
 static Node *
-tmpnode(Node *np)
+tmpnode(Node *np, Type *tp)
 {
 	Symbol *sym;
 
 	sym = getsym(TMPSYM);
-	sym->type = np->type;
+	sym->type = np->type = *tp;
 	sym->kind = STMP;
 	np->u.sym = sym;
 	np->op = OTMP;
@@ -113,8 +113,7 @@ load(Node *np, Node *new)
 	Type *tp;
 
 	tp = &np->type;
-	new->type = *tp;
-	tmpnode(new);
+	tmpnode(new, tp);
 
 	switch (tp->size) {
 	case 1:
@@ -264,8 +263,7 @@ rhs(Node *np, Node *ret)
 		true = newlabel();
 		false = newlabel();
 		phi = label2node(newlabel());
-		ret->type = int32type;
-		tmpnode(ret);
+		tmpnode(ret, &int32type);
 
 		bool(np, true, false);
 
@@ -321,7 +319,7 @@ rhs(Node *np, Node *ret)
                         abort();
                 }
                 op = tbl[np->op] + off;
-		ret = tmpnode(ret);
+		tmpnode(ret, tp);
                 code(op, ret, &aux1, &aux2);
                 return ret;
 	case OASSIG:
