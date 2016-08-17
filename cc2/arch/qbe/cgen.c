@@ -97,6 +97,8 @@ tmpnode(Node *np, Type *tp)
 {
 	Symbol *sym;
 
+	if (!np)
+		np = newnode(OTMP);
 	sym = getsym(TMPSYM);
 	sym->type = np->type = *tp;
 	sym->kind = STMP;
