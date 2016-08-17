@@ -416,6 +416,8 @@ rhs(Node *np, Node *ret)
 	case OBFUN:
 		return function();
 	case ONOP:
+	case OBLOOP:
+	case OELOOP:
 	case OEFUN:
 		return NULL;
 	case OCONST:
