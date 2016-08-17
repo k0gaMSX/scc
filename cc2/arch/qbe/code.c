@@ -487,7 +487,6 @@ getbblocks(void)
 			i = pc->from1.u.sym->u.inst;
 			i->flags |= BBENTRY;
 		case ASRET:
-		case ASCALL:
 			if (pc->next)
 				pc->next->flags |= BBENTRY;
 			break;
