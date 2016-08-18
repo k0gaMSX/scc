@@ -321,7 +321,7 @@ bool(Node *np, Symbol *true, Symbol *false)
 		break;
 	case OAND:
 		label = newlabel();
-		bool(l, label, true);
+		bool(l, label, false);
 		setlabel(label);
 		bool(r, true, false);
 		break;
