@@ -247,9 +247,8 @@ call(Node *np, Node *ret)
 
 	for (q = pars; q < &pars[n]; ++q) {
 		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
-		p = tmpnode(NULL, &(*q)->type);
-		code(op, NULL, *q, p);
-		deltree(p);
+		tmpnode(&aux, &(*q)->type);
+		code(op, NULL, *q, &aux);
 	}
 	code(ASCALL, NULL, NULL, NULL);
 
@@ -313,7 +312,7 @@ static void
 bool(Node *np, Symbol *true, Symbol *false)
 {
 	Node *l = np->left, *r = np->right;
-	Node ret, *ifyes, *ifno;
+	Node ret, ifyes, ifno;
 	Symbol *label;
 
 	switch (np->op) {
@@ -333,12 +332,9 @@ bool(Node *np, Symbol *true, Symbol *false)
 		bool(r, true, false);
 		break;
 	default:
-		ifyes = label2node(true);
-		ifno = label2node(false);
-		rhs(l, &ret);
-		code(ASBRANCH, &ret, ifyes, ifno);
-		deltree(ifyes);
-		deltree(ifno);
+		label2node(&ifyes, true);
+		label2node(&ifno, false);
+		code(ASBRANCH, rhs(l, &ret), &ifyes, &ifno);
 		break;
 	}
 }
@@ -346,27 +342,23 @@ bool(Node *np, Symbol *true, Symbol *false)
 static Node *
 ternary(Node *np, Node *ret)
 {
-	Node *yes, *no, *phi, *colon, aux1, aux2, aux3;
+	Node ifyes, ifno, phi, *colon, aux1, aux2, aux3;
 
 	tmpnode(ret, &np->type);
-	yes = label2node(NULL);
-	no = label2node(NULL);
-	phi = label2node(NULL);
+	label2node(&ifyes, NULL);
+	label2node(&ifno, NULL);
+	label2node(&phi, NULL);
 
 	colon = np->right;
-	code(ASBRANCH, rhs(np->left, &aux1), yes, no);
+	code(ASBRANCH, rhs(np->left, &aux1), &ifyes, &ifno);
 
-	setlabel(yes->u.sym);
+	setlabel(ifyes.u.sym);
 	assign(ret, rhs(colon->left, &aux2));
-	code(ASJMP, NULL, phi, NULL);
+	code(ASJMP, NULL, &phi, NULL);
 
-	setlabel(no->u.sym);
+	setlabel(ifno.u.sym);
 	assign(ret, rhs(colon->right, &aux3));
-	setlabel(phi->u.sym);
-
-	deltree(yes);
-	deltree(no);
-	deltree(phi);
+	setlabel(phi.u.sym);
 
 	return ret;
 }
@@ -374,23 +366,24 @@ ternary(Node *np, Node *ret)
 static Node *
 function(void)
 {
+	Node aux;
 	Symbol *p;
 
 	/* allocate stack space for parameters */
 	for (p = locals; p && (p->type.flags & PARF) != 0; p = p->next)
-		code(ASALLOC, label2node(p), NULL, NULL);
+		code(ASALLOC, label2node(&aux, p), NULL, NULL);
 
 	/* allocate stack space for local variables) */
 	for ( ; p && p->id != TMPSYM; p = p->next) {
 		if (p->kind != SAUTO)
 			continue;
-		code(ASALLOC, label2node(p), NULL, NULL);
+		code(ASALLOC, label2node(&aux, p), NULL, NULL);
 	}
 	/* store formal parameters in parameters */
 	for (p = locals; p; p = p->next) {
 		if ((p->type.flags & PARF) == 0)
 			break;
-		code(ASFORM, label2node(p), NULL, NULL);
+		code(ASFORM, label2node(&aux, p), NULL, NULL);
 	}
 	return NULL;
 }
@@ -425,7 +418,7 @@ rhs(Node *np, Node *ret)
 	case OOR:
 		true = newlabel();
 		false = newlabel();
-		phi = label2node(newlabel());
+		phi = label2node(&aux1, newlabel());
 		tmpnode(ret, &int32type);
 
 		bool(np, true, false);
@@ -438,7 +431,6 @@ rhs(Node *np, Node *ret)
 		assign(ret, constnode(0, &int32type));
 
 		setlabel(phi->u.sym);
-		deltree(phi);
 		return ret;
         case OSHR:
         case OMOD:
@@ -523,30 +515,27 @@ rhs(Node *np, Node *ret)
 Node *
 cgen(Node *np)
 {
-	Node ret, *aux, *next, *ifyes, *ifno;
+	Node ret, aux1, aux2, *p, *next, ifyes, ifno;
 
 	setlabel(np->label);
 	switch (np->op) {
 	case OJMP:
-		ifyes = label2node(np->u.sym);
-		code(ASJMP, NULL, ifyes, NULL);
-		deltree(ifyes);
+		label2node(&ifyes, np->u.sym);
+		code(ASJMP, NULL, &ifyes, NULL);
 		break;
         case OBRANCH:
                 next = np->next;
                 if (!next->label)
                         next->label = newlabel();
 
-                ifyes = label2node(np->u.sym);
-                ifno = label2node(next->label);
+                label2node(&ifyes, np->u.sym);
+                label2node(&ifno, next->label);
 		rhs(np->left, &ret);
-		code(ASBRANCH, &ret, ifyes, ifno);
-                deltree(ifyes);
-                deltree(ifno);
+		code(ASBRANCH, &ret, &ifyes, &ifno);
                 break;
 	case ORET:
-		aux = (np->left) ? rhs(np->left, &ret) : NULL;
-		code(ASRET, NULL, aux, NULL);
+		p = (np->left) ? rhs(np->left, &ret) : NULL;
+		code(ASRET, NULL, p, NULL);
 		break;
 	default:
 		rhs(np, &ret);

@@ -216,7 +216,7 @@ extern void writeout(void), endinit(void), newfun(void);
 extern void code(int op, Node *to, Node *from1, Node *from2);
 extern void defvar(Symbol *), defpar(Symbol *), defglobal(Symbol *);
 extern void setlabel(Symbol *sym), getbblocks(void);
-extern Node *label2node(Symbol *sym), *constnode(TUINT n, Type *tp);
+extern Node *label2node(Node *np, Symbol *sym), *constnode(TUINT n, Type *tp);
 extern Symbol *newlabel(void);
 
 /* node.c */

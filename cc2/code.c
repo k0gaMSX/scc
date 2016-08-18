@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdlib.h>
+#include <string.h>
 
 #include "../inc/cc.h"
 #include "arch.h"
@@ -67,13 +68,15 @@ newlabel(void)
 }
 
 Node *
-label2node(Symbol *sym)
+label2node(Node *np, Symbol *sym)
 {
-	Node *np;
-
 	if(!sym)
 		sym = newlabel();
-	np = newnode(OLABEL);
+	if (!np)
+		np = newnode(OLABEL);
+	else
+		memset(np, 0, sizeof(np));
+	np->op = OLABEL;
 	np->u.sym = sym;
 
 	return np;
