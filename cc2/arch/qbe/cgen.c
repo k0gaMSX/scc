@@ -418,7 +418,7 @@ rhs(Node *np, Node *ret)
 	case OOR:
 		true = newlabel();
 		false = newlabel();
-		phi = label2node(&aux1, newlabel());
+		phi = label2node(&aux1, NULL);
 		tmpnode(ret, &int32type);
 
 		bool(np, true, false);
