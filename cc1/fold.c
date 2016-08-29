@@ -365,9 +365,9 @@ commutative(int *op, Node **lp, Node **rp)
 	case OGT:
 	case OGE:
 	case OLE:
+		*op = negop(*op);
 	case OEQ:
 	case ONE:
-		*op = negop(*op);
 	case OADD:
 	case OMUL:
 	case OBAND:

@@ -27,7 +27,7 @@ G11	V10	"m	(
 G13	I	F	"main
 {
 \
-	h	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	!I
+	h	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	=I
 }
 */
 
