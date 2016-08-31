@@ -109,12 +109,10 @@ tmpnode(Node *np, Type *tp)
 }
 
 static Node *
-load(Node *np, Node *new)
+load(Type *tp, Node *np, Node *new)
 {
 	int op;
-	Type *tp;
 
-	tp = &np->type;
 	switch (tp->size) {
 	case 1:
 		op = ASLDB;
@@ -267,12 +265,10 @@ abbrev(Node *np, Node *ret)
 }
 
 static Node *
-assign(Node *to, Node *from)
+assign(Type *tp, Node *to, Node *from)
 {
-	Type *tp;
 	int op;
 
-	tp = &to->type;
 	switch (tp->size) {
 	case 1:
 		op = ASSTB;
@@ -353,11 +349,11 @@ ternary(Node *np, Node *ret)
 	code(ASBRANCH, rhs(np->left, &aux1), &ifyes, &ifno);
 
 	setlabel(ifyes.u.sym);
-	assign(ret, rhs(colon->left, &aux2));
+	assign(&ret->type, ret, rhs(colon->left, &aux2));
 	code(ASJMP, NULL, &phi, NULL);
 
 	setlabel(ifno.u.sym);
-	assign(ret, rhs(colon->right, &aux3));
+	assign(&ret->type, ret, rhs(colon->right, &aux3));
 	setlabel(phi.u.sym);
 
 	return ret;
@@ -412,7 +408,7 @@ rhs(Node *np, Node *ret)
 		return np;
 	case OMEM:
 	case OAUTO:
-		return load(np, ret);
+		return load(tp, np, ret);
 	case ONEG:
 	case OAND:
 	case OOR:
@@ -424,11 +420,11 @@ rhs(Node *np, Node *ret)
 		bool(np, true, false);
 
 		setlabel(true);
-		assign(ret, constnode(1, &int32type));
+		assign(&int32type, ret, constnode(1, &int32type));
 		code(ASJMP, NULL, phi, NULL);
 
 		setlabel(false);
-		assign(ret, constnode(0, &int32type));
+		assign(&int32type, ret, constnode(0, &int32type));
 
 		setlabel(phi->u.sym);
 		return ret;
@@ -489,13 +485,13 @@ rhs(Node *np, Node *ret)
 			r = abbrev(np, &aux1);
 		lhs(l, &aux2);
 		rhs(r, ret);
-		return assign(&aux2, ret);
+		return assign(&np->type, &aux2, ret);
 	case OASK:
 		return ternary(np, ret);
 	case OCOMMA:
 		return rhs(np, ret);
 	case OPTR:
-		return load(rhs(l, &aux1), ret);
+		return load(tp, rhs(l, &aux1), ret);
 	case OADDR:
 		return lhs(l, ret);
 	case OFIELD:
