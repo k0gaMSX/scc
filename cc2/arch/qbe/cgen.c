@@ -420,11 +420,11 @@ rhs(Node *np, Node *ret)
 		bool(np, true, false);
 
 		setlabel(true);
-		assign(&int32type, ret, constnode(1, &int32type));
+		assign(&int32type, ret, constnode(&aux2, 1, &int32type));
 		code(ASJMP, NULL, phi, NULL);
 
 		setlabel(false);
-		assign(&int32type, ret, constnode(0, &int32type));
+		assign(&int32type, ret, constnode(&aux2, 0, &int32type));
 
 		setlabel(phi->u.sym);
 		return ret;
@@ -575,12 +575,12 @@ sethi(Node *np)
 		break;
 	case OCPL:
 		np->op = OAND;
-		rp = constnode(~(TUINT) 0, &np->type);
+		rp = constnode(NULL, ~(TUINT) 0, &np->type);
 		goto binary;
 	case OSNEG:
 		np->op = OSUB;
 		rp = lp;
-		lp = constnode(0, &np->type);
+		lp = constnode(NULL, 0, &np->type);
 		if ((np->type.flags & INTF) == 0)
 			lp->u.f = 0.0;
 	default:
