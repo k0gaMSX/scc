@@ -254,17 +254,6 @@ call(Node *np, Node *ret)
 }
 
 static Node *
-abbrev(Node *np, Node *ret)
-{
-	Node aux;
-
-	tmpnode(&aux, &np->type);
-	aux.right = np->right;
-	aux.left = np->left;
-	return rhs(&aux, ret);
-}
-
-static Node *
 assign(Type *tp, Node *to, Node *from)
 {
 	int op;
@@ -403,6 +392,7 @@ rhs(Node *np, Node *ret)
 	case OELOOP:
 	case OEFUN:
 		return NULL;
+	case OTMP:
 	case OCONST:
 		*ret = *np;
 		return np;
@@ -480,12 +470,35 @@ rhs(Node *np, Node *ret)
 	case OCAST:
 		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
-		/* TODO: see what is the more difficult */
-		if (np->u.subop != 0)
-			r = abbrev(np, &aux1);
-		lhs(l, &aux2);
-		rhs(r, ret);
-		return assign(&np->type, &aux2, ret);
+		/* TODO: Do this transformations in sethi */
+		switch (np->u.subop) {
+		case OINC:
+			op = OADD;
+			goto post_oper;
+		case ODEC:
+			op = OSUB;
+		post_oper:
+			aux1.op = op;
+			aux1.left = rhs(l, ret);
+			aux1.right = r;
+			aux1.type = np->type;
+			rhs(&aux1, &aux2);
+			lhs(l, &aux1);
+			assign(tp, &aux1, &aux2);
+			break;
+		default:
+			aux2.type = np->type;
+			aux2.op = np->u.subop;
+			aux2.right = np->right;
+			aux2.left = np->left;
+			r = rhs(&aux2, &aux1);
+		case 0:
+			/* TODO: see what is the most difficult */
+			lhs(l, &aux2);
+			rhs(r, ret);
+			return assign(tp, &aux2, ret);
+		}
+		return ret;
 	case OASK:
 		return ternary(np, ret);
 	case OCOMMA:
@@ -495,8 +508,6 @@ rhs(Node *np, Node *ret)
 	case OADDR:
 		return lhs(l, ret);
 	case OFIELD:
-	case OINC:
-	case ODEC:
 	case OCASE:
 	case ODEFAULT:
 	case OESWITCH:

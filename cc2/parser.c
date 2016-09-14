@@ -129,6 +129,8 @@ static struct decoc {
 	['j']   = {     NULL,    jump, .u.op =          OJMP},
 	['y']   = {     NULL,    jump, .u.op =       OBRANCH},
 	['h']   = {     NULL, oreturn, .u.op =          ORET},
+	['i']   = {     NULL,    NULL, .u.op =          OINC},
+	['d']   = {     NULL,    NULL, .u.op =          ODEC},
 
 	['b']   = {     NULL,    loop, .u.op =        OBLOOP},
 	['e']   = {     NULL,    loop, .u.op =        OELOOP},
