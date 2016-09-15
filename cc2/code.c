@@ -85,6 +85,7 @@ constnode(Node *np, TUINT n, Type *tp)
 {
 	if (!np)
 		np = newnode(OCONST);
+	np->op = OCONST;
 	np->left = NULL;
 	np->right = NULL;
 	np->type = *tp;
