@@ -90,7 +90,7 @@ static char opasmd[] = {
 	[OCPL] = ASCPLD
 };
 
-extern Type int32type, uint32type;
+extern Type int32type, uint32type, ptrtype;
 
 static Node *
 tmpnode(Node *np, Type *tp)
@@ -127,7 +127,8 @@ load(Type *tp, Node *np, Node *new)
 		op = (tp->flags & INTF) ? ASLDL : ASLDD;
 		break;
 	default:
-		abort();
+		*new = *np;
+		return new;
 	}
 	code(op, tmpnode(new, tp), np, NULL);
 
@@ -278,6 +279,32 @@ assign(Type *tp, Node *to, Node *from)
 	return from;
 }
 
+/* TODO: Do field() transformation in sethi */
+
+static Node *
+field(Node *np, Node *ret, int islhs)
+{
+	Node base, node, off, add, *addr;
+	TUINT offset = np->right->u.sym->u.off;
+
+	addr = rhs(np->left, &base);
+
+	if (offset != 0) {
+		node.op = OADD;
+		node.type = ptrtype;
+		node.left = addr;
+		node.right = constnode(&off, offset, &ptrtype);
+		addr = rhs(&node, &add);
+	}
+
+	if (islhs)
+		*ret = *addr;
+	else
+		load(&np->type, addr, ret);
+
+	return ret;
+}
+
 static Node *
 lhs(Node *np, Node *new)
 {
@@ -288,6 +315,8 @@ lhs(Node *np, Node *new)
 		return np;
 	case OPTR:
 		return rhs(np->left, new);
+	case OFIELD:
+		return field(np, new, 1);
 	default:
 		abort();
 	}
@@ -508,6 +537,7 @@ rhs(Node *np, Node *ret)
 	case OADDR:
 		return lhs(l, ret);
 	case OFIELD:
+		return field(np, ret, 0);
 	case OCASE:
 	case ODEFAULT:
 	case OESWITCH:
