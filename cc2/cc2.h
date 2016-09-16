@@ -5,9 +5,10 @@ enum iflags {
 };
 
 enum tflags {
-	SIGNF   =    1,
-	INTF    =    2,
-	STRF    =    8,
+	SIGNF   =     1,
+	INTF    =     2,
+	FLOATF  =     4,
+	STRF    =     8,
 	UNIONF  =    16,
 	FUNF    =    32,
 	PARF    =    64,

@@ -121,10 +121,10 @@ load(Type *tp, Node *np, Node *new)
 		op = ASLDH;
 		break;
 	case 4:
-		op = (tp->flags & INTF) ? ASLDW : ASLDS;
+		op = (tp->flags & FLOATF) ? ASLDS : ASLDW;
 		break;
 	case 8:
-		op = (tp->flags & INTF) ? ASLDL : ASLDD;
+		op = (tp->flags & FLOATF) ? ASLDD : ASLDL;
 		break;
 	default:
 		*new = *np;
@@ -267,10 +267,10 @@ assign(Type *tp, Node *to, Node *from)
 		op = ASSTH;
 		break;
 	case 4:
-		op = (tp->flags & INTF) ? ASSTW : ASSTS;
+		op = (tp->flags & FLOATF) ? ASSTS : ASSTW;
 		break;
 	case 8:
-		op = (tp->flags & INTF) ? ASSTL : ASSTD;
+		op = (tp->flags & FLOATF) ? ASSTD : ASSTL;
 		break;
 	default:
 		abort();
@@ -480,10 +480,10 @@ rhs(Node *np, Node *ret)
 		}
                 switch (tp->size) {
                 case 4:
-                        tbl = (tp->flags & INTF) ? opasmw : opasms;
+                        tbl = (tp->flags & FLOATF) ? opasms : opasmw;
                         break;
                 case 8:
-                        tbl = (tp->flags & INTF) ? opasml : opasmd;
+                        tbl = (tp->flags & FLOATF) ? opasmd : opasml;
                         break;
                 default:
                         abort();

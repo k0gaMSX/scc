@@ -64,16 +64,19 @@ Type booltype = {
 };
 
 Type float32type = {
+	.flags  = FLOATF,
 	.size   = 4,
 	.align  = 1
 };
 
 Type float64type = {
+	.flags  = FLOATF,
 	.size   = 4,
 	.align  = 1
 };
 
 Type float80type = {
+	.flags  = FLOATF,
 	.size   = 4,
 	.align  = 1
 };
