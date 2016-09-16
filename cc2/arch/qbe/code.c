@@ -11,7 +11,7 @@
 
 static void binary(void), unary(void), store(void), jmp(void), ret(void),
             branch(void), call(void), ecall(void), param(void),
-            alloc(void), form2local(void);
+            alloc(void), form2local(void), ldir(void);
 
 static struct opdata {
 	void (*fun)(void);
@@ -29,6 +29,7 @@ static struct opdata {
 	[ASSTH]   =  {.fun = store,  .txt = "store", .letter = 'h'},
 	[ASSTW]   =  {.fun = store,  .txt = "store", .letter = 'w'},
 	[ASSTL]   =  {.fun = store,  .txt = "store", .letter = 'l'},
+	[ASSTM]   =  {.fun = ldir},
 	[ASSTS]   =  {.fun = store,  .txt = "store", .letter = 's'},
 	[ASSTD]   =  {.fun = store,  .txt = "store", .letter = 'd'},
 
@@ -366,6 +367,16 @@ binary(void)
 	strcpy(from1, addr2txt(&pc->from1));
 	strcpy(from2, addr2txt(&pc->from2));
 	printf("\t%s =%c\t%s\t%s,%s\n", to, p->letter, p->txt, from1, from2);
+}
+
+static void
+ldir(void)
+{
+	struct opdata *p = &optbl[pc->op];
+	char to[ADDR_LEN], from[ADDR_LEN];
+	/* TODO: what type do we use for the size? */
+
+	/* TODO: it is pending */
 }
 
 static void

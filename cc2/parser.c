@@ -487,6 +487,7 @@ aggregate(void)
 
 	tp->size = size->u.i;
 	tp->align = align->u.i;
+	tp->flags = AGGRF;
 	/*
 	 * type is the first field of Symbol so we can obtain the
 	 * address of the symbol from the address of the type.

@@ -113,6 +113,10 @@ load(Type *tp, Node *np, Node *new)
 {
 	int op;
 
+	if (tp->flags & AGGRF) {
+		*new = *np;
+		return new;
+	}
 	switch (tp->size) {
 	case 1:
 		op = ASLDB;
@@ -127,8 +131,7 @@ load(Type *tp, Node *np, Node *new)
 		op = (tp->flags & FLOATF) ? ASLDD : ASLDL;
 		break;
 	default:
-		*new = *np;
-		return new;
+		abort();
 	}
 	code(op, tmpnode(new, tp), np, NULL);
 
@@ -273,7 +276,8 @@ assign(Type *tp, Node *to, Node *from)
 		op = (tp->flags & FLOATF) ? ASSTD : ASSTL;
 		break;
 	default:
-		abort();
+		op = ASSTM;
+		break;
 	}
 	code(op, to, from, NULL);
 	return from;

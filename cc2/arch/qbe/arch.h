@@ -9,6 +9,7 @@ enum asmop {
 	ASSTH,
 	ASSTW,
 	ASSTL,
+	ASSTM,
 	ASSTS,
 	ASSTD,
 

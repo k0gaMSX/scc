@@ -9,7 +9,7 @@ enum tflags {
 	INTF    =     2,
 	FLOATF  =     4,
 	STRF    =     8,
-	UNIONF  =    16,
+	AGGRF   =    16,
 	FUNF    =    32,
 	PARF    =    64,
 };
