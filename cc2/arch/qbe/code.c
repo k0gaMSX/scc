@@ -404,12 +404,12 @@ unary(void)
 static void
 call(void)
 {
-       struct opdata *p = &optbl[pc->op];
-       char to[ADDR_LEN], from[ADDR_LEN];
+	struct opdata *p = &optbl[pc->op];
+	char to[ADDR_LEN], from[ADDR_LEN];
 
-       strcpy(to, addr2txt(&pc->to));
-       strcpy(from, addr2txt(&pc->from1));
-       printf("\t%s =%c\tcall\t%s(", to, p->letter, from);
+	strcpy(to, addr2txt(&pc->to));
+	strcpy(from, addr2txt(&pc->from1));
+	printf("\t%s =%c\tcall\t%s(", to, p->letter, from);
 }
 
 static void
