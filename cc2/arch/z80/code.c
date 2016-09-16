@@ -55,12 +55,12 @@ symname(Symbol *sym)
 static void
 label(Symbol *sym)
 {
-	int seg, flags = sym->type.flags;
+	int seg;
 	char *name = symname(sym);
 
-	if (flags & FUNF)
+	if (sym->type.flags & FUNF)
 		seg = CODESEG;
-	else if (flags & INITF)
+	else if (sym->kind == INITF)
 		seg = DATASEG;
 	else
 		seg = BSSSEG;

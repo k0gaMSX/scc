@@ -571,7 +571,7 @@ vardecl(void)
 	sym->kind = sclass;
 
 	if (ininit)
-		sym->type.flags |= INITF;
+		sym->kind = INITF;
 	decl(sym);
 	delnode(np);
 }
