@@ -443,11 +443,11 @@ rhs(Node *np, Node *ret)
 		bool(np, true, false);
 
 		setlabel(true);
-		assign(&int32type, ret, constnode(&aux2, 1, &int32type));
+		code(ASCOPYW, ret, constnode(&aux2, 1, &int32type), NULL);
 		code(ASJMP, NULL, phi, NULL);
 
 		setlabel(false);
-		assign(&int32type, ret, constnode(&aux2, 0, &int32type));
+		code(ASCOPYW, ret, constnode(&aux2, 0, &int32type), NULL);
 
 		setlabel(phi->u.sym);
 		return ret;

@@ -25,6 +25,8 @@ static struct opdata {
 	[ASLDS]   =  {.fun = unary,  .txt = "load", .letter = 's'},
 	[ASLDD]   =  {.fun = unary,  .txt = "load", .letter = 'd'},
 
+	[ASCOPYW] =  {.fun = unary,  .txt = "copy", .letter = 'w'},
+
 	[ASSTB]   =  {.fun = store,  .txt = "store", .letter = 'b'},
 	[ASSTH]   =  {.fun = store,  .txt = "store", .letter = 'h'},
 	[ASSTW]   =  {.fun = store,  .txt = "store", .letter = 'w'},
