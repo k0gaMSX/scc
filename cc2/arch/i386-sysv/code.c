@@ -144,7 +144,7 @@ label(Symbol *sym)
 
 	if (sym->type.flags & FUNF)
 		seg = CODESEG;
-	else if (sym->kind == INITF)
+	else if (sym->type.flags & INITF)
 		seg = DATASEG;
 	else
 		seg = BSSSEG;

@@ -12,6 +12,7 @@ enum tflags {
 	AGGRF   =    16,
 	FUNF    =    32,
 	PARF    =    64,
+	INITF   =   128
 };
 
 enum sclass {
@@ -27,7 +28,6 @@ enum sclass {
 	SMEMB     = 'M',
 	SCONST    = '#',
 	STRING    = '"',
-	INITF   =   '=',
 	SNONE     = 0 /* cc2 relies on SNONE being 0 in nextpc() */
 };
 

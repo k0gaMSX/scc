@@ -274,7 +274,7 @@ defglobal(Symbol *sym)
 	if (sym->kind == SGLOB)
 		fputs("export ", stdout);
 	printf("data %s = {\n", symname(sym));
-	if (sym->kind == INITF)
+	if (sym->type.flags & INITF)
 		return;
 	printf("\tz\t%lu\n}\n", sym->type.size);
 }
