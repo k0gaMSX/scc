@@ -18,12 +18,15 @@ static struct opdata {
 	char *txt;
 	char letter;
 } optbl [] = {
-	[ASLDB]   =  {.fun = unary,  .txt = "load", .letter = 'b'},
-	[ASLDH]   =  {.fun = unary,  .txt = "load", .letter = 'h'},
-	[ASLDW]   =  {.fun = unary,  .txt = "load", .letter = 'w'},
-	[ASLDL]   =  {.fun = unary,  .txt = "load", .letter = 'l'},
-	[ASLDS]   =  {.fun = unary,  .txt = "load", .letter = 's'},
-	[ASLDD]   =  {.fun = unary,  .txt = "load", .letter = 'd'},
+	[ASLDSB]  =  {.fun = unary,  .txt = "loadsb", .letter = 'w'},
+	[ASLDUB]  =  {.fun = unary,  .txt = "loadub", .letter = 'w'},
+	[ASLDSH]  =  {.fun = unary,  .txt = "loadsh", .letter = 'w'},
+	[ASLDUH]  =  {.fun = unary,  .txt = "loaduh", .letter = 'w'},
+	[ASLDSW]  =  {.fun = unary,  .txt = "loadsw", .letter = 'w'},
+	[ASLDUW]  =  {.fun = unary,  .txt = "loaduw", .letter = 'w'},
+	[ASLDL]   =  {.fun = unary,  .txt = "loadl", .letter = 'l'},
+	[ASLDS]   =  {.fun = unary,  .txt = "loads", .letter = 's'},
+	[ASLDD]   =  {.fun = unary,  .txt = "loadd", .letter = 'd'},
 
 	[ASCOPYW] =  {.fun = unary,  .txt = "copy", .letter = 'w'},
 

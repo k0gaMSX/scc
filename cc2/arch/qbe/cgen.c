@@ -112,27 +112,35 @@ static Node *
 load(Type *tp, Node *np, Node *new)
 {
 	int op;
+	int flags = tp->flags;
 
-	if (tp->flags & AGGRF) {
+	if (flags & AGGRF) {
 		*new = *np;
 		return new;
 	}
 	switch (tp->size) {
 	case 1:
-		op = ASLDB;
+		op = ASLDSB;
 		break;
 	case 2:
-		op = ASLDH;
+		op = ASLDSH;
 		break;
 	case 4:
-		op = (tp->flags & FLOATF) ? ASLDS : ASLDW;
+		op = (flags & FLOATF) ? ASLDS : ASLDSW;
 		break;
 	case 8:
-		op = (tp->flags & FLOATF) ? ASLDD : ASLDL;
+		op = (flags & FLOATF) ? ASLDD : ASLDL;
 		break;
 	default:
 		abort();
 	}
+	/*
+	 * unsigned version of operations are always +1 the
+	 * signed version
+	 */
+	if ((flags & (INTF|SIGNF)) == INTF && tp->size < 8)
+		++op;
+
 	code(op, tmpnode(new, tp), np, NULL);
 
 	return new;
