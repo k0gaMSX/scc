@@ -188,11 +188,11 @@ struct addr {
 };
 
 struct inst {
-        unsigned char op;
+	unsigned char op;
 	unsigned char flags;
 	Symbol *label;
-        Inst *next, *prev;
-        Addr from1, from2, to;
+	Inst *next, *prev;
+	Addr from1, from2, to;
 };
 
 /* main.c */

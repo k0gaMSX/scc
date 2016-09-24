@@ -572,16 +572,16 @@ cgen(Node *np)
 		label2node(&ifyes, np->u.sym);
 		code(ASJMP, NULL, &ifyes, NULL);
 		break;
-        case OBRANCH:
-                next = np->next;
-                if (!next->label)
-                        next->label = newlabel();
+	case OBRANCH:
+		next = np->next;
+		if (!next->label)
+			next->label = newlabel();
 
-                label2node(&ifyes, np->u.sym);
-                label2node(&ifno, next->label);
+		label2node(&ifyes, np->u.sym);
+		label2node(&ifno, next->label);
 		rhs(np->left, &ret);
 		code(ASBRANCH, &ret, &ifyes, &ifno);
-                break;
+		break;
 	case ORET:
 		p = (np->left) ? rhs(np->left, &ret) : NULL;
 		code(ASRET, NULL, p, NULL);
