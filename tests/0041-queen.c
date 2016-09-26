@@ -41,6 +41,7 @@ go(int n, int x, int y)
                         }
                 x = 0;
         }
+	return 0;
 }
 
 int
