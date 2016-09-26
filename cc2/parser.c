@@ -339,20 +339,36 @@ oreturn(char *token, union tokenop u)
 	push(np);
 }
 
+/*
+ * Move np (which is a OCASE/ODEFAULT/OESWITCH) to be contigous with
+ * the last switch table. It is a bit ugly to touch directly curstmt
+ * here, but moving this function to node.c is worse, because we are
+ * putting knowledge of how the text is parsed into the node
+ * represtation module.
+ */
 static void
 waft(Node *np)
 {
-	Node *p;
+	Node *lastcase, *next;;
 	struct swtch *cur;
+	extern Node *curstmt;
 
 	if (swp == swtbl)
 		error(EWTACKU);
 
 	cur = swp - 1;
-	p = cur->last;
-	np->next = p->next;
-	np->prev = p;
-	p->next = np;
+	lastcase = cur->last;
+	next = lastcase->next;
+
+	np->next = next;
+	np->prev = lastcase;
+
+	if (next)
+		next->prev = np;
+	lastcase->next = np;
+
+	if (curstmt == cur->last)
+		curstmt = np;
 	cur->last = np;
 	cur->nr++;
 }
@@ -361,13 +377,17 @@ static void
 bswitch(char *token, union tokenop u)
 {
 	struct swtch *cur;
+	Node *np = newnode(u.op);
 
 	if (swp == &swtbl[NR_BLOCK+1])
 		error(EWTACKO);
 	cur = swp++;
 	cur->nr = 0;
-	jump(token, u);
-	cur->first = cur->last = push(pop());
+
+	eval(strtok(NULL, "\t\n"));
+	np->left = pop();
+
+	push(cur->first = cur->last = np);
 }
 
 static void
@@ -379,7 +399,7 @@ eswitch(char *token, union tokenop u)
 		error(EWTACKU);
 	jump(token, u);
 	waft(pop());
-	cur = swp--;
+	cur = --swp;
 	cur->first->u.i = cur->nr;
 }
 
