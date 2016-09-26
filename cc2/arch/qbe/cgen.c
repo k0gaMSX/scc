@@ -414,6 +414,47 @@ function(void)
 	return NULL;
 }
 
+static void
+swtch_if(Node *idx)
+{
+	Node aux1, aux2, *np;
+	Symbol *deflabel = NULL;
+
+	for (;;) {
+		np = delstmt();
+		setlabel(np->label);
+
+		switch (np->op) {
+		case OESWITCH:
+			if (deflabel) {
+				aux1.op = OJMP;
+				aux1.label = NULL;
+				aux1.u.sym = deflabel;
+				cgen(&aux1);
+			}
+			return;
+		case OCASE:
+			aux1 = *np;
+			aux1.op = OBRANCH;
+			aux1.label = NULL;
+			aux1.left = &aux2;
+
+			aux2.op = OEQ;
+			aux2.type = idx->type;
+			aux2.left = np->left;
+			aux2.right = idx;
+
+			cgen(&aux1);
+			break;
+		case ODEFAULT:
+			deflabel = np->u.sym;
+			break;
+		default:
+			abort();
+		}
+	}
+}
+
 static Node *
 rhs(Node *np, Node *ret)
 {
@@ -550,11 +591,6 @@ rhs(Node *np, Node *ret)
 		return lhs(l, ret);
 	case OFIELD:
 		return field(np, ret, 0);
-	case OCASE:
-	case ODEFAULT:
-	case OESWITCH:
-	case OBSWITCH:
-		/* TODO: implement these operators */
 	default:
 		abort();
 	}
@@ -585,6 +621,10 @@ cgen(Node *np)
 	case ORET:
 		p = (np->left) ? rhs(np->left, &ret) : NULL;
 		code(ASRET, NULL, p, NULL);
+		break;
+	case OBSWITCH:
+		p = rhs(np->left, &ret);
+		swtch_if(p);
 		break;
 	default:
 		rhs(np, &ret);
