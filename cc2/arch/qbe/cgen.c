@@ -160,8 +160,10 @@ cast(Type *td, Node *ns, Node *nd)
 	s_isint = (ts->flags & INTF) != 0;
 
 	if (d_isint && s_isint) {
-		if (td->size <= ts->size)
+		if (td->size <= ts->size) {
+			*nd = *ns;
 			return nd;
+		}
 		assert(td->size == 4 || td->size == 8);
 		switch (ts->size) {
 		case 1:
