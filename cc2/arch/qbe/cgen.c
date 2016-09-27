@@ -362,7 +362,7 @@ bool(Node *np, Symbol *true, Symbol *false)
 	default:
 		label2node(&ifyes, true);
 		label2node(&ifno, false);
-		code(ASBRANCH, rhs(l, &ret), &ifyes, &ifno);
+		code(ASBRANCH, rhs(np, &ret), &ifyes, &ifno);
 		break;
 	}
 }
