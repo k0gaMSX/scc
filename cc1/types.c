@@ -176,7 +176,7 @@ typesize(Type *tp)
 {
 	Symbol **sp;
 	Type *aux;
-	unsigned long size;
+	unsigned long size, offset;
 	int align, a;
 	TINT n;
 
@@ -200,10 +200,10 @@ typesize(Type *tp)
 		 * field, and the size of a struct is the sum
 		 * of the size of every field plus padding bits.
 		 */
-		align = size = 0;
+		offset = align = size = 0;
 		n = tp->n.elem;
 		for (sp = tp->p.fields; n--; ++sp) {
-			(*sp)->u.i = size;
+			(*sp)->u.i = offset;
 			aux = (*sp)->type;
 			a = aux->align;
 			if (a > align)
@@ -212,8 +212,9 @@ typesize(Type *tp)
 				if (--a != 0)
 					size += (size + a) & ~a;
 				size += aux->size;
+				offset = size;
 			} else {
-				if (tp->size > size)
+				if ((*sp)->type->size > size)
 					size = aux->size;
 			}
 		}
