@@ -838,8 +838,10 @@ static Node *
 unary(int needdecay)
 {
 	Node *(*fun)(char, Node *), *np;
+	Symbol *sym;
 	char op;
 	Type *tp;
+	int paren;
 
 	switch (yytoken) {
 	case '!': op = 0;     fun = negation;     break;
@@ -860,7 +862,26 @@ unary(int needdecay)
 		next();
 		np = incdec(unary(1), op);
 		goto chk_decay;
+	case IDEN:
+	case TYPEIDEN:
+		if (lexmode != CPPMODE || strcmp(yylval.sym->name, "defined"))
+			goto call_postfix;
+		disexpand = 1;
+		next();
+		paren = accept('(');
+		if (yytoken != IDEN && yytoken != TYPEIDEN)
+			cpperror("operator 'defined' requires an identifier");
+		if (yytoken == TYPEIDEN || !(yylval.sym->flags & SDECLARED))
+			sym = zero;
+		else
+			sym = one;
+		disexpand = 0;
+		next();
+		if (paren)
+			expect(')');
+		return constnode(sym);
 	default:
+	call_postfix:
 		np = postfix(primary());
 		goto chk_decay;
 	}
