@@ -321,7 +321,7 @@ parithmetic(char op, Node *lp, Node *rp)
 	rp = simplify(OMUL, sizettype, rp, size);
 	rp = convert(rp, tp, 1);
 
-	return simplify(OADD, tp, lp, rp);
+	return simplify(op, tp, lp, rp);
 
 incomplete:
 	errorp("invalid use of undefined type");
@@ -339,13 +339,19 @@ arithmetic(char op, Node *lp, Node *rp)
 
 	if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
 		arithconv(&lp, &rp);
-	} else if ((ltp->op == PTR || rtp->op == PTR) &&
-	           (op == OADD || op == OSUB)) {
-		return parithmetic(op, rp, lp);
-	} else if (op != OINC && op != ODEC) {
-		errorp("incorrect arithmetic operands");
+		return simplify(op, lp->type, lp, rp);
+	} else if ((ltp->op == PTR || rtp->op == PTR)) {
+		switch (op) {
+		case OADD:
+		case OSUB:
+		case OA_ADD:
+		case OA_SUB:
+		case OINC:
+		case ODEC:
+			return parithmetic(op, rp, lp);
+		}
 	}
-	return simplify(op, lp->type, lp, rp);
+	errorp("incorrect arithmetic operands");
 }
 
 static Node *
@@ -563,12 +569,10 @@ incdec(Node *np, char op)
 		return np;
 	} else if (tp->op == PTR && !(tp->type->prop & TDEFINED)) {
 		errorp("%s of pointer to an incomplete type",
-		       (op == OINC) ? "increment" : "decrement");
+		       (op == OINC || op == OA_ADD) ? "increment" : "decrement");
 		return np;
-	} else if (tp->prop & TARITH) {
+	} else if (tp->op == PTR || (tp->prop & TARITH)) {
 		inc = constnode(one);
-	} else if (tp->op == PTR) {
-		inc = sizeofnode(tp->type);
 	} else {
 		errorp("wrong type argument to increment or decrement");
 		return np;
