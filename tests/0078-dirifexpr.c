@@ -151,10 +151,6 @@
 #error fail
 #endif
 
-#if (1,2,3) != 3
-#error fail
-#endif
-
 #if (0 ? 1 : 3) != 3
 #error fail
 #endif
