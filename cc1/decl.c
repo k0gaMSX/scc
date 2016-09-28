@@ -519,7 +519,7 @@ structdcl(void)
 		return tp;
 	}
 
-	if (tp->prop & TDEFINED)
+	if (tp->prop & TDEFINED && sym->ctx == curctx)
 		error("redefinition of struct/union '%s'", sym->name);
 	tp->prop |= TDEFINED;
 
