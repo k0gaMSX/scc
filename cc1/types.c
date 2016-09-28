@@ -210,7 +210,7 @@ typesize(Type *tp)
 				align = a;
 			if (tp->op == STRUCT) {
 				if (--a != 0)
-					size += (size + a) & ~a;
+					size = (size + a) & ~a;
 				size += aux->size;
 				offset = size;
 			} else {
