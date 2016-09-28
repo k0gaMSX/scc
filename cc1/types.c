@@ -214,7 +214,7 @@ typesize(Type *tp)
 				size += aux->size;
 				offset = size;
 			} else {
-				if ((*sp)->type->size > size)
+				if (aux->size > size)
 					size = aux->size;
 			}
 		}
