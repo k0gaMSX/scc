@@ -428,12 +428,12 @@ swtch_if(Node *idx)
 
 		switch (np->op) {
 		case OESWITCH:
-			if (deflabel) {
-				aux1.op = OJMP;
-				aux1.label = NULL;
-				aux1.u.sym = deflabel;
-				cgen(&aux1);
-			}
+			if (!deflabel)
+				deflabel = np->u.sym;
+			aux1.op = OJMP;
+			aux1.label = NULL;
+			aux1.u.sym = deflabel;
+			cgen(&aux1);
 			return;
 		case OCASE:
 			aux1 = *np;
