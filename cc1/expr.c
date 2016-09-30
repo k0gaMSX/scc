@@ -309,7 +309,7 @@ parithmetic(char op, Node *lp, Node *rp)
 	size = sizeofnode(tp->type);
 
 	if (op == OSUB && BTYPE(rp) == PTR) {
-		if (tp != rp->type)
+		if (!eqtype(tp, rp->type, 0))
 			goto incorrect;
 		lp = node(OSUB, pdifftype, lp, rp);
 		return node(ODIV, inttype, lp, size);
