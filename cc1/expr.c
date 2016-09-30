@@ -348,7 +348,7 @@ arithmetic(char op, Node *lp, Node *rp)
 		case OA_SUB:
 		case OINC:
 		case ODEC:
-			return parithmetic(op, rp, lp);
+			return parithmetic(op, lp, rp);
 		}
 	}
 	errorp("incorrect arithmetic operands");
