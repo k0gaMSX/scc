@@ -326,7 +326,7 @@ lhs(Node *np, Node *new)
 	case OMEM:
 	case OAUTO:
 		*new = *np;
-		return np;
+		return new;
 	case OPTR:
 		return rhs(np->left, new);
 	case OFIELD:
@@ -590,7 +590,9 @@ rhs(Node *np, Node *ret)
 	case OPTR:
 		return load(tp, rhs(l, &aux1), ret);
 	case OADDR:
-		return lhs(l, ret);
+		lhs(l, ret);
+		ret->type = *tp;
+		return ret;
 	case OFIELD:
 		return field(np, ret, 0);
 	default:
