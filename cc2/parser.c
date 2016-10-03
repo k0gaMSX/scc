@@ -37,6 +37,7 @@ struct swtch {
 };
 
 static struct swtch swtbl[NR_BLOCK], *swp = swtbl;
+static Symbol *lastfun;
 
 typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
@@ -543,7 +544,7 @@ decl(Symbol *sym)
 	Type *tp = &sym->type;
 
 	if (tp->flags & FUNF) {
-		curfun = sym;
+		lastfun = sym;
 	} else {
 		switch (sym->kind) {
 		case SEXTRN:
@@ -653,6 +654,7 @@ stmt(void)
 static void
 beginfun(void)
 {
+	curfun = lastfun;
 	inpars = 1;
 	pushctx();
 	addstmt(newnode(OBFUN), SETCUR);
