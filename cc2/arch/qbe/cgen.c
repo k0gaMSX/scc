@@ -602,34 +602,30 @@ rhs(Node *np, Node *ret)
 Node *
 cgen(Node *np)
 {
-	Node ret, aux1, aux2, *p, *next, ifyes, ifno;
+	Node aux, *p, *next;
 
 	setlabel(np->label);
 	switch (np->op) {
 	case OJMP:
-		label2node(&ifyes, np->u.sym);
-		code(ASJMP, NULL, &ifyes, NULL);
+		label2node(&aux, np->u.sym);
+		code(ASJMP, NULL, &aux, NULL);
 		break;
 	case OBRANCH:
 		next = np->next;
 		if (!next->label)
 			next->label = newlabel();
-
-		label2node(&ifyes, np->u.sym);
-		label2node(&ifno, next->label);
-		rhs(np->left, &ret);
-		code(ASBRANCH, &ret, &ifyes, &ifno);
+		bool(np->left, np->u.sym, next->label);
 		break;
 	case ORET:
-		p = (np->left) ? rhs(np->left, &ret) : NULL;
+		p = (np->left) ? rhs(np->left, &aux) : NULL;
 		code(ASRET, NULL, p, NULL);
 		break;
 	case OBSWITCH:
-		p = rhs(np->left, &ret);
+		p = rhs(np->left, &aux);
 		swtch_if(p);
 		break;
 	default:
-		rhs(np, &ret);
+		rhs(np, &aux);
 		break;
 	}
 	return NULL;
