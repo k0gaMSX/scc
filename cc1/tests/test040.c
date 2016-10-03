@@ -8,10 +8,10 @@ output:
 G9	I	F	"main
 {
 \
-S2	"List	#N1C	#N2
+S2	"List	#NC	#N2
 M4	I	"len	#N0
 M6	P	"head	#N2
-M7	P	"back	#N6
+M7	P	"back	#N4
 A10	S2	"List
 	h	A10	M4	.I
 }
