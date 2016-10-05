@@ -50,7 +50,7 @@ getsym(unsigned id)
 	Symbol **htab, *sym;
 	static unsigned short num;
 
-	if (id > USHRT_MAX)
+	if (id >= USHRT_MAX)
 		error(EBADID);
 
 	htab = &symtab[id & NR_SYMHASH-1];
