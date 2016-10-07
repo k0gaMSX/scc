@@ -122,7 +122,7 @@ popctx(void)
 	head = sym;
 }
 
-static unsigned short
+unsigned
 newid(void)
 {
 	unsigned short id;
@@ -133,16 +133,6 @@ newid(void)
 		    (curctx) ? "internal" : "external");
 	}
 	return id;
-}
-
-Type *
-duptype(Type *base)
-{
-	Type *tp = xmalloc(sizeof(*tp));
-
-	*tp = *base;
-	tp->id = newid();
-	return tp;
 }
 
 static Symbol *

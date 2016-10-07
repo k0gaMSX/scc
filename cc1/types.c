@@ -308,8 +308,9 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		}
 	}
 
-	typesize(&type);
-	bp = duptype(&type);
+	bp = xmalloc(sizeof(*bp));
+	*bp = type;
+	bp->id = newid();
 	bp->next = *tbl;
 	return *tbl = bp;
 }

@@ -368,6 +368,7 @@ extern void killsym(Symbol *sym);
 extern Symbol *newlabel(void);
 extern void keywords(struct keyword *key, int ns);
 extern Symbol *newstring(char *s, size_t len);
+extern unsigned newid(void);
 
 /* stmt.c */
 extern void compound(Symbol *lbreak, Symbol *lcont, Switch *sw);
