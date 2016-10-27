@@ -38,7 +38,8 @@ popctx(void)
 	infunction = 0;
 	for (sym = locals; sym; sym = next) {
 		next = sym->next;
-		symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
+		if (sym->id != TMPSYM)
+			symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
 		freesym(sym);
 	}
 	curlocal = locals = NULL;
@@ -70,8 +71,10 @@ getsym(unsigned id)
 				curlocal->next = sym;
 			curlocal = sym;
 		}
-		sym->h_next = *htab;
-		*htab = sym;
+		if (id != TMPSYM) {
+			sym->h_next = *htab;
+			*htab = sym;
+		}
 	}
 	return sym;
 }
