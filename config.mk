@@ -2,15 +2,15 @@
 VERSION = 0.1
 
 # Customize below to fit your system
-ARCH = z80
+ARCH = qbe
 DRIVER = posix
 # Remove inc/sizes.h if STD is changed
 # can be c89 or c99
-STD = c89
+STD = c99
 
 # paths
 PREFIX    = $(HOME)
-MANPREFIX = ${PREFIX}/share/man
+MANPREFIX = $(PREFIX)/share/man
 
 # if your system is not POSIX maybe you want to use cc or gcc
 # CC = c99
