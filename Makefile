@@ -63,3 +63,4 @@ multi-clean:
 
 distclean: multi-clean
 	rm -f bin/cc* bin/scc
+	rm inc/sizes.h
