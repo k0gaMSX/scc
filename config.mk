@@ -1,9 +1,10 @@
 # scc version
 VERSION = 0.1
 
-# Customize below to fit your system
+## Customize below to fit your system
 ARCHS = z80 i386-sysv amd64-sysv qbe
-ARCH = qbe  # default architecure used in nested makefiles
+# default architecure used in nested makefiles
+ARCH = qbe
 DRIVER = posix
 
 # Remove inc/sizes.h if STD is changed
