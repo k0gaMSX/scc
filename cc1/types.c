@@ -284,7 +284,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		break;
 	case ENUM:
 		type.prop |= TPRINTED | TINTEGER | TARITH;
-		type.n.rank = RANK_INT;
+		type.n.rank = inttype->n.rank;
 		break;
 	case STRUCT:
 	case UNION:
