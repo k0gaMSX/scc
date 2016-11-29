@@ -7,7 +7,6 @@
 #include "../inc/cc.h"
 #include "../inc/sizes.h"
 
-#include "arch.h"
 #include "cc2.h"
 
 #define MAXLINE     200

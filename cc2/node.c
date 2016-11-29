@@ -4,7 +4,6 @@
 
 #include "../inc/cc.h"
 
-#include "arch.h"
 #include "cc2.h"
 
 #define NNODES   32

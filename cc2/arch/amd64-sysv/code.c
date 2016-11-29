@@ -1,8 +1,10 @@
 /* See LICENSE file for copyright and license details. */
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "arch.h"
+#include "../../../inc/cc.h"
 #include "../../cc2.h"
 #include "../../../inc/sizes.h"
 

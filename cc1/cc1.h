@@ -6,11 +6,6 @@
 
 #define NR_USWITCHES 20
 
-#define TINT        long long
-#define TUINT       unsigned long long
-#define TFLOAT      double
-
-
 /*
  * Definition of enumerations
  */

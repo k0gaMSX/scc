@@ -14,6 +14,10 @@ extern int debug;
 #define PREFIX "/usr/local/"
 #endif
 
+#define TINT        long long
+#define TUINT       unsigned long long
+#define TFLOAT      double
+
 struct items {
 	char **s;
 	unsigned n;

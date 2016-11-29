@@ -1,7 +1,8 @@
 /* See LICENSE file for copyright and license details. */
+
 #include <stddef.h>
 
-#include "arch.h"
+#include "../../../inc/cc.h"
 #include "../../cc2.h"
 
 Node *

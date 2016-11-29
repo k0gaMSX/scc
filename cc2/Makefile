@@ -9,19 +9,20 @@ OBJS = main.o parser.o peep.o symbol.o node.o code.o optm.o\
 
 all: cc2
 
+main.o: error.h
+$(OBJS): cc2.h ../inc/sizes.h ../inc/cc.h
+arch/$(ARCH)/code.o: arch/$(ARCH)/arch.h
+arch/$(ARCH)/cgen.o: arch/$(ARCH)/arch.h
+
 error.h: cc2.h
 	rm -f $@; trap 'rm -f $$$$.h' EXIT INT QUIT ;\
 	awk -f generror.awk cc2.h > $$$$.h && mv $$$$.h $@
 
-main.o: error.h
+../lib/libcc.a:
+	cd ../lib && $(MAKE) -e
 
 ../inc/sizes.h:
 	cp ../inc/sizes_$(STD).h $@
-
-$(OBJS): cc2.h ../inc/sizes.h
-
-../lib/libcc.a:
-	cd ../lib && $(MAKE) -e
 
 cc2: $(OBJS) ../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../lib/libcc.a -o $@

@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "../inc/cc.h"
-#include "arch.h"
 #include "cc2.h"
 
 Inst *pc, *prog;
