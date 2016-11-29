@@ -8,12 +8,11 @@ OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 
 all: cc1
 
+cpp.o: stallman.msg
+$(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h
+
 ../inc/sizes.h:
 	cp ../inc/sizes_$(STD).h $@
-
-cpp.o: stallman.msg
-
-$(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h
 
 ../lib/libcc.a:
 	cd ../lib && $(MAKE) -e
