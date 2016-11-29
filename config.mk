@@ -2,8 +2,10 @@
 VERSION = 0.1
 
 # Customize below to fit your system
-ARCH = qbe
+ARCHS = z80 i386-sysv amd64-sysv qbe
+ARCH = qbe  # default architecure used in nested makefiles
 DRIVER = posix
+
 # Remove inc/sizes.h if STD is changed
 # can be c89 or c99
 STD = c99
