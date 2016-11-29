@@ -8,15 +8,6 @@ DIRS  = lib cc1 cc2 driver/$(DRIVER)
 ARCHS = z80 i386-sysv amd64-sysv qbe
 
 all:
-	for i in $(DIRS); \
-	do \
-		(cd $$i && $(MAKE) -e); \
-	done
-	cp -f cc1/cc1 bin/cc1
-	cp -f cc2/cc2 bin/cc2
-	cp -f driver/$(DRIVER)/scc bin/scc
-
-multi:
 	for i in $(ARCHS); \
 	do \
 		$(MAKE) $$i || exit; \
@@ -26,7 +17,6 @@ $(ARCHS):
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
-		ARCH=$@ $(MAKE) -e clean; \
 		ARCH=$@ $(MAKE) -e $$i || exit); \
 	done
 	ln -f cc1/cc1 bin/cc1-$@
@@ -49,18 +39,19 @@ uninstall:
 	rm -f $(PREFIX)/bin/scc
 	rm -f $(PREFIX)/bin/cpp
 
-clean:
+clean-helper:
 	for i in $(DIRS); \
 	do \
-		(cd $$i && $(MAKE) $@ || exit); \
+		(cd $$i && $(MAKE) clean || exit); \
 	done
 
-multi-clean:
+clean:
 	for i in $(ARCHS); \
 	do \
-		ARCH=$$i $(MAKE) -e clean || exit; \
+		ARCH=$$i $(MAKE) -e clean-helper || exit; \
 	done
-
-distclean: multi-clean
 	rm -f bin/cc* bin/scc
+
+distclean: clean
+	rm -rf bin
 	rm inc/sizes.h
