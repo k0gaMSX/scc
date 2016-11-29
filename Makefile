@@ -14,7 +14,7 @@ all: driver/$(DRIVER)/scc
 
 driver/$(DRIVER)/scc: bin
 	cd driver/$(DRIVER)/ && $(MAKE) scc
-	cp -f driver/$(DRIVER)/scc bin/scc
+	ln -f driver/$(DRIVER)/scc bin/scc
 
 $(ARCHS): bin
 	mkdir -p bin
