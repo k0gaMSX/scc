@@ -6,13 +6,18 @@ include config.mk
 
 DIRS  = lib cc1 cc2 driver/$(DRIVER)
 
-all:
+all: driver/$(DRIVER)/scc
 	for i in $(ARCHS); \
 	do \
 		$(MAKE) $$i || exit; \
 	done
 
-$(ARCHS):
+driver/$(DRIVER)/scc: bin
+	cd driver/$(DRIVER)/ && $(MAKE) scc
+	cp -f driver/$(DRIVER)/scc bin/scc
+
+$(ARCHS): bin
+	mkdir -p bin
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
@@ -21,12 +26,15 @@ $(ARCHS):
 	ln -f cc1/cc1 bin/cc1-$@
 	ln -f cc2/cc2 bin/cc2-$@
 
+bin:
+	mkdir -p bin
+
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
 	mkdir -p $(PREFIX)/bin/
 	mkdir -p $(PREFIX)/include/scc
-	cp -f bin/cc* $(PREFIX)/libexec/scc/
-	cp -f bin/cc1 $(PREFIX)/bin/cpp
+	cp -f bin/cc?-* $(PREFIX)/libexec/scc/
+	cp -f bin/cc1-$(ARCH) $(PREFIX)/bin/cpp
 	cp -f bin/scc $(PREFIX)/bin/
 	cp -fr libc/include/* $(PREFIX)/include/scc/
 	find $(PREFIX)/include/scc/ -type f | xargs chmod 644
