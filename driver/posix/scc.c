@@ -104,14 +104,14 @@ inittool(int tool)
 	case CC1: /* FALLTHROUGH */
 	case CC2:
 		binln = strlen(t->bin);
-		if (arch) {
-			n = snprintf(t->bin + binln,
-				     sizeof(t->bin) - binln,
-				     "-%s", arch);
-			if (n < 0 || n >= sizeof(t->bin))
-				die("scc: target tool bin too long");
-			binln = strlen(t->bin);
-		}
+		if (!arch)
+			arch = ARCH;
+		n = snprintf(t->bin + binln,
+			     sizeof(t->bin) - binln,
+			     "-%s", arch);
+		if (n < 0 || n >= sizeof(t->bin))
+			die("scc: target tool bin too long");
+		binln = strlen(t->bin);
 
 		if (strlen(t->cmd) + binln + 1 > sizeof(t->cmd))
 			die("scc: target tool path too long");
