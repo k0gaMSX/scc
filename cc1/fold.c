@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "../inc/cc.h"
-#include "arch.h"
 #include "cc1.h"
 
 

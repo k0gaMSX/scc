@@ -5,7 +5,6 @@
 
 #include "../inc/cc.h"
 #include "../inc/sizes.h"
-#include "arch.h"
 #include "cc1.h"
 
 Symbol *curfun;

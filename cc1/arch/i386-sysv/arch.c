@@ -1,7 +1,5 @@
 /* See LICENSE file for copyright and license details. */
 #include <stdio.h>
-
-#include "arch.h"
 #include "../../../inc/cc.h"
 #include "../../cc1.h"
 

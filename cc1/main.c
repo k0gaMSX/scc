@@ -7,7 +7,6 @@
 
 #include "../inc/arg.h"
 #include "../inc/cc.h"
-#include "arch.h"
 #include "cc1.h"
 
 char *argv0;

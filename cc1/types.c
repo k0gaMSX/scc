@@ -6,9 +6,7 @@
 
 #include "../inc/sizes.h"
 #include "../inc/cc.h"
-#include "arch.h"
 #include "cc1.h"
-#include "arch.h"
 
 #define NR_TYPE_HASH 16
 
@@ -257,12 +255,12 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		op = FTN;
 	}
 	switch (op) {
-	case PTR:     c = L_POINTER;  break;
-	case ARY:     c = L_ARRAY;    break;
-	case FTN:     c = L_FUNCTION; break;
-	case ENUM:    c = L_ENUM;     break;
-	case STRUCT:  c = L_STRUCT;   break;
-	case UNION:   c = L_UNION;    break;
+	case PTR:     c = L_POINTER;       break;
+	case ARY:     c = L_ARRAY;         break;
+	case FTN:     c = L_FUNCTION;      break;
+	case ENUM:    c = inttype->letter; break;
+	case STRUCT:  c = L_STRUCT;        break;
+	case UNION:   c = L_UNION;         break;
 	}
 
 	type.type = tp;
