@@ -49,7 +49,7 @@ uninstall:
 clean-helper:
 	for i in $(DIRS); \
 	do \
-		(cd $$i && $(MAKE) clean || exit); \
+		(cd $$i && $(MAKE) -e clean || exit); \
 	done
 
 clean:
