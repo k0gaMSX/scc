@@ -173,7 +173,7 @@ void
 typesize(Type *tp)
 {
 	Symbol **sp;
-	Type *aux;
+	Type *type;
 	unsigned long size, offset;
 	int align, a;
 	TINT n;
@@ -202,18 +202,18 @@ typesize(Type *tp)
 		n = tp->n.elem;
 		for (sp = tp->p.fields; n--; ++sp) {
 			(*sp)->u.i = offset;
-			aux = (*sp)->type;
-			a = aux->align;
+			type = (*sp)->type;
+			a = type->align;
 			if (a > align)
 				align = a;
 			if (tp->op == STRUCT) {
 				if (--a != 0)
 					size = (size + a) & ~a;
-				size += aux->size;
+				size += type->size;
 				offset = size;
 			} else {
-				if (aux->size > size)
-					size = aux->size;
+				if (type->size > size)
+					size = type->size;
 			}
 		}
 
