@@ -121,6 +121,7 @@ initialize(Type *tp)
 		if (!(tp->prop & TDEFINED)) {
 			tp->prop |= TDEFINED;
 			tp->n.elem = len+1;
+			typesize(tp);
 		} else if (tp->n.elem < len) {
 			warn("initializer-string for array of chars is too long");
 		}

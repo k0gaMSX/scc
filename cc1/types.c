@@ -263,6 +263,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	case UNION:   c = L_UNION;         break;
 	}
 
+	memset(&type, 0, sizeof(type));
 	type.type = tp;
 	type.op = op;
 	type.prop = k_r ? TK_R : 0;
@@ -306,6 +307,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		}
 	}
 
+	if (type.prop & TDEFINED)
+		typesize(&type);
 	bp = xmalloc(sizeof(*bp));
 	*bp = type;
 	bp->id = newid();

@@ -554,6 +554,7 @@ enumdcl(void)
 	if (tp->prop & TDEFINED)
 		errorp("redefinition of enumeration '%s'", tagsym->name);
 	tp->prop |= TDEFINED;
+	typesize(tp);
 	namespace = NS_IDEN;
 
 	/* TODO: check incorrect values in val */
