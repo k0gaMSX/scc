@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+static char sccsid[] = "@(#) ./cc1/arch/amd64-sysv/arch.c";
 #include <stdio.h>
 
 #include "../../../inc/cc.h"

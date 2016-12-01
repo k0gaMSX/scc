@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+static char sccsid[] = "@(#) ./cc2/main.c";
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

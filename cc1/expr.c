@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+static char sccsid[] = "@(#) ./cc1/expr.c";
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

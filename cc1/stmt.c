@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+static char sccsid[] = "@(#) ./cc1/stmt.c";
 #include <stddef.h>
 #include <setjmp.h>
 #include <stdio.h>

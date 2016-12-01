@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+static char sccsid[] = "@(#) ./cc2/arch/qbe/optm.c";
 
 #include <stddef.h>
 
