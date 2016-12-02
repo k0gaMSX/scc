@@ -501,8 +501,8 @@ aggregate(void)
 	Type *tp;
 	Symbol *sym;
 
-	size = pop();
 	align = pop();
+	size = pop();
 	name = pop();
 	tp = pop();
 
