@@ -17,7 +17,6 @@ driver/$(DRIVER)/scc: bin
 	ln -f driver/$(DRIVER)/scc bin/scc
 
 $(ARCHS): bin
-	mkdir -p bin
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
