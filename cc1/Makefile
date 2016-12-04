@@ -6,7 +6,7 @@ include ../config.mk
 OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 	code.o stmt.o cpp.o fold.o init.o arch/$(ARCH)/arch.o
 
-all: cc1
+all: cc1-$(ARCH)
 
 cpp.o: stallman.msg
 $(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h
@@ -17,15 +17,15 @@ $(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h
 ../lib/libcc.a:
 	cd ../lib && $(MAKE) -e
 
-cc1: $(OBJS) ../lib/libcc.a
+cc1-$(ARCH): $(OBJS) ../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
 
-cpp: cc1
-	ln -f cc1 cpp
+cpp: cc1-$(ARCH)
+	ln -f $< cpp
 
 test:
 	cd tests && ./chktest.sh *.c
 
 clean:
 	rm -f $(OBJS)
-	rm -f cc1 cpp
+	rm -f cc1-* cpp

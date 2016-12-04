@@ -7,7 +7,7 @@ OBJS = main.o parser.o peep.o symbol.o node.o code.o optm.o\
        arch/$(ARCH)/code.o arch/$(ARCH)/cgen.o \
        arch/$(ARCH)/types.o arch/$(ARCH)/optm.o
 
-all: cc2
+all: cc2-$(ARCH)
 
 main.o: error.h
 $(OBJS): cc2.h ../inc/sizes.h ../inc/cc.h
@@ -24,9 +24,9 @@ error.h: cc2.h
 ../inc/sizes.h:
 	cp ../inc/sizes_$(STD).h $@
 
-cc2: $(OBJS) ../lib/libcc.a
+cc2-$(ARCH): $(OBJS) ../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../lib/libcc.a -o $@
 
 clean:
 	rm -f $(OBJS)
-	rm -f cc2 error.h
+	rm -f cc2-* error.h
