@@ -609,6 +609,7 @@ type(struct decl *dcl)
 	return sym;
 }
 
+#define NAME(s) (*(s)->name ? (s)->name : "<anonymous>")
 static Symbol *
 field(struct decl *dcl)
 {
@@ -618,8 +619,30 @@ field(struct decl *dcl)
 	TINT n = structp->n.elem;
 	int err = 0;
 
-	if (empty(sym, tp, 0))
+	/* TODO: print name of the field in the errors */
+	if (accept(':')) {
+		Node *np;
+		TINT n;
+
+		if ((np = iconstexpr()) == NULL) {
+			unexpected();
+			n = 0;
+		} else {
+			n = np->sym->u.i;
+			freetree(np);
+		}
+		if (n == 0 && *sym->name)
+			errorp("zero width for bit-field '%s'", sym->name);
+		if (tp != booltype && tp != inttype && tp != uinttype)
+			errorp("bit-field '%s' has invalid type", NAME(sym));
+		if (n < 0)
+			errorp("negative width in bit-field '%s'", NAME(sym));
+		else if (n > tp->size*8)
+			errorp("width of '%s' exceeds its type", NAME(sym));
+	} else if (empty(sym, tp, 0)) {
 		return sym;
+	}
+
 	if (tp->op == FTN) {
 		errorp("invalid type in struct/union");
 		err = 1;
@@ -649,6 +672,7 @@ field(struct decl *dcl)
 
 	return sym;
 }
+#undef NAME
 
 static void
 bad_storage(Type *tp, char *name)
