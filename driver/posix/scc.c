@@ -163,10 +163,12 @@ outfname(char *path, char *type)
 	n = snprintf(new, newsz, "%.*s%c%s", (int)pathln, path, sep, type);
 	if (n < 0 || n >= newsz)
 		die("scc: wrong output filename");
-	if ((tmpfd = mkstemp(new)) < 0 && errno != EINVAL)
-		die("scc: could not create output file '%s': %s",
-		    new, strerror(errno));
-	close(tmpfd);
+	if (sep == '/') {
+		if ((tmpfd = mkstemp(new)) < 0)
+			die("scc: could not create output file '%s': %s",
+			    new, strerror(errno));
+		close(tmpfd);
+	}
 
 	return new;
 }

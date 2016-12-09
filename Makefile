@@ -17,14 +17,13 @@ driver/$(DRIVER)/scc: bin
 	ln -f driver/$(DRIVER)/scc bin/scc
 
 $(ARCHS): bin
-	mkdir -p bin
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
-		ARCH=$@ $(MAKE) -e $$i || exit); \
+		ARCH=$@ $(MAKE) -e $$i-$@ || exit); \
 	done
-	ln -f cc1/cc1 bin/cc1-$@
-	ln -f cc2/cc2 bin/cc2-$@
+	ln -f cc1/cc1-$@ bin/
+	ln -f cc2/cc2-$@ bin/
 
 bin:
 	mkdir -p bin
