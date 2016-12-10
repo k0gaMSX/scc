@@ -80,7 +80,7 @@ icpp(void)
 	strftime(stime, sizeof(stime), "\"%H:%M:%S\"", tm);
 	defdefine("__DATE__", sdate, "built-in");
 	defdefine("__TIME__", stime, "built-in");
-	defdefine("__STDC_VERSION__", "199409L", "built-in");
+	defdefine("__STDC_VERSION__", STDC_VERSION, "built-in");
 	defdefine("__LINE__", NULL, "built-in");
 	defdefine("__FILE__", NULL, "built-in");
 
