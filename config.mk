@@ -14,7 +14,8 @@ STD = c99
 PREFIX    = $(HOME)
 MANPREFIX = $(PREFIX)/share/man
 
-# if your system is not POSIX maybe you want to use cc or gcc
+# scc expects to be built by a C99 compiler
+# if your system is not at least POSIX 2004 compatible, adjust CC
 # CC = c99
 # AR = ar
 
