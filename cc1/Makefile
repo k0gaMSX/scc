@@ -1,6 +1,8 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
+CSTDINC = -I../inc/$(STD)
+
 include ../config.mk
 
 OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
@@ -9,10 +11,7 @@ OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 all: cc1-$(ARCH)
 
 cpp.o: stallman.msg
-$(OBJS): cc1.h ../inc/cc.h ../inc/sizes.h
-
-../inc/sizes.h:
-	cp ../inc/sizes_$(STD).h $@
+$(OBJS): cc1.h ../inc/cc.h ../inc/$(STD)/cstd.h
 
 ../lib/libcc.a:
 	cd ../lib && $(MAKE) -e

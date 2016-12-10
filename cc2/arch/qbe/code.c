@@ -5,10 +5,10 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/code.c";
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstd.h>
 #include "arch.h"
 #include "../../../inc/cc.h"
 #include "../../cc2.h"
-#include "../../../inc/sizes.h"
 
 #define ADDR_LEN (INTIDENTSIZ+64)
 

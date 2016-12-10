@@ -4,10 +4,10 @@ static char sccsid[] = "@(#) ./cc2/arch/z80/code.c";
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <cstd.h>
 #include "arch.h"
 #include "../../../inc/cc.h"
 #include "../../cc2.h"
-#include "../../../inc/sizes.h"
 
 enum segment {
 	CODESEG,

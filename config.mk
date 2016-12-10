@@ -7,8 +7,7 @@ ARCHS = z80 i386-sysv amd64-sysv qbe
 ARCH = qbe
 DRIVER = posix
 
-# Remove inc/sizes.h if STD is changed
-# can be c89 or c99
+# Can be c89 or c99
 STD = c99
 
 # paths
@@ -21,6 +20,7 @@ MANPREFIX = $(PREFIX)/share/man
 
 # for Plan9 add -D_SUSV2_SOURCE
 SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
+             $(CSTDINC) \
              -DPREFIX=\"$(PREFIX)\" \
              -DNDEBUG \
              $(CFLAGS)

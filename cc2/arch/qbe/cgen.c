@@ -4,10 +4,10 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/cgen.c";
 #include <assert.h>
 #include <stdlib.h>
 
+#include <cstd.h>
 #include "arch.h"
 #include "../../../inc/cc.h"
 #include "../../cc2.h"
-#include "../../../inc/sizes.h"
 
 enum sflags {
 	ISTMP  = 1,

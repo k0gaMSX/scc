@@ -4,8 +4,8 @@ static char sccsid[] = "@(#) ./cc1/stmt.c";
 #include <setjmp.h>
 #include <stdio.h>
 
+#include <cstd.h>
 #include "../inc/cc.h"
-#include "../inc/sizes.h"
 #include "cc1.h"
 
 Symbol *curfun;

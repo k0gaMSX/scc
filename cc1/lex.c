@@ -7,7 +7,7 @@ static char sccsid[] = "@(#) ./cc1/lex.c";
 #include <stdlib.h>
 #include <string.h>
 
-#include "../inc/sizes.h"
+#include <cstd.h>
 #include "../inc/cc.h"
 #include "cc1.h"
 

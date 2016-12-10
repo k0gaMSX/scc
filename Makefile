@@ -60,4 +60,3 @@ clean:
 
 distclean: clean
 	rm -rf bin
-	rm inc/sizes.h

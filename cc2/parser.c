@@ -5,8 +5,8 @@ static char sccsid[] = "@(#) ./cc2/parser.c";
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstd.h>
 #include "../inc/cc.h"
-#include "../inc/sizes.h"
 
 #include "cc2.h"
 
