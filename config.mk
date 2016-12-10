@@ -21,7 +21,6 @@ MANPREFIX = $(PREFIX)/share/man
 
 # for Plan9 add -D_SUSV2_SOURCE
 SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
-             -Iarch/$(ARCH) \
              -DPREFIX=\"$(PREFIX)\" \
              -DNDEBUG \
              $(CFLAGS)
