@@ -471,8 +471,8 @@ include(void)
 	size_t filelen;
 	static char *sysinclude[] = {
 		PREFIX "/include/scc/" ARCH  "/",
-		PREFIX"/include/",
-		PREFIX"/local/include/",
+		PREFIX "/include/",
+		PREFIX "/local/include/",
 		NULL
 	};
 	int n;
