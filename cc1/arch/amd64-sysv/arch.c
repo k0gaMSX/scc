@@ -164,7 +164,7 @@ static Type types[] = {
 	},
 	{       /* 17 = sizettype */
 		.op = INT,
-		.letter = L_UINT32,
+		.letter = L_UINT64,
 		.prop = TDEFINED | TINTEGER | TARITH | TPRINTED,
 		.size = 8,
 		.align = 8,
