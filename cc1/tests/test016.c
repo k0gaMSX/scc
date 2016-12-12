@@ -17,30 +17,30 @@ A6	P	"p
 	A4	#I1	:I
 	A6	A4	'P	:P
 	A6	@I	#I0	:I
-	y	L7	A4	#I0	=I
-	h	#I1
-L7
-	A6	G1	'P	:P
-	A6	@I	#I0	:I
-	y	L8	A6	#P0	!I
+	y	L8	A4	#I0	=I
 	h	#I1
 L8
+	A6	G1	'P	:P
+	A6	@I	#I0	:I
+	y	L9	A6	#P0	!I
+	h	#I1
+L9
 	h	#I0
 }
-G9	I	F	"func2
+G11	I	F	"func2
 {
 \
-A10	I	"x
-A11	P	"p
-A13	P	"pp
-	A10	#I1	:I
-	A11	A10	'P	:P
-	A13	A11	'P	:P
-	y	L14	A11	#P0	=I
-	A13	@P	@I	#I0	:I
-L14
-	A11	#P0	:P
-	h	A10
+A12	I	"x
+A13	P	"p
+A15	P	"pp
+	A12	#I1	:I
+	A13	A12	'P	:P
+	A15	A13	'P	:P
+	y	L17	A13	#P0	=I
+	A15	@P	@I	#I0	:I
+L17
+	A13	#P0	:P
+	h	A12
 }
 */
 

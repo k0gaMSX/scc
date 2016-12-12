@@ -9,7 +9,7 @@ G3	I	F	"main
 {
 \
 A5	P	"p
-V7	K	#N25
+V7	K	#N19
 Y6	V7	"	(
 	#"hello is better than bye
 	#K00

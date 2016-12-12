@@ -9,7 +9,7 @@ X4	I	F	"printf
 G6	I	F	"main
 {
 \
-V9	K	#N13
+V9	K	#ND
 Y8	V9	"	(
 	#"hello world
 	#K0A

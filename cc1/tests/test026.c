@@ -10,7 +10,7 @@ G3	I	F	"main
 \
 A4	I	"y
 A6	P	"p
-V8	K	#N10
+V8	K	#NA
 Y7	V8	"	(
 	#"test026.c
 	#K00

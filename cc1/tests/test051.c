@@ -20,9 +20,9 @@ L5
 	y	L7	G2	'P	#P2	+P	@I	#I1	=I
 	h	#I2
 L7
-	y	L8	G2	'P	#P4	+P	@I	#I2	=I
+	y	L9	G2	'P	#P4	+P	@I	#I2	=I
 	h	#I3
-L8
+L9
 	h	#I0
 }
 */

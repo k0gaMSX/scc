@@ -10,12 +10,12 @@ G2	I	F	"foo
 \
 	h	#I2A
 }
-G3	I	F	"bar
+G4	I	F	"bar
 {
 \
 	h	#I18
 }
-G4	I	F	"main
+G5	I	F	"main
 {
 \
 	h	G2	cI

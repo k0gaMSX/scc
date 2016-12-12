@@ -19,18 +19,18 @@ A11	V10	"v
 	A9	A5	'P	#P4	+P	#P3	+P	:P
 	A5	'P	#P4	+P	#P3	+P	@K	#K2	:K
 	A11	#I2	:I
-	y	L13	A5	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
-	h	#I1
-L13
-	y	L14	A7	#P4	+P	#P3	+P	@K	gI	#I2	=I
-	h	#I1
-L14
-	y	L15	A9	@K	gI	#I2	=I
+	y	L15	A5	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
 L15
-	y	L16	A11	#I2	=I
+	y	L16	A7	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
 L16
+	y	L17	A9	@K	gI	#I2	=I
+	h	#I1
+L17
+	y	L18	A11	#I2	=I
+	h	#I1
+L18
 	h	#I0
 }
 */

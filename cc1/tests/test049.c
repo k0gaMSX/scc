@@ -11,12 +11,12 @@ G1	I	"x	(
 G3	P	"p	(
 	G1	'P
 )
-G5	I	F	"main
+G6	I	F	"main
 {
 \
-	y	L6	G3	@I	#I5	=I
+	y	L7	G3	@I	#I5	=I
 	h	#I1
-L6
+L7
 	h	#I0
 }
 */

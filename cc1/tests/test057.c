@@ -15,7 +15,9 @@ G3	V2	"arr1	(
 	#I1
 	#I2
 )
-G4	V2	"arr2	(
+V4	I	#N3
+V5	V4	#N2
+G6	V5	"arr2	(
 	#I2
 	#I7
 	#I5
@@ -23,10 +25,10 @@ G4	V2	"arr2	(
 	#I1
 	#I2
 )
-G6	I	F	"main
+G8	I	F	"main
 {
 \
-	h	G3	'P	#P6	+P	#P4	+P	@I	G4	'P	#P6	+P	#P6	+P	@I	!I
+	h	G3	'P	#P6	+P	#P4	+P	@I	G6	'P	#P6	+P	#P6	+P	@I	!I
 }
 */
 

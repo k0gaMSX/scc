@@ -12,40 +12,40 @@ R1	P	"to
 R2	P	"from
 R3	I	"count
 \
-R7	I	"n
-	R7	R3	#I7	+I	#I8	/I	:I
+R8	I	"n
+	R8	R3	#I7	+I	#I8	/I	:I
 	s	R3	#I8	%I
-	v	L9	#I0
-L9
-	e
+	v	L10	#I0
 L10
+	e
+L11
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L12	#I7
-L12
-	R1	@I	R2	#P2	:iP	@I	:I
-	v	L13	#I6
+	v	L13	#I7
 L13
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L14	#I5
+	v	L14	#I6
 L14
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L15	#I4
+	v	L15	#I5
 L15
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L16	#I3
+	v	L16	#I4
 L16
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L17	#I2
+	v	L17	#I3
 L17
 	R1	@I	R2	#P2	:iP	@I	:I
-	v	L18	#I1
+	v	L18	#I2
 L18
 	R1	@I	R2	#P2	:iP	@I	:I
-	y	L10	R7	#I1	:-I	#I0	>I
+	v	L19	#I1
+L19
+	R1	@I	R2	#P2	:iP	@I	:I
+	y	L11	R8	#I1	:-I	#I0	>I
 	b
-L11
-	t	L8
-L8
+L12
+	t	L9
+L9
 }
 */
 

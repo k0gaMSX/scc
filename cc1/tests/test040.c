@@ -5,15 +5,15 @@ name: TEST040
 description: Test for bug parsing typenames in struct definition
 error:
 output:
-G9	I	F	"main
+G10	I	F	"main
 {
 \
 S2	"List	#NC	#N2
 M4	I	"len	#N0
 M6	P	"head	#N2
-M7	P	"back	#N4
-A10	S2	"List
-	h	A10	M4	.I
+M8	P	"back	#N4
+A11	S2	"List
+	h	A11	M4	.I
 }
 */
 

@@ -39,7 +39,7 @@ R12	I	"par
 \
 A15	I	"par
 }
-T17	0	F	"func3
+T18	0	F	"func3
 {
 R16	I	"par
 \

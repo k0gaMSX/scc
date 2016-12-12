@@ -8,7 +8,7 @@ output:
 G5	I	F	"main
 {
 \
-V9	K	#N44
+V9	K	#N2C
 Y8	V9	"	(
 	#"This is a string $ or # or ##and it is ok !
 	#K00

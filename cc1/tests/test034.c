@@ -9,19 +9,19 @@ test034.c:46: error: redeclaration of 'bar'
 output:
 X3	S2	"x
 X5	I	F	"foo
-G6	I	F	"main
+G7	I	F	"main
 {
 \
-X7	S2	"x
-	h	X7	'P	#P0	!I
+X8	S2	"x
+	h	X8	'P	#P0	!I
 }
 G5	I	F	"foo
 {
 \
-	X3	M9	.I	#I0	:I
-	h	X3	M9	.I
+	X3	M10	.I	#I0	:I
+	h	X3	M10	.I
 }
-X13	S11	"bar2
+X14	S12	"bar2
 */
 
 extern struct X x;

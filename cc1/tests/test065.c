@@ -16,27 +16,27 @@ A5	P	"argv
 V8	I	#N1
 A9	V8	"v
 A12	P	"p
-A14	P	"f1
-A15	P	"f2
+A18	P	"f1
+A21	P	"f2
 	A9	#I0	:I
 	A12	A9	'P	:P
-	A14	G7	'P	:P
-	A15	G7	'P	:P
-	y	L18	A1	#I0	!I
+	A18	G7	'P	:P
+	A21	G7	'P	:P
+	y	L26	A1	#I0	!I
 	h	#I1
-L18
-	y	L19	G7	#I0	pI	#P0	pP	cI	#I0	=I
+L26
+	y	L27	G7	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I2
-L19
-	y	L20	A14	@F	#I0	pI	#P0	pP	cI	#I0	=I
+L27
+	y	L28	A18	@F	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I3
-L20
-	y	L21	A15	@F	#I0	pI	#P0	pP	cI	#I0	=I
+L28
+	y	L29	A21	@F	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I4
-L21
-	y	L22	A12	@I	#I0	!I
+L29
+	y	L30	A12	@I	#I0	!I
 	h	#I0
-L22
+L30
 */
 
 int
