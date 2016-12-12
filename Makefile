@@ -60,7 +60,3 @@ clean:
 
 distclean: clean
 	rm -rf bin
-	rm config.mk
-
-config.mk:
-	cp $@.def $@
