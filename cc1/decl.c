@@ -773,8 +773,10 @@ identifier(struct decl *dcl)
 		--curctx;
 		sym = install(NS_IDEN, sym);
 		++curctx;
-		if (!strcmp(name, "main") && tp->type != inttype)
+		if (!strcmp(name, "main") && tp->type != inttype) {
+			errorp("main shall be defined with a return type of int");
 			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
+		}
 	}
 
 	if (sym == NULL) {
