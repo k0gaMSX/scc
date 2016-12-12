@@ -33,20 +33,24 @@ pushctx(void)
 void
 popctx(void)
 {
-	Symbol *sym, *next;
+	Symbol *sym, *next, **psym;
 
 	infunction = 0;
 	for (sym = locals; sym; sym = next) {
 		next = sym->next;
-		if (sym->id != TMPSYM)
-			symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
+		if (sym->id != TMPSYM) {
+			psym = &symtab[sym->id & NR_SYMHASH-1];
+			while (*psym != sym)
+				psym = &(*psym)->next;
+			*psym = sym->h_next;
+		}
 		freesym(sym);
 	}
 	curlocal = locals = NULL;
 }
 
 Symbol *
-getsym(unsigned id)
+getsym(unsigned id, int islocal)
 {
 	Symbol **htab, *sym;
 	static unsigned short num;
@@ -64,7 +68,7 @@ getsym(unsigned id)
 		sym->id = id;
 		if ((sym->numid = ++num) == 0)
 			error(EIDOVER);
-		if (infunction) {
+		if (infunction && islocal) {
 			if (!locals)
 				locals = sym;
 			if (curlocal)
