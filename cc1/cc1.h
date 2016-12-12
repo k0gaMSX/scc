@@ -292,6 +292,7 @@ struct type {
 		unsigned char rank;     /* convertion rank */
 		TINT elem;              /* number of type parameters */
 	} n;
+	Type *next;                 /* local list pointer */
 	Type *h_prev, *h_next;       /* hash pointers */
 };
 
@@ -356,6 +357,7 @@ extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
 extern struct limits *getlimits(Type *tp);
 extern void typesize(Type *tp);
+extern void flushtypes(void);
 extern void itypes(void);
 
 /* symbol.c */

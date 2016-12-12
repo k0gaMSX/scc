@@ -907,6 +907,7 @@ decl(void)
 	emit(OFUN, sym);
 	compound(NULL, NULL, NULL);
 	emit(OEFUN, NULL);
+	flushtypes();
 	curfun = ocurfun;
 }
 

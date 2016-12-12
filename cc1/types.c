@@ -72,7 +72,7 @@ static struct limits limits[][4] = {
 	}
 };
 
-static Type typetab[NR_TYPE_HASH];
+static Type typetab[NR_TYPE_HASH], *localtypes;
 
 void
 itypes()
@@ -333,6 +333,12 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	h_next->h_prev = bp;
 	tbl->h_next = bp;
 
+	if (curctx > GLOBALCTX+1) {
+		/* it is a type defined in the body of a function */
+		bp->next = localtypes;
+		localtypes = bp;
+	}
+
 	return bp;
 }
 
@@ -377,4 +383,18 @@ eqtype(Type *tp1, Type *tp2, int equiv)
 	default:
 		abort();
 	}
+}
+
+void
+flushtypes(void)
+{
+	Type *tp, *next;
+
+	for (tp = localtypes; tp; tp = next) {
+		next = tp->next;
+		tp->h_prev->h_next = tp->h_next;
+		tp->h_next->h_prev = tp->h_prev;
+		free(tp);
+	}
+	localtypes = NULL;
 }

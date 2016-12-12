@@ -31,15 +31,15 @@ G11	I	F	"func2
 {
 \
 A12	I	"x
-A13	P	"p
-A15	P	"pp
+A14	P	"p
+A17	P	"pp
 	A12	#I1	:I
-	A13	A12	'P	:P
-	A15	A13	'P	:P
-	y	L17	A13	#P0	=I
-	A15	@P	@I	#I0	:I
-L17
-	A13	#P0	:P
+	A14	A12	'P	:P
+	A17	A14	'P	:P
+	y	L19	A14	#P0	=I
+	A17	@P	@I	#I0	:I
+L19
+	A14	#P0	:P
 	h	A12
 }
 */
