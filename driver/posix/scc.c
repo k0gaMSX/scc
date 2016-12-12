@@ -119,6 +119,7 @@ inittool(int tool)
 		strcat(t->cmd, t->bin);
 		break;
 	case LD:
+		addarg(tool, "-no-pie");
 		addarg(tool, "-o");
 		t->outfile = outfile ? outfile : xstrdup("a.out");
 		addarg(tool, t->outfile);
