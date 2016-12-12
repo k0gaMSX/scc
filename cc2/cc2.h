@@ -236,7 +236,7 @@ extern Node *nextstmt(void);
 
 /* symbol.c */
 #define TMPSYM  0
-extern Symbol *getsym(unsigned id, int islocal);
+extern Symbol *getsym(unsigned id);
 extern void popctx(void);
 extern void pushctx(void);
 extern void freesym(Symbol *sym);

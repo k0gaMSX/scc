@@ -41,7 +41,7 @@ optm_dep(Node *np)
 		break;
 	case OBRANCH:
 		if (!next->label) {
-			sym = getsym(TMPSYM, 1);
+			sym = getsym(TMPSYM);
 			sym->kind = SLABEL;
 			next->label = sym;
 		}

@@ -33,24 +33,31 @@ pushctx(void)
 void
 popctx(void)
 {
-	Symbol *sym, *next, **psym;
+	Symbol *sym, *next;
 
 	infunction = 0;
 	for (sym = locals; sym; sym = next) {
 		next = sym->next;
-		if (sym->id != TMPSYM) {
-			psym = &symtab[sym->id & NR_SYMHASH-1];
-			while (*psym != sym)
-				psym = &(*psym)->next;
-			*psym = sym->h_next;
-		}
+		/*
+		 * Symbols are inserted in the hash in the inverted
+		 * order they are found in locals and it is impossible
+		 * to have a global over a local, because a local is
+		 * any symbol defined in the body of a function,
+		 * even if it has extern linkage.
+		 * For this reason when we raich a symbol in the
+		 * locals list we know that it is the head of it
+		 * collision list and we can remove it assigning
+		 * it h_next to the hash table position
+		 */
+		if (sym->id != TMPSYM)
+			symtab[sym->id & NR_SYMHASH-1] = sym->h_next;
 		freesym(sym);
 	}
 	curlocal = locals = NULL;
 }
 
 Symbol *
-getsym(unsigned id, int islocal)
+getsym(unsigned id)
 {
 	Symbol **htab, *sym;
 	static unsigned short num;
@@ -68,7 +75,7 @@ getsym(unsigned id, int islocal)
 		sym->id = id;
 		if ((sym->numid = ++num) == 0)
 			error(EIDOVER);
-		if (infunction && islocal) {
+		if (infunction) {
 			if (!locals)
 				locals = sym;
 			if (curlocal)

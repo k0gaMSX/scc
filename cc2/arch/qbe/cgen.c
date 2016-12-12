@@ -102,7 +102,7 @@ tmpnode(Node *np, Type *tp)
 
 	if (!np)
 		np = newnode(OTMP);
-	sym = getsym(TMPSYM, 1);
+	sym = getsym(TMPSYM);
 	sym->type = np->type = *tp;
 	sym->kind = STMP;
 	np->u.sym = sym;

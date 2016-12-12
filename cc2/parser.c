@@ -178,7 +178,7 @@ composed(char *token, union tokenop u)
 {
 	Symbol *sym;
 
-	sym = getsym(atoi(token+1), 0);
+	sym = getsym(atoi(token+1));
 	push(&sym->type);
 }
 
@@ -192,7 +192,7 @@ static void
 symbol(char *token, union tokenop u)
 {
 	Node *np = newnode(u.op & 0xFF);
-	Symbol *sym = getsym(atoi(token+1), 1);
+	Symbol *sym = getsym(atoi(token+1));
 
 	sclass = u.op >> 8;
 	np->u.sym = sym;
