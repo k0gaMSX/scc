@@ -308,15 +308,17 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	t = (op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
 	tbl = &typetab[t];
-	for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
-		if (eqtype(bp, &type, 0) && op != STRUCT && op != UNION) {
-			/*
-			 * pars was allocated by the caller
-			 * but the type already exists, so
-			 * we have to deallocte it
-			 */
-			free(pars);
-			return bp;
+	if (op != STRUCT && op != UNION && op != ENUM) {
+		for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
+			if (eqtype(bp, &type, 0)) {
+				/*
+				 * pars was allocated by the caller
+				 * but the type already exists, so
+				 * we have to deallocte it
+				 */
+				free(pars);
+				return bp;
+			}
 		}
 	}
 
