@@ -72,6 +72,19 @@ static struct limits limits[][4] = {
 	}
 };
 
+static Type typetab[NR_TYPE_HASH];
+
+void
+itypes()
+{
+	Type *tp;
+
+	for (tp = typetab; tp < &typetab[NR_TYPE_HASH]; ++tp) {
+		tp->h_next = tp;
+		tp->h_prev = tp;
+	}
+}
+
 struct limits *
 getlimits(Type *tp)
 {
@@ -242,8 +255,7 @@ typesize(Type *tp)
 Type *
 mktype(Type *tp, int op, TINT nelem, Type *pars[])
 {
-	static Type *typetab[NR_TYPE_HASH];
-	Type **tbl, type;
+	Type *tbl, *h_next, type;
 	unsigned t;
 	Type *bp;
 	int c, k_r = 0;
@@ -296,7 +308,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	t = (op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
 	tbl = &typetab[t];
-	for (bp = *tbl; bp; bp = bp->next) {
+	for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
 		if (eqtype(bp, &type, 0) && op != STRUCT && op != UNION) {
 			/*
 			 * pars was allocated by the caller
@@ -313,8 +325,15 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	bp = xmalloc(sizeof(*bp));
 	*bp = type;
 	bp->id = newid();
-	bp->next = *tbl;
-	return *tbl = bp;
+
+	/* insert the new type in the circular double list */
+	h_next = tbl->h_next;
+	bp->h_next = h_next;
+	bp->h_prev = h_next->h_prev;
+	h_next->h_prev = bp;
+	tbl->h_next = bp;
+
+	return bp;
 }
 
 int

@@ -58,6 +58,7 @@ main(int argc, char *argv[])
 	int i;
 
 	atexit(clean);
+	itypes();
 	icpp();
 	ilex();
 

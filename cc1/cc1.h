@@ -284,7 +284,6 @@ struct type {
 	unsigned char align;        /* align of the type */
 	Type *type;                 /* base type */
 	Symbol *tag;                /* symbol of the strug tag */
-	Type *next;                 /* next element in the hash */
 	union {
 		Type **pars;            /* Function type parameters */
 		Symbol **fields;        /* fields of aggregate type */
@@ -293,6 +292,7 @@ struct type {
 		unsigned char rank;     /* convertion rank */
 		TINT elem;              /* number of type parameters */
 	} n;
+	Type *h_prev, *h_next;       /* hash pointers */
 };
 
 struct symbol {
@@ -356,6 +356,7 @@ extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
 extern struct limits *getlimits(Type *tp);
 extern void typesize(Type *tp);
+extern void itypes(void);
 
 /* symbol.c */
 extern void dumpstab(char *msg);
