@@ -225,7 +225,7 @@ typesize(Type *tp)
 		 * alignment.
 		 */
 		if (tp->op == STRUCT && align-- > 1)
-			size += size + align & ~align;
+			size += size+align & ~align;
 		tp->size = size;
 		return;
 	case ENUM:
@@ -294,7 +294,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		abort();
 	}
 
-	t = (op ^ (uintptr_t) tp >> 3) & NR_TYPE_HASH-1;
+	t = (op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
 	tbl = &typetab[t];
 	for (bp = *tbl; bp; bp = bp->next) {
 		if (eqtype(bp, &type, 0) && op != STRUCT && op != UNION) {
