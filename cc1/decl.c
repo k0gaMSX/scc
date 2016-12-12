@@ -619,7 +619,6 @@ field(struct decl *dcl)
 	TINT n = structp->n.elem;
 	int err = 0;
 
-	/* TODO: print name of the field in the errors */
 	if (accept(':')) {
 		Node *np;
 		TINT n;
@@ -644,11 +643,11 @@ field(struct decl *dcl)
 	}
 
 	if (tp->op == FTN) {
-		errorp("invalid type in struct/union");
+		errorp("invalid type '%s' in struct/union", name);
 		err = 1;
 	}
 	if (dcl->sclass) {
-		errorp("storage class in struct/union field");
+		errorp("storage class in struct/union field '%s'", name);
 		err = 1;
 	}
 	if (!(tp->prop & TDEFINED)) {
