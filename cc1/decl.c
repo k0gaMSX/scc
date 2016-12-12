@@ -775,7 +775,7 @@ identifier(struct decl *dcl)
 		sym = install(NS_IDEN, sym);
 		++curctx;
 		if (!strcmp(name, "main") && tp->type != inttype)
-			errorp("please contact __20h__ on irc.oftc.net (#suckless) via IRC");
+			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
 	}
 
 	if (sym == NULL) {
