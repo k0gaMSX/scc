@@ -10,6 +10,9 @@ static char sccsid[] = "@(#) ./cc1/types.c";
 #include "cc1.h"
 
 #define NR_TYPE_HASH 16
+#define HASH(t) (((t)->op ^ (uintptr_t) (t)->type>>3) & NR_TYPE_HASH-1)
+
+static Type *typetab[NR_TYPE_HASH], *localtypes;
 
 /* FIXME:
  * Compiler can generate warnings here if the ranges of TINT,
@@ -71,19 +74,6 @@ static struct limits limits[][4] = {
 		}
 	}
 };
-
-static Type typetab[NR_TYPE_HASH], *localtypes;
-
-void
-itypes()
-{
-	Type *tp;
-
-	for (tp = typetab; tp < &typetab[NR_TYPE_HASH]; ++tp) {
-		tp->h_next = tp;
-		tp->h_prev = tp;
-	}
-}
 
 struct limits *
 getlimits(Type *tp)
@@ -260,22 +250,23 @@ newtype(Type *base)
 	tp = xmalloc(sizeof(*tp));
 	*tp = *base;
 	tp->id = newid();
+
 	if (curctx > GLOBALCTX+1) {
 		/* it is a type defined in the body of a function */
 		tp->next = localtypes;
 		localtypes = tp;
 	}
-	if (tp->prop & TDEFINED)
+	if (tp->prop & TDEFINED) {
 		typesize(tp);
-	tp->h_next = tp->h_prev = tp;
+		emit(OTYP, tp);
+	}
 	return tp;
 }
 
 Type *
 mktype(Type *tp, int op, TINT nelem, Type *pars[])
 {
-	Type *tbl, *h_next, type;
-	unsigned t;
+	Type **tbl, type;
 	Type *bp;
 
 	if (op == PTR && tp == voidtype)
@@ -284,10 +275,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	memset(&type, 0, sizeof(type));
 	type.type = tp;
 	type.op = op;
-	type.prop = 0;
 	type.p.pars = pars;
 	type.n.elem = nelem;
-	type.ns = 0;
 
 	switch (op) {
 	case ARY:
@@ -324,9 +313,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		abort();
 	}
 
-	t = (type.op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
-	tbl = &typetab[t];
-	for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
+	tbl = &typetab[HASH(&type)];
+	for (bp = *tbl; bp; bp = bp->h_next) {
 		if (eqtype(bp, &type, 0)) {
 			/*
 			 * pars was allocated by the caller
@@ -339,11 +327,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	}
 
 	bp = newtype(&type);
-	h_next = tbl->h_next;
-	bp->h_next = h_next;
-	bp->h_prev = h_next->h_prev;
-	h_next->h_prev = bp;
-	tbl->h_next = bp;
+	bp->h_next = *tbl;
+	*tbl = bp;
 
 	return bp;
 }
@@ -398,9 +383,22 @@ flushtypes(void)
 
 	for (tp = localtypes; tp; tp = next) {
 		next = tp->next;
-		tp->h_prev->h_next = tp->h_next;
-		tp->h_next->h_prev = tp->h_prev;
-		free(tp);
+		switch (tp->op) {
+		default:
+			/*
+			 * All the local types are linked after
+			 * global types, and since we are
+			 * unlinking them in the inverse order
+			 * we do know that tp is always the head
+			 * of the collision list
+			 */
+			typetab[HASH(tp)] = tp->h_next;
+		case STRUCT:
+		case UNION:
+		case ENUM:
+			free(tp);
+			break;
+		}
 	}
 	localtypes = NULL;
 }

@@ -293,7 +293,7 @@ struct type {
 		TINT elem;              /* number of type parameters */
 	} n;
 	Type *next;                 /* local list pointer */
-	Type *h_prev, *h_next;       /* hash pointers */
+	Type *h_next;               /* hash collision list */
 };
 
 struct symbol {
@@ -358,7 +358,6 @@ extern Type *duptype(Type *base);
 extern struct limits *getlimits(Type *tp);
 extern void typesize(Type *tp);
 extern void flushtypes(void);
-extern void itypes(void);
 
 /* symbol.c */
 extern void dumpstab(char *msg);
