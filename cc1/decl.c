@@ -616,7 +616,7 @@ field(struct decl *dcl)
 {
 	static char *anon = "<anonymous>";
 	Symbol *sym = dcl->sym;
-	char *name = *sym->name ? sym->name : anon;
+	char *name = (sym->name) ? sym->name : anon;
 	Type *structp = dcl->parent, *tp = dcl->type;
 	TINT n = structp->n.elem;
 	int err = 0;
