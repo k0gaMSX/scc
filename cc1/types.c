@@ -345,6 +345,7 @@ eqtype(Type *tp1, Type *tp2, int equiv)
 		return 0;
 	if (tp1->op != tp2->op)
 		return 0;
+
 	switch (tp1->op) {
 	case UNION:
 	case STRUCT:
