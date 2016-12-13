@@ -5,17 +5,20 @@ name: TEST032
 description: test special characters @ and $ in macro definitions
 error:
 output:
-G5	I	F	"main
+V2	K	#NC
+V4	K	#N9
+V7	K	#N1E
+G9	I	F	"main
 {
 \
-V9	K	#N2C
-Y8	V9	"	(
+V13	K	#N2C
+Y12	V13	"	(
 	#"This is a string $ or # or ##and it is ok !
 	#K00
 )
-A7	P	"p
-	A7	Y8	'P	:P
-	h	A7	#P0	!I
+A11	P	"p
+	A11	Y12	'P	:P
+	h	A11	#P0	!I
 }
 */
 

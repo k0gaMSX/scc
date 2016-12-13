@@ -5,10 +5,11 @@ name: TEST058
 description: Test of initialization mixing designators and sequence
 error:
 output:
-V1	I	#N5
-V2	V1	#N3
-V3	V2	#N2
-G4	V3	"arr	(
+V2	K	#NC
+V4	K	#N9
+V5	I	#N5
+V6	V5	#N3
+G8	V7	"arr	(
 	#I0
 	#I0
 	#I3
@@ -40,10 +41,10 @@ G4	V3	"arr	(
 	#I0
 	#I0
 )
-G6	I	F	"main
+G10	I	F	"main
 {
 \
-	h	G4	'P	#PA	+P	#P8	+P	@I	G4	'P	#P1E	+P	#PA	+P	#P8	+P	@I	!I
+	h	G8	'P	#PA	+P	#P8	+P	@I	G8	'P	#P1E	+P	#PA	+P	#P8	+P	@I	!I
 }
 */
 

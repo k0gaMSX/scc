@@ -5,7 +5,9 @@ name: TEST061
 description: Test for macros without arguments but with parenthesis
 error:
 output:
-G3	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G7	I	F	"main
 {
 \
 	h	#I1

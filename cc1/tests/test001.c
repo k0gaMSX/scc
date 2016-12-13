@@ -5,17 +5,19 @@ name: TEST001
 description: Basic hello world test
 error:
 output:
-X4	I	F	"printf
-G6	I	F	"main
+V2	K	#NC
+V4	K	#N9
+X8	I	F	"printf
+G10	I	F	"main
 {
 \
-V9	K	#ND
-Y8	V9	"	(
+V13	K	#ND
+Y12	V13	"	(
 	#"hello world
 	#K0A
 	#K00
 )
-	X4	Y8	'P	pP	cI
+	X8	Y12	'P	pP	cI
 	h	#I0
 }
 */

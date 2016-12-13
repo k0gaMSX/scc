@@ -5,27 +5,29 @@ name: TEST002
 description: Test forward references before definition of types
 error:
 output:
-G4	P	"x
-G8	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G8	P	"x
+S6	"S	#N8	#N2
+M9	I	"i	#N0
+M10	P	"next	#N2
+G12	I	F	"main
 {
 \
-S2	"S	#N8	#N2
-M5	I	"i	#N0
-M6	P	"next	#N2
-A9	S2	"y
-A10	P	"p
-A11	N	"n
-	A9	M5	.I	#I0	:I
-	G4	@S2	A9	:S2
-	A11	#N0	:N	A10	A9	'P	:P	,P
-	j	L14
+A13	S6	"y
+A14	P	"p
+A15	N	"n
+	A13	M9	.I	#I0	:I
+	G8	@S6	A13	:S6
+	A15	#N0	:N	A14	A13	'P	:P	,P
+	j	L18
 	e
-L12
-	A11	#N1	:+N	A10	A10	@S2	M6	.P	:P	,P
-L14
-	y	L12	A10	#P0	!I
+L16
+	A15	#N1	:+N	A14	A14	@S6	M10	.P	:P	,P
+L18
+	y	L16	A14	#P0	!I
 	b
-L13
+L17
 }
 */
 

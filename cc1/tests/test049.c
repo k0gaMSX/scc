@@ -5,18 +5,20 @@ name: TEST049
 description: Basic test for initializer
 error:
 output:
-G1	I	"x	(
+V2	K	#NC
+V4	K	#N9
+G5	I	"x	(
 	#I5
 )
-G3	P	"p	(
-	G1	'P
+G7	P	"p	(
+	G5	'P
 )
-G6	I	F	"main
+G9	I	F	"main
 {
 \
-	y	L7	G3	@I	#I5	=I
+	y	L10	G7	@I	#I5	=I
 	h	#I1
-L7
+L10
 	h	#I0
 }
 */

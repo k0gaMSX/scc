@@ -8,57 +8,59 @@ test010.c:8: warning: conditional expression is constant
 test010.c:10: warning: conditional expression is constant
 test010.c:30: warning: conditional expression is constant
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"x
-	A3	#I0	:I
-	j	L6
+A7	I	"x
+	A7	#I0	:I
+	j	L10
 	e
-L4
-	j	L5
-L6
-	y	L4	#I1
-	b
-L5
-	j	L9
-	e
-L7
-	y	L10	A3	#I5	!I
-	j	L8
-L10
-	A3	A3	#I1	+I	:I
-	j	L7
-L9
-	y	L7	#I1
-	b
 L8
-
+	j	L9
+L10
+	y	L8	#I1
+	b
+L9
 	j	L13
 	e
 L11
-	y	L14	A3	#IA	!I
+	y	L14	A7	#I5	!I
 	j	L12
 L14
-	A3	A3	#I1	+I	:I
+	A7	A7	#I1	+I	:I
 	j	L11
-
 L13
-	j	L11
-
+	y	L11	#I1
 	b
 L12
+
+	j	L17
 	e
 L15
-	y	L17	A3	#IF	!I
+	y	L18	A7	#IA	!I
 	j	L16
-L17
-	A3	A3	#I1	+I	:I
+L18
+	A7	A7	#I1	+I	:I
 	j	L15
-	y	L15	#I1
+
+L17
+	j	L15
+
 	b
 L16
-	h	A3	#IF	-I
+	e
+L19
+	y	L21	A7	#IF	!I
+	j	L20
+L21
+	A7	A7	#I1	+I	:I
+	j	L19
+	y	L19	#I1
+	b
+L20
+	h	A7	#IF	-I
 }
 */
 

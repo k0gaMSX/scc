@@ -5,15 +5,17 @@ name: TEST045
 description: Basic test of initializers
 error:
 output:
-G1	I	"x	(
+V2	K	#NC
+V4	K	#N9
+G5	I	"x	(
 	#I5
 )
-G3	I	F	"main
+G7	I	F	"main
 {
 \
-	y	L4	G1	#I5	=I
+	y	L8	G5	#I5	=I
 	h	#I1
-L4
+L8
 	h	#I0
 }
 */

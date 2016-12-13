@@ -5,15 +5,17 @@ name: TEST028
 description: Test of reinterpretation in define
 error:
 output:
-G6	P	F	"foo
+V2	K	#NC
+V4	K	#N9
+G10	P	F	"foo
 {
 \
-V8	K	#N3
-Y10	V8	"	(
+V12	K	#N3
+Y14	V12	"	(
 	#"hi
 	#K00
 )
-	h	Y10	'P
+	h	Y14	'P
 }
 */
 

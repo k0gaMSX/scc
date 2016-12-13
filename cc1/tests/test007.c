@@ -5,20 +5,22 @@ name: TEST007
 description: basic while test
 error:
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"x
-	A3	#IA	:I
-	j	L6
+A7	I	"x
+	A7	#IA	:I
+	j	L10
 	e
-L4
-	A3	A3	#I1	-I	:I
-L6
-	y	L4	A3	#I0	!I
+L8
+	A7	A7	#I1	-I	:I
+L10
+	y	L8	A7	#I0	!I
 	b
-L5
-	h	A3
+L9
+	h	A7
 }
 */
 

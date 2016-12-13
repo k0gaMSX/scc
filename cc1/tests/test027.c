@@ -5,17 +5,19 @@ name: TEST027
 description: Test of cpp stringizer
 error:
 output:
-G3	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G7	I	F	"main
 {
 \
-A5	P	"p
-V7	K	#N19
-Y6	V7	"	(
+A9	P	"p
+V11	K	#N19
+Y10	V11	"	(
 	#"hello is better than bye
 	#K00
 )
-	A5	Y6	'P	:P
-	h	A5	@K	gI
+	A9	Y10	'P	:P
+	h	A9	@K	gI
 }
 */
 

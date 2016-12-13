@@ -6,25 +6,27 @@ description: Basic test for long long constants
 comments: This test is done for z80 data types
 error:
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	Q	"i
-A4	O	"u
-	A3	#Q1	:Q
-	A3	#QFFFFFFFFFFFFFFFF	:Q
-	A3	#QFFFFFFFFFFFFFFFF	:Q
-	A3	#QFFFF	:Q
-	A3	#QFFFFFFFFFFFFFFFF	:Q
-	A3	#Q3	:Q
-	A3	#Q1	:Q
-	A4	#O1	:O
-	A4	#OFFFFFFFFFFFFFFFF	:O
-	A4	#OFFFFFFFFFFFFFFFF	:O
-	A4	#OFFFF	:O
-	A4	#OFFFFFFFFFFFFFFFF	:O
-	A4	#O3	:O
-	A4	#O0	:O
+A7	Q	"i
+A8	O	"u
+	A7	#Q1	:Q
+	A7	#QFFFFFFFFFFFFFFFF	:Q
+	A7	#QFFFFFFFFFFFFFFFF	:Q
+	A7	#QFFFF	:Q
+	A7	#QFFFFFFFFFFFFFFFF	:Q
+	A7	#Q3	:Q
+	A7	#Q1	:Q
+	A8	#O1	:O
+	A8	#OFFFFFFFFFFFFFFFF	:O
+	A8	#OFFFFFFFFFFFFFFFF	:O
+	A8	#OFFFF	:O
+	A8	#OFFFFFFFFFFFFFFFF	:O
+	A8	#O3	:O
+	A8	#O0	:O
 	h	#I0
 }
 */

@@ -5,14 +5,16 @@ name: TEST064
 description: Test function alike macro without parenthesis
 error:
 output:
-G5	I	F	"main
+V2	K	#NC
+V4	K	#N9
+S5	"	#N2	#N1
+M6	I	"f	#N0
+G9	I	F	"main
 {
 \
-S1	"	#N2	#N1
-M2	I	"f	#N0
-A6	S1	"s
-	A6	M2	.I	#I0	:I
-	h	A6	M2	.I
+A10	S5	"s
+	A10	M6	.I	#I0	:I
+	h	A10	M6	.I
 }
 */
 

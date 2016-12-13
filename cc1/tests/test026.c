@@ -5,22 +5,24 @@ name: TEST026
 descritpion: Test of predefined cpp macros
 error:
 output:
-G3	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G7	I	F	"main
 {
 \
-A4	I	"y
-A6	P	"p
-V8	K	#NA
-Y7	V8	"	(
+A8	I	"y
+A10	P	"p
+V12	K	#NA
+Y11	V12	"	(
 	#"test026.c
 	#K00
 )
-	A6	Y7	'P	:P
-	A4	#I24	:I
-	A4	#I1	:I
-	A4	#I1	:I
-	A4	#I1	:I
-	A4	#I1	:I
+	A10	Y11	'P	:P
+	A8	#I26	:I
+	A8	#I1	:I
+	A8	#I1	:I
+	A8	#I1	:I
+	A8	#I1	:I
 }
 */
 

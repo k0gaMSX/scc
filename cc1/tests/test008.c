@@ -5,24 +5,26 @@ name: TEST008
 description: Basic do while loop
 error:
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"x
-	A3	#I0	:I
+A7	I	"x
+	A7	#I0	:I
 	e
-L4
-	A3	A3	#I1	+I	:I
-	y	L4	A3	#IA	<I
+L8
+	A7	A7	#I1	+I	:I
+	y	L8	A7	#IA	<I
 	b
-L5
+L9
 	e
-L6
-	A3	A3	#I1	+I	:I
-	y	L6	A3	#I14	<I
+L10
+	A7	A7	#I1	+I	:I
+	y	L10	A7	#I14	<I
 	b
-L7
-	h	A3	#I14	-I
+L11
+	h	A7	#I14	-I
 }
 */
 

@@ -4,12 +4,14 @@
 name: TEST042
 description: Test for bug parsing ternary operators
 error:
-test042.c:20: error: bad type conversion requested
+test042.c:22: error: bad type conversion requested
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-X4	0	F	"f
+X8	0	F	"f
 */
 
 int

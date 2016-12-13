@@ -5,7 +5,9 @@ name: TEST033
 description: test for #if defined()
 error:
 output:
-G1	I	"c
+V2	K	#NC
+V4	K	#N9
+G5	I	"c
 */
 
 #if defined(FOO)

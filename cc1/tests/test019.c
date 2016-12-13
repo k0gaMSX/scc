@@ -7,29 +7,31 @@ error:
 test019.c:12: warning: division by 0
 test019.c:13: warning: division by 0
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"i
-	A3	#I3	:I
-	A3	#I1	:I
-	A3	#I12	:I
-	A3	#I2	:I
-	A3	#I0	:I
-	A3	A3	#I0	%I	:I
-	A3	A3	#I0	%I	:I
-	A3	#I8	:I
-	A3	#I2	:I
-	A3	#I4	:I
-	A3	#IC	:I
-	A3	#I8	:I
-	A3	#IFFFD	:I
-	A3	#IFFF3	:I
-	A3	#I1	:I
-	A3	#I0	:I
-	A3	#I0	:I
-	A3	#I1	:I
-	A3	#I0	:I
+A7	I	"i
+	A7	#I3	:I
+	A7	#I1	:I
+	A7	#I12	:I
+	A7	#I2	:I
+	A7	#I0	:I
+	A7	A7	#I0	%I	:I
+	A7	A7	#I0	%I	:I
+	A7	#I8	:I
+	A7	#I2	:I
+	A7	#I4	:I
+	A7	#IC	:I
+	A7	#I8	:I
+	A7	#IFFFD	:I
+	A7	#IFFF3	:I
+	A7	#I1	:I
+	A7	#I0	:I
+	A7	#I0	:I
+	A7	#I1	:I
+	A7	#I0	:I
 }
 */
 

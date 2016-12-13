@@ -5,9 +5,10 @@ name: TEST057
 description: test of initialization of incomplete arrays
 error:
 output:
-V1	I	#N3
-V2	V1	#N2
-G3	V2	"arr1	(
+V2	K	#NC
+V4	K	#N9
+V5	I	#N3
+G7	V6	"arr1	(
 	#I2
 	#I7
 	#I5
@@ -15,9 +16,7 @@ G3	V2	"arr1	(
 	#I1
 	#I2
 )
-V4	I	#N3
-V5	V4	#N2
-G6	V5	"arr2	(
+G8	V6	"arr2	(
 	#I2
 	#I7
 	#I5
@@ -25,10 +24,10 @@ G6	V5	"arr2	(
 	#I1
 	#I2
 )
-G8	I	F	"main
+G10	I	F	"main
 {
 \
-	h	G3	'P	#P6	+P	#P4	+P	@I	G6	'P	#P6	+P	#P6	+P	@I	!I
+	h	G7	'P	#P6	+P	#P4	+P	@I	G8	'P	#P6	+P	#P6	+P	@I	!I
 }
 */
 

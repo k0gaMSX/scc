@@ -5,18 +5,20 @@ name: TEST005
 description: Test unary integer operations
 error:
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"x
-	A3	#I3	:I
-	A3	A3	#I0	=I	:I
-	A3	A3	#I0	=I	:I
-	A3	A3	~I	:I
-	A3	A3	_I	:I
-	y	L4	A3	#I2	=I
+A7	I	"x
+	A7	#I3	:I
+	A7	A7	#I0	=I	:I
+	A7	A7	#I0	=I	:I
+	A7	A7	~I	:I
+	A7	A7	_I	:I
+	y	L8	A7	#I2	=I
 	h	#I1
-L4
+L8
 	h	#I0
 }
 */

@@ -6,28 +6,30 @@ description: Test of integer constants
 comments: This test is done for z80 sizes
 error:
 output:
-G2	I	F	"main
+V2	K	#NC
+V4	K	#N9
+G6	I	F	"main
 {
 \
-A3	I	"i
-A4	N	"u
-A5	W	"l
-A6	Z	"ul
-A7	Q	"ll
-A8	O	"ull
-	A3	#I1	:I
-	A3	#I1	:I
-	A4	#N1	:N
-	A4	#N1	:N
-	A5	#W1	:W
-	A5	#W0	:W
-	A4	#N0	:N
-	A6	#Z1	:Z
-	A5	#W1	:W
-	A7	#Q0	:Q
-	A6	#Z0	:Z
-	A8	#O1	:O
-	A8	#O1	:O
+A7	I	"i
+A8	N	"u
+A9	W	"l
+A10	Z	"ul
+A11	Q	"ll
+A12	O	"ull
+	A7	#I1	:I
+	A7	#I1	:I
+	A8	#N1	:N
+	A8	#N1	:N
+	A9	#W1	:W
+	A9	#W0	:W
+	A8	#N0	:N
+	A10	#Z1	:Z
+	A9	#W1	:W
+	A11	#Q0	:Q
+	A10	#Z0	:Z
+	A12	#O1	:O
+	A12	#O1	:O
 	h	#I0
 }
 */
