@@ -58,9 +58,8 @@ main(int argc, char *argv[])
 	int i;
 
 	atexit(clean);
-	itypes();
-	icpp();
 	ilex();
+	icpp();
 
 	/* if run as cpp, only run the preprocessor */
 	name = (cp = strrchr(*argv, '/')) ? cp + 1 : *argv;
