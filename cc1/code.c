@@ -272,6 +272,7 @@ emittype(unsigned op, void *arg)
 		break;
 	case PTR:
 	case FTN:
+	case ENUM:
 		return;
 	default:
 		abort();
