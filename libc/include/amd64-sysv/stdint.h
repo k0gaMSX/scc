@@ -2,35 +2,35 @@
 #ifndef _STDINT_H_
 #define _STDINT_H_
 
-typedef int8_t signed char;
-typedef int16_t short;
-typedef int32_t int;
-typedef int64_t long;
+typedef signed char int8_t;
+typedef short int16_t;
+typedef int int32_t;
+typedef long int64_t;
 
-typedef uint8_t unsigned char;
-typedef uint16_t unsigned short;
-typedef uint32_t unsigned int;
-typedef uint64_t unsigned long;
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned int uint32_t;
+typedef unsigned long uint64_t;
 
-typedef int8_least_t signed char;
-typedef int16_least_t short;
-typedef int32_least_t int;
-typedef int64_least_t long;
+typedef signed char int8_least_t;
+typedef short int16_least_t;
+typedef int int32_least_t;
+typedef long int64_least_t;
 
-typedef uint8_least_t unsigned char;
-typedef uint16_least_t unsigned short;
-typedef uint32_least_t unsigned int;
-typedef uint64_least_t unsigned long;
+typedef unsigned char uint8_least_t;
+typedef unsigned short uint16_least_t;
+typedef unsigned int uint32_least_t;
+typedef unsigned long uint64_least_t;
 
-typedef int8_fast_t int;
-typedef int16_fast_t int;
-typedef int32_fast_t int;
-typedef int64_fast_t long;
+typedef int int8_fast_t;
+typedef int int16_fast_t;
+typedef int int32_fast_t;
+typedef long int64_fast_t;
 
-typedef int8_fast_t unsigned;
-typedef int16_fast_t unsigned;
-typedef int32_fast_t unsigned;
-typedef int64_fast_t unsigned long;
+typedef unsigned int8_fast_t;
+typedef unsigned int16_fast_t;
+typedef unsigned int32_fast_t;
+typedef unsigned long int64_fast_t;
 
 typedef long intptr_t;
 typedef unsigned long uintptr_t;
