@@ -308,7 +308,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		break;
 	case ENUM:
 		type.letter = inttype->letter;
-		type.prop |= TPRINTED | TINTEGER | TARITH;
+		type.prop |= TINTEGER | TARITH;
 		type.n.rank = inttype->n.rank;
 		goto create_type;
 	case STRUCT:

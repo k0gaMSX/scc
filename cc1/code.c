@@ -16,7 +16,8 @@ static void emitbin(unsigned, void *),
             emittext(unsigned, void *),
             emitfun(unsigned, void *),
             emitdcl(unsigned, void *),
-            emitinit(unsigned, void *);
+            emitinit(unsigned, void *),
+            emittype(unsigned, void *);
 
 char *optxt[] = {
 	[OADD] = "+",
@@ -132,7 +133,8 @@ void (*opcode[])(unsigned, void *) = {
 	[OESWITCH] = emitsymid,
 	[OPAR] = emitbin,
 	[OCALL] = emitbin,
-	[OINIT] = emitinit
+	[OINIT] = emitinit,
+	[OTYP] = emittype,
 };
 
 void
@@ -236,33 +238,26 @@ emitletter(Type *tp)
 }
 
 static void
-emittype(Type *tp)
+emittype(unsigned op, void *arg)
 {
 	TINT n;
 	Symbol **sp;
 	char *tag;
+	Type *tp = arg;
 
-	if ((tp->prop & TPRINTED) || !(tp->prop & TDEFINED))
+	if (!(tp->prop & TDEFINED))
 		return;
-	tp->prop |= TPRINTED;
 
 	switch (tp->op) {
 	case ARY:
-		emittype(tp->type);
 		emitletter(tp);
 		putchar('\t');
 		emitletter(tp->type);
 		printf("\t#%c%llX\n",
 		       sizettype->letter, (long long) tp->n.elem);
 		return;
-	case PTR:
-		emittype(tp->type);
-		return;
 	case UNION:
 	case STRUCT:
-		n = tp->n.elem;
-		for (sp = tp->p.fields; n-- > 0; ++sp)
-			emittype((*sp)->type);
 		emitletter(tp);
 		tag = tp->tag->name;
 		printf("\t\"%s\t#%c%lX\t#%c%X\n",
@@ -275,6 +270,7 @@ emittype(Type *tp)
 		for (sp = tp->p.fields; n-- > 0; ++sp)
 			emit(ODECL, *sp);
 		break;
+	case PTR:
 	case FTN:
 		return;
 	default:
@@ -377,7 +373,6 @@ emitdcl(unsigned op, void *arg)
 
 	if (sym->flags & SEMITTED)
 		return;
-	emittype(sym->type);
 	emitvar(sym);
 	putchar('\t');
 	if (sym->type->op == FTN) {

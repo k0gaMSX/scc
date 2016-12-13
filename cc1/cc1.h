@@ -13,11 +13,10 @@
 enum typeprops {
 	TDEFINED = 1 << 0,    /* type defined */
 	TSIGNED  = 1 << 1,    /* signedness of the type */
-	TPRINTED = 1 << 2,    /* the type was already printed */
-	TINTEGER = 1 << 3,    /* the type is INT of enum */
-	TARITH   = 1 << 4,    /* the type is INT, ENUM or FLOAT */
-	TAGGREG  = 1 << 5,    /* the type is struct or union */
-	TK_R     = 1 << 6,    /* this is a K&R-function */
+	TINTEGER = 1 << 2,    /* the type is INT of enum */
+	TARITH   = 1 << 3,    /* the type is INT, ENUM or FLOAT */
+	TAGGREG  = 1 << 4,    /* the type is struct or union */
+	TK_R     = 1 << 5,    /* this is a K&R-function */
 };
 
 /* data type letters */
@@ -246,7 +245,8 @@ enum op {
 	ODECL,
 	OBSWITCH,
 	OESWITCH,
-	OINIT
+	OINIT,
+	OTYP,
 };
 
 /*

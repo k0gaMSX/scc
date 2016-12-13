@@ -533,6 +533,7 @@ structdcl(void)
 	--nested;
 
 	typesize(tp);
+	emit(OTYP, tp);
 	namespace = ns;
 	expect('}');
 	return tp;
@@ -555,6 +556,7 @@ enumdcl(void)
 	if (tp->prop & TDEFINED)
 		errorp("redefinition of enumeration '%s'", tagsym->name);
 	tp->prop |= TDEFINED;
+	emit(OTYP, tp);
 	typesize(tp);
 	namespace = NS_IDEN;
 
