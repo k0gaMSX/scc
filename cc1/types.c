@@ -252,94 +252,98 @@ typesize(Type *tp)
 	}
 }
 
+static Type *
+newtype(Type *base)
+{
+	Type *tp;
+
+	tp = xmalloc(sizeof(*tp));
+	*tp = *base;
+	tp->id = newid();
+	if (curctx > GLOBALCTX+1) {
+		/* it is a type defined in the body of a function */
+		tp->next = localtypes;
+		localtypes = tp;
+	}
+	if (tp->prop & TDEFINED)
+		typesize(tp);
+	tp->h_next = tp->h_prev = tp;
+	return tp;
+}
+
 Type *
 mktype(Type *tp, int op, TINT nelem, Type *pars[])
 {
 	Type *tbl, *h_next, type;
 	unsigned t;
 	Type *bp;
-	int c, k_r = 0;
 
 	if (op == PTR && tp == voidtype)
 		return pvoidtype;
 
-	if (op == KRFTN) {
-		k_r = 1;
-		op = FTN;
-	}
-	switch (op) {
-	case PTR:     c = L_POINTER;       break;
-	case ARY:     c = L_ARRAY;         break;
-	case FTN:     c = L_FUNCTION;      break;
-	case ENUM:    c = inttype->letter; break;
-	case STRUCT:  c = L_STRUCT;        break;
-	case UNION:   c = L_UNION;         break;
-	}
-
 	memset(&type, 0, sizeof(type));
 	type.type = tp;
 	type.op = op;
-	type.prop = k_r ? TK_R : 0;
-	type.letter = c;
+	type.prop = 0;
 	type.p.pars = pars;
 	type.n.elem = nelem;
 	type.ns = 0;
 
 	switch (op) {
 	case ARY:
-		if (nelem == 0)
-			break;
-		/* PASSTROUGH */
+		type.letter = L_ARRAY;
+		if (nelem != 0)
+			type.prop |= TDEFINED;
+		break;
+	case KRFTN:
+		type.prop |= TK_R;
+		type.op = FTN;
 	case FTN:
+		type.letter = L_FUNCTION;
+		type.prop |= TDEFINED;
+		break;
 	case PTR:
+	        type.letter = L_POINTER;
 		type.prop |= TDEFINED;
 		break;
 	case ENUM:
+		type.letter = inttype->letter;
 		type.prop |= TPRINTED | TINTEGER | TARITH;
 		type.n.rank = inttype->n.rank;
-		break;
+		goto create_type;
 	case STRUCT:
-	case UNION:
+		type.letter = L_STRUCT;
 		type.prop |= TAGGREG;
-		break;
+		goto create_type;
+	case UNION:
+		type.letter = L_UNION;
+		type.prop |= TAGGREG;
+	create_type:
+		return newtype(&type);
 	default:
 		abort();
 	}
 
-	t = (op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
+	t = (type.op ^ (uintptr_t) tp>>3) & NR_TYPE_HASH-1;
 	tbl = &typetab[t];
-	if (op != STRUCT && op != UNION && op != ENUM) {
-		for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
-			if (eqtype(bp, &type, 0)) {
-				/*
-				 * pars was allocated by the caller
-				 * but the type already exists, so
-				 * we have to deallocte it
-				 */
-				free(pars);
-				return bp;
-			}
+	for (bp = tbl; bp->h_next != tbl; bp = bp->h_next) {
+		if (eqtype(bp, &type, 0)) {
+			/*
+			 * pars was allocated by the caller
+			 * but the type already exists, so
+			 * we have to deallocte it
+			 */
+			free(pars);
+			return bp;
 		}
 	}
 
-	if (type.prop & TDEFINED)
-		typesize(&type);
-	bp = xmalloc(sizeof(*bp));
-	*bp = type;
-	bp->id = newid();
-
-	/* insert the new type in the circular double list */
+	bp = newtype(&type);
 	h_next = tbl->h_next;
 	bp->h_next = h_next;
 	bp->h_prev = h_next->h_prev;
 	h_next->h_prev = bp;
 	tbl->h_next = bp;
-
-	if (curctx > GLOBALCTX+1) {
-		/* it is a type defined in the body of a function */
-		bp->next = localtypes;
-		localtypes = bp;
-	}
 
 	return bp;
 }
