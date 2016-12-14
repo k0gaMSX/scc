@@ -924,5 +924,5 @@ fieldlist(Type *tp)
 Type *
 typename(void)
 {
-	return dodcl(NOREP, type, 0, NULL)->type;
+	return dodcl(NOREP, type, NS_DUMMY, NULL)->type;
 }

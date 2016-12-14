@@ -62,7 +62,8 @@ enum {
 
 /* namespaces */
 enum {
-	NS_IDEN = 1,
+	NS_DUMMY,
+	NS_IDEN,
 	NS_TAG,
 	NS_LABEL,
 	NS_CPP,
