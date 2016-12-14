@@ -12,6 +12,10 @@ static char sccsid[] = "@(#) ./cc1/decl.c";
 
 #define NOSCLASS  0
 
+#define NOREP 0
+#define REP 1
+
+
 struct declarators {
 	unsigned char nr;
 	struct declarator {
@@ -257,7 +261,7 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 			*types++ = ellipsistype;
 			break;
 		}
-		if ((sym = dodcl(0, parameter, NS_IDEN, tp)) == NULL)
+		if ((sym = dodcl(NOREP, parameter, NS_IDEN, tp)) == NULL)
 			continue;
 		if (tp->n.elem == -1) {
 			n = -1;
@@ -856,7 +860,7 @@ decl(void)
 
 	if (accept(';'))
 		return;
-	sym = dodcl(1, identifier, NS_IDEN, NULL);
+	sym = dodcl(REP, identifier, NS_IDEN, NULL);
 
 	if (sym->type->op != FTN) {
 		expect(';');
@@ -886,7 +890,7 @@ decl(void)
 	}
 	if (sym->type->prop & TK_R) {
 		while (yytoken != '{') {
-			par = dodcl(1, parameter, NS_IDEN, sym->type);
+			par = dodcl(REP, parameter, NS_IDEN, sym->type);
 			expect(';');
 		}
 	}
@@ -913,12 +917,12 @@ static void
 fieldlist(Type *tp)
 {
 	if (yytoken != ';')
-		dodcl(1, field, tp->ns, tp);
+		dodcl(REP, field, tp->ns, tp);
 	expect(';');
 }
 
 Type *
 typename(void)
 {
-	return dodcl(0, type, 0, NULL)->type;
+	return dodcl(NOREP, type, 0, NULL)->type;
 }
