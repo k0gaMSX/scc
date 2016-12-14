@@ -242,6 +242,15 @@ typesize(Type *tp)
 	}
 }
 
+Type *
+deftype(Type *tp)
+{
+	tp->prop |= TDEFINED;
+	typesize(tp);
+	emit(OTYP, tp);
+	return tp;
+}
+
 static Type *
 newtype(Type *base)
 {

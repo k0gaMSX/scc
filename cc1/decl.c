@@ -521,7 +521,6 @@ structdcl(void)
 
 	if (tp->prop & TDEFINED && sym->ctx == curctx)
 		error("redefinition of struct/union '%s'", sym->name);
-	tp->prop |= TDEFINED;
 
 	if (nested == NR_STRUCT_LEVEL)
 		error("too many levels of nested structure or union definitions");
@@ -532,8 +531,7 @@ structdcl(void)
 	}
 	--nested;
 
-	typesize(tp);
-	emit(OTYP, tp);
+	deftype(tp);
 	namespace = ns;
 	expect('}');
 	return tp;
@@ -555,9 +553,7 @@ enumdcl(void)
 		goto restore_name;
 	if (tp->prop & TDEFINED)
 		errorp("redefinition of enumeration '%s'", tagsym->name);
-	tp->prop |= TDEFINED;
-	emit(OTYP, tp);
-	typesize(tp);
+	deftype(tp);
 	namespace = NS_IDEN;
 
 	/* TODO: check incorrect values in val */

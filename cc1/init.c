@@ -120,9 +120,8 @@ initialize(Type *tp)
 		}
 		len = sym->type->n.elem-1;
 		if (!(tp->prop & TDEFINED)) {
-			tp->prop |= TDEFINED;
 			tp->n.elem = len+1;
-			typesize(tp);
+			deftype(tp);
 		} else if (tp->n.elem < len) {
 			warn("initializer-string for array of chars is too long");
 		}

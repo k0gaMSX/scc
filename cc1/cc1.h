@@ -349,6 +349,7 @@ extern void warn(char *fmt, ...);
 extern void unexpected(void);
 extern void errorp(char *fmt, ...);
 extern void cpperror(char *fmt, ...);
+extern Type *deftype(Type *tp);
 
 /* types.c */
 extern int eqtype(Type *tp1, Type *tp2, int eqflag);
