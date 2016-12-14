@@ -5,9 +5,7 @@ name: TEST062
 description: Test for hexadecimal numbers in upper and lower case
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
 	h	#I1

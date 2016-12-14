@@ -4,25 +4,23 @@
 name: TEST038
 description: Basic test for tentative definitions
 error:
-test038.c:47: error: redeclaration of 'x'
+test038.c:45: error: redeclaration of 'x'
 output:
-V2	K	#NC
-V4	K	#N9
-G5	I	"x
-G5	I	"x	(
+G1	I	"x
+G1	I	"x	(
 	#I0
 )
-X7	I	F	"main
-G9	P	F	"foo
+X3	I	F	"main
+G5	P	F	"foo
 {
 \
-	h	X7	'P
+	h	X3	'P
 }
-G7	I	F	"main
+G3	I	F	"main
 {
 \
-	G5	#I0	:I
-	h	G5
+	G1	#I0	:I
+	h	G1
 }
 */
 

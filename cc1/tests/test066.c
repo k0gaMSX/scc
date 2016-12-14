@@ -4,15 +4,13 @@
 name: TEST066
 description: Test cpp defined operator
 error:
-test066.c:55: error: operator 'defined' requires an identifier
-test066.c:55: error: expected ')' before '<EOF>'
+test066.c:53: error: operator 'defined' requires an identifier
+test066.c:53: error: expected ')' before '<EOF>'
 output:
-V2	K	#NC
-V4	K	#N9
-G5	I	"x	(
+G1	I	"x	(
 	#I0
 )
-G7	I	F	"main
+G3	I	F	"main
 {
 \
 	h	#I0

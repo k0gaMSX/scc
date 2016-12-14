@@ -4,34 +4,32 @@
 name: TEST041
 description: Test for bug parsing ternary operators
 error:
-test041.c:53: error: type mismatch in conditional expression
-test041.c:53: error: incompatible types when assigning
-test041.c:54: error: used struct/union type value where scalar is required
-test041.c:54: warning: expression without side effects
-test041.c:55: warning: 'i' defined but not used
-test041.c:55: warning: 'foo' defined but not used
-test041.c:55: warning: 's' defined but not used
+test041.c:51: error: type mismatch in conditional expression
+test041.c:51: error: incompatible types when assigning
+test041.c:52: error: used struct/union type value where scalar is required
+test041.c:52: warning: expression without side effects
+test041.c:53: warning: 'i' defined but not used
+test041.c:53: warning: 'foo' defined but not used
+test041.c:53: warning: 's' defined but not used
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-A7	I	"i
-A9	P	"q
-A11	P	"s
-A12	P	"p
-S14	"foo	#N2	#N1
-M15	I	"i	#N0
-A16	S14	"foo
-	A7	A7	#I0	!I	#W0	#W0	?W	gI	:I
-	A12	A7	#I0	!I	#P0	#P0	?P	:P
-	A12	A7	#I0	!I	#P0	#P0	?P	:P
-	A12	A7	#I0	!I	#P0	#P0	?P	:P
-	A9	A7	#I0	!I	#P0	A12	?P	:P
-	A9	A7	#I0	!I	A12	#P0	?P	:P
-	A9	A7	#I0	!I	A9	#P0	?P	:P
-	A9	A7	#I0	!I	#P0	A9	?P	:P
+A3	I	"i
+A5	P	"q
+A7	P	"s
+A8	P	"p
+S10	"foo	#N2	#N1
+M11	I	"i	#N0
+A12	S10	"foo
+	A3	A3	#I0	!I	#W0	#W0	?W	gI	:I
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A8	A3	#I0	!I	#P0	#P0	?P	:P
+	A5	A3	#I0	!I	#P0	A8	?P	:P
+	A5	A3	#I0	!I	A8	#P0	?P	:P
+	A5	A3	#I0	!I	A5	#P0	?P	:P
+	A5	A3	#I0	!I	#P0	A5	?P	:P
 */
    
 int

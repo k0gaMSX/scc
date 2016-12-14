@@ -5,34 +5,32 @@ name: TEST018
 description: Basic test for arrays
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-V7	K	#N4
-V8	V7	#N2
-A9	V8	"arr
-A11	P	"p
-A13	P	"q
-V14	I	#N4
-A15	V14	"v
-	A11	A9	'P	:P
-	A13	A9	'P	#P4	+P	#P3	+P	:P
-	A9	'P	#P4	+P	#P3	+P	@K	#K2	:K
-	A15	#I2	:I
-	y	L17	A9	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
+V3	K	#N4
+V4	V3	#N2
+A5	V4	"arr
+A7	P	"p
+A9	P	"q
+V10	I	#N4
+A11	V10	"v
+	A7	A5	'P	:P
+	A9	A5	'P	#P4	+P	#P3	+P	:P
+	A5	'P	#P4	+P	#P3	+P	@K	#K2	:K
+	A11	#I2	:I
+	y	L13	A5	'P	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
-L17
-	y	L18	A11	#P4	+P	#P3	+P	@K	gI	#I2	=I
+L13
+	y	L14	A7	#P4	+P	#P3	+P	@K	gI	#I2	=I
 	h	#I1
-L18
-	y	L19	A13	@K	gI	#I2	=I
+L14
+	y	L15	A9	@K	gI	#I2	=I
 	h	#I1
-L19
-	y	L20	A15	#I2	=I
+L15
+	y	L16	A11	#I2	=I
 	h	#I1
-L20
+L16
 	h	#I0
 }
 */

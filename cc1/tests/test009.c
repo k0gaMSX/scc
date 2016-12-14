@@ -5,24 +5,22 @@ name: TEST009
 description: Basic test for loops
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-A7	I	"x
-	A7	#I0	:I
-	j	L10
+A3	I	"x
+	A3	#I0	:I
+	j	L6
 	e
-L8
-	A7	A7	#I1	+I	:I
-L10
-	y	L8	A7	#IA	<I
+L4
+	A3	A3	#I1	+I	:I
+L6
+	y	L4	A3	#IA	<I
 	b
-L9
-	y	L11	A7	#IA	=I
+L5
+	y	L7	A3	#IA	=I
 	h	#I1
-L11
+L7
 	h	#I0
 }
 */

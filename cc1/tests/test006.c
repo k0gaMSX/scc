@@ -8,32 +8,30 @@ test006.c:5: warning: conditional expression is constant
 test006.c:7: warning: conditional expression is constant
 test006.c:10: warning: conditional expression is constant
 output:
-V2	K	#NC
-V4	K	#N9
-G5	K	"c
-G7	I	F	"main
+G1	K	"c
+G3	I	F	"main
 {
 \
-	y	L8	#I1
+	y	L4	#I1
 	h	#I1
-	j	L9
-L8
-	y	L10	#I1
-	j	L11
-L10
-	y	L12	#I0
-	y	L13	G5	gI	#I0	=I
+	j	L5
+L4
+	y	L6	#I1
+	j	L7
+L6
+	y	L8	#I0
+	y	L9	G1	gI	#I0	=I
 	h	#I1
-	j	L14
-L13
-	h	#I0
-L14
-	j	L15
-L12
-	h	#I1
-L15
-L11
+	j	L10
 L9
+	h	#I0
+L10
+	j	L11
+L8
+	h	#I1
+L11
+L7
+L5
 	h	#I1
 }
 */

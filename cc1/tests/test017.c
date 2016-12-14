@@ -5,27 +5,25 @@ name: TEST017
 description: Basic test about pointers and structs
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-S6	"s1	#N4	#N1
-M7	I	"y	#N0
-M8	I	"z	#N2
-S10	"s2	#N4	#N2
-M12	P	"p	#N0
-G14	I	F	"main
+S2	"s1	#N4	#N1
+M3	I	"y	#N0
+M4	I	"z	#N2
+S6	"s2	#N4	#N2
+M8	P	"p	#N0
+G10	I	F	"main
 {
 \
-A15	S6	"nested
-A16	S10	"v
-	A16	M12	.P	A15	'P	:P
-	A16	M12	.P	@S6	M7	.I	#I1	:I
-	A16	M12	.P	@S6	M8	.I	#I2	:I
-	y	L17	A15	M7	.I	#I1	=I
+A11	S2	"nested
+A12	S6	"v
+	A12	M8	.P	A11	'P	:P
+	A12	M8	.P	@S2	M3	.I	#I1	:I
+	A12	M8	.P	@S2	M4	.I	#I2	:I
+	y	L13	A11	M3	.I	#I1	=I
 	h	#I1
-L17
-	y	L18	A15	M8	.I	#I2	=I
+L13
+	y	L14	A11	M4	.I	#I2	=I
 	h	#I2
-L18
+L14
 	h	#I0
 }
 */

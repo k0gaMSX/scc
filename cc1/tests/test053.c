@@ -5,24 +5,22 @@ name: TEST053
 description: Basic test for initializer
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-S6	"S	#N4	#N1
-M7	I	"a	#N0
-M8	I	"b	#N2
-G9	S6	"s	(
+S2	"S	#N4	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
+G5	S2	"s	(
 	#I1
 	#I2
 )
-G11	I	F	"main
+G7	I	F	"main
 {
 \
-	y	L12	G9	M7	.I	#I1	=I
+	y	L8	G5	M3	.I	#I1	=I
 	h	#I1
-L12
-	y	L13	G9	M8	.I	#I2	=I
+L8
+	y	L9	G5	M4	.I	#I2	=I
 	h	#I2
-L13
+L9
 	h	#I0
 }
 */

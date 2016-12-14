@@ -5,29 +5,27 @@ name: TEST047
 description: Basic test for initializer
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-S6	"S	#N6	#N1
-M7	I	"a	#N0
-M8	I	"b	#N2
-M9	I	"c	#N4
-G10	S6	"x	(
+S2	"S	#N6	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
+M5	I	"c	#N4
+G6	S2	"x	(
 	#I1
 	#I2
 	#I3
 )
-G12	I	F	"main
+G8	I	F	"main
 {
 \
-	y	L13	G10	M7	.I	#I1	=I
+	y	L9	G6	M3	.I	#I1	=I
 	h	#I1
-L13
-	y	L14	G10	M8	.I	#I2	=I
+L9
+	y	L10	G6	M4	.I	#I2	=I
 	h	#I2
-L14
-	y	L15	G10	M9	.I	#I3	=I
+L10
+	y	L11	G6	M5	.I	#I3	=I
 	h	#I3
-L15
+L11
 	h	#I0
 }
 */

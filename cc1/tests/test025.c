@@ -5,18 +5,16 @@ name: TEST025
 descritpion: Test of ifdef and ifndef
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G5	I	"a
-G6	I	"b
-G7	I	"c
-G8	I	"d
-G9	I	"_1
-G10	I	"_2
-G11	I	"e_
-G12	I	"f_
-G13	I	"h
-G14	I	"i
+G1	I	"a
+G2	I	"b
+G3	I	"c
+G4	I	"d
+G5	I	"_1
+G6	I	"_2
+G7	I	"e_
+G8	I	"f_
+G9	I	"h
+G10	I	"i
 */
 
 #define FOO

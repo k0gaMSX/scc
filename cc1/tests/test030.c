@@ -5,32 +5,30 @@ name: TEST030
 description: Basic test for vararg functions
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-S6	"foo	#N18	#N2
-M7	I	"i	#N0
-M8	I	"j	#N2
-M9	I	"k	#N4
-M11	P	"p	#N6
-M12	J	"v	#N8
-G18	I	F	"f1
+S2	"foo	#N18	#N2
+M3	I	"i	#N0
+M4	I	"j	#N2
+M5	I	"k	#N4
+M7	P	"p	#N6
+M8	J	"v	#N8
+G14	I	F	"f1
 {
-A13	S6	"f
-A15	P	"p
-A16	I	"n
+A9	S2	"f
+A11	P	"p
+A12	I	"n
 \
-	y	L19	A13	M7	.I	A15	@S6	M7	.I	=I
+	y	L15	A9	M3	.I	A11	@S2	M3	.I	=I
 	h	#I0
-L19
-	h	A15	@S6	M8	.I	A16	+I
+L15
+	h	A11	@S2	M4	.I	A12	+I
 }
-G21	I	F	"main
+G17	I	F	"main
 {
 \
-A22	S6	"f
-	A22	M7	.I	A22	M8	.I	#I1	:I	:I
-	G18	A22	pS6	A22	'P	pP	#I2	pI	cI
-	G18	A22	pS6	A22	'P	pP	#I2	pI	#I1	pI	A22	pS6	A22	'P	pP	cI
+A18	S2	"f
+	A18	M3	.I	A18	M4	.I	#I1	:I	:I
+	G14	A18	pS2	A18	'P	pP	#I2	pI	cI
+	G14	A18	pS2	A18	'P	pP	#I2	pI	#I1	pI	A18	pS2	A18	'P	pP	cI
 	h	#I0
 }
 */

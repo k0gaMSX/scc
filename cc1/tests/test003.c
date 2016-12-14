@@ -5,22 +5,20 @@ name: TEST003
 description: Select function to call inside ternary operator
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"foo
+G2	I	F	"foo
 {
 \
 	h	#I2A
 }
-G7	I	F	"bar
+G3	I	F	"bar
 {
 \
 	h	#I18
 }
-G8	I	F	"main
+G4	I	F	"main
 {
 \
-	h	G6	cI
+	h	G2	cI
 }
 */
 

@@ -6,29 +6,27 @@ description: Basic test for int constants
 comments: This test is done for z80 data types
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-A7	I	"i
-A8	N	"u
-	A7	#I1	:I
-	A7	#IFFFF	:I
-	A7	#IFFFF	:I
-	A7	#IFFFF	:I
-	A7	#IFFFF	:I
-	A7	#I3	:I
-	A7	#I1	:I
-	A7	#I0	:I
-	A8	#N1	:N
-	A8	#NFFFF	:N
-	A8	#NFFFF	:N
-	A8	#NFFFF	:N
-	A8	#NFFFF	:N
-	A8	#N0	:N
-	A8	#N3	:N
-	A8	#N0	:N
+A3	I	"i
+A4	N	"u
+	A3	#I1	:I
+	A3	#IFFFF	:I
+	A3	#IFFFF	:I
+	A3	#IFFFF	:I
+	A3	#IFFFF	:I
+	A3	#I3	:I
+	A3	#I1	:I
+	A3	#I0	:I
+	A4	#N1	:N
+	A4	#NFFFF	:N
+	A4	#NFFFF	:N
+	A4	#NFFFF	:N
+	A4	#NFFFF	:N
+	A4	#N0	:N
+	A4	#N3	:N
+	A4	#N0	:N
 	h	#I0
 }
 */

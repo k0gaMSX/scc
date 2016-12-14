@@ -4,41 +4,39 @@
 name: TEST065
 description: Test decay mixed with * operators
 error:
-test065.c:67: error: increment of pointer to an incomplete type
-test065.c:67: error: invalid use of undefined type
-test065.c:68: warning: 'argv' defined but not used
+test065.c:65: error: increment of pointer to an incomplete type
+test065.c:65: error: invalid use of undefined type
+test065.c:66: warning: 'argv' defined but not used
 output:
-V2	K	#NC
-V4	K	#N9
-G11	I	F	"main
+G7	I	F	"main
 {
-A5	I	"argc
-A9	P	"argv
+A1	I	"argc
+A5	P	"argv
 \
-V12	I	#N1
-A13	V12	"v
-A16	P	"p
-A18	P	"f1
-A19	P	"f2
-	A13	#I0	:I
-	A16	A13	'P	:P
-	A18	G11	'P	:P
-	A19	G11	'P	:P
-	y	L22	A5	#I0	!I
+V8	I	#N1
+A9	V8	"v
+A12	P	"p
+A14	P	"f1
+A15	P	"f2
+	A9	#I0	:I
+	A12	A9	'P	:P
+	A14	G7	'P	:P
+	A15	G7	'P	:P
+	y	L18	A1	#I0	!I
 	h	#I1
-L22
-	y	L23	G11	#I0	pI	#P0	pP	cI	#I0	=I
+L18
+	y	L19	G7	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I2
-L23
-	y	L24	A18	@F	#I0	pI	#P0	pP	cI	#I0	=I
+L19
+	y	L20	A14	@F	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I3
-L24
-	y	L25	A19	@F	#I0	pI	#P0	pP	cI	#I0	=I
+L20
+	y	L21	A15	@F	#I0	pI	#P0	pP	cI	#I0	=I
 	h	#I4
-L25
-	y	L26	A16	@I	#I0	!I
+L21
+	y	L22	A12	@I	#I0	!I
 	h	#I0
-L26
+L22
 */
 
 int

@@ -219,12 +219,16 @@ newstring(char *s, size_t len)
 {
 	Symbol *sym = newsym(NS_IDEN);
 
-	sym->id = newid();
+	if (lexmode != CPPMODE) {
+		sym->type = mktype(chartype, ARY, len, NULL);
+		sym->id = newid();
+	}
+
 	sym->flags |= SSTRING | SCONSTANT | SPRIVATE;
 	sym->u.s = xmalloc(len);
 	if (s)
 		memcpy(sym->u.s, s, len);
-	sym->type = mktype(chartype, ARY, len, NULL);
+
 	return sym;
 }
 

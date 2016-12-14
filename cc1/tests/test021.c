@@ -6,23 +6,21 @@ description: Basic test for char constants
 comments: This test is done for z80 implementation
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-A7	K	"uc
-A8	C	"sc
-	A7	#KFF	:K
-	A7	#K23	:K
-	A7	#K1	:K
-	A7	#K1	:K
-	A7	#K41	:K
-	A8	#CFF	:C
-	A8	#C23	:C
-	A8	#C1	:C
-	A8	#C1	:C
-	A8	#C41	:C
+A3	K	"uc
+A4	C	"sc
+	A3	#KFF	:K
+	A3	#K23	:K
+	A3	#K1	:K
+	A3	#K1	:K
+	A3	#K41	:K
+	A4	#CFF	:C
+	A4	#C23	:C
+	A4	#C1	:C
+	A4	#C1	:C
+	A4	#C41	:C
 }
 */
 

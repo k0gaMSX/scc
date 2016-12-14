@@ -4,50 +4,48 @@
 name: TEST036
 description: Duff's device
 error:
-test036.c:61: warning: type defaults to 'int' in declaration
+test036.c:59: warning: type defaults to 'int' in declaration
 output:
-V2	K	#NC
-V4	K	#N9
-G9	I	F	"send
+G5	I	F	"send
 {
-R5	P	"to
-R6	P	"from
-R7	I	"count
+R1	P	"to
+R2	P	"from
+R3	I	"count
 \
-R11	I	"n
-	R11	R7	#I7	+I	#I8	/I	:I
-	s	R7	#I8	%I
-	v	L13	#I0
-L13
+R7	I	"n
+	R7	R3	#I7	+I	#I8	/I	:I
+	s	R3	#I8	%I
+	v	L9	#I0
+L9
 	e
-L14
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L16	#I7
-L16
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L17	#I6
-L17
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L18	#I5
-L18
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L19	#I4
-L19
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L20	#I3
-L20
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L21	#I2
-L21
-	R5	@I	R6	#P2	:iP	@I	:I
-	v	L22	#I1
-L22
-	R5	@I	R6	#P2	:iP	@I	:I
-	y	L14	R11	#I1	:-I	#I0	>I
-	b
-L15
-	t	L12
+L10
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L12	#I7
 L12
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L13	#I6
+L13
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L14	#I5
+L14
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L15	#I4
+L15
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L16	#I3
+L16
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L17	#I2
+L17
+	R1	@I	R2	#P2	:iP	@I	:I
+	v	L18	#I1
+L18
+	R1	@I	R2	#P2	:iP	@I	:I
+	y	L10	R7	#I1	:-I	#I0	>I
+	b
+L11
+	t	L8
+L8
 }
 */
 

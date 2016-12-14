@@ -7,42 +7,40 @@ error:
 test016.c:42: error: redefinition of 'func2'
 test016.c:46: error: incompatible types when assigning
 output:
-V2	K	#NC
-V4	K	#N9
-G5	I	"g
-G7	I	F	"func1
+G1	I	"g
+G3	I	F	"func1
 {
 \
-A8	I	"x
-A10	P	"p
-	G5	#I1	:I
-	A8	#I1	:I
-	A10	A8	'P	:P
-	A10	@I	#I0	:I
-	y	L11	A8	#I0	=I
+A4	I	"x
+A6	P	"p
+	G1	#I1	:I
+	A4	#I1	:I
+	A6	A4	'P	:P
+	A6	@I	#I0	:I
+	y	L7	A4	#I0	=I
 	h	#I1
-L11
-	A10	G5	'P	:P
-	A10	@I	#I0	:I
-	y	L12	A10	#P0	!I
+L7
+	A6	G1	'P	:P
+	A6	@I	#I0	:I
+	y	L8	A6	#P0	!I
 	h	#I1
-L12
+L8
 	h	#I0
 }
-G13	I	F	"func2
+G9	I	F	"func2
 {
 \
-A14	I	"x
-A16	P	"p
-A18	P	"pp
-	A14	#I1	:I
-	A16	A14	'P	:P
-	A18	A16	'P	:P
-	y	L19	A16	#P0	=I
-	A18	@P	@I	#I0	:I
-L19
-	A16	#P0	:P
-	h	A14
+A10	I	"x
+A12	P	"p
+A14	P	"pp
+	A10	#I1	:I
+	A12	A10	'P	:P
+	A14	A12	'P	:P
+	y	L15	A12	#P0	=I
+	A14	@P	@I	#I0	:I
+L15
+	A12	#P0	:P
+	h	A10
 }
 */
 

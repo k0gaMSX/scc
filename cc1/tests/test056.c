@@ -5,16 +5,14 @@ name: TEST056
 desciption: Test of overlaying designators
 error:
 output:
-V2	K	#NC
-V4	K	#N9
-V10	K	#N3
-S6	"S	#NB	#N1
-M7	I	"a	#N0
-M8	I	"b	#N2
-M9	I	"c	#N4
-M11	V10	"d	#N6
-M12	I	"e	#N9
-G13	S6	"s	(
+V6	K	#N3
+S2	"S	#NB	#N1
+M3	I	"a	#N0
+M4	I	"b	#N2
+M5	I	"c	#N4
+M7	V6	"d	#N6
+M8	I	"e	#N9
+G9	S2	"s	(
 	#I1
 	#I2
 	#I0
@@ -23,12 +21,12 @@ G13	S6	"s	(
 	#K0
 	#I0
 )
-G15	V14	"m	(
+G11	V10	"m	(
 )
-G17	I	F	"main
+G13	I	F	"main
 {
 \
-	h	G13	M11	.V10	'P	#P2	+P	@K	gI	gN	#N0	=I
+	h	G9	M7	.V6	'P	#P2	+P	@K	gI	gN	#N0	=I
 }
 */
 

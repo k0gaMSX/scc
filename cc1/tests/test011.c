@@ -7,19 +7,17 @@ error:
 test011.c:13: warning: 'foo' defined but not used
 test011.c:13: warning: 'start' defined but not used
 output:
-V2	K	#NC
-V4	K	#N9
-G6	I	F	"main
+G2	I	F	"main
 {
 \
-L7
-	j	L8
+L3
+	j	L4
 	h	#I1
-L9
+L5
 	h	#I0
-L8
-L10
-	j	L9
+L4
+L6
+	j	L5
 	h	#I1
 }
 */
