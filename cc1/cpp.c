@@ -657,8 +657,9 @@ elseclause(void)
 		return;
 	}
 
-	status = (ifstatus[cppctx-1] ^= 1);
-	cppoff += (status) ? -1 : 1;
+	status = ifstatus[cppctx-1];
+	ifstatus[cppctx-1] = !status;
+	cppoff += (status) ? 1 : -1;
 }
 
 static void
@@ -672,8 +673,10 @@ static void
 elif(void)
 {
 	elseclause();
-	--cppctx;
-	cppif();
+	if (ifstatus[cppctx-1]) {
+		--cppctx;
+		cppif();
+	}
 }
 
 static void
