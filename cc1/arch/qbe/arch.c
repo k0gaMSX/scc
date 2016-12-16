@@ -155,11 +155,11 @@ static Type types[] = {
 	},
 	{       /* 16 = ldoubletype */
 		.op = FLOAT,
-		.letter = L_LDOUBLE,
+		.letter = L_DOUBLE,
 		.prop = TDEFINED | TARITH,
-		.size = 16,
-		.align = 16,
-		.n.rank = RANK_LDOUBLE,
+		.size = 8,
+		.align = 8,
+		.n.rank = RANK_DOUBLE,
 	},
 	{       /* 17 = sizettype */
 		.op = INT,
