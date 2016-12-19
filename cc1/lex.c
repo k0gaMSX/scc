@@ -46,6 +46,7 @@ ilex(void)
 		{"auto", SCLASS, AUTO},
 		{"break", BREAK, BREAK},
 		{"_Bool", TYPE, BOOL},
+		{"__builtin_va_list", TYPE, VA_LIST},
 		{"case", CASE, CASE},
 		{"char", TYPE, CHAR},
 		{"const", TQUALIFIER, CONST},

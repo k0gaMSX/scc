@@ -405,6 +405,7 @@ specifier(int *sclass, int *qualifier)
 				dcl = structdcl;
 				p = &type;
 				break;
+			case VA_LIST:
 			case VOID:
 			case BOOL:
 			case CHAR:

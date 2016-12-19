@@ -181,6 +181,13 @@ static Type types[] = {
 		.align = 4,
 		.n.rank = RANK_INT,
 	},
+	{       /* 20 = va_list_type */
+		.op = PTR,
+		.letter = L_POINTER,
+		.prop = TDEFINED,
+		.size = 8,
+		.align = 8,
+	}
 };
 
 
@@ -194,7 +201,9 @@ Type *voidtype = &types[0], *pvoidtype = &types[1],
      *floattype = &types[14], *doubletype = &types[15],
      *ldoubletype = &types[16],
      *sizettype = &types[17], *pdifftype = &types[19],
-     *ellipsistype = &types[18];
+     *ellipsistype = &types[18],
+     *va_list_type = &types[20];
+
 
 
 static Symbol dummy0 = {.u.i = 0, .type = &types[9]},

@@ -153,6 +153,7 @@ enum tokens {
 	FLOAT,
 	INT,
 	BOOL,
+	VA_LIST,
 	STRUCT,
 	UNION,
 	CHAR,
@@ -451,4 +452,4 @@ extern Type *voidtype, *pvoidtype, *booltype,
             *longtype,    *ulongtype,
             *ullongtype,  *llongtype,
             *floattype,   *doubletype,  *ldoubletype,
-            *ellipsistype;
+            *ellipsistype, *va_list_type;

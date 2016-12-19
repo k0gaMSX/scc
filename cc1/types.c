@@ -122,6 +122,10 @@ ctype(unsigned type, unsigned sign, unsigned size)
 			return uchartype;
 		}
 		break;
+	case VA_LIST:
+		if (size || sign)
+			goto invalid_type;
+		return va_list_type;
 	case VOID:
 		if (size || sign)
 			goto invalid_type;
