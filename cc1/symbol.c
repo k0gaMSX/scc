@@ -127,6 +127,8 @@ newid(void)
 {
 	unsigned short id;
 
+	if (lexmode == CPPMODE)
+		return 0;
 	id = ++counterid;
 	if (id == 0) {
 		die("Overflow in %s identifiers",
@@ -219,11 +221,9 @@ newstring(char *s, size_t len)
 {
 	Symbol *sym = newsym(NS_IDEN);
 
-	if (lexmode != CPPMODE) {
+	if (lexmode != CPPMODE)
 		sym->type = mktype(chartype, ARY, len, NULL);
-		sym->id = newid();
-	}
-
+	sym->id = newid();
 	sym->flags |= SSTRING | SCONSTANT | SPRIVATE;
 	sym->u.s = xmalloc(len);
 	if (s)
