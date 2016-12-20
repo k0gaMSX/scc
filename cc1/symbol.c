@@ -277,28 +277,6 @@ lookup(int ns, char *name, int alloc)
 }
 
 Symbol *
-nextsym(Symbol *sym, int ns)
-{
-	char *s, *t, c;
-	Symbol *p;
-
-	/*
-	 * This function is only called when a macro with parameters
-	 * is called without them.
-	 *      #define x(y) ((y) + 1)
-	 *      int x = x(y);
-	 */
-	s = sym->name;
-	c = *s;
-	for (p = sym->hash; p; p = p->hash) {
-		t = p->name;
-		if (c == *t && !strcmp(s, t))
-			return p;
-	}
-	return allocsym(ns, s);
-}
-
-Symbol *
 install(int ns, Symbol *sym)
 {
 	if (sym->flags & SDECLARED) {

@@ -499,12 +499,6 @@ iden(void)
 	if ((sym = lookup(NS_CPP, yytext, NOALLOC)) != NULL) {
 		if (!disexpand && expand(begin, sym))
 			return next();
-		/*
-		 * it is not a correct macro call, so try to find
-		 * another definition.
-		 */
-		if (lexmode != CPPMODE)
-			sym = nextsym(sym, namespace);
 	}
 	sym = lookup(namespace, yytext, ALLOC);
 	yylval.sym = sym;
