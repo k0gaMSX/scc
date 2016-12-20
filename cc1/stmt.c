@@ -20,7 +20,7 @@ label(void)
 	switch (yytoken) {
 	case IDEN:
 	case TYPEIDEN:
-		sym = lookup(NS_LABEL, yytext);
+		sym = lookup(NS_LABEL, yytext, ALLOC);
 		if (sym->flags & SDEFINED)
 			error("label '%s' already defined", yytext);
 		if ((sym->flags & SDECLARED) == 0)

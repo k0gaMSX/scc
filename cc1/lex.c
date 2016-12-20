@@ -496,8 +496,7 @@ iden(void)
 		/* nothing */;
 	input->p = p;
 	tok2str();
-	sym = lookup(namespace, yytext);
-	if (sym->ns == NS_CPP) {
+	if ((sym = lookup(NS_CPP, yytext, NOALLOC)) != NULL) {
 		if (!disexpand && expand(begin, sym))
 			return next();
 		/*
@@ -507,6 +506,7 @@ iden(void)
 		if (lexmode != CPPMODE)
 			sym = nextsym(sym, namespace);
 	}
+	sym = lookup(namespace, yytext, ALLOC);
 	yylval.sym = sym;
 	if (sym->flags & SCONSTANT)
 		return CONSTANT;

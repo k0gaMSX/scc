@@ -41,7 +41,7 @@ defdefine(char *macro, char *val, char *source)
 void
 undefmacro(char *s)
 {
-	killsym(lookup(NS_CPP, s));
+	killsym(lookup(NS_CPP, s, NOALLOC));
 }
 
 void
@@ -84,8 +84,8 @@ icpp(void)
 	defdefine("__LINE__", NULL, "built-in");
 	defdefine("__FILE__", NULL, "built-in");
 
-	symline = lookup(NS_CPP, "__LINE__");
-	symfile = lookup(NS_CPP, "__FILE__");
+	symline = lookup(NS_CPP, "__LINE__", ALLOC);
+	symfile = lookup(NS_CPP, "__FILE__", ALLOC);
 
 	for (bp = list; *bp; ++bp)
 		defdefine(*bp, "1", "built-in");
@@ -248,18 +248,6 @@ expand(char *begin, Symbol *sym)
 	char *arglist[NR_MACROARG], arguments[INPUTSIZ], buffer[BUFSIZE];
 
 	macroname = sym->name;
-	if ((sym->flags & SDECLARED) == 0) {
-		if (namespace == NS_CPP && !strcmp(sym->name, "defined"))
-			return 0;  /* we found a 'defined in an #if */
-		/*
-		 * This case happens in #if were macro not defined must
-		 * be expanded to 0
-		 */
-		buffer[0] = '0';
-		buffer[1] = '\0';
-		elen = 1;
-		goto substitute;
-	}
 	if (sym == symfile) {
 		elen = sprintf(buffer, "\"%s\" ", input->fname);
 		goto substitute;

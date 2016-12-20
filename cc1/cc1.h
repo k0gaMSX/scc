@@ -9,6 +9,10 @@
 /*
  * Definition of enumerations
  */
+enum {
+	NOALLOC,
+	ALLOC
+};
 
 enum typeprops {
 	TDEFINED = 1 << 0,    /* type defined */
@@ -364,7 +368,7 @@ extern void flushtypes(void);
 
 /* symbol.c */
 extern void dumpstab(char *msg);
-extern Symbol *lookup(int ns, char *name);
+extern Symbol *lookup(int ns, char *name, int alloc);
 extern Symbol *nextsym(Symbol *sym, int ns);
 extern Symbol *install(int ns, Symbol *sym);
 extern Symbol *newsym(int ns);

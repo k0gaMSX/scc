@@ -666,26 +666,27 @@ primary(void)
 		emit(ODECL, sym);
 		emit(OINIT, np);
 		np = varnode(sym);
-		next();
 		break;
 	case CONSTANT:
 		np = constnode(sym);
-		next();
 		break;
 	case IDEN:
-		if ((sym->flags & SDECLARED) == 0)
+		assert((sym->flags & SCONSTANT) == 0);
+		if ((sym->flags & SDECLARED) == 0) {
+			if (namespace == NS_CPP) {
+				np = constnode(zero);
+				break;
+			}
 			sym = notdefined(sym);
-		if (sym->flags & SCONSTANT) {
-			np = constnode(sym);
-			break;
 		}
 		sym->flags |= SUSED;
 		np = varnode(sym);
-		next();
 		break;
 	default:
 		unexpected();
 	}
+	next();
+
 	return np;
 }
 

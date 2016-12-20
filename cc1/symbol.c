@@ -16,6 +16,7 @@ static unsigned short counterid;
 
 static Symbol *head, *labels;
 static Symbol *htab[NR_SYM_HASH];
+static Symbol *htabcpp[NR_SYM_HASH];
 
 #ifndef NDEBUG
 void
@@ -56,11 +57,12 @@ hash(const char *s)
 static void
 unlinkhash(Symbol *sym)
 {
-	Symbol **h, *p, *prev;
+	Symbol **tab, **h, *p, *prev;
 
 	if ((sym->flags & SDECLARED) == 0)
 		return;
-	h = &htab[hash(sym->name)];
+	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
+	h = &tab[hash(sym->name)];
 	for (prev = p = *h; p != sym; prev = p, p = p->hash)
 		/* nothing */;
 	if (prev == p)
@@ -82,6 +84,8 @@ killsym(Symbol *sym)
 	short f;
 	char *name;
 
+	if (!sym)
+		return;
 	f = sym->flags;
 	if (f & SSTRING)
 		free(sym->u.s);
@@ -188,9 +192,10 @@ linksym(Symbol *sym)
 static Symbol *
 linkhash(Symbol *sym)
 {
-	Symbol **h, *p, *prev;
+	Symbol **tab, **h, *p, *prev;
 
-	h = &htab[hash(sym->name)];
+	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
+	h = &tab[hash(sym->name)];
 	for (prev = p = *h; p; prev = p, p = p->hash) {
 		if (p->ctx <= sym->ctx)
 			break;
@@ -241,38 +246,34 @@ newlabel(void)
 }
 
 Symbol *
-lookup(int ns, char *name)
+lookup(int ns, char *name, int alloc)
 {
-	Symbol *sym;
+	Symbol *sym, **tab;
 	int sns;
 	char *t, c;
 
 	c = *name;
-	for (sym = htab[hash(name)]; sym; sym = sym->hash) {
+	tab = (ns == NS_CPP) ? htabcpp : htab;
+	for (sym = tab[hash(name)]; sym; sym = sym->hash) {
 		t = sym->name;
 		if (*t != c || strcmp(t, name))
 			continue;
 		sns = sym->ns;
+		if (sns == ns)
+			return sym;
 		/*
-		 * CPP namespace has a total priority over the another
-		 * namespaces, because it is a previous pass,
-		 * If we are looking in the CPP namespace,
-		 * we don't want symbols related to keywords or types.
 		 * When a lookup is done in a namespace associated
 		 * to a struct we also want symbols of NS_IDEN which
 		 * are typedef, because in other case we cannot declare
 		 * fields of such types.
+		 * TODO: Remove this trick
 		 */
-		if (sns == NS_CPP && !disexpand || sns == ns)
-			return sym;
-		if (ns == NS_CPP)
-			continue;
 		if (sns == NS_KEYWORD ||
 		    (sym->flags & STYPEDEF) && ns >= NS_STRUCTS) {
 			return sym;
 		}
 	}
-	return allocsym(ns, name);
+	return (alloc == ALLOC) ? allocsym(ns, name) : NULL;
 }
 
 Symbol *
