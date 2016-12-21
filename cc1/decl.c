@@ -502,8 +502,6 @@ newtag(void)
 	return sym;
 }
 
-/* TODO: bitfields */
-
 static void fieldlist(Type *tp);
 
 static Type *
