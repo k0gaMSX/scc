@@ -44,25 +44,29 @@ dumpstab(char *msg)
 }
 #endif
 
-static unsigned
-hash(const char *s)
+static Symbol **
+hash(const char *s, int ns)
 {
 	unsigned c, h;
+	Symbol **tab;
+
 
 	for (h = 0; c = *s; ++s)
 		h ^= 33 * c;
-	return h & NR_SYM_HASH-1;
+	h &= NR_SYM_HASH-1;
+
+	tab = (ns == NS_CPP) ? htabcpp : htab;
+	return &tab[h];
 }
 
 static void
 unlinkhash(Symbol *sym)
 {
-	Symbol **tab, **h;
+	Symbol **h;
 
 	if ((sym->flags & SDECLARED) == 0)
 		return;
-	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
-	h = &tab[hash(sym->name)];
+	h = hash(sym->name, sym->ns);
 	*h = sym->next;
 }
 
@@ -167,10 +171,9 @@ newsym(int ns, char *name)
 static Symbol *
 linkhash(Symbol *sym)
 {
-	Symbol **tab, **h;
+	Symbol **h;
 
-	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
-	h = &tab[hash(sym->name)];
+	h = hash(sym->name, sym->ns);
 	sym->hash = *h;
 	*h = sym;
 
@@ -207,13 +210,12 @@ newlabel(void)
 Symbol *
 lookup(int ns, char *name, int alloc)
 {
-	Symbol *sym, **tab;
+	Symbol *sym;
 	int sns;
 	char *t, c;
 
 	c = *name;
-	tab = (ns == NS_CPP) ? htabcpp : htab;
-	for (sym = tab[hash(name)]; sym; sym = sym->hash) {
+	for (sym = *hash(name, ns); sym; sym = sym->hash) {
 		t = sym->name;
 		if (*t != c || strcmp(t, name))
 			continue;
