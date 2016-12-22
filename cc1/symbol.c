@@ -106,23 +106,25 @@ popctx(void)
 {
 	Symbol *next, *sym;
 
-	if (--curctx == GLOBALCTX) {
-		for (sym = labels; sym; sym = next) {
-			next = sym->next;
-			killsym(sym);
-		}
-		labels = NULL;
-		if (curfun) {
-			free(curfun->u.pars);
-			curfun->u.pars = NULL;
-		}
-	}
-
 	for (sym = head; sym && sym->ctx > curctx; sym = next) {
 		next = sym->next;
 		killsym(sym);
 	}
 	head = sym;
+
+	if (--curctx != GLOBALCTX)
+		return;
+
+	for (sym = labels; sym; sym = next) {
+		next = sym->next;
+		killsym(sym);
+	}
+	labels = NULL;
+
+	if (curfun) {
+		free(curfun->u.pars);
+		curfun->u.pars = NULL;
+	}
 }
 
 unsigned
