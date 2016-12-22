@@ -67,7 +67,7 @@ unlinkhash(Symbol *sym)
 	if ((sym->flags & SDECLARED) == 0)
 		return;
 	h = hash(sym->name, sym->ns);
-	*h = sym->next;
+	*h = sym->hash;
 }
 
 void
