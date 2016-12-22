@@ -637,7 +637,7 @@ notdefined(Symbol *sym)
 		expect(')');
 
 		isdef = (sym->flags & SDECLARED) != 0;
-		sym = newsym(NS_IDEN);
+		sym = newsym(NS_IDEN, NULL);
 		sym->type = inttype;
 		sym->flags |= SCONSTANT;
 		sym->u.i = isdef;

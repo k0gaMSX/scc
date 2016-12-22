@@ -57,18 +57,13 @@ hash(const char *s)
 static void
 unlinkhash(Symbol *sym)
 {
-	Symbol **tab, **h, *p, *prev;
+	Symbol **tab, **h;
 
 	if ((sym->flags & SDECLARED) == 0)
 		return;
 	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
 	h = &tab[hash(sym->name)];
-	for (prev = p = *h; p != sym; prev = p, p = p->hash)
-		/* nothing */;
-	if (prev == p)
-		*h = sym->hash;
-	else
-		prev->hash = sym->hash;
+	*h = sym->next;
 }
 
 void
@@ -142,7 +137,24 @@ newid(void)
 }
 
 static Symbol *
-allocsym(int ns, char *name)
+linksym(Symbol *sym)
+{
+	Symbol *p, *prev;
+
+	switch (sym->ns) {
+	case NS_CPP:
+		return sym;
+	case NS_LABEL:
+		sym->next = labels;
+		return labels = sym;
+	default:
+		sym->next = head;
+		return head = sym;
+	}
+}
+
+Symbol *
+newsym(int ns, char *name)
 {
 	Symbol *sym;
 
@@ -158,73 +170,29 @@ allocsym(int ns, char *name)
 	sym->u.s = NULL;
 	sym->type = NULL;
 	sym->next = sym->hash = NULL;
-	return sym;
-}
-
-static Symbol *
-linksym(Symbol *sym)
-{
-	Symbol *p, *prev;
-
-	switch (sym->ns) {
-	case NS_CPP:
-		return sym;
-	case NS_LABEL:
-		sym->next = labels;
-		return labels = sym;
-	default:
-		for (prev = p = head; p; prev = p, p = p->next) {
-			if (p->ctx <= sym->ctx)
-				break;
-		}
-		if (p == prev) {
-			sym->next = head;
-			head = sym;
-		} else {
-			p = prev->next;
-			prev->next = sym;
-			sym->next = p;
-		}
-		return sym;
-	}
+	return linksym(sym);
 }
 
 static Symbol *
 linkhash(Symbol *sym)
 {
-	Symbol **tab, **h, *p, *prev;
+	Symbol **tab, **h;
 
 	tab = (sym->ns == NS_CPP) ? htabcpp : htab;
 	h = &tab[hash(sym->name)];
-	for (prev = p = *h; p; prev = p, p = p->hash) {
-		if (p->ctx <= sym->ctx)
-			break;
-	}
-	if (p == prev) {
-		sym->hash = *h;
-		*h = sym;
-	} else {
-		p = prev->hash;
-		prev->hash = sym;
-		sym->hash = p;
-	}
+	sym->hash = *h;
+	*h = sym;
 
 	if (sym->ns != NS_CPP)
 		sym->id = newid();
 	sym->flags |= SDECLARED;
-	return linksym(sym);
-}
-
-Symbol *
-newsym(int ns)
-{
-	return linksym(allocsym(ns, NULL));
+	return sym;
 }
 
 Symbol *
 newstring(char *s, size_t len)
 {
-	Symbol *sym = newsym(NS_IDEN);
+	Symbol *sym = newsym(NS_IDEN, NULL);
 
 	if (lexmode != CPPMODE)
 		sym->type = mktype(chartype, ARY, len, NULL);
@@ -240,7 +208,7 @@ newstring(char *s, size_t len)
 Symbol *
 newlabel(void)
 {
-	Symbol *sym = newsym(NS_LABEL);
+	Symbol *sym = newsym(NS_LABEL, NULL);
 	sym->id = newid();
 	return sym;
 }
@@ -273,7 +241,7 @@ lookup(int ns, char *name, int alloc)
 			return sym;
 		}
 	}
-	return (alloc == ALLOC) ? allocsym(ns, name) : NULL;
+	return (alloc == ALLOC) ? newsym(ns, name) : NULL;
 }
 
 Symbol *
@@ -282,7 +250,7 @@ install(int ns, Symbol *sym)
 	if (sym->flags & SDECLARED) {
 		if (sym->ctx == curctx && ns == sym->ns)
 			return NULL;
-		sym = allocsym(ns, sym->name);
+		sym = newsym(ns, sym->name);
 	}
 	return linkhash(sym);
 }
@@ -293,7 +261,7 @@ keywords(struct keyword *key, int ns)
 	Symbol *sym;
 
 	for ( ; key->str; ++key) {
-		sym = linkhash(allocsym(ns, key->str));
+		sym = linkhash(newsym(ns, key->str));
 		sym->token = key->token;
 		sym->u.token = key->value;
 	}

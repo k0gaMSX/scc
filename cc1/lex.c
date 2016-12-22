@@ -334,7 +334,7 @@ integer(char *s, char base)
 
 convert:
 	tp = ctype(INT, sign, size);
-	sym = newsym(NS_IDEN);
+	sym = newsym(NS_IDEN, NULL);
 	sym->type = tp;
 	sym->flags |= SCONSTANT;
 	yylval.sym = readint(s, base, sign, sym);
@@ -449,7 +449,7 @@ character(void)
 	else
 		++input->p;
 
-	sym = newsym(NS_IDEN);
+	sym = newsym(NS_IDEN, NULL);
 	sym->u.i = c;
 	sym->type = inttype;
 	yylval.sym = sym;

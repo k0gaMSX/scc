@@ -301,7 +301,7 @@ foldconst(int type, int op, Type *tp, Symbol *ls, Symbol *rs)
 			return NULL;
 		break;
 	}
-	sym = newsym(NS_IDEN);
+	sym = newsym(NS_IDEN, NULL);
 	sym->type = tp;
 	sym->u = aux.u;
 	return constnode(sym);
@@ -578,7 +578,7 @@ castcode(Node *np, Type *newtp)
 		goto noconstant;
 	}
 
-	sym = newsym(NS_IDEN);
+	sym = newsym(NS_IDEN, NULL);
 	np->type = sym->type = newtp;
 	np->sym = sym;
 	sym->u = aux.u;

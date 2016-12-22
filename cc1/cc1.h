@@ -371,7 +371,7 @@ extern void dumpstab(char *msg);
 extern Symbol *lookup(int ns, char *name, int alloc);
 extern Symbol *nextsym(Symbol *sym, int ns);
 extern Symbol *install(int ns, Symbol *sym);
-extern Symbol *newsym(int ns);
+extern Symbol *newsym(int ns, char *name);
 extern void pushctx(void), popctx(void);
 extern void killsym(Symbol *sym);
 extern Symbol *newlabel(void);

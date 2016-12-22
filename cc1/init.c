@@ -170,7 +170,7 @@ mkcompound(Init *ip)
 		}
 	}
 
-	sym = newsym(NS_IDEN);
+	sym = newsym(NS_IDEN, NULL);
 	sym->u.init = v;
 	sym->type = ip->type;
 	sym->flags |= SINITLST;

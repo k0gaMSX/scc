@@ -334,9 +334,11 @@ directdcl(struct declarators *dp, unsigned ns)
 	} else {
 		if (yytoken == IDEN || yytoken == TYPEIDEN) {
 			sym = yylval.sym;
+			if (sym->ctx != curctx)
+				sym = newsym(ns, yytext);
 			next();
 		} else {
-			sym = newsym(ns);
+			sym = newsym(ns, NULL);
 		}
 		push(dp, IDEN, sym);
 	}
@@ -481,7 +483,7 @@ newtag(void)
 		next();
 		break;
 	default:
-		sym = newsym(NS_TAG);
+		sym = newsym(NS_TAG, NULL);
 		break;
 	}
 	if (!sym->type) {
@@ -760,20 +762,10 @@ identifier(struct decl *dcl)
 		errorp("declared variable '%s' of incomplete type", name);
 	}
 
-	if (tp->op != FTN) {
-		sym = install(NS_IDEN, sym);
-	} else {
+	sym = install(NS_IDEN, sym);
+	if (tp->op == FTN) {
 		if (sclass == NOSCLASS)
 			sclass = EXTERN;
-		/*
-		 * Ugly workaround to solve function declarations.
-		 * A new context is added for the parameters,
-		 * so at this point curctx is incremented by
-		 * one since sym was parsed.
-		 */
-		--curctx;
-		sym = install(NS_IDEN, sym);
-		++curctx;
 		if (!strcmp(name, "main") && tp->type != inttype) {
 			errorp("main shall be defined with a return type of int");
 			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
