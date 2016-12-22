@@ -136,23 +136,6 @@ newid(void)
 	return id;
 }
 
-static Symbol *
-linksym(Symbol *sym)
-{
-	Symbol *p, *prev;
-
-	switch (sym->ns) {
-	case NS_CPP:
-		return sym;
-	case NS_LABEL:
-		sym->next = labels;
-		return labels = sym;
-	default:
-		sym->next = head;
-		return head = sym;
-	}
-}
-
 Symbol *
 newsym(int ns, char *name)
 {
@@ -169,8 +152,16 @@ newsym(int ns, char *name)
 	sym->flags = 0;
 	sym->u.s = NULL;
 	sym->type = NULL;
-	sym->next = sym->hash = NULL;
-	return linksym(sym);
+	sym->hash = NULL;
+
+	if (ns == NS_LABEL) {
+		sym->next = labels;
+		labels = sym;
+	} else if (ns != NS_CPP) {
+		sym->next = head;
+		head = sym;
+	}
+	return sym;
 }
 
 static Symbol *
