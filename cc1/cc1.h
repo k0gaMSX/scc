@@ -24,7 +24,7 @@ enum typeprops {
 };
 
 /* data type letters */
-enum {
+enum ns {
 	L_INT8      = 'C',
 	L_INT16     = 'I',
 	L_INT32     = 'W',
