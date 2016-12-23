@@ -106,7 +106,7 @@ popctx(void)
 {
 	Symbol *next, *sym;
 
-	for (sym = head; sym && sym->ctx > curctx; sym = next) {
+	for (sym = head; sym && sym->ctx == curctx; sym = next) {
 		next = sym->next;
 		killsym(sym);
 	}
