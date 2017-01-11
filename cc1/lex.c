@@ -86,7 +86,7 @@ ilex(void)
 }
 
 int
-addinput(char *fname, Symbol *hide)
+addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
 	unsigned nline = 0;
@@ -108,7 +108,7 @@ addinput(char *fname, Symbol *hide)
 		fp = stdin;
 		fname = "<stdin>";
 	}
-	allocinput(fname, fp, NULL);
+	allocinput(fname, fp, buffer);
 	input->hide = hide;
 	input->nline = nline;
 

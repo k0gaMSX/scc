@@ -267,10 +267,9 @@ expand(char *begin, Symbol *sym)
 
 substitute:
 	DBG("MACRO '%s' expanded to :'%s'", macroname, buffer);
+	buffer[elen] = '\0';
+	addinput(NULL, sym, xstrdup(buffer));
 
-	addinput(NULL, sym);
-	memcpy(input->line, buffer, elen);
-	input->line[elen] = '\0';
 	return 1;
 }
 
@@ -430,7 +429,7 @@ includefile(char *dir, char *file, size_t filelen)
 	memcpy(path+dirlen, file, filelen);
 	path[dirlen + filelen] = '\0';
 
-	return addinput(path, NULL);
+	return addinput(path, NULL, NULL);
 }
 
 static void
