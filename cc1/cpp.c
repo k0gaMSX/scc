@@ -26,13 +26,14 @@ void
 defdefine(char *macro, char *val, char *source)
 {
 	char *def, *fmt = "#define %s %s";
+	Symbol dummy = {.flags = SDECLARED};
 
 	if (!val)
 		val = "";
 	def = xmalloc(strlen(fmt) + strlen(macro) + strlen(val));
 
 	sprintf(def, fmt, macro, val);
-	allocinput(source, NULL, def);
+	addinput(source, &dummy, def);
 	input->nline = ++ncmdlines;
 	cpp();
 	delinput();
@@ -268,7 +269,7 @@ expand(char *begin, Symbol *sym)
 substitute:
 	DBG("MACRO '%s' expanded to :'%s'", macroname, buffer);
 	buffer[elen] = '\0';
-	addinput(NULL, sym, xstrdup(buffer));
+	addinput(input->fname, sym, xstrdup(buffer));
 
 	return 1;
 }

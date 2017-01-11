@@ -24,23 +24,6 @@ static int safe, eof;
 Input *input;
 
 void
-allocinput(char *fname, FILE *fp, char *line)
-{
-	Input *ip = xmalloc(sizeof(Input));
-
-	if (!line) {
-		line = xmalloc(INPUTSIZ);
-		line[0] = '\0';
-	}
-	ip->p = ip->begin = ip->line = line;
-	ip->nline = 0;
-	ip->fname = xstrdup(fname);
-	ip->next = input;
-	ip->fp = fp;
-	input = ip;
-}
-
-void
 ilex(void)
 {
 	static struct keyword keys[] = {
@@ -90,12 +73,13 @@ addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
 	unsigned nline = 0;
+	Input *ip;
 
 	if (hide) {
 		/* this is a macro expansion */
 		fp = NULL;
-		fname = xstrdup(input->fname);
-		nline = input->nline;
+		if (input)
+			nline = input->nline;
 		if (hide->hide == UCHAR_MAX)
 			die("Too many macro expansions");
 		++hide->hide;
@@ -108,9 +92,21 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		fp = stdin;
 		fname = "<stdin>";
 	}
-	allocinput(fname, fp, buffer);
-	input->hide = hide;
-	input->nline = nline;
+
+	ip = xmalloc(sizeof(*ip));
+
+	if (!buffer) {
+		buffer = xmalloc(INPUTSIZ);
+		buffer[0] = '\0';
+	}
+
+	ip->p = ip->begin = ip->line = buffer;
+	ip->fname = xstrdup(fname);
+	ip->next = input;
+	ip->fp = fp;
+	ip->hide = hide;
+	ip->nline = nline;
+	input = ip;
 
 	return 1;
 }

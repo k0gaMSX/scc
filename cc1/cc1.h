@@ -395,7 +395,6 @@ extern int moreinput(void);
 extern void expect(unsigned tok);
 extern void discard(void);
 extern int addinput(char *fname, Symbol *hide, char *buffer);
-extern void allocinput(char *fname, FILE *fp, char *line);
 extern void delinput(void);
 extern void setsafe(int type);
 extern void ilex(void);
