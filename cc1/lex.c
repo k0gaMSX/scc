@@ -207,10 +207,15 @@ readline(void)
 	char c, peekc = 0;
 
 repeat_from_file:
-	input->begin = input->p = input->line;
 	*input->line = '\0';
+	input->p = input->line;
 
 repeat_from_expand:
+	input->begin = input->p;
+
+	if (*input->begin)
+		return 1;
+
 	if (eof)
 		return 0;
 
