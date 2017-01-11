@@ -2,6 +2,7 @@
 static char sccsid[] = "@(#) ./cc1/lex.c";
 #include <ctype.h>
 #include <errno.h>
+#include <limits.h>
 #include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,18 +86,32 @@ ilex(void)
 }
 
 int
-addinput(char *fname)
+addinput(char *fname, Symbol *hide)
 {
 	FILE *fp;
+	unsigned nline = 0;
 
-	if (fname) {
+	if (hide) {
+		/* this is a macro expansion */
+		fp = NULL;
+		fname = xstrdup(input->fname);
+		nline = input->nline;
+		if (hide->hide == UCHAR_MAX)
+			die("Too many macro expansions");
+		++hide->hide;
+	} else  if (fname) {
+		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
 			return 0;
 	} else {
+		/* reading from stdin */
 		fp = stdin;
 		fname = "<stdin>";
 	}
 	allocinput(fname, fp, NULL);
+	input->hide = hide;
+	input->nline = nline;
+
 	return 1;
 }
 
@@ -104,6 +119,7 @@ void
 delinput(void)
 {
 	Input *ip = input;
+	Symbol *hide = ip->hide;
 
 	if (ip->fp) {
 		if (fclose(ip->fp))
@@ -111,6 +127,17 @@ delinput(void)
 			    ip->fname);
 		if (!ip->next)
 			eof = 1;
+	}
+	if (hide) {
+		--hide->hide;
+		/*
+		 * If the symbol is not declared then it was
+		 * an extension due to a #if directive with
+		 * a non declared symbol (expanded to 0),
+		 * thus we have to kill the symbol
+		 */
+		if ((hide->flags & SDECLARED) == 0)
+			killsym(hide);
 	}
 	if (eof)
 		return;
@@ -179,14 +206,21 @@ readline(void)
 	char *bp, *lim;
 	char c, peekc = 0;
 
-repeat:
+repeat_from_file:
 	input->begin = input->p = input->line;
 	*input->line = '\0';
+
+repeat_from_expand:
 	if (eof)
 		return 0;
+
+	if (!input->fp) {
+		delinput();
+		goto repeat_from_expand;
+	}
 	if (feof(input->fp)) {
 		delinput();
-		goto repeat;
+		goto repeat_from_file;
 	}
 	lim = &input->line[INPUTSIZ-1];
 	for (bp = input->line; bp < lim; *bp++ = c) {
@@ -213,8 +247,10 @@ moreinput(void)
 	static char file[FILENAME_MAX];
 	static unsigned nline;
 	char *s;
+	int wasexpand;
 
 repeat:
+	wasexpand = input->hide != NULL;
 	if (!readline())
 		return 0;
 	while (isspace(*input->p))
@@ -225,7 +261,7 @@ repeat:
 		goto repeat;
 	}
 
-	if (onlycpp) {
+	if (onlycpp && !wasexpand) {
 		putchar('\n');
 		if (strcmp(file, input->fname)) {
 			strcpy(file, input->fname);
@@ -497,7 +533,7 @@ iden(void)
 	input->p = p;
 	tok2str();
 	if ((sym = lookup(NS_CPP, yytext, NOALLOC)) != NULL) {
-		if (!disexpand && expand(begin, sym))
+		if (!disexpand && !sym->hide && expand(begin, sym))
 			return next();
 	}
 	sym = lookup(namespace, yytext, ALLOC);

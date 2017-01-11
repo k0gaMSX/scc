@@ -152,6 +152,7 @@ newsym(int ns, char *name)
 		name = xstrdup(name);
 	sym->name = name;
 	sym->id = 0;
+	sym->hide = 0;
 	sym->ns = ns;
 	sym->ctx = (ns == NS_CPP) ? UCHAR_MAX : curctx;
 	sym->token = IDEN;

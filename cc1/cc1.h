@@ -307,6 +307,7 @@ struct symbol {
 	Type *type;
 	unsigned short id;
 	unsigned char ctx;
+	unsigned char hide;
 	char ns;
 	unsigned char token;
 	short flags;
@@ -344,6 +345,7 @@ struct yystype {
 struct input {
 	char *fname;
 	FILE *fp;
+	Symbol *hide;
 	char *line, *begin, *p;
 	struct input *next;
 	unsigned short nline;
@@ -392,7 +394,7 @@ extern unsigned next(void);
 extern int moreinput(void);
 extern void expect(unsigned tok);
 extern void discard(void);
-extern int addinput(char *fname);
+extern int addinput(char *fname, Symbol *hide);
 extern void allocinput(char *fname, FILE *fp, char *line);
 extern void delinput(void);
 extern void setsafe(int type);

@@ -102,7 +102,7 @@ main(int argc, char *argv[])
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);
 
-	if (!addinput(*argv)) {
+	if (!addinput(*argv, NULL)) {
 		die("error: failed to open input file '%s': %s",
 		    *argv, strerror(errno));
 	}

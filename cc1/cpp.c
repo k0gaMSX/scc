@@ -238,14 +238,13 @@ expansion_too_long:
 	error("macro expansion of \"%s\" too long", macroname);
 }
 
-#define BUFSIZE ((INPUTSIZ > FILENAME_MAX+2) ? INPUTSIZ : FILENAME_MAX+2)
 int
 expand(char *begin, Symbol *sym)
 {
-	size_t total, elen, rlen, llen, ilen;
+	size_t elen;
 	int n;
 	char *s = sym->u.s;
-	char *arglist[NR_MACROARG], arguments[INPUTSIZ], buffer[BUFSIZE];
+	char *arglist[NR_MACROARG], arguments[INPUTSIZ], buffer[INPUTSIZ];
 
 	macroname = sym->name;
 	if (sym == symfile) {
@@ -268,30 +267,12 @@ expand(char *begin, Symbol *sym)
 
 substitute:
 	DBG("MACRO '%s' expanded to :'%s'", macroname, buffer);
-	rlen = strlen(input->p);      /* rigth length */
-	llen = begin - input->line;   /* left length */
-	ilen = input->p - begin;      /* invocation length */
-	total = llen + elen + rlen;
 
-	if (total >= LINESIZ)
-		error("macro expansion of \"%s\" too long", macroname);
-
-	/* cut macro invocation */
-	memmove(begin, begin + ilen, rlen);
-
-	/* paste macro expansion */
-	memmove(begin + elen, begin, rlen);
-	memcpy(begin, buffer, elen);
-	input->line[total] = '\0';
-
-	input->p = input->begin = begin;
-
-	if (!(sym->flags & SDECLARED))
-		killsym(sym);
-
+	addinput(NULL, sym);
+	memcpy(input->line, buffer, elen);
+	input->line[elen] = '\0';
 	return 1;
 }
-#undef BUFSIZE
 
 static int
 getpars(Symbol *args[NR_MACROARG])
@@ -449,7 +430,7 @@ includefile(char *dir, char *file, size_t filelen)
 	memcpy(path+dirlen, file, filelen);
 	path[dirlen + filelen] = '\0';
 
-	return addinput(path);
+	return addinput(path, NULL);
 }
 
 static void
