@@ -202,27 +202,21 @@ readline(void)
 	char *bp, *lim;
 	char c, peekc = 0;
 
-repeat_from_file:
-	*input->line = '\0';
-	input->p = input->line;
-
-repeat_from_expand:
-	input->begin = input->p;
-
-	if (*input->begin)
-		return 1;
+repeat:
 
 	if (eof)
 		return 0;
-
 	if (!input->fp) {
 		delinput();
-		goto repeat_from_expand;
+		return 1;
 	}
 	if (feof(input->fp)) {
 		delinput();
-		goto repeat_from_file;
+		goto repeat;
 	}
+
+	*input->line = '\0';
+	input->begin = input->p = input->line;
 	lim = &input->line[INPUTSIZ-1];
 	for (bp = input->line; bp < lim; *bp++ = c) {
 		c = (peekc) ? peekc : readchar();
