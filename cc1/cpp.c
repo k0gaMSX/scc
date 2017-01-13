@@ -295,6 +295,10 @@ getpars(Symbol *args[NR_MACROARG])
 			cpperror("too many parameters in macro");
 			return NR_MACROARG;
 		}
+		if (accept(ELLIPSIS)) {
+			args[n++] = NULL;
+			break;
+		}
 		if (yytoken != IDEN) {
 			cpperror("macro arguments must be identifiers");
 			return NR_MACROARG;
@@ -391,6 +395,8 @@ define(void)
 	namespace = NS_IDEN;       /* Avoid polution in NS_CPP */
 	if ((n = getpars(args)) == NR_MACROARG)
 		goto delete;
+	if (n > 0 && !args[n-1])  /* it is a variadic function */
+		--n;
 	sprintf(buff, "%02d#", n);
 	if (!getdefs(args, n, buff+3, LINESIZ-3))
 		goto delete;
