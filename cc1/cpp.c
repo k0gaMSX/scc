@@ -243,7 +243,7 @@ int
 expand(char *begin, Symbol *sym)
 {
 	size_t elen;
-	int n;
+	int n, i;
 	char *s = sym->u.s;
 	char *arglist[NR_MACROARG], arguments[INPUTSIZ], buffer[INPUTSIZ];
 
@@ -259,10 +259,11 @@ expand(char *begin, Symbol *sym)
 	if (!s)
 		return 1;
 
+	n = atoi(s);
 	if (!parsepars(arguments, arglist, atoi(s)))
 		return 0;
-	for (n = 0; n < atoi(s); ++n)
-		DBG("MACRO par%d:%s", n, arglist[n]);
+	for (i = 0; i < n; ++i)
+		DBG("MACRO par%d:%s", i, arglist[i]);
 
 	elen = copymacro(buffer, s+3, INPUTSIZ-1, arglist);
 
