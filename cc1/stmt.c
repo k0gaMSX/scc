@@ -92,12 +92,13 @@ While(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 static void
 For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
-	Symbol *begin, *cond, *end;
+	Symbol *begin, *cond;
 	Node *econd, *einc, *einit;
 
 	begin = newlabel();
-	end = newlabel();
+	lcont = newlabel();
 	cond = newlabel();
+	lbreak = newlabel();
 
 	expect(FOR);
 	expect('(');
@@ -110,15 +111,18 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 
 	emit(OEXPR, einit);
 	emit(OJUMP, cond);
+
 	emit(OBLOOP, NULL);
 	emit(OLABEL, begin);
-	stmt(end, begin, lswitch);
+	stmt(lbreak, lcont, lswitch);
+	emit(OLABEL, lcont);
 	emit(OEXPR, einc);
 	emit(OLABEL, cond);
 	emit((econd) ? OBRANCH : OJUMP, begin);
 	emit(OEXPR, econd);
 	emit(OELOOP, NULL);
-	emit(OLABEL, end);
+
+	emit(OLABEL, lbreak);
 }
 
 static void
