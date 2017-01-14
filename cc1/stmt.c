@@ -69,24 +69,27 @@ condition(void)
 static void
 While(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
-	Symbol *begin, *cond, *end;
+	Symbol *begin;
 	Node *np;
 
 	begin = newlabel();
-	end = newlabel();
-	cond = newlabel();
+	lcont = newlabel();
+	lbreak = newlabel();
 
 	expect(WHILE);
 	np = condition();
-	emit(OJUMP, cond);
+
+	emit(OJUMP, lcont);
+
 	emit(OBLOOP, NULL);
 	emit(OLABEL, begin);
-	stmt(end, begin, lswitch);
-	emit(OLABEL, cond);
+	stmt(lbreak, lcont, lswitch);
+	emit(OLABEL, lcont);
 	emit(OBRANCH, begin);
 	emit(OEXPR, np);
 	emit(OELOOP, NULL);
-	emit(OLABEL, end);
+
+	emit(OLABEL, lbreak);
 }
 
 static void
