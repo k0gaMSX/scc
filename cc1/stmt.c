@@ -131,21 +131,26 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 static void
 Dowhile(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
-	Symbol *begin, *end;
+	Symbol *begin;
 	Node *np;
 
 	begin = newlabel();
-	end = newlabel();
+	lcont = newlabel();
+	lbreak = newlabel();
+
 	expect(DO);
+
 	emit(OBLOOP, NULL);
 	emit(OLABEL, begin);
-	stmt(end, begin, lswitch);
+	stmt(lbreak, lcont, lswitch);
 	expect(WHILE);
 	np = condition();
+	emit(OLABEL, lcont);
 	emit(OBRANCH, begin);
 	emit(OEXPR, np);
 	emit(OELOOP, NULL);
-	emit(OLABEL, end);
+
+	emit(OLABEL, lbreak);
 }
 
 static void
