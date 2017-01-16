@@ -182,11 +182,10 @@ parsepars(char *buffer, char **listp, int nargs)
 	return 1;
 }
 
-/* FIXME: characters in the definition break the macro definition */
 static size_t
 copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 {
-	char prevc, c, *p, *arg, *bp = buffer;
+	char delim, prevc, c, *p, *arg, *bp = buffer;
 	size_t size;
 
 	for (prevc = '\0'; c = *s; prevc = c, ++s) {
@@ -198,8 +197,13 @@ copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 				++s;
 		case '#':
 			break;
+		case '\'':
+			delim = '\'';
+			goto search_delim;
 		case '\"':
-			for (p = s; *++s != '"'; )
+			delim = '"';
+		search_delim:
+			for (p = s; *++s != delim; )
 				/* nothing */;
 			size = s - p + 1;
 			if (size > bufsiz)

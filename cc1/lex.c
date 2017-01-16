@@ -467,9 +467,11 @@ escape(void)
 static unsigned
 character(void)
 {
-	static char c;
+	char c, *p;
 	Symbol *sym;
+	size_t size;
 
+	p = input->p;
 	if ((c = *++input->p) == '\\')
 		c = escape();
 	else
@@ -479,6 +481,10 @@ character(void)
 		error("invalid character constant");
 	else
 		++input->p;
+
+	size = input->p - p;
+	memcpy(yytext, p, size);
+	yytext[size] = '\0';
 
 	sym = newsym(NS_IDEN, NULL);
 	sym->u.i = c;
