@@ -190,31 +190,25 @@ copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 	size_t size;
 
 	for (prevc = '\0'; c = *s; prevc = c, ++s) {
-		if (c != '@') {
-			switch (c) {
-			case '$':
-				while (bp[-1] == ' ')
-					--bp, ++bufsiz;
-				while (s[1] == ' ')
-					++s;
-			case '#':
-				continue;
-			case '\"':
-				for (p = s; *++s != '"'; )
-					/* nothing */;
-				size = s - p + 1;
-				if (size > bufsiz)
-					goto expansion_too_long;
-				memcpy(bp, p, size);
-				bufsiz -= size;
-				bp += size;
-				continue;
-			// case '\'';
-			}
-			if (bufsiz-- == 0)
+		switch (c) {
+		case '$':
+			while (bp[-1] == ' ')
+				--bp, ++bufsiz;
+			while (s[1] == ' ')
+				++s;
+		case '#':
+			break;
+		case '\"':
+			for (p = s; *++s != '"'; )
+				/* nothing */;
+			size = s - p + 1;
+			if (size > bufsiz)
 				goto expansion_too_long;
-			*bp++ = c;
-		} else {
+			memcpy(bp, p, size);
+			bufsiz -= size;
+			bp += size;
+			break;
+		case '@':
 			if (prevc == '#')
 				bufsiz -= 2;
 			arg = arglist[atoi(++s)];
@@ -229,6 +223,12 @@ copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 				*bp++ = '"';
 			bufsiz -= size;
 			s += 2;
+			break;
+		default:
+			if (bufsiz-- == 0)
+				goto expansion_too_long;
+			*bp++ = c;
+			break;
 		}
 	}
 	*bp = '\0';
