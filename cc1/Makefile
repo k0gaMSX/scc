@@ -18,8 +18,6 @@ all:
 	mkdir -p ../rootdir/libexec/scc/
 	cp cc1-* ../rootdir/libexec/scc/
 
-cpp.o: stallman.msg
-
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
