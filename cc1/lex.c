@@ -128,7 +128,7 @@ delinput(void)
 		--hide->hide;
 		/*
 		 * If the symbol is not declared then it was
-		 * an extension due to a #if directive with
+		 * an expansion due to a #if directive with
 		 * a non declared symbol (expanded to 0),
 		 * thus we have to kill the symbol
 		 */
@@ -648,6 +648,11 @@ repeat:
 		return;
 
 	if (lexmode == CPPMODE) {
+		/*
+		 * If we are in cpp mode, we only return eof when
+		 * we don't have more inputs, or when the next
+		 * next input is from a file
+		 */
 		if (!input || !input->next || !input->next->fp)
 			return;
 	}
