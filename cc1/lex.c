@@ -642,12 +642,18 @@ skipspaces(void)
 repeat:
 	while (isspace(*input->p))
 		++input->p;
-	if (*input->p == '\0' && lexmode != CPPMODE) {
-		if (!moreinput())
-			return;
-		goto repeat;
-	}
 	input->begin = input->p;
+
+	if (*input->p != '\0')
+		return;
+
+	if (lexmode == CPPMODE) {
+		if (!input || !input->next || !input->next->fp)
+			return;
+	}
+	if (!moreinput())
+		return;
+	goto repeat;
 }
 
 unsigned
