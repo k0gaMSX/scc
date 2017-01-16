@@ -278,7 +278,7 @@ tok2str(void)
 {
 	if ((yylen = input->p - input->begin) > INTIDENTSIZ)
 		error("token too big");
-	strncpy(yytext, input->begin, yylen);
+	memcpy(yytext, input->begin, yylen);
 	yytext[yylen] = '\0';
 	input->begin = input->p;
 }
@@ -467,11 +467,9 @@ escape(void)
 static unsigned
 character(void)
 {
-	char c, *p;
+	char c;
 	Symbol *sym;
-	size_t size;
 
-	p = input->p;
 	if ((c = *++input->p) == '\\')
 		c = escape();
 	else
@@ -482,14 +480,11 @@ character(void)
 	else
 		++input->p;
 
-	size = input->p - p;
-	memcpy(yytext, p, size);
-	yytext[size] = '\0';
-
 	sym = newsym(NS_IDEN, NULL);
 	sym->u.i = c;
 	sym->type = inttype;
 	yylval.sym = sym;
+	tok2str();
 	return CONSTANT;
 }
 
