@@ -653,7 +653,7 @@ repeat:
 		 * we don't have more inputs, or when the next
 		 * next input is from a file
 		 */
-		if (!input || !input->next || !input->next->fp)
+		if (!input || !input->next || input->next->fp)
 			return;
 	}
 	if (!moreinput())
