@@ -194,6 +194,8 @@ foldint(int op, Symbol *res, TINT l, TINT r)
 	default:    return 0;
 	}
 	res->u.i = i;
+
+	DBG("FOLD %lld %d %lld = %lld", l, op, r, i);
 	return 1;
 }
 
@@ -227,12 +229,15 @@ folduint(int op, Symbol *res, TUINT l, TUINT r)
 	case ONE:   i = l != r; goto sign;
 	default:    return 0;
 	}
-
 	res->u.u = u & ones(res->type->size);
+
+	DBG("FOLD %llu %d %llu = %llu", l, op, r, i);
 	return 1;
 
 sign:
 	res->u.i = i;
+
+	DBG("FOLD %llu %d %llu = %llu", l, op, r, i);
 	return 1;
 }
 
@@ -480,14 +485,17 @@ identity(int *op, Node *lp, Node *rp)
 	}
 
 free_right:
+	DBG("FOLD identity %d", op);
 	freetree(rp);
 	return lp;
 
 free_left:
+	DBG("FOLD identity %d", op);
 	freetree(lp);
 	return rp;
 
 change_to_comma:
+	DBG("FOLD identity %d", op);
 	*op = OCOMMA;
 	return NULL;
 }
@@ -506,6 +514,7 @@ foldternary(int op, Type *tp, Node *cond, Node *body)
 		np = body->left;
 		freetree(body->right);
 	}
+	DBG("FOLD ternary");
 	freetree(cond);
 	free(body);
 	return np;
