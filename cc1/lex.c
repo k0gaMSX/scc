@@ -72,7 +72,7 @@ int
 addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
-	unsigned nline = 0;
+	unsigned type, nline = 0;
 	Input *ip;
 
 	if (hide) {
@@ -83,14 +83,17 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		if (hide->hide == UCHAR_MAX)
 			die("Too many macro expansions");
 		++hide->hide;
+		type = IMACRO;
 	} else  if (fname) {
 		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
 			return 0;
+		type = IFILE;
 	} else {
 		/* reading from stdin */
 		fp = stdin;
 		fname = "<stdin>";
+		type = ISTDIN;
 	}
 
 	ip = xmalloc(sizeof(*ip));
@@ -106,6 +109,7 @@ addinput(char *fname, Symbol *hide, char *buffer)
 	ip->fp = fp;
 	ip->hide = hide;
 	ip->nline = nline;
+	ip->flags = type;
 	input = ip;
 
 	return 1;
@@ -117,23 +121,26 @@ delinput(void)
 	Input *ip = input;
 	Symbol *hide = ip->hide;
 
-	if (ip->fp) {
+	switch (ip->flags & ITYPE) {
+	case IFILE:
 		if (fclose(ip->fp))
 			die("error: failed to read from input file '%s'",
 			    ip->fname);
 		if (!ip->next)
 			eof = 1;
-	}
-	if (hide) {
+		break;
+	case IMACRO:
 		--hide->hide;
 		/*
 		 * If the symbol is not declared then it was
 		 * an expansion due to a #if directive with
 		 * a non declared symbol (expanded to 0),
 		 * thus we have to kill the symbol
+		 * TODO: review this comment and code
 		 */
 		if ((hide->flags & SDECLARED) == 0)
 			killsym(hide);
+		break;
 	}
 	if (eof)
 		return;

@@ -23,6 +23,14 @@ enum typeprops {
 	TK_R     = 1 << 5,    /* this is a K&R-function */
 };
 
+enum inputtype {
+	IMACRO = 1 << 0,      /* macro expansion type */
+	IFILE  = 1 << 1,      /* input file type */
+	ISTDIN = 1 << 2,      /* stdin type */
+	IEOF   = 1 << 3,      /* EOF mark */
+	ITYPE  = IMACRO | IFILE | ISTDIN,
+};
+
 /* data type letters */
 enum ns {
 	L_INT8      = 'C',
@@ -343,12 +351,13 @@ struct yystype {
 };
 
 struct input {
+	char flags;
+	unsigned short nline;
 	char *fname;
 	FILE *fp;
 	Symbol *hide;
 	char *line, *begin, *p;
 	struct input *next;
-	unsigned short nline;
 };
 
 /* error.c */
