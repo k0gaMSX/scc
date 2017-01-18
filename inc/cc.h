@@ -3,7 +3,7 @@
 
 #ifndef NDEBUG
 extern int debug;
-#define DBG(fmt, ...) dbg(fmt, __VA_ARGS__)
+#define DBG(...) dbg(__VA_ARGS__)
 #define DBGON() (debug = 1)
 #else
 #define DBG(...)
