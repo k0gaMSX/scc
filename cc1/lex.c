@@ -72,7 +72,7 @@ int
 addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
-	unsigned type, nline = 0;
+	unsigned flags, nline = 0;
 	Input *ip;
 
 	if (hide) {
@@ -83,17 +83,17 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		if (hide->hide == UCHAR_MAX)
 			die("Too many macro expansions");
 		++hide->hide;
-		type = IMACRO;
+		flags = IMACRO|IEOF;
 	} else  if (fname) {
 		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
 			return 0;
-		type = IFILE;
+		flags = IFILE;
 	} else {
 		/* reading from stdin */
 		fp = stdin;
 		fname = "<stdin>";
-		type = ISTDIN;
+		flags = ISTDIN;
 	}
 
 	ip = xmalloc(sizeof(*ip));
@@ -109,7 +109,7 @@ addinput(char *fname, Symbol *hide, char *buffer)
 	ip->fp = fp;
 	ip->hide = hide;
 	ip->nline = nline;
-	ip->flags = type;
+	ip->flags = flags;
 	input = ip;
 
 	return 1;

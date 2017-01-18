@@ -109,10 +109,8 @@ main(int argc, char *argv[])
 	if (onlycpp) {
 		outcpp();
 	} else {
-		next();
-
-		while (yytoken != EOFTOK)
-			decl();
+		for (next(); yytoken != EOFTOK; decl())
+			/* nothing */;
 	}
 
 	return failure;
