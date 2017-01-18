@@ -16,7 +16,7 @@ static unsigned arglen;
 static unsigned ncmdlines;
 static Symbol *symline, *symfile;
 static unsigned char ifstatus[NR_COND];
-static int ninclude;
+static int ninclude, cppoff;
 static char **dirinclude;
 
 unsigned cppctx;
@@ -25,7 +25,7 @@ int disexpand;
 void
 defdefine(char *macro, char *val, char *source)
 {
-	char *def, *fmt = "#define %s %s";
+	char *def, *fmt = "#define %s %s\n";
 	Symbol dummy = {.flags = SDECLARED};
 
 	if (!val)
@@ -345,7 +345,7 @@ getdefs(Symbol *args[NR_MACROARG], int nargs, char *bp, size_t bufsiz)
 			cpperror("'#' is not followed by a macro parameter");
 			return 0;
 		}
-		if (yytoken == EOFTOK)
+		if (yytoken == '\n')
 			break;
 
 		if ((len = strlen(yytext)) >= bufsiz) {
@@ -449,7 +449,7 @@ includefile(char *dir, char *file, size_t filelen)
 static void
 include(void)
 {
-	char *file, *p, **bp;
+	char file[FILENAME_MAX], *p, **bp;
 	size_t filelen;
 	static char *sysinclude[] = {
 		PREFIX "/include/scc/" ARCH  "/",
@@ -467,19 +467,31 @@ include(void)
 
 	switch (*yytext) {
 	case '<':
-		if ((p = strchr(input->begin, '>')) == NULL || p == yytext + 1)
+		if ((p = strchr(input->begin, '>')) == NULL || p[-1] == '<')
 			goto bad_include;
-		*p = '\0';
-		file = input->begin;
-		filelen = strlen(file);
+		filelen = p - input->begin;
+		if (filelen >= FILENAME_MAX)
+			goto too_long;
+		memcpy(file, input->begin, filelen);
+		file[filelen] = '\0';
+
 		input->begin = input->p = p+1;
+		if (next() != '\n')
+			goto trailing_characters;
+
 		break;
 	case '"':
-		if ((p = strchr(yytext + 1, '"')) == NULL || p == yytext + 1)
+		if (yylen < 3)
 			goto bad_include;
-		*p = '\0';
-		file = yytext+1;
-		filelen = strlen(file);
+		filelen = yylen-2;
+		if (filelen >= FILENAME_MAX)
+			goto too_long;
+		memcpy(file, yytext+1, filelen);
+		file[filelen] = '\0';
+
+		if (next() != '\n')
+			goto trailing_characters;
+
 		if (includefile(NULL, file, filelen))
 			goto its_done;
 		break;
@@ -499,7 +511,14 @@ include(void)
 	cpperror("included file '%s' not found", file);
 
 its_done:
-	next();
+	return;
+
+trailing_characters:
+	cpperror("trailing characters after preprocessor directive");
+	return;
+
+too_long:
+	cpperror("too long file name in #include");
 	return;
 
 bad_include:
@@ -709,10 +728,14 @@ cpp(void)
 		{0, NULL}
 	};
 	int ns;
+	char *p;
 
-	if (*input->p != '#')
-		return 0;
-	++input->p;
+	for (p = input->p; isspace(*p); ++p)
+		/* nothing */;
+
+	if (*p != '#')
+		return cppoff;
+	input->p = p+1;
 
 	disexpand = 1;
 	lexmode = CPPMODE;
@@ -724,15 +747,23 @@ cpp(void)
 	for (bp = clauses; bp->token && bp->token != yytoken; ++bp)
 		/* nothing */;
 	if (!bp->token) {
-		errorp("incorrect preprocessor directive");
+		errorp("incorrect preprocessor directive '%s'", yytext);
 		goto error;
 	}
+
+	DBG("CPP %s", yytext);
 
 	pushctx();              /* create a new context to avoid polish */
 	(*bp->fun)();           /* the current context, and to get all  */
 	popctx();               /* the symbols freed at the  end        */
 
-	if (yytoken != EOFTOK && !cppoff)
+	/*
+	 * #include changes the content of input->line, so the correctness
+	 * of the line must be checked in the own include(), and we have
+	 * to skip this tests. For the same reason include() is the only
+	 * function which does not prepare the next token
+	 */
+	if (yytoken != '\n' && !cppoff && bp->token != INCLUDE)
 		errorp("trailing characters after preprocessor directive");
 
 error:

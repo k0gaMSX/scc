@@ -400,7 +400,6 @@ extern void decl(void);
 /* lex.c */
 extern char ahead(void);
 extern unsigned next(void);
-extern int moreinput(void);
 extern void expect(unsigned tok);
 extern void discard(void);
 extern int addinput(char *fname, Symbol *hide, char *buffer);
@@ -451,7 +450,7 @@ extern struct yystype yylval;
 extern char yytext[];
 extern unsigned yytoken;
 extern unsigned short yylen;
-extern int cppoff, disexpand;
+extern int disexpand;
 extern unsigned cppctx;
 extern Input *input;
 extern int lexmode, namespace, onlycpp;

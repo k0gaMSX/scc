@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc1/lex.c";
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -16,11 +17,10 @@ unsigned yytoken;
 struct yystype yylval;
 char yytext[STRINGSIZ+3];
 unsigned short yylen;
-int cppoff;
 int lexmode = CCMODE;
 
 int namespace = NS_IDEN;
-static int safe, eof;
+static int safe;
 Input *input;
 
 void
@@ -83,7 +83,7 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		if (hide->hide == UCHAR_MAX)
 			die("Too many macro expansions");
 		++hide->hide;
-		flags = IMACRO|IEOF;
+		flags = IMACRO;
 	} else  if (fname) {
 		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
@@ -126,24 +126,12 @@ delinput(void)
 		if (fclose(ip->fp))
 			die("error: failed to read from input file '%s'",
 			    ip->fname);
-		if (!ip->next)
-			eof = 1;
 		break;
 	case IMACRO:
+		assert(hide->hide == 1);
 		--hide->hide;
-		/*
-		 * If the symbol is not declared then it was
-		 * an expansion due to a #if directive with
-		 * a non declared symbol (expanded to 0),
-		 * thus we have to kill the symbol
-		 * TODO: review this comment and code
-		 */
-		if ((hide->flags & SDECLARED) == 0)
-			killsym(hide);
 		break;
 	}
-	if (eof)
-		return;
 	input = ip->next;
 	free(ip->fname);
 	free(ip->line);
@@ -156,19 +144,18 @@ newline(void)
 		die("error: input file '%s' too long", input->fname);
 }
 
+/*
+ * Read the next character from the input file, counting number of lines
+ * and joining lines escaped with \
+ */
 static int
 readchar(void)
 {
 	FILE *fp = input->fp;
 	int c;
 
-	if (eof || !fp)
-		return 0;
 repeat:
 	switch (c = getc(fp)) {
-	case EOF:
-		c = '\0';
-		break;
 	case '\\':
 		if ((c = getc(fp)) == '\n') {
 			newline();
@@ -185,85 +172,111 @@ repeat:
 	return c;
 }
 
+/*
+ * discard a C comment. This function is only called from readline
+ * because it is impossible to have a comment in a macro, because
+ * comments are always discarded before processing any cpp directive
+ */
 static void
 comment(int type)
 {
 	int c;
 
-	c = -1;
 repeat:
-	do {
-		if (!c || eof) {
-			errorp("unterminated comment");
-			return;
-		}
-	} while ((c = readchar()) != type);
+	while ((c = readchar()) != EOF && c != type)
+		/* nothing */;
+
+	if (c == EOF) {
+		errorp("unterminated comment");
+		return;
+	}
 
 	if (type == '*' && (c = readchar()) != '/')
 		goto repeat;
 }
 
+/*
+ * readline is used to read a full logic line from a file.
+ * It discards comments and check that the line fits in
+ * the input buffer
+ */
 static int
 readline(void)
 {
 	char *bp, *lim;
-	char c, peekc = 0;
+	int c, peekc = 0;
 
-repeat:
-
-	if (eof)
-		return 0;
-	if (!input->fp) {
-		delinput();
-		return 1;
-	}
 	if (feof(input->fp)) {
-		delinput();
-		goto repeat;
+		input->flags |= IEOF;
+		return 0;
 	}
 
 	*input->line = '\0';
-	input->begin = input->p = input->line;
 	lim = &input->line[INPUTSIZ-1];
-	for (bp = input->line; bp < lim; *bp++ = c) {
+	for (bp = input->line; bp < lim-1; *bp++ = c) {
 		c = (peekc) ? peekc : readchar();
 		peekc = 0;
-		if (c == '\n' || c == '\0')
+		if (c == '\n' || c == EOF)
 			break;
-		if (c != '/' || (peekc = readchar()) != '*' && peekc != '/')
+		if (c != '/')
 			continue;
-		comment((peekc == '/') ? '\n' : peekc);
+
+		/* check for /* or // */
+		peekc = readchar();
+		if (peekc != '*' && peekc != '/')
+			continue;
+		comment((peekc == '/') ? '\n' : '/');
 		peekc = 0;
 		c = ' ';
 	}
 
-	if (bp == lim)
-		error("line too long");
+	input->begin = input->p = input->line;
+	if (bp == lim-1) {
+		errorp("line too long");
+		--bp;
+	}
+	*bp++ = '\n';
 	*bp = '\0';
+
 	return 1;
 }
 
-int
+/*
+ * moreinput gets more bytes to be passed to the lexer.
+ * It can take more bytes from macro expansions or
+ * directly reading from files. When a cpp directive
+ * is processed the line is discarded because it must not
+ * be passed to the lexer
+ */
+static int
 moreinput(void)
 {
-	static char file[FILENAME_MAX];
-	static unsigned nline;
-	char *s;
-	int wasexpand;
+	int wasexpand = 0;
 
 repeat:
-	wasexpand = input->hide != NULL;
-	if (!readline())
+	if (!input)
 		return 0;
-	while (isspace(*input->p))
-		++input->p;
-	input->begin = input->p;
-	if (*input->p == '\0' || cpp() || cppoff) {
-		*input->begin = '\0';
-		goto repeat;
+
+	if (*input->p == '\0') {
+		if ((input->flags&ITYPE) == IMACRO) {
+			wasexpand = 1;
+			input->flags |= IEOF;
+		}
+		if (input->flags & IEOF) {
+			delinput();
+			goto repeat;
+		}
+		if (!readline() || cpp()) {
+			*input->p = '\0';
+			goto repeat;
+		}
 	}
 
 	if (onlycpp && !wasexpand) {
+		static char file[FILENAME_MAX];
+		static unsigned nline;
+		char *s;
+
 		putchar('\n');
 		if (strcmp(file, input->fname)) {
 			strcpy(file, input->fname);
@@ -276,7 +289,6 @@ repeat:
 		nline = input->nline;
 		printf(s, nline, file);
 	}
-	input->begin = input->p;
 	return 1;
 }
 
@@ -483,7 +495,7 @@ character(void)
 		c = *input->p;
 	++input->p;
 	if (*input->p != '\'')
-		error("invalid character constant");
+		errorp("invalid character constant");
 	else
 		++input->p;
 
@@ -643,47 +655,50 @@ operator(void)
 
 /* TODO: Ensure that namespace is NS_IDEN after a recovery */
 
-static void
+/*
+ * skip all the spaces until the next token. When we are in
+ * CPPMODE \n is not considered a whitespace
+ */
+static int
 skipspaces(void)
 {
-repeat:
-	while (isspace(*input->p))
-		++input->p;
-	input->begin = input->p;
+	int c;
 
-	if (*input->p != '\0')
-		return;
-
-	if (lexmode == CPPMODE) {
-		/*
-		 * If we are in cpp mode, we only return eof when
-		 * we don't have more inputs, or when the next
-		 * next input is from a file
-		 */
-		if (!input || !input->next || input->next->fp)
-			return;
+	for (;;) {
+		switch (c = *input->p) {
+		case '\n':
+			if (lexmode == CPPMODE)
+				goto return_byte;
+			++input->p;
+		case '\0':
+			if (!moreinput())
+				return EOF;
+			break;
+		case ' ':
+		case '\t':
+		case '\v':
+		case '\r':
+		case '\f':
+			++input->p;
+			break;
+		default:
+			goto return_byte;
+		}
 	}
-	if (!moreinput())
-		return;
-	goto repeat;
+
+return_byte:
+	input->begin = input->p;
+	return c;
 }
 
 unsigned
 next(void)
 {
-	char c;
+	int c;
 
-	skipspaces();
-	c = *input->begin;
-	if ((eof || lexmode == CPPMODE) && c == '\0') {
-		strcpy(yytext, "<EOF>");
-		if (cppctx && eof)
-			error("#endif expected");
+	if ((c = skipspaces()) == EOF)
 		yytoken = EOFTOK;
-		goto exit;
-	}
-
-	if (isalpha(c) || c == '_')
+	else if (isalpha(c) || c == '_')
 		yytoken = iden();
 	else if (isdigit(c))
 		yytoken = number();
@@ -694,7 +709,12 @@ next(void)
 	else
 		yytoken = operator();
 
-exit:
+	if (yytoken == EOF) {
+		strcpy(yytext, "<EOF>");
+		if (cppctx)
+			errorp("#endif expected");
+	}
+
 	DBG("TOKEN %s", yytext);
 	return yytoken;
 }
