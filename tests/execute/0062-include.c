@@ -1,4 +1,4 @@
 #include \
-"0062-include.h"
-	return 0;
+"include/0062-include.h"
+	return x;
 }

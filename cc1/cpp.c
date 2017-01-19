@@ -444,10 +444,25 @@ includefile(char *dir, char *file, size_t filelen)
 	return addinput(path, NULL, NULL);
 }
 
+static char *
+cwd(char *buf)
+{
+	char *p, *s = input->fname;
+	size_t len;
+
+	if ((p = strrchr(s, '/')) == NULL)
+		return NULL;
+	if ((len = p - s) >= FILENAME_MAX)
+		die("current work directory too long");
+	memcpy(buf, s, len);
+	buf[len] = '\0';
+	return buf;
+}
+
 static void
 include(void)
 {
-	char file[FILENAME_MAX], *p, **bp;
+	char dir[FILENAME_MAX], file[FILENAME_MAX], *p, **bp;
 	size_t filelen;
 	static char *sysinclude[] = {
 		PREFIX "/include/scc/" ARCH  "/",
@@ -490,7 +505,7 @@ include(void)
 		if (next() != '\n')
 			goto trailing_characters;
 
-		if (includefile(NULL, file, filelen))
+		if (includefile(cwd(dir), file, filelen))
 			goto its_done;
 		break;
 	default:
