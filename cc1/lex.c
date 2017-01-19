@@ -515,12 +515,16 @@ string(void)
 	*bp++ = '"';
 repeat:
 	for (++input->p; (c = *input->p) != '"'; ++input->p) {
-		if (c == '\0')
-			error("missing terminating '\"' character");
+		if (c == '\0') {
+			errorp("missing terminating '\"' character");
+			break;
+		}
 		if (c == '\\')
 			c = escape();
-		if (bp == &yytext[STRINGSIZ+1])
+		if (bp == &yytext[STRINGSIZ+1]) {
+			/* TODO: proper error handling here */
 			error("string too long");
+		}
 		*bp++ = c;
 	}
 
