@@ -16,8 +16,8 @@ static unsigned arglen;
 static unsigned ncmdlines;
 static Symbol *symline, *symfile;
 static unsigned char ifstatus[NR_COND];
-static int ninclude, cppoff;
-static char **dirinclude;
+static int cppoff;
+static struct items dirinclude;
 
 unsigned cppctx;
 int disexpand;
@@ -417,9 +417,7 @@ incdir(char *dir)
 {
 	if (!dir || *dir == '\0')
 		die("incorrect -I flag");
-	++ninclude;
-	dirinclude = xrealloc(dirinclude, sizeof(*dirinclude) * ninclude);
-	dirinclude[ninclude-1] = dir;
+	newitem(&dirinclude, dir);
 }
 
 static int
@@ -499,8 +497,8 @@ include(void)
 		goto bad_include;
 	}
 
-	n = ninclude;
-	for (bp = dirinclude; n--; ++bp) {
+	n = dirinclude.n;
+	for (bp = dirinclude.s; n--; ++bp) {
 		if (includefile(*bp, file, filelen))
 			goto its_done;
 	}
