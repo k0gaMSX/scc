@@ -96,17 +96,30 @@ static void
 For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *begin, *cond;
-	Node *econd, *einc, *einit;
+	Node *econd, *einc, *einit = NULL;
 
 	begin = newlabel();
 	lcont = newlabel();
 	cond = newlabel();
 	lbreak = newlabel();
 
+	pushctx();
+
 	expect(FOR);
 	expect('(');
-	einit = (yytoken != ';') ? expr() : NULL;
-	expect(';');
+	switch (yytoken) {
+	case TYPE:
+	case TYPEIDEN:
+	case TQUALIFIER:
+	case SCLASS:
+		decl();
+		break;
+	default:
+		einit = expr();
+	case ';':
+		expect(';');
+		break;
+	}
 	econd = (yytoken != ';') ? condexpr() : NULL;
 	expect(';');
 	einc = (yytoken != ')') ? expr() : NULL;
@@ -126,6 +139,8 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	emit(OELOOP, NULL);
 
 	emit(OLABEL, lbreak);
+
+	popctx();
 }
 
 static void
