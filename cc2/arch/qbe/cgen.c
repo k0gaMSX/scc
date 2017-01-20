@@ -118,7 +118,7 @@ load(Type *tp, Node *np, Node *new)
 	int op;
 	int flags = tp->flags;
 
-	if (flags & AGGRF) {
+	if (flags & (AGGRF|FUNF)) {
 		*new = *np;
 		return new;
 	}
