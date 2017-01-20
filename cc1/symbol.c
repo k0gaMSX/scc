@@ -107,6 +107,11 @@ popctx(void)
 	Symbol *next, *sym;
 
 	for (sym = head; sym && sym->ctx == curctx; sym = next) {
+		/*
+		 * Since we are unlinking them in the inverse order
+		 * we do know that tp is always the head of the
+		 * collision list
+		 */
 		next = sym->next;
 		killsym(sym);
 	}
