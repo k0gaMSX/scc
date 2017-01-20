@@ -98,12 +98,15 @@ extern Type int32type, uint32type, ptrtype;
 static Node *
 tmpnode(Node *np, Type *tp)
 {
+	char flags;
 	Symbol *sym;
 
 	if (!np)
 		np = newnode(OTMP);
 	sym = getsym(TMPSYM);
 	sym->type = np->type = *tp;
+	flags = tp->flags & ~(PARF|INITF);
+	sym->type.flags = np->type.flags = flags;
 	sym->kind = STMP;
 	np->left = np->right = NULL;
 	np->u.sym = sym;
