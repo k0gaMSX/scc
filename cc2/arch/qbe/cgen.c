@@ -105,6 +105,7 @@ tmpnode(Node *np, Type *tp)
 	sym = getsym(TMPSYM);
 	sym->type = np->type = *tp;
 	sym->kind = STMP;
+	np->left = np->right = NULL;
 	np->u.sym = sym;
 	np->op = OTMP;
 	np->flags |= ISTMP;
