@@ -186,6 +186,7 @@ symname(Symbol *sym)
 		case SGLOB:
 			sprintf(buff, "%c%s", c, sym->name);
 			return buff;
+		case SLOCAL:
 		case SPRIV:
 		case SAUTO:
 			sprintf(buff, "%c%s.%u", c, sym->name, sym->id);
