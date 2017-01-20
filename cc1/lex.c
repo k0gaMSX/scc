@@ -225,7 +225,7 @@ readline(void)
 		peekc = readchar();
 		if (peekc != '*' && peekc != '/')
 			continue;
-		comment((peekc == '/') ? '\n' : '/');
+		comment((peekc == '/') ? '\n' : '*');
 		peekc = 0;
 		c = ' ';
 	}
