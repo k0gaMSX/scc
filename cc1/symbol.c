@@ -105,6 +105,23 @@ void
 popctx(void)
 {
 	Symbol *next, *sym;
+	int dangling = 0;
+
+	/*
+	 * we have to be careful before popping the current
+	 * context, because since the parser is one token
+	 * ahead it may already have read an identifier at
+	 * this point, and yylval.sym is a pointer to
+	 * the symbol associated to such token. If that
+	 * symbol is from the context that we are popping
+	 * then we are going to generate a dangling pointer.
+	 * We can detect this situation and call again to
+	 * lookup.
+	 */
+	if ((yytoken == IDEN || yytoken == TYPEIDEN) &&
+	    yylval.sym->ctx == curctx) {
+		dangling = 1;
+	}
 
 	for (sym = head; sym && sym->ctx == curctx; sym = next) {
 		/*
@@ -117,18 +134,22 @@ popctx(void)
 	}
 	head = sym;
 
-	if (--curctx != GLOBALCTX)
-		return;
+	if (--curctx == GLOBALCTX) {
+		for (sym = labels; sym; sym = next) {
+			next = sym->next;
+			killsym(sym);
+		}
+		labels = NULL;
 
-	for (sym = labels; sym; sym = next) {
-		next = sym->next;
-		killsym(sym);
+		if (curfun) {
+			free(curfun->u.pars);
+			curfun->u.pars = NULL;
+		}
 	}
-	labels = NULL;
 
-	if (curfun) {
-		free(curfun->u.pars);
-		curfun->u.pars = NULL;
+	if (dangling) {
+		yylval.sym = lookup(namespace, yytext, ALLOC);
+		yytoken = yylval.sym->token;
 	}
 }
 
