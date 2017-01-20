@@ -552,7 +552,7 @@ rhs(Node *np, Node *ret)
                 code(op, ret, &aux1, &aux2);
                 return ret;
 	case OCALL:
-		if (np->left->op == OPTR)
+		if (l->op == OPTR)
 			np = rhs(l, &aux1);
 		return call(np, ret);
 	case OCAST:
