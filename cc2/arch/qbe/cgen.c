@@ -589,7 +589,8 @@ rhs(Node *np, Node *ret)
 	case OASK:
 		return ternary(np, ret);
 	case OCOMMA:
-		return rhs(np, ret);
+		rhs(l, &aux1);
+		return rhs(r, ret);
 	case OPTR:
 		return load(tp, rhs(l, &aux1), ret);
 	case OADDR:
