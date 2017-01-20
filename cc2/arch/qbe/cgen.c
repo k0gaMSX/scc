@@ -241,7 +241,6 @@ call(Node *np, Node *fun, Node *ret)
 	tp = &np->type;
 	switch (tp->size) {
 	case 0:
-		np->left = tmpnode(NULL, tp);
 		op = ASCALLW;
 		break;
 	case 1:
