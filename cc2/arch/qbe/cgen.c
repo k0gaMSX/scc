@@ -229,7 +229,7 @@ cast(Type *td, Node *ns, Node *nd)
 static Node *rhs(Node *np, Node *new);
 
 static Node *
-call(Node *np, Node *ret)
+call(Node *np, Node *fun, Node *ret)
 {
 	int n, op;
 	Type *tp;
@@ -259,7 +259,7 @@ call(Node *np, Node *ret)
 	default:
 		abort();
 	}
-	code(op, tmpnode(ret, tp), np->left, NULL);
+	code(op, tmpnode(ret, tp), fun, NULL);
 
 	for (q = pars; q < &pars[n]; ++q) {
 		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
@@ -553,8 +553,8 @@ rhs(Node *np, Node *ret)
                 return ret;
 	case OCALL:
 		if (l->op == OPTR)
-			np = rhs(l, &aux1);
-		return call(np, ret);
+			l = rhs(l, &aux1);
+		return call(np, l, ret);
 	case OCAST:
 		return cast(tp, rhs(l, &aux1), ret);
 	case OASSIG:
