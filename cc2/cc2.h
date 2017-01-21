@@ -1,18 +1,18 @@
 /* See LICENSE file for copyright and license details. */
 
 enum iflags {
-	BBENTRY =    1,
+	BBENTRY =    1,        /* basic block entry */
 };
 
 enum tflags {
-	SIGNF   =     1,
-	INTF    =     2,
-	FLOATF  =     4,
-	STRF    =     8,
-	AGGRF   =    16,
-	FUNF    =    32,
-	PARF    =    64,
-	INITF   =   128
+	SIGNF   =     1 << 0,  /* Signed type */
+	INTF    =     1 << 1,  /* integer type */
+	FLOATF  =     1 << 2,  /* float type */
+	STRF    =     1 << 3,  /* string */
+	AGGRF   =     1 << 4,  /* aggregate */
+	FUNF    =     1 << 5,  /* function */
+	PARF    =     1 << 6,  /* parameter */
+	INITF   =     1 << 7,  /* initializer flag */
 };
 
 enum sclass {
