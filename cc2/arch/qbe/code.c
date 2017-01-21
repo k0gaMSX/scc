@@ -136,13 +136,8 @@ static struct opdata {
 	[ASBRANCH] = {.fun = branch},
 	[ASJMP]  = {.fun = jmp},
 	[ASRET]  = {.fun = ret},
-	[ASCALLB] = {.fun = call, .letter = 'b'},
-	[ASCALLH] = {.fun = call, .letter = 'h'},
-	[ASCALLW] = {.fun = call, .letter = 'w'},
-	[ASCALLS] = {.fun = call, .letter = 's'},
-	[ASCALLL] = {.fun = call, .letter = 'l'},
-	[ASCALLD] = {.fun = call, .letter = 'd'},
-	[ASCALL] = {.fun = ecall},
+	[ASCALL] = {.fun = call},
+	[ASCALLE] = {.fun = ecall},
 	[ASPAR] = {.fun = param, .txt = "%s %s, "},
 	[ASPARE] = {.fun = param, .txt = "%s %s"},
 	[ASALLOC] = {.fun = alloc},
@@ -308,6 +303,25 @@ data(Node *np)
 	putchar('\n');
 }
 
+static char *
+size2stack(Type *tp)
+{
+	switch (tp->size) {
+	case 0:
+		return "w";
+	case 1:
+		return "w";
+	case 2:
+		return "w";
+	case 4:
+		return "w";
+	case 8:
+		return "l";
+	default:
+		abort();
+	}
+}
+
 void
 writeout(void)
 {
@@ -318,13 +332,13 @@ writeout(void)
 
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
-	printf("function %s %s(", size2asm(&curfun->rtype), symname(curfun));
+	printf("function %s %s(", size2stack(&curfun->rtype), symname(curfun));
 
 	/* declare formal parameters */
 	for (sep = "", p = locals; p; p = p->next, sep = ",") {
 		if ((p->type.flags & PARF) == 0)
 			break;
-		printf("%s%s %s.val", sep, size2asm(&p->type), symname(p));
+		printf("%s%s %s.val", sep, size2stack(&p->type), symname(p));
 	}
 	puts(")\n{");
 
@@ -415,10 +429,12 @@ call(void)
 {
 	struct opdata *p = &optbl[pc->op];
 	char to[ADDR_LEN], from[ADDR_LEN];
+	Symbol *sym = pc->to.u.sym;
 
 	strcpy(to, addr2txt(&pc->to));
 	strcpy(from, addr2txt(&pc->from1));
-	printf("\t%s =%c\tcall\t%s(", to, p->letter, from);
+	printf("\t%s =%s\tcall\t%s(",
+	       to, size2stack(&sym->type), from);
 }
 
 static void
@@ -427,7 +443,7 @@ param(void)
 	Symbol *sym = pc->from2.u.sym;
 
 	printf(optbl[pc->op].txt,
-	       size2asm(&sym->type), addr2txt(&pc->from1));
+	       size2stack(&sym->type), addr2txt(&pc->from1));
 }
 
 static void

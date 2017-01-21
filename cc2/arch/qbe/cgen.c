@@ -242,33 +242,14 @@ call(Node *np, Node *fun, Node *ret)
 		pars[n++] = rhs(p->left, newnode(OTMP));
 
 	tp = &np->type;
-	switch (tp->size) {
-	case 0:
-		op = ASCALLW;
-		break;
-	case 1:
-		op = ASCALLB;
-		break;
-	case 2:
-		op = ASCALLH;
-		break;
-	case 4:
-		op = (tp->flags & INTF) ? ASCALLW : ASCALLS;
-		break;
-	case 8:
-		op = (tp->flags & INTF) ? ASCALLL : ASCALLD;
-		break;
-	default:
-		abort();
-	}
-	code(op, tmpnode(ret, tp), fun, NULL);
+	code(ASCALL, tmpnode(ret, tp), fun, NULL);
 
 	for (q = pars; q < &pars[n]; ++q) {
 		op = (q == &pars[n-1]) ? ASPARE : ASPAR;
 		tmpnode(&aux, &(*q)->type);
 		code(op, NULL, *q, &aux);
 	}
-	code(ASCALL, NULL, NULL, NULL);
+	code(ASCALLE, NULL, NULL, NULL);
 
 	return ret;
 }
