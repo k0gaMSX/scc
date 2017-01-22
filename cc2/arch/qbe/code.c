@@ -250,10 +250,8 @@ size2asm(Type *tp)
 {
 	if (tp->flags & STRF) {
 		return "b";
-	} else {
+	} else if (tp->flags & INTF) {
 		switch (tp->size) {
-		case 0:
-			return "";
 		case 1:
 			return "b";
 		case 2:
@@ -262,10 +260,14 @@ size2asm(Type *tp)
 			return "w";
 		case 8:
 			return "l";
-		default:
-			abort();
 		}
+	} else if (tp->flags & FLOATF) {
+		if (tp->size == 4)
+			return "s";
+		else if (tp->size == 8)
+			return "d";
 	}
+	abort();
 }
 
 void
@@ -306,20 +308,23 @@ data(Node *np)
 static char *
 size2stack(Type *tp)
 {
-	switch (tp->size) {
-	case 0:
-		return "w";
-	case 1:
-		return "w";
-	case 2:
-		return "w";
-	case 4:
-		return "w";
-	case 8:
-		return "l";
-	default:
-		abort();
+	if (tp->flags & INTF) {
+		switch (tp->size) {
+		case 0:
+		case 1:
+		case 2:
+		case 4:
+			return "w";
+		case 8:
+			return "l";
+		}
+	} else if (tp->flags & FLOATF) {
+		if (tp->size == 4)
+			return "s";
+		else if (tp->size == 8)
+			return "d";
 	}
+	abort();
 }
 
 void
