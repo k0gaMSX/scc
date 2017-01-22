@@ -96,7 +96,7 @@ static void
 For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 {
 	Symbol *begin, *cond;
-	Node *econd, *einc, *einit = NULL;
+	Node *econd, *einc;
 
 	begin = newlabel();
 	lcont = newlabel();
@@ -115,7 +115,7 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 		decl();
 		break;
 	default:
-		einit = expr();
+		emit(OEXPR, expr());
 	case ';':
 		expect(';');
 		break;
@@ -125,7 +125,6 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	einc = (yytoken != ')') ? expr() : NULL;
 	expect(')');
 
-	emit(OEXPR, einit);
 	emit(OJUMP, cond);
 
 	emit(OBLOOP, NULL);
