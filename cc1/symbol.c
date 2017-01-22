@@ -105,7 +105,7 @@ void
 popctx(void)
 {
 	Symbol *next, *sym;
-	int dangling = 0;
+	int ns, dangling = 0;
 
 	/*
 	 * we have to be careful before popping the current
@@ -120,6 +120,7 @@ popctx(void)
 	 */
 	if ((yytoken == IDEN || yytoken == TYPEIDEN) &&
 	    yylval.sym->ctx == curctx) {
+		ns = yylval.sym->ns;
 		dangling = 1;
 	}
 
@@ -148,7 +149,7 @@ popctx(void)
 	}
 
 	if (dangling) {
-		yylval.sym = lookup(namespace, yytext, ALLOC);
+		yylval.sym = lookup(ns, yytext, ALLOC);
 		yytoken = yylval.sym->token;
 	}
 }
