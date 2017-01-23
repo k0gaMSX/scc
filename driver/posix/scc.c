@@ -103,14 +103,10 @@ inittool(int tool)
 	switch (tool) {
 	case CC1: /* FALLTHROUGH */
 	case CC2:
-		if (!arch)
-			arch = ARCH;
 		n = snprintf(t->bin, sizeof(t->bin), "%s-%s", t->cmd, arch);
 		if (n < 0 || n >= sizeof(t->bin))
 			die("scc: target tool name too long");
 
-		if (!execpath)
-			execpath = PREFIX "/libexec/scc";
 		n = snprintf(t->cmd, sizeof(t->cmd), "%s/%s", execpath, t->bin);
 		if (n < 0 || n >= sizeof(t->cmd))
 			die("scc: target tool path too long");
@@ -421,8 +417,10 @@ main(int argc, char *argv[])
 
 	atexit(terminate);
 
-	arch = getenv("ARCH");
-	execpath = getenv("SCCEXECPATH");
+	if (!(arch = getenv("ARCH")))
+		arch = ARCH;
+	if (!(execpath = getenv("SCCEXECPATH")))
+		execpath = PREFIX "/libexec/scc";
 
 	ARGBEGIN {
 	case 'D':
