@@ -38,9 +38,9 @@ static struct tool {
 	int    in, out, init;
 	pid_t  pid;
 } tools[] = {
-	[CC1]    = { .bin = "cc1" },
+	[CC1]    = { .cmd = "cc1" },
 	[TEEIR]  = { .bin = "tee",   .cmd = "tee", },
-	[CC2]    = { .bin = "cc2" },
+	[CC2]    = { .cmd = "cc2" },
 	[TEEQBE] = { .bin = "tee",   .cmd = "tee", },
 	[QBE]    = { .bin = "qbe",   .cmd = "qbe", },
 	[TEEAS]  = { .bin = "tee",   .cmd = "tee", },
@@ -95,7 +95,6 @@ static int
 inittool(int tool)
 {
 	struct tool *t = &tools[tool];
-	size_t binln;
 	int n;
 
 	if (t->init)
@@ -104,15 +103,11 @@ inittool(int tool)
 	switch (tool) {
 	case CC1: /* FALLTHROUGH */
 	case CC2:
-		binln = strlen(t->bin);
 		if (!arch)
 			arch = ARCH;
-		n = snprintf(t->bin + binln,
-			     sizeof(t->bin) - binln,
-			     "-%s", arch);
+		n = snprintf(t->bin, sizeof(t->bin), "%s-%s", t->cmd, arch);
 		if (n < 0 || n >= sizeof(t->bin))
-			die("scc: target tool bin too long");
-		binln = strlen(t->bin);
+			die("scc: target tool name too long");
 
 		if (!execpath)
 			execpath = PREFIX "/libexec/scc";
