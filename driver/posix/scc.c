@@ -301,6 +301,10 @@ validatetools(void)
 		if (waitpid(t->pid, &st, 0) < 0 ||
 		    !WIFEXITED(st) ||
 		    WEXITSTATUS(st) != 0) {
+			if (!WIFEXITED(st)) {
+				fprintf(stderr,
+				        "scc:%s: internal error\n", t->bin);
+			}
 			failure = 1;
 			failed = tool;
 		}
