@@ -296,19 +296,20 @@ validatetools(void)
 
 	for (tool = 0; tool < LAST_TOOL; ++tool) {
 		t = &tools[tool];
-		if (t->pid) {
-			if (waitpid(t->pid, &st, 0) < 0 ||
-			    !WIFEXITED(st) || WEXITSTATUS(st) != 0) {
-				failure = 1;
-				failed = tool;
-			}
-			if (tool >= failed && t->outfile)
-				unlink(t->outfile);
-			for (i = t->nparams; i < t->args.n; ++i)
-				free(t->args.s[i]);
-			t->args.n = t->nparams;
-			t->pid = 0;
+		if (!t->pid)
+			continue;
+		if (waitpid(t->pid, &st, 0) < 0 ||
+		    !WIFEXITED(st) ||
+		    WEXITSTATUS(st) != 0) {
+			failure = 1;
+			failed = tool;
 		}
+		if (tool >= failed && t->outfile)
+			unlink(t->outfile);
+		for (i = t->nparams; i < t->args.n; ++i)
+			free(t->args.s[i]);
+		t->args.n = t->nparams;
+		t->pid = 0;
 	}
 	if (failed < LAST_TOOL) {
 		unlink(objfile);
