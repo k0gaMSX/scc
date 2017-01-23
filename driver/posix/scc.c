@@ -38,9 +38,9 @@ static struct tool {
 	int    in, out, init;
 	pid_t  pid;
 } tools[] = {
-	[CC1]    = { .bin = "cc1",   .cmd = PREFIX "/libexec/scc/", },
+	[CC1]    = { .bin = "cc1" },
 	[TEEIR]  = { .bin = "tee",   .cmd = "tee", },
-	[CC2]    = { .bin = "cc2",   .cmd = PREFIX "/libexec/scc/", },
+	[CC2]    = { .bin = "cc2" },
 	[TEEQBE] = { .bin = "tee",   .cmd = "tee", },
 	[QBE]    = { .bin = "qbe",   .cmd = "qbe", },
 	[TEEAS]  = { .bin = "tee",   .cmd = "tee", },
@@ -50,7 +50,7 @@ static struct tool {
 };
 
 char *argv0;
-static char *arch, *objfile, *outfile;
+static char *arch, *execpath, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
@@ -114,9 +114,11 @@ inittool(int tool)
 			die("scc: target tool bin too long");
 		binln = strlen(t->bin);
 
-		if (strlen(t->cmd) + binln + 1 > sizeof(t->cmd))
+		if (!execpath)
+			execpath = PREFIX "/libexec/scc";
+		n = snprintf(t->cmd, sizeof(t->cmd), "%s/%s", execpath, t->bin);
+		if (n < 0 || n >= sizeof(t->cmd))
 			die("scc: target tool path too long");
-		strcat(t->cmd, t->bin);
 		break;
 	case LD:
 		addarg(tool, "-no-pie");
@@ -425,6 +427,7 @@ main(int argc, char *argv[])
 	atexit(terminate);
 
 	arch = getenv("ARCH");
+	execpath = getenv("SCCEXECPATH");
 
 	ARGBEGIN {
 	case 'D':
