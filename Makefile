@@ -34,7 +34,7 @@ tests: all
 install: all
 	mkdir -p $(DESTDIR)/$(PREFIX)/libexec/scc/
 	mkdir -p $(DESTDIR)/$(PREFIX)/bin/
-	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc
+	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc/
 	cp -f bin/cc?-* $(DESTDIR)/$(PREFIX)/libexec/scc/
 	cp -f bin/cc1-$(ARCH) $(DESTDIR)/$(PREFIX)/bin/cpp
 	cp -f bin/scc $(DESTDIR)/$(PREFIX)/bin/
@@ -44,6 +44,7 @@ install: all
 	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
 
 uninstall:
+	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
 	rm -f $(DESTDIR)/$(PREFIX)/bin/cpp
