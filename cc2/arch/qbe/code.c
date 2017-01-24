@@ -310,7 +310,6 @@ size2stack(Type *tp)
 {
 	if (tp->flags & INTF) {
 		switch (tp->size) {
-		case 0:
 		case 1:
 		case 2:
 		case 4:
@@ -323,6 +322,8 @@ size2stack(Type *tp)
 			return "s";
 		else if (tp->size == 8)
 			return "d";
+	} else if (tp->size == 0) {
+		return "w";
 	}
 	abort();
 }
