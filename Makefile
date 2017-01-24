@@ -12,11 +12,11 @@ all: driver/$(DRIVER)/scc
 		$(MAKE) $$i || exit; \
 	done
 
-driver/$(DRIVER)/scc: bin
+driver/$(DRIVER)/scc:
 	cd driver/$(DRIVER)/ && $(MAKE) scc
 	ln -f driver/$(DRIVER)/scc bin/scc
 
-$(ARCHS): bin
+$(ARCHS):
 	for i in cc1 cc2; \
 	do \
 		(cd $$i; \
@@ -24,9 +24,6 @@ $(ARCHS): bin
 	done
 	ln -f cc1/cc1-$@ bin/
 	ln -f cc2/cc2-$@ bin/
-
-bin:
-	mkdir -p bin
 
 tests: all
 	cd tests/execute && $(MAKE) -e tests
@@ -36,18 +33,17 @@ install: all
 	mkdir -p $(DESTDIR)/$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc/
 	cp -f bin/cc?-* $(DESTDIR)/$(PREFIX)/libexec/scc/
-	cp -f bin/cc1-$(ARCH) $(DESTDIR)/$(PREFIX)/bin/cpp
+	cp -f bin/cpp.sh $(DESTDIR)/$(PREFIX)/bin/cpp
 	cp -f bin/scc $(DESTDIR)/$(PREFIX)/bin/
 	cp -fr libc/include/* $(DESTDIR)/$(PREFIX)/include/scc/
 	find $(DESTDIR)/$(PREFIX)/include/scc/ -type f | xargs chmod 644
 	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
-	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
+	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 cpp scc && strip scc
 
 uninstall:
 	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
-	rm -f $(DESTDIR)/$(PREFIX)/bin/cpp
 
 clean-helper:
 	for i in $(DIRS); \
@@ -63,5 +59,4 @@ clean:
 	rm -f bin/cc* bin/scc
 
 distclean: clean
-	rm -rf bin
 	rm -f inc/sysincludes.h
