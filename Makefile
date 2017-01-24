@@ -28,6 +28,9 @@ $(ARCHS): bin
 bin:
 	mkdir -p bin
 
+tests: all
+	cd tests/execute && $(MAKE) -e tests
+
 install: all
 	mkdir -p $(PREFIX)/libexec/scc/
 	mkdir -p $(PREFIX)/bin/
