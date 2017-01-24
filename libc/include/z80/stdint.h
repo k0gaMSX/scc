@@ -27,15 +27,15 @@ typedef int int16_fast_t;
 typedef long int32_fast_t;
 typedef long long int64_fast_t;
 
-typedef unsigned char int8_fast_t;
-typedef unsigned int16_fast_t;
-typedef unsigned long int32_fast_t;
-typedef unsigned long long int64_fast_t;
+typedef unsigned char uint8_fast_t;
+typedef unsigned uint16_fast_t;
+typedef unsigned long uint32_fast_t;
+typedef unsigned long long uint64_fast_t;
 
-typedef intptr_t long;
-typedef uintptr_t unsigned;
+typedef long intptr_t;
+typedef unsigned uintptr_t;
 
-typedef intmax_t long;
-typedef long long uintmax_t unsigned;
+typedef long long intmax_t;
+typedef unsigned long long uintmax_t;
 
 #endif
