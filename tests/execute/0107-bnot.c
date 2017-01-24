@@ -1,10 +1,11 @@
 
+#include <stdint.h>
 
 int
 main()
 {
-	int x;
-	long long l;
+	int32_t x;
+	int64_t l;
 	
 	x = 0;
 	l = 0;
