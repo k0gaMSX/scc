@@ -32,21 +32,21 @@ tests: all
 	cd tests/execute && $(MAKE) -e tests
 
 install: all
-	mkdir -p $(PREFIX)/libexec/scc/
-	mkdir -p $(PREFIX)/bin/
-	mkdir -p $(PREFIX)/include/scc
-	cp -f bin/cc?-* $(PREFIX)/libexec/scc/
-	cp -f bin/cc1-$(ARCH) $(PREFIX)/bin/cpp
-	cp -f bin/scc $(PREFIX)/bin/
-	cp -fr libc/include/* $(PREFIX)/include/scc/
-	find $(PREFIX)/include/scc/ -type f | xargs chmod 644
-	cd $(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
-	cd $(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
+	mkdir -p $(DESTDIR)/$(PREFIX)/libexec/scc/
+	mkdir -p $(DESTDIR)/$(PREFIX)/bin/
+	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc
+	cp -f bin/cc?-* $(DESTDIR)/$(PREFIX)/libexec/scc/
+	cp -f bin/cc1-$(ARCH) $(DESTDIR)/$(PREFIX)/bin/cpp
+	cp -f bin/scc $(DESTDIR)/$(PREFIX)/bin/
+	cp -fr libc/include/* $(DESTDIR)/$(PREFIX)/include/scc/
+	find $(DESTDIR)/$(PREFIX)/include/scc/ -type f | xargs chmod 644
+	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
+	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 cpp scc && strip cpp scc
 
 uninstall:
-	rm -rf $(PREFIX)/libexec/scc/
-	rm -f $(PREFIX)/bin/scc
-	rm -f $(PREFIX)/bin/cpp
+	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
+	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
+	rm -f $(DESTDIR)/$(PREFIX)/bin/cpp
 
 clean-helper:
 	for i in $(DIRS); \
