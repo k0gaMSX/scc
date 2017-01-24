@@ -11,7 +11,11 @@ OBJS = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 all: cc1-$(ARCH)
 
 cpp.o: stallman.msg
+arch/$(ARCH)/arch.o: ../inc/sysincludes.h
 $(OBJS): cc1.h ../inc/cc.h ../inc/$(STD)/cstd.h
+
+../inc/sysincludes.h:
+	cp -f ../inc/sysincludes.def.h ../inc/sysincludes.h
 
 ../lib/libcc.a:
 	cd ../lib && $(MAKE) -e

@@ -2,6 +2,7 @@
 static char sccsid[] = "@(#) ./cc1/arch/z80/arch.c";
 #include <stdio.h>
 
+#include "../../../inc/sysincludes.h"
 #include "../../../inc/cc.h"
 #include "../../cc1.h"
 

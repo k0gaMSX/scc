@@ -64,3 +64,4 @@ clean:
 
 distclean: clean
 	rm -rf bin
+	rm -f inc/sysincludes.h

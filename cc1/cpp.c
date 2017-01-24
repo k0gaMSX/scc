@@ -11,6 +11,7 @@ static char sccsid[] = "@(#) ./cc1/cpp.c";
 #include "../inc/cc.h"
 #include "cc1.h"
 
+extern char *sysincludes[];
 static char *argp, *macroname;
 static unsigned arglen;
 static unsigned ncmdlines;
@@ -464,12 +465,6 @@ include(void)
 {
 	char dir[FILENAME_MAX], file[FILENAME_MAX], *p, **bp;
 	size_t filelen;
-	static char *sysinclude[] = {
-		PREFIX "/include/scc/" ARCH  "/",
-		PREFIX "/include/",
-		PREFIX "/local/include/",
-		NULL
-	};
 	int n;
 
 	if (cppoff)
@@ -517,7 +512,7 @@ include(void)
 		if (includefile(*bp, file, filelen))
 			goto its_done;
 	}
-	for (bp = sysinclude; *bp; ++bp) {
+	for (bp = sysincludes; *bp; ++bp) {
 		if (includefile(*bp, file, filelen))
 			goto its_done;
 	}
