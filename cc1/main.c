@@ -15,7 +15,7 @@ char *argv0;
 int warnings;
 jmp_buf recover;
 
-static char *name, *output;
+static char *output;
 static struct items uflags;
 int onlycpp;
 
@@ -44,11 +44,8 @@ defmacro(char *macro)
 static void
 usage(void)
 {
-	die(!strcmp(name, "cpp") ?
-	    "usage: cpp [-wd] [-D def[=val]]... [-U def]... [-I dir]... "
-	    "[input]" :
-	    "usage: cc1 [-Ewd] [-D def[=val]]... [-U def]... [-I dir]... "
-	    "[-o output] [input]");
+	die("usage: cc1-" ARCH " [-Ewd] [-D def[=val]]... [-U def]... "
+	    "[-I dir]... [-o output] [input]");
 }
 
 int
@@ -60,9 +57,6 @@ main(int argc, char *argv[])
 	atexit(clean);
 	ilex();
 	icpp();
-
-	/* if run as cpp, only run the preprocessor */
-	name = (cp = strrchr(*argv, '/')) ? cp + 1 : *argv;
 
 	ARGBEGIN {
 	case 'D':
@@ -95,9 +89,6 @@ main(int argc, char *argv[])
 
 	if (output && !freopen(output, "w", stdout))
 		die("error opening output: %s", strerror(errno));
-
-	if (!strcmp(name, "cpp"))
-		onlycpp = 1;
 
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);
