@@ -6,13 +6,13 @@ include config.mk
 
 DIRS  = lib cc1 cc2 driver/$(DRIVER)
 
-all: driver/$(DRIVER)/scc
+all: scc-driver
 	for i in $(ARCHS); \
 	do \
 		$(MAKE) $$i || exit; \
 	done
 
-driver/$(DRIVER)/scc:
+scc-driver:
 	cd driver/$(DRIVER)/ && $(MAKE) scc
 	ln -f driver/$(DRIVER)/scc bin/scc
 
