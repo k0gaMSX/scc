@@ -44,7 +44,7 @@ defmacro(char *macro)
 static void
 usage(void)
 {
-	die("usage: cc1-" ARCH " [-Ewd] [-D def[=val]]... [-U def]... "
+	die("usage: cc1 [-Ewd] [-D def[=val]]... [-U def]... "
 	    "[-I dir]... [-o output] [input]");
 }
 
