@@ -54,7 +54,7 @@ static char *arch, *execpath, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
-static int Eflag, Sflag, cflag, kflag, sflag;
+static int Mflag, Eflag, Sflag, cflag, kflag, sflag;
 
 extern int failure;
 
@@ -326,7 +326,7 @@ buildfile(char *file, int tool)
 	for (; tool < LAST_TOOL; tool = nexttool) {
 		switch (tool) {
 		case CC1:
-			if (Eflag)
+			if (Eflag || Mflag)
 				nexttool = LAST_TOOL;
 			else
 				nexttool = kflag ? TEEIR : CC2;
@@ -400,10 +400,10 @@ usage(void)
 {
 	die("usage: scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-gksw] [-m arch] [-E|-S] [-o outfile] file...\n"
+	    "           [-gksw] [-m arch] [-M|-E|-S] [-o outfile] file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-gksw] [-m arch] [-E|-S] -c file...\n"
+	    "           [-gksw] [-m arch] [-M|-E|-S] -c file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
 	    "           [-gksw] [-m arch] -c -o outfile file");
@@ -426,6 +426,10 @@ main(int argc, char *argv[])
 	case 'D':
 		addarg(CC1, "-D");
 		addarg(CC1, EARGF(usage()));
+		break;
+	case 'M':
+		Mflag = 1;
+		addarg(CC1, "-M");
 		break;
 	case 'E':
 		Eflag = 1;
@@ -486,7 +490,9 @@ operand:
 	for (; *argv; --argc, ++argv)
 		goto operand;
 
-	if (Eflag && (Sflag || kflag) || linkchain.n == 0 ||
+	if (Eflag && Mflag ||
+            (Eflag || Mflag) && (Sflag || kflag) ||
+	    linkchain.n == 0 ||
 	    linkchain.n > 1 && cflag && outfile)
 		usage();
 
@@ -494,7 +500,7 @@ operand:
 		tmpdir = ".";
 	tmpdirln = strlen(tmpdir);
 
-	build(&linkchain, (link = !(Eflag || Sflag || cflag)));
+	build(&linkchain, (link = !(Mflag || Eflag || Sflag || cflag)));
 
 	if (!(link || cflag))
 		return failure;

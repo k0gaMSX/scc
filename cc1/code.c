@@ -159,7 +159,7 @@ emit(unsigned op, void *arg)
 {
 	extern int failure;
 
-	if (failure || onlycpp)
+	if (failure || onlycpp || onlyheader)
 		return;
 	(*opcode[op])(op, arg);
 }

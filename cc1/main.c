@@ -10,22 +10,22 @@ static char sccsid[] = "@(#) ./cc1/main.c";
 #include "../inc/cc.h"
 #include "cc1.h"
 
-char *argv0;
+char *argv0, *infile, *outfile;
 
 int warnings;
 jmp_buf recover;
 
-static char *output;
 static struct items uflags;
-int onlycpp;
+int onlycpp, onlyheader;
+
 
 extern int failure;
 
 static void
 clean(void)
 {
-	if (failure && output)
-		remove(output);
+	if (failure && outfile)
+		remove(outfile);
 }
 
 static void
@@ -62,6 +62,9 @@ main(int argc, char *argv[])
 	case 'D':
 		defmacro(EARGF(usage()));
 		break;
+	case 'M':
+		onlyheader = 1;
+		break;
 	case 'E':
 		onlycpp = 1;
 		break;
@@ -75,7 +78,7 @@ main(int argc, char *argv[])
 		DBGON();
 		break;
 	case 'o':
-		output = EARGF(usage());
+		outfile = EARGF(usage());
 		break;
 	case 'w':
 		warnings = 1;
@@ -87,17 +90,18 @@ main(int argc, char *argv[])
 	if (argc > 1)
 		usage();
 
-	if (output && !freopen(output, "w", stdout))
+	if (outfile && !freopen(outfile, "w", stdout))
 		die("error opening output: %s", strerror(errno));
 
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);
 
+	infile = (*argv) ? *argv : "<stdin>";
 	if (!addinput(*argv, NULL, NULL)) {
 		die("error: failed to open input file '%s': %s",
 		    *argv, strerror(errno));
 	}
-	if (onlycpp) {
+	if (onlycpp || onlyheader) {
 		outcpp();
 	} else {
 		for (next(); yytoken != EOFTOK; decl())

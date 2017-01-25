@@ -788,6 +788,8 @@ outcpp(void)
 	char c, *s, *t;
 
 	for (next(); yytoken != EOFTOK; next()) {
+		if (onlyheader)
+			continue;
 		if (yytoken != STRING) {
 			printf("%s ", yytext);
 			continue;

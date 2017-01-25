@@ -453,9 +453,11 @@ extern unsigned short yylen;
 extern int disexpand;
 extern unsigned cppctx;
 extern Input *input;
-extern int lexmode, namespace, onlycpp;
+extern int lexmode, namespace;
+extern int onlycpp, onlyheader;
 extern unsigned curctx;
 extern Symbol *curfun, *zero, *one;
+extern char *infile, *outfile;
 
 extern Type *voidtype, *pvoidtype, *booltype,
             *uchartype,   *chartype, *schartype,

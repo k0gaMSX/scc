@@ -89,6 +89,8 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		if ((fp = fopen(fname, "r")) == NULL)
 			return 0;
 		flags = IFILE;
+		if (input && onlyheader)
+			printf("%s: %s\n", infile, fname);
 	} else {
 		/* reading from stdin */
 		fp = stdin;
