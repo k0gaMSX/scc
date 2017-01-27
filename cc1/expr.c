@@ -210,7 +210,7 @@ decay(Node *np)
 }
 
 static Node *
-integerop(char op, Node *lp, Node *rp)
+integerop(int op, Node *lp, Node *rp)
 {
 	if (!(lp->type->prop & TINTEGER) || !(rp->type->prop & TINTEGER))
 		error("operator requires integer operands");
@@ -219,7 +219,7 @@ integerop(char op, Node *lp, Node *rp)
 }
 
 static Node *
-integeruop(char op, Node *np)
+integeruop(int op, Node *np)
 {
 	if (!(np->type->prop & TINTEGER))
 		error("unary operator requires integer operand");
@@ -230,7 +230,7 @@ integeruop(char op, Node *np)
 }
 
 static Node *
-numericaluop(char op, Node *np)
+numericaluop(int op, Node *np)
 {
 	if (!(np->type->prop & TARITH))
 		error("unary operator requires numerical operand");
@@ -292,7 +292,7 @@ convert(Node *np, Type *newtp, char iscast)
 }
 
 static Node *
-parithmetic(char op, Node *lp, Node *rp)
+parithmetic(int op, Node *lp, Node *rp)
 {
 	Type *tp;
 	Node *size, *np;
@@ -333,7 +333,7 @@ incorrect:
 }
 
 static Node *
-arithmetic(char op, Node *lp, Node *rp)
+arithmetic(int op, Node *lp, Node *rp)
 {
 	Type *ltp = lp->type, *rtp = rp->type;
 
@@ -355,7 +355,7 @@ arithmetic(char op, Node *lp, Node *rp)
 }
 
 static Node *
-pcompare(char op, Node *lp, Node *rp)
+pcompare(int op, Node *lp, Node *rp)
 {
 	Node *np;
 	int err = 0;
@@ -379,7 +379,7 @@ pcompare(char op, Node *lp, Node *rp)
 }
 
 static Node *
-compare(char op, Node *lp, Node *rp)
+compare(int op, Node *lp, Node *rp)
 {
 	Type *ltp, *rtp;
 
@@ -471,7 +471,7 @@ exp2cond(Node *np, char neg)
 }
 
 static Node *
-logic(char op, Node *lp, Node *rp)
+logic(int op, Node *lp, Node *rp)
 {
 	lp = exp2cond(lp, 0);
 	rp = exp2cond(rp, 0);
@@ -511,7 +511,7 @@ free_np:
 }
 
 static Node *
-content(char op, Node *np)
+content(int op, Node *np)
 {
 	if (BTYPE(np) != PTR) {
 		errorp("invalid argument of memory indirection");
@@ -545,7 +545,7 @@ array(Node *lp, Node *rp)
 }
 
 static Node *
-assignop(char op, Node *lp, Node *rp)
+assignop(int op, Node *lp, Node *rp)
 {
 	if ((rp = convert(rp, lp->type, 0)) == NULL) {
 		errorp("incompatible types when assigning");
@@ -556,7 +556,7 @@ assignop(char op, Node *lp, Node *rp)
 }
 
 static Node *
-incdec(Node *np, char op)
+incdec(Node *np, int op)
 {
 	Type *tp = np->type;
 	Node *inc;
@@ -581,7 +581,7 @@ incdec(Node *np, char op)
 }
 
 static Node *
-address(char op, Node *np)
+address(int op, Node *np)
 {
 	Node *new;
 
@@ -613,7 +613,7 @@ dont_check_lvalue:
 }
 
 static Node *
-negation(char op, Node *np)
+negation(int op, Node *np)
 {
 	if (!(np->type->prop & TARITH) && np->type->op != PTR) {
 		errorp("invalid argument of unary '!'");
@@ -838,9 +838,9 @@ static Node *cast(int);
 static Node *
 unary(int needdecay)
 {
-	Node *(*fun)(char, Node *), *np;
+	Node *(*fun)(int, Node *), *np;
 	Symbol *sym;
-	char op;
+	int op;
 	Type *tp;
 	int paren;
 
@@ -943,8 +943,8 @@ cast(int needdecay)
 static Node *
 mul(void)
 {
-	Node *np, *(*fun)(char, Node *, Node *);
-	char op;
+	Node *np, *(*fun)(int, Node *, Node *);
+	int op;
 
 	np = cast(1);
 	for (;;) {
@@ -962,7 +962,7 @@ mul(void)
 static Node *
 add(void)
 {
-	char op;
+	int op;
 	Node *np;
 
 	np = mul();
@@ -980,7 +980,7 @@ add(void)
 static Node *
 shift(void)
 {
-	char op;
+	int op;
 	Node *np;
 
 	np = add();
@@ -998,7 +998,7 @@ shift(void)
 static Node *
 relational(void)
 {
-	char op;
+	int op;
 	Node *np;
 
 	np = shift();
@@ -1018,7 +1018,7 @@ relational(void)
 static Node *
 eq(void)
 {
-	char op;
+	int op;
 	Node *np;
 
 	np = relational();
@@ -1110,8 +1110,8 @@ ternary(void)
 Node *
 assign(void)
 {
-	Node *np, *(*fun)(char , Node *, Node *);
-	char op;
+	Node *np, *(*fun)(int , Node *, Node *);
+	int op;
 
 	np = ternary();
 	for (;;) {
