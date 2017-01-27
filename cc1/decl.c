@@ -244,19 +244,19 @@ krfun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 static void
 ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 {
-	int n = 0;
+	int npars = 0;
 	Symbol *sym;
 	int toomany = 0, toovoid = 0;
 
 	do {
-		if (n == -1 && !toovoid) {
+		if (npars == -1 && !toovoid) {
 			errorp("'void' must be the only parameter");
 			toovoid = 1;
 		}
 		if (accept(ELLIPSIS)) {
-			if (n == 0)
-				errorp("a named argument is required before '...'");
-			++n;
+			if (npars == 0)
+				errorp("a named argument is requiered before '...'");
+			++npars;
 			*syms = NULL;
 			*types++ = ellipsistype;
 			break;
@@ -264,22 +264,23 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 		if ((sym = dodcl(NOREP, parameter, NS_IDEN, tp)) == NULL)
 			continue;
 		if (tp->n.elem == -1) {
-			n = -1;
+			npars = -1;
 			continue;
 		}
-		if (n < NR_FUNPARAM) {
+		if (npars < NR_FUNPARAM) {
 			*syms++ = sym;
 			*types++ = sym->type;
-			++n;
+			++npars;
 			continue;
 		}
-		if (!toomany)
+		if (!toomany) {
 			errorp("too many parameters in function definition");
-		toomany = 1;
+			toomany = 1;
+		}
 	} while (accept(','));
 
-	*nsyms = n;
-	*ntypes = n;
+	*nsyms = npars;
+	*ntypes = npars;
 }
 
 static void
