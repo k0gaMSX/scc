@@ -34,8 +34,8 @@ defdefine(char *macro, char *val, char *source)
 	def = xmalloc(strlen(fmt) + strlen(macro) + strlen(val));
 
 	sprintf(def, fmt, macro, val);
+	lineno = ++ncmdlines;
 	addinput(source, &dummy, def);
-	input->nline = ++ncmdlines;
 	cpp();
 	delinput();
 }
@@ -254,11 +254,11 @@ expand(char *begin, Symbol *sym)
 
 	macroname = sym->name;
 	if (sym == symfile) {
-		elen = sprintf(buffer, "\"%s\" ", input->fname);
+		elen = sprintf(buffer, "\"%s\" ", filenam);
 		goto substitute;
 	}
 	if (sym == symline) {
-		elen = sprintf(buffer, "%d ", input->nline);
+		elen = sprintf(buffer, "%d ", lineno);
 		goto substitute;
 	}
 	if (!s)
@@ -275,7 +275,7 @@ expand(char *begin, Symbol *sym)
 substitute:
 	DBG("MACRO '%s' expanded to :'%s'", macroname, buffer);
 	buffer[elen] = '\0';
-	addinput(input->fname, sym, xstrdup(buffer));
+	addinput(filenam, sym, xstrdup(buffer));
 
 	return 1;
 }
@@ -448,7 +448,7 @@ includefile(char *dir, char *file, size_t filelen)
 static char *
 cwd(char *buf)
 {
-	char *p, *s = input->fname;
+	char *p, *s = filenam;
 	size_t len;
 
 	if ((p = strrchr(s, '/')) == NULL)
@@ -538,7 +538,7 @@ static void
 line(void)
 {
 	long n;
-	char *endp;
+	char *endp, *fname;
 
 	if (cppoff)
 		return;
@@ -552,20 +552,18 @@ line(void)
 	}
 
 	next();
-	if (yytoken == EOFTOK)
-		goto set_line;
-
-	if (*yytext != '\"' || yylen == 1) {
-		cpperror("second parameter of #line is not a valid filename");
-		return;
+	if (yytoken == '\n') {
+		fname = NULL;
+	} else {
+		if (*yytext != '\"' || yylen == 1) {
+			cpperror("second parameter of #line is not a valid filename");
+			return;
+		}
+		fname = yylval.sym->u.s;
 	}
-
-	free(input->fname);
-	input->fname = xstrdup(yylval.sym->u.s);
-	next();
-
-set_line:
-	input->nline = n - 1;
+	setloc(fname, n - 1);
+	if (yytoken != '\n')
+		next();
 }
 
 static void

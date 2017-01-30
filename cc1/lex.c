@@ -18,6 +18,8 @@ struct yystype yylval;
 char yytext[STRINGSIZ+3];
 unsigned short yylen;
 int lexmode = CCMODE;
+unsigned lineno;
+char filenam[FILENAME_MAX];
 
 int namespace = NS_IDEN;
 static int safe;
@@ -69,17 +71,31 @@ ilex(void)
 }
 
 int
+setloc(char *fname, unsigned line)
+{
+	size_t len;
+
+	if ((len = strlen(fname)) >= FILENAME_MAX)
+		die("file name too long: '%s'", fname);
+	memcpy(filenam, fname, len);
+	filenam[len] = '\0';
+
+	free(input->filenam);
+	input->filenam = xstrdup(fname);
+	lineno = input->lineno = line;
+	return 1;
+}
+
+int
 addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
-	unsigned flags, nline = 0;
-	Input *ip;
+	unsigned flags;
+	Input *newip, *curip = input;
 
 	if (hide) {
 		/* this is a macro expansion */
 		fp = NULL;
-		if (input)
-			nline = input->nline;
 		if (hide->hide == UCHAR_MAX)
 			die("Too many macro expansions");
 		++hide->hide;
@@ -87,9 +103,9 @@ addinput(char *fname, Symbol *hide, char *buffer)
 	} else  if (fname) {
 		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
-			return 0;
+			die("Error opening '%s': %s", fname, strerror(errno));
 		flags = IFILE;
-		if (input && onlyheader)
+		if (curip && onlyheader)
 			printf("%s: %s\n", infile, fname);
 	} else {
 		/* reading from stdin */
@@ -98,23 +114,26 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		flags = ISTDIN;
 	}
 
-	ip = xmalloc(sizeof(*ip));
+	newip = xmalloc(sizeof(*newip));
 
 	if (!buffer) {
 		buffer = xmalloc(INPUTSIZ);
 		buffer[0] = '\0';
 	}
 
-	ip->p = ip->begin = ip->line = buffer;
-	ip->fname = xstrdup(fname);
-	ip->next = input;
-	ip->fp = fp;
-	ip->hide = hide;
-	ip->nline = nline;
-	ip->flags = flags;
-	input = ip;
+	if (curip)
+		curip->lineno = lineno;
 
-	return 1;
+	newip->p = newip->begin = newip->line = buffer;
+	newip->filenam = NULL;
+	newip->lineno = 0;
+	newip->next = curip;
+	newip->fp = fp;
+	newip->hide = hide;
+	newip->flags = flags;
+	input = newip;
+
+	return setloc(fname, (curip) ? curip->lineno : newip->lineno);
 }
 
 void
@@ -127,7 +146,7 @@ delinput(void)
 	case IFILE:
 		if (fclose(ip->fp))
 			die("error: failed to read from input file '%s'",
-			    ip->fname);
+			    ip->filenam);
 		break;
 	case IMACRO:
 		assert(hide->hide == 1);
@@ -135,15 +154,19 @@ delinput(void)
 		break;
 	}
 	input = ip->next;
-	free(ip->fname);
+	free(ip->filenam);
 	free(ip->line);
+	if (input) {
+		lineno = input->lineno;
+		strcpy(filenam, input->filenam);
+	}
 }
 
 static void
 newline(void)
 {
-	if (++input->nline == 0)
-		die("error: input file '%s' too long", input->fname);
+	if (++lineno == 0)
+		die("error: input file '%s' too long", filenam);
 }
 
 /*
@@ -280,15 +303,15 @@ repeat:
 		char *s;
 
 		putchar('\n');
-		if (strcmp(file, input->fname)) {
-			strcpy(file, input->fname);
+		if (strcmp(file, filenam)) {
+			strcpy(file, filenam);
 			s = "#line %u %s\n";
-		} else if (nline+1 != input->nline) {
+		} else if (nline+1 != lineno) {
 			s = "#line %u\n";
 		} else {
 			s = "";
 		}
-		nline = input->nline;
+		nline = lineno;
 		printf(s, nline, file);
 	}
 	return 1;

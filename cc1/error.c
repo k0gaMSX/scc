@@ -18,7 +18,7 @@ warn_error(int flag, char *fmt, va_list va)
 	if (flag == 0)
 		return;
 	fprintf(stderr, "%s:%u: %s: ",
-	       input->fname, input->nline,
+	       filenam, lineno,
 	       (flag < 0) ? "error" : "warning");
 	vfprintf(stderr, fmt, va);
 	putc('\n', stderr);

@@ -352,8 +352,8 @@ struct yystype {
 
 struct input {
 	char flags;
-	unsigned short nline;
-	char *fname;
+	unsigned lineno;
+	char *filenam;
 	FILE *fp;
 	Symbol *hide;
 	char *line, *begin, *p;
@@ -406,6 +406,7 @@ extern int addinput(char *fname, Symbol *hide, char *buffer);
 extern void delinput(void);
 extern void setsafe(int type);
 extern void ilex(void);
+extern int setloc(char *fname, unsigned line);
 #define accept(t) ((yytoken == (t)) ? next() : 0)
 
 /* code.c */
@@ -458,6 +459,8 @@ extern int onlycpp, onlyheader;
 extern unsigned curctx;
 extern Symbol *curfun, *zero, *one;
 extern char *infile, *outfile;
+unsigned lineno;
+char filenam[FILENAME_MAX];
 
 extern Type *voidtype, *pvoidtype, *booltype,
             *uchartype,   *chartype, *schartype,
