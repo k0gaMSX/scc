@@ -209,39 +209,6 @@ decay(Node *np)
 	}
 }
 
-static Node *
-integerop(int op, Node *lp, Node *rp)
-{
-	if (!(lp->type->prop & TINTEGER) || !(rp->type->prop & TINTEGER))
-		error("operator requires integer operands");
-	arithconv(&lp, &rp);
-	return simplify(op, lp->type, lp, rp);
-}
-
-static Node *
-integeruop(int op, Node *np)
-{
-	if (!(np->type->prop & TINTEGER))
-		error("unary operator requires integer operand");
-	np = promote(np);
-	if (op == OCPL && np->op == OCPL)
-		return np->left;
-	return simplify(op, np->type, np, NULL);
-}
-
-static Node *
-numericaluop(int op, Node *np)
-{
-	if (!(np->type->prop & TARITH))
-		error("unary operator requires numerical operand");
-	np = promote(np);
-	if (op == OSNEG && np->op == OSNEG)
-		return np->left;
-	if (op == OADD)
-		return np;
-	return simplify(op, np->type, np, NULL);
-}
-
 Node *
 convert(Node *np, Type *newtp, char iscast)
 {
@@ -291,8 +258,67 @@ convert(Node *np, Type *newtp, char iscast)
 	return castcode(np, newtp);
 }
 
+/*
+ * op functions: These functions group the different kind of operators
+ *       integer
+ *       pointer
+ *       numerical: (integers + float)
+ *       arithmetic: (integer + float + pointers)
+ *
+ * integer_aop: Assignation abbreviation operator with integers
+ * integer_op:  Operator with integers
+ * integer_uop: Unary integer operator
+ * numerical_uop: Unary numerical operator (integer and floats)
+ * arithmetic_pop: Arithmetic pointer operator
+ * arithmetic_aop: Assignation abbreviation operator with arithmetics
+ * arithmetic_op: Arithmetic operator
+ * compare_pop: Pointer comparision operator
+ * compare_op: Comparision operator
+ */
+
 static Node *
-parithmetic(int op, Node *lp, Node *rp)
+integer_aop(int op, Node *lp, Node *rp)
+{
+	if (!(lp->type->prop&TINTEGER) || !(rp->type->prop&TINTEGER))
+		error("operator requires integer operands");
+	return simplify(op, lp->type, lp, convert(rp, lp->type, 0));
+}
+
+static Node *
+integer_op(int op, Node *lp, Node *rp)
+{
+	if (!(lp->type->prop & TINTEGER) || !(rp->type->prop & TINTEGER))
+		error("operator requires integer operands");
+	arithconv(&lp, &rp);
+	return simplify(op, lp->type, lp, rp);
+}
+
+static Node *
+integer_uop(int op, Node *np)
+{
+	if (!(np->type->prop & TINTEGER))
+		error("unary operator requires integer operand");
+	np = promote(np);
+	if (op == OCPL && np->op == OCPL)
+		return np->left;
+	return simplify(op, np->type, np, NULL);
+}
+
+static Node *
+numerical_uop(int op, Node *np)
+{
+	if (!(np->type->prop & TARITH))
+		error("unary operator requires numerical operand");
+	np = promote(np);
+	if (op == OSNEG && np->op == OSNEG)
+		return np->left;
+	if (op == OADD)
+		return np;
+	return simplify(op, np->type, np, NULL);
+}
+
+static Node *
+arithmetic_pop(int op, Node *lp, Node *rp)
 {
 	Type *tp;
 	Node *size, *np;
@@ -333,29 +359,40 @@ incorrect:
 }
 
 static Node *
-arithmetic(int op, Node *lp, Node *rp)
+arithmetic_aop(int op, Node *lp, Node *rp)
 {
 	Type *ltp = lp->type, *rtp = rp->type;
 
-	if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
+	if (ltp->prop&TARITH && rtp->prop&TARITH)
+		return simplify(op, lp->type, lp, convert(rp, lp->type, 0));
+	if (ltp->op == PTR && rtp->prop&TINTEGER)
+		return arithmetic_pop(op, lp, rp);
+        errorp("incorrect arithmetic operands");
+	return constnode(zero);
+}
+
+static Node *
+arithmetic_op(int op, Node *lp, Node *rp)
+{
+	Type *ltp = lp->type, *rtp = rp->type;
+
+	if (ltp->prop&TARITH && rtp->prop&TARITH) {
 		arithconv(&lp, &rp);
 		return simplify(op, lp->type, lp, rp);
 	} else if ((ltp->op == PTR || rtp->op == PTR)) {
 		switch (op) {
 		case OADD:
 		case OSUB:
-		case OA_ADD:
-		case OA_SUB:
 		case OINC:
 		case ODEC:
-			return parithmetic(op, lp, rp);
+			return arithmetic_pop(op, lp, rp);
 		}
 	}
 	errorp("incorrect arithmetic operands");
 }
 
 static Node *
-pcompare(int op, Node *lp, Node *rp)
+compare_pop(int op, Node *lp, Node *rp)
 {
 	Node *np;
 	int err = 0;
@@ -379,7 +416,7 @@ pcompare(int op, Node *lp, Node *rp)
 }
 
 static Node *
-compare(int op, Node *lp, Node *rp)
+compare_op(int op, Node *lp, Node *rp)
 {
 	Type *ltp, *rtp;
 
@@ -387,7 +424,7 @@ compare(int op, Node *lp, Node *rp)
 	rtp = rp->type;
 
 	if (ltp->op == PTR || rtp->op == PTR) {
-		return pcompare(op, rp, lp);
+		return compare_pop(op, rp, lp);
 	} else if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
 		arithconv(&lp, &rp);
 		return simplify(op, inttype, lp, rp);
@@ -466,7 +503,7 @@ exp2cond(Node *np, char neg)
 	case OGT:
 		return (neg) ? negate(np) : np;
 	default:
-		return compare((neg) ?  OEQ : ONE, np, constnode(zero));
+		return compare_op((neg) ?  OEQ : ONE, np, constnode(zero));
 	}
 }
 
@@ -537,7 +574,7 @@ array(Node *lp, Node *rp)
 
 	if (!(lp->type->prop & TINTEGER) && !(rp->type->prop & TINTEGER))
 		error("array subscript is not an integer");
-	np = arithmetic(OADD, lp, rp);
+	np = arithmetic_op(OADD, lp, rp);
 	tp = np->type;
 	if (tp->op != PTR)
 		errorp("subscripted value is neither array nor pointer");
@@ -545,7 +582,7 @@ array(Node *lp, Node *rp)
 }
 
 static Node *
-assignop(int op, Node *lp, Node *rp)
+assign_op(int op, Node *lp, Node *rp)
 {
 	if ((rp = convert(rp, lp->type, 0)) == NULL) {
 		errorp("incompatible types when assigning");
@@ -577,7 +614,7 @@ incdec(Node *np, int op)
 		errorp("wrong type argument to increment or decrement");
 		return np;
 	}
-	return arithmetic(op, np, inc);
+	return arithmetic_op(op, np, inc);
 }
 
 static Node *
@@ -846,9 +883,9 @@ unary(int needdecay)
 
 	switch (yytoken) {
 	case '!': op = 0;     fun = negation;     break;
-	case '+': op = OADD;  fun = numericaluop; break;
-	case '-': op = OSNEG; fun = numericaluop; break;
-	case '~': op = OCPL;  fun = integeruop;   break;
+	case '+': op = OADD;  fun = numerical_uop; break;
+	case '-': op = OSNEG; fun = numerical_uop; break;
+	case '~': op = OCPL;  fun = integer_uop;   break;
 	case '&': op = OADDR; fun = address;      break;
 	case '*': op = OPTR;  fun = content;      break;
 	case SIZEOF:
@@ -949,9 +986,9 @@ mul(void)
 	np = cast(1);
 	for (;;) {
 		switch (yytoken) {
-		case '*': op = OMUL; fun = arithmetic; break;
-		case '/': op = ODIV; fun = arithmetic; break;
-		case '%': op = OMOD; fun = integerop;  break;
+		case '*': op = OMUL; fun = arithmetic_op; break;
+		case '/': op = ODIV; fun = arithmetic_op; break;
+		case '%': op = OMOD; fun = integer_op;  break;
 		default: return np;
 		}
 		next();
@@ -973,7 +1010,7 @@ add(void)
 		default:  return np;
 		}
 		next();
-		np = arithmetic(op, np, mul());
+		np = arithmetic_op(op, np, mul());
 	}
 }
 
@@ -991,7 +1028,7 @@ shift(void)
 		default:  return np;
 		}
 		next();
-		np = integerop(op, np, add());
+		np = integer_op(op, np, add());
 	}
 }
 
@@ -1011,7 +1048,7 @@ relational(void)
 		default:  return np;
 		}
 		next();
-		np = compare(op, np, shift());
+		np = compare_op(op, np, shift());
 	}
 }
 
@@ -1029,7 +1066,7 @@ eq(void)
 		default: return np;
 		}
 		next();
-		np = compare(op, np, relational());
+		np = compare_op(op, np, relational());
 	}
 }
 
@@ -1040,7 +1077,7 @@ bit_and(void)
 
 	np = eq();
 	while (accept('&'))
-		np = integerop(OBAND, np, eq());
+		np = integer_op(OBAND, np, eq());
 	return np;
 }
 
@@ -1051,7 +1088,7 @@ bit_xor(void)
 
 	np = bit_and();
 	while (accept('^'))
-		np = integerop(OBXOR,  np, bit_and());
+		np = integer_op(OBXOR,  np, bit_and());
 	return np;
 }
 
@@ -1062,7 +1099,7 @@ bit_or(void)
 
 	np = bit_xor();
 	while (accept('|'))
-		np = integerop(OBOR, np, bit_xor());
+		np = integer_op(OBOR, np, bit_xor());
 	return np;
 }
 
@@ -1116,17 +1153,17 @@ assign(void)
 	np = ternary();
 	for (;;) {
 		switch (yytoken) {
-		case '=':    op = OASSIGN; fun = assignop;   break;
-		case MUL_EQ: op = OA_MUL;  fun = arithmetic; break;
-		case DIV_EQ: op = OA_DIV;  fun = arithmetic; break;
-		case MOD_EQ: op = OA_MOD;  fun = integerop;  break;
-		case ADD_EQ: op = OA_ADD;  fun = arithmetic; break;
-		case SUB_EQ: op = OA_SUB;  fun = arithmetic; break;
-		case SHL_EQ: op = OA_SHL;  fun = integerop;  break;
-		case SHR_EQ: op = OA_SHR;  fun = integerop;  break;
-		case AND_EQ: op = OA_AND;  fun = integerop;  break;
-		case XOR_EQ: op = OA_XOR;  fun = integerop;  break;
-		case OR_EQ:  op = OA_OR;   fun = integerop;  break;
+		case '=':    op = OASSIGN; fun = assign_op;   break;
+		case MUL_EQ: op = OA_MUL;  fun = arithmetic_aop; break;
+		case DIV_EQ: op = OA_DIV;  fun = arithmetic_aop; break;
+		case ADD_EQ: op = OA_ADD;  fun = arithmetic_aop; break;
+		case SUB_EQ: op = OA_SUB;  fun = arithmetic_aop; break;
+		case MOD_EQ: op = OA_MOD;  fun = integer_aop; break;
+		case SHL_EQ: op = OA_SHL;  fun = integer_aop; break;
+		case SHR_EQ: op = OA_SHR;  fun = integer_aop; break;
+		case AND_EQ: op = OA_AND;  fun = integer_aop; break;
+		case XOR_EQ: op = OA_XOR;  fun = integer_aop; break;
+		case OR_EQ:  op = OA_OR;   fun = integer_aop; break;
 		default: return np;
 		}
 		chklvalue(np);
