@@ -608,13 +608,13 @@ incdec(Node *np, int op)
 		errorp("%s of pointer to an incomplete type",
 		       (op == OINC || op == OA_ADD) ? "increment" : "decrement");
 		return np;
-	} else if (tp->op == PTR || (tp->prop & TARITH)) {
+	} else if (tp->op == PTR || tp->prop&TARITH) {
 		inc = constnode(one);
 	} else {
 		errorp("wrong type argument to increment or decrement");
 		return np;
 	}
-	return arithmetic_op(op, np, inc);
+	return arithmetic_aop(op, np, inc);
 }
 
 static Node *
