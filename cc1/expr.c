@@ -240,7 +240,6 @@ numericaluop(int op, Node *np)
 	if (op == OADD)
 		return np;
 	return simplify(op, np->type, np, NULL);
-	return node(op, np->type, np, NULL);
 }
 
 /* TODO: check validity of types */
