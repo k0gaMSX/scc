@@ -563,6 +563,15 @@ rhs(Node *np, Node *ret)
 			aux2.right = np->right;
 			aux2.left = np->left;
 			r = rhs(&aux2, &aux1);
+			Node aux3;
+			if (l->op == OCAST) {
+				aux3.type = l->left->type;
+				aux3.op = OCAST;
+				aux3.left = r;
+				aux3.right = NULL;
+				r = &aux3;
+				l = l->left;
+			}
 		case 0:
 			/* TODO: see what is the most difficult */
 			lhs(l, &aux2);
