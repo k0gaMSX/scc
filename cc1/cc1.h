@@ -420,7 +420,6 @@ extern void freetree(Node *np);
 
 /* fold.c */
 extern Node *simplify(int op, Type *tp, Node *lp, Node *rp);
-extern Node *castcode(Node *np, Type *newtp);
 extern TUINT ones(int nbytes);
 
 /* expr.c */

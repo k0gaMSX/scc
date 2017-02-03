@@ -240,6 +240,64 @@ numericaluop(int op, Node *np)
 	if (op == OADD)
 		return np;
 	return simplify(op, np->type, np, NULL);
+	return node(op, np->type, np, NULL);
+}
+
+/* TODO: check validity of types */
+static Node *
+castcode(Node *np, Type *newtp)
+{
+	TUINT negmask, mask, u;
+	Type *oldtp = np->type;
+	Symbol aux, *sym, *osym = np->sym;
+
+	if (!(np->flags & NCONST))
+		goto noconstant;
+
+	switch (newtp->op) {
+	case PTR:
+	case INT:
+	case ENUM:
+		switch (oldtp->op) {
+		case PTR:
+		case INT:
+		case ENUM:
+			u = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
+			break;
+		case FLOAT:
+			oldtp = newtp;
+			u = osym->u.f;
+			break;
+		default:
+			goto noconstant;
+		}
+		mask = ones(newtp->size);
+		if (newtp->prop & TSIGNED) {
+			negmask = ~mask;
+			if (u & (negmask >> 1) & mask)
+				u |= negmask;
+			aux.u.i = u;
+		} else {
+			aux.u.u = u & mask;
+		}
+		break;
+	case FLOAT:
+		/* FIXME: The cast can be from another float type */
+		aux.u.f = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
+		break;
+	default:
+		goto noconstant;
+	}
+
+	sym = newsym(NS_IDEN, NULL);
+	np->type = sym->type = newtp;
+	np->sym = sym;
+	sym->u = aux.u;
+
+	return np;
+
+noconstant:
+	return node(OCAST, newtp, np, NULL);
 }
 
 Node *
