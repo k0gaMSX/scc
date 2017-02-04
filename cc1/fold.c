@@ -377,6 +377,10 @@ foldunary(Node *np, Node *l)
 	Node *aux;
 
 	switch (np->op) {
+	case ONEG:
+		if (l->op == ONEG)
+			break;
+		return NULL;
 	case OADD:
 		DBG("FOLD unary delete %d", np->op);
 		np->left = NULL;
