@@ -8,6 +8,9 @@ static char sccsid[] = "@(#) ./cc1/stmt.c";
 #include "../inc/cc.h"
 #include "cc1.h"
 
+#define NEGATE   1
+#define NONEGATE 0
+
 Symbol *curfun;
 
 static void stmt(Symbol *lbreak, Symbol *lcont, Switch *lswitch);
@@ -55,12 +58,12 @@ stmtexp(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 }
 
 static Node *
-condition(void)
+condition(int neg)
 {
 	Node *np;
 
 	expect('(');
-	np = condexpr();
+	np = condexpr(neg);
 	expect(')');
 
 	return np;
@@ -77,7 +80,7 @@ While(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	lbreak = newlabel();
 
 	expect(WHILE);
-	np = condition();
+	np = condition(NONEGATE);
 
 	emit(OJUMP, lcont);
 
@@ -120,7 +123,7 @@ For(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 		expect(';');
 		break;
 	}
-	econd = (yytoken != ';') ? condexpr() : NULL;
+	econd = (yytoken != ';') ? condexpr(NONEGATE) : NULL;
 	expect(';');
 	einc = (yytoken != ')') ? expr() : NULL;
 	expect(')');
@@ -158,7 +161,7 @@ Dowhile(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	emit(OLABEL, begin);
 	stmt(lbreak, lcont, lswitch);
 	expect(WHILE);
-	np = condition();
+	np = condition(NONEGATE);
 	emit(OLABEL, lcont);
 	emit(OBRANCH, begin);
 	emit(OEXPR, np);
@@ -305,9 +308,9 @@ If(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 
 	lelse = newlabel();
 	expect(IF);
-	np = condition();
+	np = condition(NEGATE);
 	emit(OBRANCH, lelse);
-	emit(OEXPR, negate(np));
+	emit(OEXPR, np);
 	stmt(lbreak, lcont, lswitch);
 	if (accept(ELSE)) {
 		end = newlabel();

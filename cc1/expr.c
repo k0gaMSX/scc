@@ -419,7 +419,7 @@ exp2cond(Node *np, int neg)
 	case ONEG:
 	case OOR:
 	case OAND:
-		return node(ONEG, inttype, np, NULL);
+		return (neg) ? node(ONEG, inttype, np, NULL) : np;
 	case OEQ:
 	case ONE:
 	case OLT:
@@ -1128,11 +1128,11 @@ expr(void)
 }
 
 Node *
-condexpr(void)
+condexpr(int neg)
 {
 	Node *np;
 
-	np = exp2cond(xexpr(), 0);
+	np = exp2cond(xexpr(), neg);
 	if (np->flags & NCONST)
 		warn("conditional expression is constant");
 	return simplify(np);
