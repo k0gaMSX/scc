@@ -420,7 +420,7 @@ extern void freetree(Node *np);
 #define BTYPE(np) ((np)->type->op)
 
 /* fold.c */
-extern Node *simplify(int op, Type *tp, Node *lp, Node *rp);
+extern Node *simplify(Node *np);
 extern TUINT ones(int nbytes);
 
 /* expr.c */

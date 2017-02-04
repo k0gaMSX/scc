@@ -11,7 +11,7 @@ static char sccsid[] = "@(#) ./cc1/expr.c";
 
 #define XCHG(lp, rp, np) (np = lp, lp = rp, rp = np)
 
-Node *expr(void);
+static Node *xexpr(void);
 
 int
 cmpnode(Node *np, TUINT val)
@@ -215,7 +215,7 @@ integerop(int op, Node *lp, Node *rp)
 	if (!(lp->type->prop & TINTEGER) || !(rp->type->prop & TINTEGER))
 		error("operator requires integer operands");
 	arithconv(&lp, &rp);
-	return simplify(op, lp->type, lp, rp);
+	return node(op, lp->type, lp, rp);
 }
 
 static Node *
@@ -224,9 +224,7 @@ integeruop(int op, Node *np)
 	if (!(np->type->prop & TINTEGER))
 		error("unary operator requires integer operand");
 	np = promote(np);
-	if (op == OCPL && np->op == OCPL)
-		return np->left;
-	return simplify(op, np->type, np, NULL);
+	return node(op, np->type, np, NULL);
 }
 
 static Node *
@@ -235,68 +233,7 @@ numericaluop(int op, Node *np)
 	if (!(np->type->prop & TARITH))
 		error("unary operator requires numerical operand");
 	np = promote(np);
-	if (op == OSNEG && np->op == OSNEG)
-		return np->left;
-	if (op == OADD)
-		return np;
-	return simplify(op, np->type, np, NULL);
-}
-
-/* TODO: check validity of types */
-static Node *
-castcode(Node *np, Type *newtp)
-{
-	TUINT negmask, mask, u;
-	Type *oldtp = np->type;
-	Symbol aux, *sym, *osym = np->sym;
-
-	if (!(np->flags & NCONST))
-		goto noconstant;
-
-	switch (newtp->op) {
-	case PTR:
-	case INT:
-	case ENUM:
-		switch (oldtp->op) {
-		case PTR:
-		case INT:
-		case ENUM:
-			u = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
-			break;
-		case FLOAT:
-			oldtp = newtp;
-			u = osym->u.f;
-			break;
-		default:
-			goto noconstant;
-		}
-		mask = ones(newtp->size);
-		if (newtp->prop & TSIGNED) {
-			negmask = ~mask;
-			if (u & (negmask >> 1) & mask)
-				u |= negmask;
-			aux.u.i = u;
-		} else {
-			aux.u.u = u & mask;
-		}
-		break;
-	case FLOAT:
-		/* FIXME: The cast can be from another float type */
-		aux.u.f = (oldtp->prop & TSIGNED) ? osym->u.i : osym->u.u;
-		break;
-	default:
-		goto noconstant;
-	}
-
-	sym = newsym(NS_IDEN, NULL);
-	np->type = sym->type = newtp;
-	np->sym = sym;
-	sym->u = aux.u;
-
-	return np;
-
-noconstant:
-	return node(OCAST, newtp, np, NULL);
+	return node(op, np->type, np, NULL);
 }
 
 Node *
@@ -345,7 +282,7 @@ convert(Node *np, Type *newtp, char iscast)
 	default:
 		return NULL;
 	}
-	return castcode(np, newtp);
+	return node(OCAST, newtp, np, NULL);
 }
 
 static Node *
@@ -375,10 +312,10 @@ parithmetic(int op, Node *lp, Node *rp)
 		goto incorrect;
 
 	rp = convert(promote(rp), sizettype, 0);
-	rp = simplify(OMUL, sizettype, rp, size);
+	rp = node(OMUL, sizettype, rp, size);
 	rp = convert(rp, tp, 1);
 
-	return simplify(op, tp, lp, rp);
+	return node(op, tp, lp, rp);
 
 incomplete:
 	errorp("invalid use of undefined type");
@@ -396,7 +333,7 @@ arithmetic(int op, Node *lp, Node *rp)
 
 	if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
 		arithconv(&lp, &rp);
-		return simplify(op, lp->type, lp, rp);
+		return node(op, lp->type, lp, rp);
 	} else if ((ltp->op == PTR || rtp->op == PTR)) {
 		switch (op) {
 		case OADD:
@@ -432,7 +369,7 @@ pcompare(int op, Node *lp, Node *rp)
 	}
 	if (err)
 		errorp("incompatible types in comparison");
-	return simplify(op, inttype, lp, rp);
+	return node(op, inttype, lp, rp);
 }
 
 static Node *
@@ -447,7 +384,7 @@ compare(int op, Node *lp, Node *rp)
 		return pcompare(op, rp, lp);
 	} else if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
 		arithconv(&lp, &rp);
-		return simplify(op, inttype, lp, rp);
+		return node(op, inttype, lp, rp);
 	} else {
 		errorp("incompatible types in comparison");
 		freetree(lp);
@@ -532,7 +469,7 @@ logic(int op, Node *lp, Node *rp)
 {
 	lp = exp2cond(lp, 0);
 	rp = exp2cond(rp, 0);
-	return simplify(op, inttype, lp, rp);
+	return node(op, inttype, lp, rp);
 }
 
 static Node *
@@ -657,13 +594,7 @@ address(int op, Node *np)
 dont_check_lvalue:
 	if (np->sym && (np->sym->flags & SREGISTER))
 		errorp("address of register variable '%s' requested", yytext);
-	if (np->op == OPTR) {
-		Node *new = np->left;
-		free(np);
-		return new;
-	}
 	new = node(op, mktype(np->type, PTR, 0, NULL), np, NULL);
-
 	if (np->sym && np->sym->flags & (SGLOBAL|SLOCAL|SPRIVATE))
 		new->flags |= NCONST;
 	return new;
@@ -674,7 +605,6 @@ negation(int op, Node *np)
 {
 	if (!(np->type->prop & TARITH) && np->type->op != PTR) {
 		errorp("invalid argument of unary '!'");
-		freetree(np);
 		return constnode(zero);
 	}
 	return exp2cond(np, 1);
@@ -864,7 +794,7 @@ postfix(Node *lp)
 			switch (yytoken) {
 			case '[':
 				next();
-				rp = expr();
+				rp = xexpr();
 				expect(']');
 				lp = array(lp, rp);
 				break;
@@ -987,7 +917,7 @@ cast(int needdecay)
 		if (nested == NR_SUBEXPR)
 			error("too many expressions nested by parentheses");
 		++nested;
-		rp = expr();
+		rp = xexpr();
 		--nested;
 		expect(')');
 		rp = postfix(rp);
@@ -1155,11 +1085,11 @@ ternary(void)
 		Node *ifyes, *ifno, *np;
 
 		cond = exp2cond(cond, 0);
-		ifyes = expr();
+		ifyes = xexpr();
 		expect(':');
 		ifno = ternary();
 		np = chkternary(ifyes, ifno);
-		cond = simplify(OASK, np->type, cond, np);
+		cond = node(OASK, np->type, cond, np);
 	}
 	return cond;
 }
@@ -1193,21 +1123,8 @@ assign(void)
 	}
 }
 
-Node *
-constexpr(void)
-{
-	Node *np;
-
-	np = ternary();
-	if (!np || !(np->flags & NCONST) || np->type->op != INT) {
-		freetree(np);
-		return NULL;
-	}
-	return convert(np, inttype, 0);
-}
-
-Node *
-expr(void)
+static Node *
+xexpr(void)
 {
 	Node *lp, *rp;
 
@@ -1216,8 +1133,28 @@ expr(void)
 		rp = assign();
 		lp = node(OCOMMA, rp->type, lp, rp);
 	}
-
 	return lp;
+}
+
+Node *
+constexpr(void)
+{
+	Node *np;
+
+	np = ternary();
+	if (np && np->type->op == INT) {
+		np = simplify(convert(np, inttype, 0));
+		if (np->flags & NCONST)
+			return np;
+	}
+	freetree(np);
+	return NULL;
+}
+
+Node *
+expr(void)
+{
+	return simplify(xexpr());
 }
 
 Node *
@@ -1225,8 +1162,8 @@ condexpr(void)
 {
 	Node *np;
 
-	np = exp2cond(expr(), 0);
+	np = exp2cond(xexpr(), 0);
 	if (np->flags & NCONST)
 		warn("conditional expression is constant");
-	return np;
+	return simplify(np);
 }

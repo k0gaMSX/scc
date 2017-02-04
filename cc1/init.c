@@ -94,7 +94,7 @@ designation(Init *ip)
 static Node *
 initialize(Type *tp)
 {
-	Node *np, *aux;
+	Node *np;
 	Symbol *sym;
 	Type *btp;
 	size_t len;
@@ -133,12 +133,16 @@ initialize(Type *tp)
 		np->type = sym->type;
 
 		return np;
+	} else {
+		if (eqtype(tp, np->type, 1))
+			return np;
+		np = convert(decay(np), tp, 0);
+		if (!np) {
+			errorp("incorrect initializer");
+			goto return_zero;
+		}
 	}
-	if (eqtype(tp, np->type, 1))
-		return np;
-	if ((aux = convert(decay(np), tp, 0)) != NULL)
-		return aux;
-	errorp("incorrect initializer");
+	return simplify(np);
 
 return_zero:
 	return constnode(zero);
