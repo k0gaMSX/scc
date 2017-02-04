@@ -621,7 +621,7 @@ ifclause(int negate, int isifdef)
 			killsym(sym);
 	} else {
 		/* TODO: catch recovery here */
-		if ((expr = iconstexpr()) == NULL) {
+		if ((expr = constexpr()) == NULL) {
 			cpperror("parameter of #if is not an integer constant expression");
 			return;
 		}

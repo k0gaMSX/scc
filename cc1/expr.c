@@ -1199,26 +1199,10 @@ constexpr(void)
 	Node *np;
 
 	np = ternary();
-	if (!(np->flags & NCONST)) {
+	if (!np || !(np->flags & NCONST) || np->type->op != INT) {
 		freetree(np);
 		return NULL;
 	}
-	return np;
-}
-
-Node *
-iconstexpr(void)
-{
-	Node *np;
-
-	if ((np = constexpr()) == NULL)
-		return NULL;
-
-	if (np->type->op != INT) {
-		freetree(np);
-		return NULL;
-	}
-
 	return convert(np, inttype, 0);
 }
 

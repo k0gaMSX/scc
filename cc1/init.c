@@ -37,7 +37,7 @@ arydesig(Init *ip)
 	if (ip->type->op != ARY)
 		errorp("array index in non-array initializer");
 	next();
-	np = iconstexpr();
+	np = constexpr();
 	npos = np->sym->u.i;
 	if (npos < 0 || (tp->prop & TDEFINED) && npos >= tp->n.elem) {
 		errorp("array index in initializer exceeds array bounds");

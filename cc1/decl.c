@@ -106,7 +106,7 @@ arydcl(struct declarators *dp)
 
 	expect('[');
 	if (yytoken != ']') {
-		if ((np = iconstexpr()) == NULL) {
+		if ((np = constexpr()) == NULL) {
 			errorp("invalid storage size");
 		} else {
 			if ((n = np->sym->u.i) <= 0) {
@@ -572,7 +572,7 @@ enumdcl(void)
 			toomany = 1;
 		}
 		if (accept('=')) {
-			Node *np = iconstexpr();
+			Node *np = constexpr();
 
 			if (np == NULL)
 				errorp("invalid enumeration value");
@@ -626,7 +626,7 @@ field(struct decl *dcl)
 		Node *np;
 		TINT n;
 
-		if ((np = iconstexpr()) == NULL) {
+		if ((np = constexpr()) == NULL) {
 			unexpected();
 			n = 0;
 		} else {
