@@ -410,6 +410,7 @@ extern int setloc(char *fname, unsigned line);
 #define accept(t) ((yytoken == (t)) ? next() : 0)
 
 /* code.c */
+extern void prtree(Node *np);
 extern void emit(unsigned, void *);
 extern Node *node(unsigned op, Type *tp, Node *left, Node *rigth);
 extern Node *varnode(Symbol *sym);
