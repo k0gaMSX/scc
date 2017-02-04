@@ -408,57 +408,27 @@ negop(int op)
 	return op;
 }
 
-Node *
-negate(Node *np)
-{
-	int op = np->op;
-
-	switch (np->op) {
-	case OSYM:
-		assert(np->flags&NCONST && np->type->prop&TINTEGER);
-		np->sym = (np->sym->u.i) ? zero : one;
-		break;
-	case OOR:
-	case OAND:
-		if (np->op == ONEG) {
-			Node *new = np->left;
-			free(np);
-			return new;
-		}
-		np = node(ONEG, inttype, np, NULL);
-		break;
-	case OEQ:
-	case ONE:
-	case OLT:
-	case OGE:
-	case OLE:
-	case OGT:
-		np->op = negop(op);
-		break;
-	default:
-		abort();
-	}
-
-	return np;
-}
-
 static Node *
-exp2cond(Node *np, char neg)
+exp2cond(Node *np, int neg)
 {
 	if (np->type->prop & TAGGREG) {
 		errorp("used struct/union type value where scalar is required");
 		return constnode(zero);
 	}
 	switch (np->op) {
+	case ONEG:
 	case OOR:
 	case OAND:
+		return node(ONEG, inttype, np, NULL);
 	case OEQ:
 	case ONE:
 	case OLT:
 	case OGE:
 	case OLE:
 	case OGT:
-		return (neg) ? negate(np) : np;
+		if (neg)
+			np->op = negop(np->op);
+		return np;
 	default:
 		return compare((neg) ?  OEQ : ONE, np, constnode(zero));
 	}
