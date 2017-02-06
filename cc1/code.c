@@ -137,7 +137,13 @@ void (*opcode[])(unsigned, void *) = {
 	[OTYP] = emittype,
 };
 
-static FILE *outfp = stdout;
+static FILE *outfp;
+
+void
+icode(void)
+{
+	outfp = stdout;
+}
 
 void
 freetree(Node *np)

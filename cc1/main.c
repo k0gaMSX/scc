@@ -57,6 +57,7 @@ main(int argc, char *argv[])
 	atexit(clean);
 	ilex();
 	icpp();
+	icode();
 
 	ARGBEGIN {
 	case 'D':
