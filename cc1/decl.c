@@ -899,6 +899,7 @@ decl(void)
 	sym->flags &= ~SEMITTED;
 	emit(OFUN, sym);
 	compound(NULL, NULL, NULL);
+	popctx();
 	emit(OEFUN, NULL);
 	flushtypes();
 	curfun = ocurfun;

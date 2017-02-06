@@ -362,12 +362,6 @@ compound(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	--nested;
 
 	popctx();
-	/*
-	 * curctx == GLOBALCTX+1 means we are at the end of a function
-	 * so we have to pop the context related to the parameters
-	 */
-	if (curctx == GLOBALCTX+1)
-		popctx();
 	expect('}');
 }
 
