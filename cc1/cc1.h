@@ -477,8 +477,8 @@ extern int onlycpp, onlyheader;
 extern unsigned curctx;
 extern Symbol *curfun, *zero, *one;
 extern char *infile, *outfile;
-unsigned lineno;
-char filenam[FILENAME_MAX];
+extern unsigned lineno;
+extern char filenam[FILENAME_MAX];
 
 extern Type *voidtype, *pvoidtype, *booltype,
             *uchartype,   *chartype, *schartype,
