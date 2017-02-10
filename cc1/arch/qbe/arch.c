@@ -183,13 +183,13 @@ static Type types[] = {
 		.align = 8,
 		.n.rank = RANK_LONG,
 	},
-	{       /* 20 = va_list_type */
-		.op = PTR,
-		.letter = L_POINTER,
+	{      /* 20 = va_type */
+		.op = STRUCT,
+		.letter = L_VA_ARG,
 		.prop = TDEFINED,
-		.size = 8,
+		.size = 24,
 		.align = 8,
-	}
+	},
 };
 
 Type *voidtype = &types[0], *pvoidtype = &types[1],
@@ -202,9 +202,21 @@ Type *voidtype = &types[0], *pvoidtype = &types[1],
      *floattype = &types[14], *doubletype = &types[15],
      *ldoubletype = &types[16],
      *sizettype = &types[17], *pdifftype = &types[19],
-     *ellipsistype = &types[18],
-     *va_list_type = &types[20];
+     *ellipsistype = &types[18], *va_type = &types[20],
+     *va_list_type;
 
 static Symbol dummy0 = {.u.i = 0, .type = &types[9]},
               dummy1 = {.u.i = 1, .type = &types[9]};
 Symbol *zero = &dummy0, *one = &dummy1;
+
+void
+iarch(void)
+{
+	va_list_type = mktype(va_type, ARY, 1, NULL);
+}
+
+int
+valid_va_list(Type *tp)
+{
+	return tp->op == PTR && tp->type == va_type;
+}

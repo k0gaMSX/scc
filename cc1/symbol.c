@@ -296,3 +296,23 @@ keywords(struct keyword *key, int ns)
 	counterid = 0;
 	head = NULL;
 }
+
+void
+builtins(struct builtin *built)
+{
+	Symbol *sym;
+	struct builtin *bp;
+
+	for (bp = built; bp->str; ++bp) {
+		sym = linkhash(newsym(NS_KEYWORD, bp->str));
+		sym->token = BUILTIN;
+		sym->u.fun = bp->fun;
+	}
+	/*
+	 * Remove all the predefined symbols from * the symbol list. It
+	 * will make faster some operations. There is no problem of memory
+	 * leakeage because this memory is not ever freed
+	 */
+	counterid = 0;
+	head = NULL;
+}

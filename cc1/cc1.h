@@ -54,6 +54,7 @@ enum ns {
 	L_ARRAY     = 'V',
 	L_UNION     = 'U',
 	L_STRUCT    = 'S',
+	L_VA_ARG    = '1',
 };
 
 /* recovery points */
@@ -196,6 +197,7 @@ enum tokens {
 	IFNDEF,
 	UNDEF,
 	ENDIF,
+	BUILTIN,
 	EOFTOK
 };
 
@@ -260,6 +262,7 @@ enum op {
 	OBSWITCH,
 	OESWITCH,
 	OINIT,
+	OBUILTIN,
 	OTYP,
 };
 
@@ -281,6 +284,11 @@ struct limits {
 		TUINT i;
 		TFLOAT f;
 	} min;
+};
+
+struct builtin {
+	char *str;
+	Node *(*fun)(Symbol *);
 };
 
 struct keyword {
@@ -327,6 +335,7 @@ struct symbol {
 		unsigned char token;
 		Node **init;
 		Symbol **pars;
+		Node *(*fun)(Symbol *);
 	} u;
 	struct symbol *next;
 	struct symbol *hash;
@@ -387,6 +396,7 @@ extern void pushctx(void), popctx(void);
 extern void killsym(Symbol *sym);
 extern Symbol *newlabel(void);
 extern void keywords(struct keyword *key, int ns);
+extern void builtins(struct builtin *builts);
 extern Symbol *newstring(char *s, size_t len);
 extern unsigned newid(void);
 
@@ -417,6 +427,7 @@ extern Node *varnode(Symbol *sym);
 extern Node *constnode(Symbol *sym);
 extern Node *sizeofnode(Type *tp);
 extern void freetree(Node *np);
+extern void icode(void);
 #define BTYPE(np) ((np)->type->op)
 
 /* fold.c */
@@ -444,6 +455,13 @@ extern void outcpp(void);
 extern void defdefine(char *macro, char *val, char *source);
 extern void undefmacro(char *s);
 
+/* builtin.c */
+extern void ibuilts(void);
+
+/* arch.c */
+extern void iarch(void);
+extern int valid_va_list(Type *tp);
+
 /*
  * Definition of global variables
  */
@@ -470,4 +488,4 @@ extern Type *voidtype, *pvoidtype, *booltype,
             *longtype,    *ulongtype,
             *ullongtype,  *llongtype,
             *floattype,   *doubletype,  *ldoubletype,
-            *ellipsistype, *va_list_type;
+            *ellipsistype, *va_list_type, *va_type;

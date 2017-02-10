@@ -58,6 +58,7 @@ main(int argc, char *argv[])
 	ilex();
 	icpp();
 	icode();
+	ibuilts();
 
 	ARGBEGIN {
 	case 'D':
@@ -102,6 +103,12 @@ main(int argc, char *argv[])
 		die("error: failed to open input file '%s': %s",
 		    *argv, strerror(errno));
 	}
+
+	/*
+	 * we cannot initialize types until we have an
+	 * output stream, because we maybe want to emit new types
+	 */
+	iarch();
 	if (onlycpp || onlyheader) {
 		outcpp();
 	} else {

@@ -17,7 +17,8 @@ static void emitbin(unsigned, void *),
             emitfun(unsigned, void *),
             emitdcl(unsigned, void *),
             emitinit(unsigned, void *),
-            emittype(unsigned, void *);
+            emittype(unsigned, void *),
+            emitbuilt(unsigned, void *);
 
 char *optxt[] = {
 	[OADD] = "+",
@@ -134,6 +135,7 @@ void (*opcode[])(unsigned, void *) = {
 	[OPAR] = emitbin,
 	[OCALL] = emitbin,
 	[OINIT] = emitinit,
+	[OBUILTIN] = emitbuilt,
 	[OTYP] = emittype,
 };
 
@@ -430,10 +432,22 @@ emitbin(unsigned op, void *arg)
 	emitnode(np->left);
 	emitnode(np->right);
 	if ((s = optxt[op]) != NULL)  {      /* do not print in OCOLON case */
-		fprintf(outfp, "\t%s", optxt[op]);
+		fprintf(outfp, "\t%s", s);
 		emitletter(np->type);
 	}
 }
+
+static void
+emitbuilt(unsigned op, void *arg)
+{
+	Node *np = arg;
+
+	emitnode(np->left);
+	emitnode(np->right);
+	fprintf(outfp, "\t\"%s\tk", np->sym->name);
+	emitletter(np->type);
+}
+
 
 static void
 emitexp(unsigned op, void *arg)

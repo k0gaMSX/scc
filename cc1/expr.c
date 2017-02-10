@@ -11,7 +11,7 @@ static char sccsid[] = "@(#) ./cc1/expr.c";
 
 #define XCHG(lp, rp, np) (np = lp, lp = rp, rp = np)
 
-static Node *xexpr(void);
+static Node *xexpr(void), *xassign(void);
 
 int
 cmpnode(Node *np, TUINT val)
@@ -614,6 +614,7 @@ primary(void)
 {
 	Node *np;
 	Symbol *sym;
+	Node *(*fun)(Symbol *);
 
 	sym = yylval.sym;
 	switch (yytoken) {
@@ -624,6 +625,15 @@ primary(void)
 		emit(OINIT, np);
 		np = varnode(sym);
 		break;
+	case BUILTIN:
+		fun = sym->u.fun;
+		next();
+		expect('(');
+		np = (*fun)(sym);
+		expect(')');
+
+		/* do not call to next */
+		return np;
 	case CONSTANT:
 		np = constnode(sym);
 		break;
@@ -675,7 +685,7 @@ arguments(Node *np)
 	toomany = 0;
 
 	do {
-		arg = assign();
+		arg = xassign();
 		argtype = *targs;
 		if (argtype == ellipsistype) {
 			n = 0;
@@ -1064,8 +1074,8 @@ ternary(void)
 	return cond;
 }
 
-Node *
-assign(void)
+static Node *
+xassign(void)
 {
 	Node *np, *(*fun)(int , Node *, Node *);
 	int op;
@@ -1098,12 +1108,18 @@ xexpr(void)
 {
 	Node *lp, *rp;
 
-	lp = assign();
+	lp = xassign();
 	while (accept(',')) {
-		rp = assign();
+		rp = xassign();
 		lp = node(OCOMMA, rp->type, lp, rp);
 	}
 	return lp;
+}
+
+Node *
+assign(void)
+{
+	return simplify(xassign());
 }
 
 Node *
