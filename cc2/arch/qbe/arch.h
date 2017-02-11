@@ -141,4 +141,6 @@ enum asmop {
 	ASFORM,
 
 	ASCOPYW,
+	ASVSTAR,
+	ASVARG,
 };

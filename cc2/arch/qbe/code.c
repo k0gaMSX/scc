@@ -14,7 +14,8 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/code.c";
 
 static void binary(void), unary(void), store(void), jmp(void), ret(void),
             branch(void), call(void), ecall(void), param(void),
-            alloc(void), form2local(void), ldir(void);
+            alloc(void), form2local(void), ldir(void), vastart(void),
+            vaarg(void);
 
 static struct opdata {
 	void (*fun)(void);
@@ -142,6 +143,9 @@ static struct opdata {
 	[ASPARE] = {.fun = param, .txt = "%s %s"},
 	[ASALLOC] = {.fun = alloc},
 	[ASFORM] = {.fun = form2local},
+
+	[ASVSTAR] = {.fun = vastart},
+	[ASVARG] = {.fun = vaarg},
 };
 
 static char buff[ADDR_LEN];
@@ -482,6 +486,24 @@ branch(void)
 	strcpy(from1, addr2txt(&pc->from1));
 	strcpy(from2, addr2txt(&pc->from2));
 	printf("\t\tjnz\t%s,%s,%s\n", to, from1, from2);
+}
+
+static void
+vastart(void)
+{
+	printf("\t\tvastart %s\n", addr2txt(&pc->from1));
+}
+
+static void
+vaarg(void)
+{
+	Symbol *sym = pc->to.u.sym;
+	Type *tp = &sym->type;
+	char to[ADDR_LEN], from[ADDR_LEN];
+
+	strcpy(to, addr2txt(&pc->to));
+	strcpy(from, addr2txt(&pc->from1));
+	printf("\t\t%s =%s vaarg %s\n", to, size2asm(tp), from);
 }
 
 static void

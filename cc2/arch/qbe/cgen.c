@@ -592,6 +592,23 @@ rhs(Node *np, Node *ret)
 		return ret;
 	case OFIELD:
 		return field(np, ret, 0);
+	case OBUILTIN:
+		switch (np->u.subop) {
+		case BVA_START:
+			l = rhs(l, &aux1);
+			code(ASVSTAR, NULL, l, NULL);
+			return NULL;
+		case BVA_END:
+			return NULL;
+		case BVA_ARG:
+			l = rhs(l, &aux1);
+			code(ASVARG, tmpnode(ret, tp), l, NULL);
+			return ret;
+		case BVA_COPY:
+			/* TODO */
+		default:
+			abort();
+		}
 	default:
 		abort();
 	}
