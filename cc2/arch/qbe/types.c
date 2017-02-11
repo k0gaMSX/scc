@@ -92,3 +92,8 @@ Type elipsistype = {
 	.size = 0,
 	.align = 0
 };
+
+Type arg_type = {
+	.size = 24,
+	.align = 8
+};

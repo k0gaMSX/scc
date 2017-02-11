@@ -92,3 +92,9 @@ Type elipsistype = {
 	.size = 0,
 	.align = 0
 };
+
+/* this types is not going to be used in this arch */
+Type arg_type = {
+        .size = 0,
+        .align = 0
+};

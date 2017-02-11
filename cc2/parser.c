@@ -19,7 +19,8 @@ extern Type int8type, int16type, int32type, int64type,
             booltype,
             ptrtype,
             voidtype,
-            elipsistype;
+            elipsistype,
+            arg_type;
 
 Type funtype = {
 	.flags = FUNF
@@ -43,7 +44,7 @@ typedef void parsefun(char *, union tokenop);
 static parsefun type, symbol, getname, unary, binary, ternary, call,
                 constant, composed, binit, einit,
                 jump, oreturn, loop, assign,
-                ocase, bswitch, eswitch;
+                ocase, bswitch, eswitch, builtin;
 
 typedef void evalfun(void);
 static evalfun vardecl, beginfun, endfun, endpars, stmt,
@@ -78,6 +79,7 @@ static struct decoc {
 	['B']   = {     NULL,    type, .u.arg =    &booltype},
 	['P']   = {     NULL,    type, .u.arg =     &ptrtype},
 	['E']   = {     NULL,    type, .u.arg = &elipsistype},
+	['1']	= {     NULL,    type, .u.arg =    &arg_type},
 
 	['F']   = {     NULL,    type, .u.arg =     &funtype},
 	['V']   = {    array,composed,                     0},
@@ -120,6 +122,7 @@ static struct decoc {
 	['|']   = {     NULL,  binary, .u.op =          OBOR},
 	['^']   = {     NULL,  binary, .u.op =         OBXOR},
 	[',']   = {     NULL,  binary, .u.op =        OCOMMA},
+	['m']   = {     NULL,  builtin,.u.op =      OBUILTIN},
 
 	[':']   = {     NULL,  assign, .u.op =        OASSIG},
 	['?']   = {     NULL, ternary, .u.op =          OASK},
@@ -459,6 +462,40 @@ call(char *token, union tokenop u)
 	fun->left = np;
 	fun->right = par;
 	push(fun);
+}
+
+static void
+builtin(char *token, union tokenop u)
+{
+	Node *np = newnode(u.op);
+	char *name;
+	unsigned subop, nchilds;
+
+	np->type = *gettype(token+1);
+	name = pop();
+
+	if (!strcmp("__builtin_va_arg", name)) {
+		nchilds = 1;
+		subop = BVA_ARG;
+	} else if (!strcmp("__builtin_va_start", name)) {
+		nchilds = 2;
+		subop = BVA_START;
+	} else if (!strcmp("__builtin_va_end", name)) {
+		nchilds = 1;
+		subop = BVA_END;
+	} else if (!strcmp("__builtin_va_copy", name)) {
+		nchilds = 2;
+		subop = BVA_COPY;
+	} else {
+		error(EBBUILT);;
+	}
+
+	np->u.subop = subop;
+	np->right = (nchilds == 2) ? pop() : NULL;
+	np->left = (nchilds != 0) ? pop() : NULL;
+
+	free(name);
+	push(np);
 }
 
 static void

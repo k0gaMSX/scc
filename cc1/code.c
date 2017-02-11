@@ -444,7 +444,7 @@ emitbuilt(unsigned op, void *arg)
 
 	emitnode(np->left);
 	emitnode(np->right);
-	fprintf(outfp, "\t\"%s\tk", np->sym->name);
+	fprintf(outfp, "\t\"%s\tm", np->sym->name);
 	emitletter(np->type);
 }
 

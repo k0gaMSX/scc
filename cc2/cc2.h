@@ -97,6 +97,7 @@ enum op {
 	OCAST    = 'g',
 	OINC     = 'i',
 	ODEC     = 'd',
+	OBUILTIN = 'm',
 	/*statements */
 	ONOP     = 'q',
 	OJMP     = 'j',
@@ -110,6 +111,13 @@ enum op {
 	OESWITCH = 't',
 	OBFUN    = 'x',
 	OEFUN    = 'k',
+};
+
+enum builtins {
+	BVA_START = 's',
+	BVA_END   = 'e',
+	BVA_ARG   = 'a',
+	BVA_COPY  = 'c',
 };
 
 enum nerrors {
@@ -128,6 +136,7 @@ enum nerrors {
 	EWTACKO,       /* switch stack overflow */
 	EWTACKU,       /* switch stack underflow */
 	ENOSWTC,       /* Out of switch statement */
+	EBBUILT,       /* Unknown builtin */
 	ENUMERR
 };
 
