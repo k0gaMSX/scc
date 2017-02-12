@@ -340,6 +340,8 @@ writeout(void)
 	char *sep, *name;
 	int haslabel = 0;
 
+	if (!curfun)
+		return;
 	if (curfun->kind == SGLOB)
 		fputs("export ", stdout);
 	printf("function %s %s(", size2stack(&curfun->rtype), symname(curfun));
