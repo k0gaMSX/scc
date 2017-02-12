@@ -11,9 +11,8 @@ typedef struct {
 
 typedef __va_elem va_list[1];
 
-#define va_start(X, Y) __builtin_va_start((X), (Y))
-#define va_end(X) (X)
-
-int vfprintf(FILE *stream, const char *format, va_list ap);
+#define va_start(ap, last) __builtin_va_start((ap), (last))
+#define va_end(ap) __builtin__va_end(ap)
+#define va_copy(to, from) __builtin_va_copy((to), (from))
 
 #endif
