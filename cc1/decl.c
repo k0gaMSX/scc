@@ -901,6 +901,8 @@ decl(void)
 	compound(NULL, NULL, NULL);
 	popctx();
 	emit(OEFUN, NULL);
+	free(sym->u.pars);
+	sym->u.pars = NULL;
 	flushtypes();
 	curfun = ocurfun;
 }

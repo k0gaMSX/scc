@@ -470,8 +470,6 @@ emitfun(unsigned op, void *arg)
 	for (sp = sym->u.pars; sp && *sp; ++sp)
 		emit(ODECL, *sp);
 	fputs("\\\n", outfp);
-	free(sym->u.pars);
-	sym->u.pars = NULL;
 }
 
 static void

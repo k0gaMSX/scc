@@ -18,7 +18,7 @@ builtin_va_arg(Symbol *sym)
 
 	if (!valid_va_list(ap->type)) {
 		errorp("incorrect parameters for va_arg");
-		return constnode(zero);
+		goto error;
 	}
 	if (tp == booltype ||
 	    tp == chartype || tp == uchartype || tp == schartype ||
@@ -30,6 +30,9 @@ builtin_va_arg(Symbol *sym)
 	np = node(OBUILTIN, tp, ap, NULL);
 	np->sym = sym;
 	return np;
+
+error:
+	return constnode(zero);
 }
 
 static Node *
@@ -55,16 +58,31 @@ static Node *
 builtin_va_start(Symbol *sym)
 {
 	Node *np, *ap, *last;
+	Symbol **p, *lastsym;
+	Type *tp;
 
 	ap = assign();
 	expect(',');
 	if (yytoken != IDEN)
 		goto error;
-	last = varnode(yylval.sym);
+	lastsym = yylval.sym;
+	last = varnode(lastsym);
 	next();
 
-	if (!valid_va_list(ap->type))
-		goto error;
+	if (!valid_va_list(ap->type) || !(lastsym->flags&SDECLARED))
+		 goto error;
+
+	for (p = curfun->u.pars; p && *p != lastsym; ++p)
+		/* nothing */;
+	if (!p || *p == NULL || p[1] == NULL || p[1]->type != ellipsistype)
+		warn("second parameter of 'va_start' not last named argument");
+
+	tp = last->type;
+	if (tp == booltype ||
+	    tp == chartype || tp == uchartype || tp == schartype ||
+	    tp == shortype || tp == ushortype) {
+		warn("last parameter before '...' must not be bool, char or short");
+	}
 
 	np = node(OBUILTIN, voidtype, ap, last);
 	np->sym = sym;
