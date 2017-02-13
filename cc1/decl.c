@@ -467,11 +467,13 @@ static Symbol *
 newtag(void)
 {
 	Symbol *sym;
-	int op, tag = yylval.token;
-	static unsigned ns = NS_STRUCTS;
+	int ns, op, tag = yylval.token;
+	static unsigned tpns = NS_STRUCTS;
 
+	ns = namespace;
 	namespace = NS_TAG;
 	next();
+	namespace = ns;
 
 	switch (yytoken) {
 	case IDEN:
@@ -479,7 +481,6 @@ newtag(void)
 		sym = yylval.sym;
 		if ((sym->flags & SDECLARED) == 0)
 			install(NS_TAG, yylval.sym);
-		namespace = NS_IDEN;
 		next();
 		break;
 	default:
@@ -489,10 +490,10 @@ newtag(void)
 	if (!sym->type) {
 		Type *tp;
 
-		if (ns == NS_STRUCTS + NR_MAXSTRUCTS)
+		if (tpns == NS_STRUCTS + NR_MAXSTRUCTS)
 			error("too many tags declared");
 		tp = mktype(NULL, tag, 0, NULL);
-		tp->ns = ns++;
+		tp->ns = tpns++;
 		sym->type = tp;
 		tp->tag = sym;
 		DBG("declared tag '%s' with ns = %d\n",
@@ -514,15 +515,14 @@ structdcl(void)
 	static int nested;
 	int ns;
 
-	ns = namespace;
 	sym = newtag();
 	tp = sym->type;
-	namespace = tp->ns;
 
-	if (!accept('{')) {
-		namespace = ns;
+	if (!accept('{'))
 		return tp;
-	}
+
+	ns = namespace;
+	namespace = tp->ns;
 
 	if (tp->prop & TDEFINED && sym->ctx == curctx)
 		error("redefinition of struct/union '%s'", sym->name);
