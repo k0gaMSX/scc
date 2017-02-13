@@ -20,6 +20,12 @@ builtin_va_arg(Symbol *sym)
 		errorp("incorrect parameters for va_arg");
 		return constnode(zero);
 	}
+	if (tp == booltype ||
+	    tp == chartype || tp == uchartype || tp == schartype ||
+	    tp == shortype || tp == ushortype) {
+		warn("bool, char and short are promoted to int when passed through '...'");
+		tp = (tp->prop & TSIGNED) ? inttype : uinttype;
+	}
 
 	np = node(OBUILTIN, tp, ap, NULL);
 	np->sym = sym;
