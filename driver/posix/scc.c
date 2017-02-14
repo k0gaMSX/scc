@@ -476,6 +476,8 @@ main(int argc, char *argv[])
 	case 's':
 		sflag = 1;
 		break;
+	case 'W':
+		EARGF(usage());
 	case 'w':
 		addarg(CC1, "-w");
 		break;
