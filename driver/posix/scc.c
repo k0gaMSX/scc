@@ -443,6 +443,9 @@ main(int argc, char *argv[])
 		addarg(LD, "-L");
 		addarg(LD, EARGF(usage()));
 		break;
+	case 'O':
+		EARGF(usage());
+		break;
 	case 'S':
 		Sflag = 1;
 		break;
