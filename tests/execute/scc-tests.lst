@@ -100,3 +100,4 @@
 0107-bnot.c
 0108-bug.c
 0109-struct.c
+0110-typedefcast.c

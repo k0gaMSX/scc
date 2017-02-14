@@ -877,6 +877,7 @@ cast(int needdecay)
 	switch (yytoken) {
 	case TQUALIFIER:
 	case TYPE:
+	case TYPEIDEN:
 		tp = typename();
 		expect(')');
 
