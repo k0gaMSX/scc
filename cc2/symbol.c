@@ -44,7 +44,7 @@ popctx(void)
 		 * to have a global over a local, because a local is
 		 * any symbol defined in the body of a function,
 		 * even if it has extern linkage.
-		 * For this reason when we raich a symbol in the
+		 * For this reason when we reach a symbol in the
 		 * locals list we know that it is the head of it
 		 * collision list and we can remove it assigning
 		 * it h_next to the hash table position

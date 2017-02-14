@@ -255,7 +255,7 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 		}
 		if (accept(ELLIPSIS)) {
 			if (n == 0)
-				errorp("a named argument is requiered before '...'");
+				errorp("a named argument is required before '...'");
 			++n;
 			*syms = NULL;
 			*types++ = ellipsistype;
