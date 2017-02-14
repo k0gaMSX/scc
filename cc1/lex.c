@@ -103,7 +103,7 @@ addinput(char *fname, Symbol *hide, char *buffer)
 	} else  if (fname) {
 		/* a new file */
 		if ((fp = fopen(fname, "r")) == NULL)
-			die("Error opening '%s': %s", fname, strerror(errno));
+			return 0;
 		flags = IFILE;
 		if (curip && onlyheader)
 			printf("%s: %s\n", infile, fname);
