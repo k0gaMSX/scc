@@ -301,7 +301,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		type.letter = L_FUNCTION;
 		break;
 	case FTN:
-		if (pars[nelem-1] == ellipsistype)
+		if (nelem > 0 && pars[nelem-1] == ellipsistype)
 			type.prop |= TELLIPSIS;
 		type.letter = L_FUNCTION;
 		break;
