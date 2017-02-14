@@ -138,7 +138,8 @@ static struct opdata {
 	[ASJMP]  = {.fun = jmp},
 	[ASRET]  = {.fun = ret},
 	[ASCALL] = {.fun = call},
-	[ASCALLE] = {.fun = ecall},
+	[ASCALLE] = {.fun = ecall, .txt = ")"},
+	[ASCALLEX] = {.fun = ecall, .txt = ", ...)"},
 	[ASPAR] = {.fun = param, .txt = "%s %s, "},
 	[ASPARE] = {.fun = param, .txt = "%s %s"},
 	[ASALLOC] = {.fun = alloc},
@@ -461,7 +462,9 @@ param(void)
 static void
 ecall(void)
 {
-	puts(")");
+	struct opdata *p = &optbl[pc->op];
+
+	puts(p->txt);
 }
 
 static void

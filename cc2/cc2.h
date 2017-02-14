@@ -84,6 +84,7 @@ enum op {
 	OASSIG   = ':',
 	OSNEG    = '_',
 	OCALL    = 'c',
+	OCALLE   = 'z',
 	OPAR     = 'p',
 	OFIELD   = '.',
 	OCOMMA   = ',',

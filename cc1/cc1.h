@@ -21,6 +21,7 @@ enum typeprops {
 	TARITH   = 1 << 3,    /* the type is INT, ENUM or FLOAT */
 	TAGGREG  = 1 << 4,    /* the type is struct or union */
 	TK_R     = 1 << 5,    /* this is a K&R-function */
+	TELLIPSIS= 1 << 6,    /* this function has an ellipsis par */
 };
 
 enum inputtype {
@@ -257,6 +258,7 @@ enum op {
 	OFUN,
 	OPAR,
 	OCALL,
+	OCALLE,
 	ORET,
 	ODECL,
 	OBSWITCH,

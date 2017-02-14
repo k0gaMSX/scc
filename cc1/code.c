@@ -72,6 +72,7 @@ char *optxt[] = {
 	[ORET] = "\th",
 	[OPAR] = "p",
 	[OCALL] = "c",
+	[OCALLE] = "z",
 	[OFIELD] = "."
 };
 
@@ -134,6 +135,7 @@ void (*opcode[])(unsigned, void *) = {
 	[OESWITCH] = emitsymid,
 	[OPAR] = emitbin,
 	[OCALL] = emitbin,
+	[OCALLE] = emitbin,
 	[OINIT] = emitinit,
 	[OBUILTIN] = emitbuilt,
 	[OTYP] = emittype,

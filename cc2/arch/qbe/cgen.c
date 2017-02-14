@@ -249,7 +249,7 @@ call(Node *np, Node *fun, Node *ret)
 		tmpnode(&aux, &(*q)->type);
 		code(op, NULL, *q, &aux);
 	}
-	code(ASCALLE, NULL, NULL, NULL);
+	code((np->op == OCALL) ? ASCALLE : ASCALLEX, NULL, NULL, NULL);
 
 	return ret;
 }
@@ -535,6 +535,7 @@ rhs(Node *np, Node *ret)
                 code(op, ret, &aux1, &aux2);
                 return ret;
 	case OCALL:
+	case OCALLE:
 		if (l->op == OPTR)
 			l = rhs(l, &aux1);
 		return call(np, l, ret);

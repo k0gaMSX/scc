@@ -135,6 +135,7 @@ enum asmop {
 	ASRET,
 	ASCALL,
 	ASCALLE,
+	ASCALLEX,
 	ASPAR,
 	ASPARE,
 	ASALLOC,

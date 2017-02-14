@@ -298,7 +298,11 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 	case KRFTN:
 		type.prop |= TK_R;
 		type.op = FTN;
+		type.letter = L_FUNCTION;
+		break;
 	case FTN:
+		if (pars[nelem-1] == ellipsistype)
+			type.prop |= TELLIPSIS;
 		type.letter = L_FUNCTION;
 		break;
 	case PTR:

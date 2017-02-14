@@ -660,7 +660,7 @@ primary(void)
 static Node *
 arguments(Node *np)
 {
-	int toomany, n;
+	int toomany, n, op;
 	Node *par = NULL, *arg;
 	Type *argtype, **targs, *tp = np->type, *rettype;
 
@@ -721,7 +721,8 @@ no_pars:
 	if (n > 0 && *targs != ellipsistype)
 		errorp("too few arguments in function call");
 
-	return node(OCALL, rettype, np, par);
+	op = (tp->prop&TELLIPSIS) ? OCALLE : OCALL;
+	return node(op, rettype, np, par);
 }
 
 static Node *unary(int);

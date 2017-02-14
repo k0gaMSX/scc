@@ -127,6 +127,7 @@ static struct decoc {
 	[':']   = {     NULL,  assign, .u.op =        OASSIG},
 	['?']   = {     NULL, ternary, .u.op =          OASK},
 	['c']   = {     NULL,    call, .u.op =         OCALL},
+	['z']   = {     NULL,    call, .u.op =        OCALLE},
 
 	['#']   = {     NULL,constant, .u.op =        OCONST},
 
