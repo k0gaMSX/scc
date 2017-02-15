@@ -10,7 +10,7 @@ static char sccsid[] = "@(#) ./cc1/main.c";
 #include "../inc/cc.h"
 #include "cc1.h"
 
-char *argv0, *infile, *outfile;
+char *argv0, *infile;
 
 int warnings;
 jmp_buf recover;
@@ -20,13 +20,6 @@ int onlycpp, onlyheader;
 
 
 extern int failure;
-
-static void
-clean(void)
-{
-	if (failure && outfile)
-		remove(outfile);
-}
 
 static void
 defmacro(char *macro)
@@ -54,7 +47,6 @@ main(int argc, char *argv[])
 	char *cp;
 	int i;
 
-	atexit(clean);
 	ilex();
 	icpp();
 	icode();
@@ -79,9 +71,6 @@ main(int argc, char *argv[])
 	case 'd':
 		DBGON();
 		break;
-	case 'o':
-		outfile = EARGF(usage());
-		break;
 	case 'w':
 		warnings = 1;
 		break;
@@ -91,9 +80,6 @@ main(int argc, char *argv[])
 
 	if (argc > 1)
 		usage();
-
-	if (outfile && !freopen(outfile, "w", stdout))
-		die("error opening output: %s", strerror(errno));
 
 	for (i = 0; i < uflags.n; ++i)
 		undefmacro(uflags.s[i]);

@@ -478,7 +478,7 @@ extern int lexmode, namespace;
 extern int onlycpp, onlyheader;
 extern unsigned curctx;
 extern Symbol *curfun, *zero, *one;
-extern char *infile, *outfile;
+extern char *infile;
 extern unsigned lineno;
 extern char filenam[FILENAME_MAX];
 
