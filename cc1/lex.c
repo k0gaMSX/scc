@@ -90,7 +90,9 @@ int
 addinput(char *fname, Symbol *hide, char *buffer)
 {
 	FILE *fp;
+	char *extp;
 	unsigned flags;
+	size_t infileln;
 	Input *newip, *curip = input;
 
 	if (hide) {
@@ -105,8 +107,13 @@ addinput(char *fname, Symbol *hide, char *buffer)
 		if ((fp = fopen(fname, "r")) == NULL)
 			return 0;
 		flags = IFILE;
-		if (curip && onlyheader)
-			printf("%s: %s\n", infile, fname);
+		if (curip && onlyheader) {
+			infileln = strlen(infile);
+			if (extp = strrchr(infile, '.'))
+				infileln -= strlen(extp);
+			printf("%.*s.o: %s %s\n",
+			       infileln, infile, infile, fname);
+		}
 	} else {
 		/* reading from stdin */
 		fp = stdin;
