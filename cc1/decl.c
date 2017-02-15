@@ -873,10 +873,8 @@ decl(void)
 		for (p = sym->u.pars;  p && *p; ++p)
 			(*p)->flags |= SUSED;
 		popctx();
-		expect(';');
-		free(sym->u.pars);
-		sym->u.pars = NULL;
 		curfun = ocurfun;
+		expect(';');
 		return;
 	}
 	if (sym->type->prop & TK_R) {
@@ -901,8 +899,6 @@ decl(void)
 	compound(NULL, NULL, NULL);
 	popctx();
 	emit(OEFUN, NULL);
-	free(sym->u.pars);
-	sym->u.pars = NULL;
 	flushtypes();
 	curfun = ocurfun;
 }
