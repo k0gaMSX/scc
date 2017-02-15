@@ -67,7 +67,7 @@ enum {
 };
 
 /* type constructors */
-enum {
+enum typeop {
 	FTN = 1,
 	PTR,
 	ARY,
@@ -75,7 +75,7 @@ enum {
 };
 
 /* namespaces */
-enum {
+enum namespaces {
 	NS_DUMMY,
 	NS_IDEN,
 	NS_TAG,
