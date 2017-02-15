@@ -218,5 +218,5 @@ iarch(void)
 int
 valid_va_list(Type *tp)
 {
-	return tp->op == PTR && tp->type == va_type;
+	return tp->op == PTR && eqtype(tp->type, va_type, 1);
 }
