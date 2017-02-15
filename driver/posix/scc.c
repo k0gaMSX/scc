@@ -7,6 +7,7 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
 #include <unistd.h>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <signal.h>
 #include <stdio.h>
@@ -55,6 +56,7 @@ static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
 static int Mflag, Eflag, Sflag, cflag, kflag, sflag;
+static int devnullfd;
 
 extern int failure;
 
@@ -246,6 +248,8 @@ spawn(int tool)
 			dup2(t->out, 1);
 		if (t->in > -1)
 			dup2(t->in, 0);
+		if (tool != CC1)
+			dup2(devnullfd, 2);
 		execvp(t->cmd, t->args.s);
 		fprintf(stderr, "scc: execvp %s: %s\n",
 		        t->cmd, strerror(errno));
@@ -506,6 +510,9 @@ operand:
 	if (!(tmpdir = getenv("TMPDIR")) || !tmpdir[0])
 		tmpdir = ".";
 	tmpdirln = strlen(tmpdir);
+
+	if ((devnullfd = open("/dev/null", O_WRONLY)) < 0)
+		fputs("scc: could not open /dev/null\n", stderr);
 
 	build(&linkchain, (link = !(Mflag || Eflag || Sflag || cflag)));
 
