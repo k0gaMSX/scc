@@ -10,7 +10,6 @@ static char sccsid[] = "@(#) ./cc2/parser.c";
 
 #include "cc2.h"
 
-#define MAXLINE     200
 #define STACKSIZ     50
 
 extern Type int8type, int16type, int32type, int64type,
@@ -311,7 +310,7 @@ eval(char *tok)
 static int
 nextline(void)
 {
-	char line[MAXLINE];
+	static char line[LINESIZ];
 	size_t len;
 	int c;
 	void (*fun)(void);
