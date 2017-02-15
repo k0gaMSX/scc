@@ -353,7 +353,7 @@ writeout(void)
 			break;
 		printf("%s%s %s.val", sep, size2stack(&p->type), symname(p));
 	}
-	puts(")\n{");
+	printf("%s)\n{\n", (curfun->type.flags&ELLIPS) ? ", ..." : "");
 
 	/* emit assembler instructions */
 	for (pc = prog; pc; pc = pc->next) {

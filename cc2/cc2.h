@@ -13,6 +13,7 @@ enum tflags {
 	FUNF    =     1 << 5,  /* function */
 	PARF    =     1 << 6,  /* parameter */
 	INITF   =     1 << 7,  /* initializer flag */
+	ELLIPS  =     1 << 8,  /* vararg function */
 };
 
 enum sclass {
@@ -150,7 +151,7 @@ typedef struct inst Inst;
 struct type {
 	unsigned long size;
 	unsigned long align;
-	char flags;
+	short flags;
 };
 
 struct symbol {

@@ -19,8 +19,11 @@ extern Type int8type, int16type, int32type, int64type,
             booltype,
             ptrtype,
             voidtype,
-            elipsistype,
             arg_type;
+
+Type funetype = {
+	.flags = FUNF | ELLIPS
+};
 
 Type funtype = {
 	.flags = FUNF
@@ -78,7 +81,7 @@ static struct decoc {
 	['0']   = {     NULL,    type, .u.arg =    &voidtype},
 	['B']   = {     NULL,    type, .u.arg =    &booltype},
 	['P']   = {     NULL,    type, .u.arg =     &ptrtype},
-	['E']   = {     NULL,    type, .u.arg = &elipsistype},
+	['E']   = {     NULL,    type, .u.arg =    &funetype},
 	['1']	= {     NULL,    type, .u.arg =    &arg_type},
 
 	['F']   = {     NULL,    type, .u.arg =     &funtype},

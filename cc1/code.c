@@ -251,7 +251,10 @@ emitsym(unsigned op, void *arg)
 static void
 emitletter(Type *tp)
 {
-	putc(tp->letter, outfp);
+	int letter;
+
+	letter = (tp->prop&TELLIPSIS) ? 'E' : tp->letter;
+	putc(letter, outfp);
 	switch (tp->op) {
 	case ARY:
 	case STRUCT:
