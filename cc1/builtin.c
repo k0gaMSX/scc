@@ -58,21 +58,19 @@ static Node *
 builtin_va_start(Symbol *sym)
 {
 	Node *np, *ap, *last;
-	Symbol **p, *lastsym;
+	Symbol **p;
 	Type *tp;
 
 	ap = assign();
 	expect(',');
-	if (yytoken != IDEN)
+	last = assign();
+	if (last->op != OSYM)
 		goto error;
-	lastsym = yylval.sym;
-	last = varnode(lastsym);
-	next();
 
-	if (!valid_va_list(ap->type) || !(lastsym->flags&SDECLARED))
+	if (!valid_va_list(ap->type) || !(last->sym->flags&SDECLARED))
 		 goto error;
 
-	for (p = curfun->u.pars; p && *p != lastsym; ++p)
+	for (p = curfun->u.pars; p && *p != last->sym; ++p)
 		/* nothing */;
 	if (!p || *p == NULL || p[1] == NULL || p[1]->type != ellipsistype)
 		warn("second parameter of 'va_start' not last named argument");
