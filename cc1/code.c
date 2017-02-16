@@ -317,7 +317,7 @@ emitstring(Symbol *sym, Type *tp)
 	lim = &sym->u.s[tp->n.elem];
 	while (bp < lim) {
 		s = bp;
-		while (isprint(*bp) && bp < lim)
+		while (bp < lim && isprint(*bp))
 			++bp;
 		if ((n = bp - s) > 1)
 			fprintf(outfp, "\t#\"%.*s\n", n, s);
@@ -329,7 +329,7 @@ emitstring(Symbol *sym, Type *tp)
 			fprintf(outfp,
 			        "\t#%c%02X\n",
 			        chartype->letter, (*bp++) & 0xFF);
-		} while (!isprint(*bp) && bp < lim);
+		} while (bp < lim && !isprint(*bp));
 	}
 }
 
