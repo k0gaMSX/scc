@@ -29,16 +29,6 @@ optm_dep(Node *np)
 		if (!op || op == ONOP || op == OBRANCH || (op != ORET && op != OJMP))
 			addstmt(newnode(ORET), KEEPCUR);
 		break;
-	case ONOP:
-		if (next->op == ONOP) {
-			sym = np->u.sym;
-			osym = next->u.sym;
-			osym->id = sym->id;
-			osym->numid = sym->numid;
-			osym->u.stmt = sym->u.stmt;
-			return NULL;
-		}
-		break;
 	case OBRANCH:
 		if (!next->label) {
 			sym = getsym(TMPSYM);
