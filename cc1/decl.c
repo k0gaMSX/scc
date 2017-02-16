@@ -166,11 +166,7 @@ parameter(struct decl *dcl)
 
 	switch (tp->op) {
 	case VOID:
-		if (n != 0 || (funtp->prop & TK_R)) {
-			errorp("incorrect void parameter");
-			return NULL;
-		}
-		funtp->n.elem = -1;
+		funtp->n.elem = 1;
 		if (dcl->sclass)
 			errorp("void as unique parameter may not be qualified");
 		return NULL;
@@ -246,41 +242,30 @@ ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 {
 	int npars = 0;
 	Symbol *sym;
-	int toomany = 0, toovoid = 0;
+	int toomany = 0, voidparam = 0;
 
 	do {
-		if (npars == -1 && !toovoid) {
-			errorp("'void' must be the only parameter");
-			toovoid = 1;
-		}
+		++npars;
 		if (accept(ELLIPSIS)) {
-			if (npars == 0)
+			if (npars < 2)
 				errorp("a named argument is requiered before '...'");
-			++npars;
 			*syms = NULL;
 			*types++ = ellipsistype;
-			break;
-		}
-		if ((sym = dodcl(NOREP, parameter, NS_IDEN, tp)) == NULL)
-			continue;
-		if (tp->n.elem == -1) {
-			npars = -1;
-			continue;
-		}
-		if (npars < NR_FUNPARAM) {
+		} else if ((sym = dodcl(NOREP, parameter, NS_IDEN, tp)) == NULL) {
+			if (tp->n.elem == 1)
+				voidparam = 1;
+		} else if (npars < NR_FUNPARAM) {
 			*syms++ = sym;
 			*types++ = sym->type;
-			++npars;
-			continue;
-		}
-		if (!toomany) {
+		} else if (!toomany) {
 			errorp("too many parameters in function definition");
 			toomany = 1;
 		}
+		if (npars == 2 && voidparam)
+			errorp("'void' must be the only parameter");
 	} while (accept(','));
 
-	*nsyms = npars;
-	*ntypes = npars;
+	*nsyms = *ntypes = voidparam ? 0 : npars;
 }
 
 static void
