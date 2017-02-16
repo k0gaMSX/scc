@@ -351,6 +351,7 @@ eqtype(Type *tp1, Type *tp2, int equiv)
 {
 	TINT n;
 	Type **p1, **p2;
+	Symbol **s1, **s2;
 
 	if (tp1 == tp2)
 		return 1;
@@ -362,6 +363,20 @@ eqtype(Type *tp1, Type *tp2, int equiv)
 	switch (tp1->op) {
 	case UNION:
 	case STRUCT:
+		if (tp1->letter != tp2->letter)
+			return 0;
+		if (tp1->tag->name || tp2->tag->name)
+			return tp1->tag == tp2->tag;
+		if (tp1->n.elem != tp2->n.elem)
+			return 0;
+		s1 = tp1->p.fields, s2 = tp2->p.fields;
+		for (n = tp1->n.elem; n > 0; --n, ++s1, ++s2) {
+			if (strcmp((*s1)->name, (*s2)->name))
+				return 0;
+			if (!eqtype((*s1)->type, (*s2)->type, equiv))
+				return 0;
+		}
+		return 1;
 	case FTN:
 		if (tp1->n.elem != tp2->n.elem)
 			return 0;
