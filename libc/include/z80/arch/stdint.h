@@ -1,6 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-#ifndef _STDINT_H_
-#define _STDINT_H_
 
 typedef signed char int8_t;
 typedef int int16_t;
@@ -37,5 +35,3 @@ typedef unsigned uintptr_t;
 
 typedef long long intmax_t;
 typedef unsigned long long uintmax_t;
-
-#endif
