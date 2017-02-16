@@ -5,9 +5,9 @@
 void *
 memset(void *s, int c, size_t n)
 {
-	char *bp;
+	char *m = s;
 
-	for (bp = s; n-- > 0; *bp++ = c)
-		/* nothing */;
+	while (n-- > 0)
+		*m++ = c;
 	return s;
 }
