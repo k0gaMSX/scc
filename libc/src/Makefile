@@ -1,7 +1,7 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
-LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o
+LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o
 
 all: libc.a
 
