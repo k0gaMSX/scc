@@ -5,7 +5,7 @@ LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o
 
 all: libc.a
 
-libc.a: $(LIBCOJB)
+libc.a: $(LIBCOBJ)
 	ar $(ARFLAGS) $@ $?
 	ranlib $@
 
