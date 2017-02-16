@@ -5,7 +5,8 @@
 void *
 memcpy(void *dst, const void *src, size_t n)
 {
-	char *s1 = dst, *s2 = (char *) src;
+	char *s1 = dst;
+	const char *s2 = src;
 
 	while (n-- > 0)
 		*s1++ = *s2++;
