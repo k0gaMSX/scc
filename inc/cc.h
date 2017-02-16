@@ -1,8 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include <stddef.h>
 
-#ifndef NDEBUG
 extern int debug;
+
+#ifndef NDEBUG
 #define DBG(...) dbg(__VA_ARGS__)
 #define DBGON() (debug = 1)
 #else

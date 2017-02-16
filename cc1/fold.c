@@ -643,7 +643,6 @@ Node *
 simplify(Node *np)
 {
 	Node *p, *l, *r;
-	extern int debug;
 
 	if (!np)
 		return NULL;
