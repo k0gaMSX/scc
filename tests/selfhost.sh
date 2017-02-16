@@ -10,13 +10,13 @@ set -u
 unset SCCEXECPATH
 
 selfhostedobj=\
-"lib/debug.o
- lib/die.o
- lib/newitem.o
- lib/xstrdup.o
+"lib/xstrdup.o
  lib/xmalloc.o
  lib/xcalloc.o
  lib/xrealloc.o"
+#lib/newitem.o
+#lib/debug.o
+#lib/die.o
 #driver/posix/scc.o
 #cc1/error.o
 #cc1/stmt.o
@@ -58,7 +58,7 @@ make clean
 make PREFIX="$boostrapdir" install
 export PATH="$boostrapdir/bin:$PATH"
 
-rm bin/scc bin/cc*
+rm lib/libcc.a bin/scc bin/cc*
 rm $selfhostedobj
 
 make CC=scc tests
