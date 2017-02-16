@@ -2,18 +2,7 @@
 #ifndef _STDLIB_H
 #define _STDLIB_H
 
-#ifndef _SIZET
-typedef unsigned long size_t;
-#define _SIZET
-#endif
-
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
-#define EXIT_FAILURE 1
-#define EXIT_SUCCESS 0
-#define RAND_MAX     32767
+#include <arch/stdlib.h>
 
 extern double atof(const char *ptr);
 extern int atoi(const char *s);
