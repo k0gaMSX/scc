@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include <sys/types.h>
+#include <stddef.h>
 
 #ifndef NDEBUG
 extern int debug;
