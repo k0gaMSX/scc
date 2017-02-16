@@ -2,29 +2,16 @@
 #ifndef _STDIO_H
 #define _STDIO_H
 
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
-#ifndef _SIZET
-typedef unsigned size_t;
-#define _SIZET
-#endif
+#include <arch/stdio.h>
 
 #define EOF            -1
-#define BUFSIZ        512
-#define FILENAME_MAX  256
-#define FOPEN_MAX      16
 #define _IOFBF          0
 #define _IOLBF          1
 #define _IONBF          2
-#define L_tmpnam      256
 #define SEEK_CUR        0
 #define SEEK_END        1
 #define SEEK_SET        2
-#define TMP_MAX        25
 
-typedef struct _FILE FILE;
 
 extern FILE *fopen(const char *, const char *mode);
 extern FILE *freopen(const char *path, const char *mode, FILE *fp);
