@@ -1,7 +1,7 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
-LIBCOBJ = assert.o
+LIBCOBJ = assert.o strcpy.o
 
 libc.a: $(LIBCOJB)
 	ar $(ARFLAGS) $@ $?
