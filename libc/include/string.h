@@ -2,13 +2,7 @@
 #ifndef _STRING_H
 #define _STRING_H
 
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
-#ifndef _SIZET
-typedef unsigned size_t;
-#endif
+#include <arch/string.h>
 
 extern char *strcpy(char *dst, const char *src);
 extern char *strncpy(char *dst, const char *src, size_t n);
