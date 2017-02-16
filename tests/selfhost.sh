@@ -59,9 +59,6 @@ make PREFIX="$boostrapdir" install
 export PATH="$boostrapdir/bin:$PATH"
 
 rm bin/scc bin/cc*
-for o in $selfhostedobj
-do
-	rm $o
-done
+rm $selfhostedobj
 
 make CC=scc tests
