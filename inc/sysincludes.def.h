@@ -1,7 +1,6 @@
 char *sysincludes[] = {
 	PREFIX "/include/scc/" ,
-	PREFIX "/include/scc/" ARCH "/",
-	PREFIX "/include/scc/" ARCH "/arch/",
+	PREFIX "/include/scc/bits/" ARCH "/",
 	/* configure below your standard sys include paths */
 	PREFIX "/include/",
 	PREFIX "/local/include/",
