@@ -275,6 +275,8 @@ toolfor(char *file)
 			return AS;
 		if (!strcmp(dot, ".o"))
 			return LD;
+		if (!strcmp(dot, ".a"))
+			return LD;
 	}
 
 	die("scc: do not recognize filetype of %s", file);
