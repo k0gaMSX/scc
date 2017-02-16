@@ -2,7 +2,7 @@
 .POSIX:
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
-          strrchr.o strcat.o strncpy.o
+          strrchr.o strcat.o strncpy.o strncat.o
 
 all: libc.a
 
