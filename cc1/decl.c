@@ -188,7 +188,7 @@ parameter(struct decl *dcl)
 			return NULL;
 		}
 		if (p && (funtp->prop & TK_R)) {
-			errorp("declaration for parameter ‘%s’ but no such parameter",
+			errorp("declaration for parameter '%s' but no such parameter",
 			       sym->name);
 			return NULL;
 		}
