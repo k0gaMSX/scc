@@ -5,10 +5,10 @@
 char *
 strcat(char *dst, const char *src)
 {
-	char *ret;
+	char *ret = dst;
 
-	for (ret = dst; *dst; ++dst)
-		/* nothing */;
+	while (*dst)
+		++dst;
 	while (*dst++ = *src++)
 		/* nothing */;
 	return ret;
