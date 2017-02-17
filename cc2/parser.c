@@ -253,10 +253,11 @@ assign(char *token, union tokenop u)
 	Node *np = newnode(u.op);
 
 	switch (subop = *++token) {
-	case '/':
-	case '%':
 	case '+':
 	case '-':
+	case '*':
+	case '%':
+	case '/':
 	case 'l':
 	case 'r':
 	case '&':

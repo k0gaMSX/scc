@@ -9,9 +9,12 @@ main()
 	x += 2;
 	if (x != 4)
 		return 1;
-	x -= 3;
-	if (x != 1)
+	x -= 1;
+	if (x != 3)
 		return 2;
+	x *= 2;
+	if (x != 6)
+		return 3;
 		
 	return 0;
 }
