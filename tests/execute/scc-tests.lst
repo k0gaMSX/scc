@@ -102,3 +102,4 @@
 0109-struct.c
 0110-typedefcast.c
 0111-doubledef.c
+0112-cond.c

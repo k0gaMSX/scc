@@ -280,6 +280,32 @@ assign(Type *tp, Node *to, Node *from)
 	return from;
 }
 
+static Node *
+copy(Type *tp, Node *to, Node *from)
+{
+	int op;
+
+	switch (tp->size) {
+	case 1:
+		op = ASCOPYB;
+		break;
+	case 2:
+		op = ASCOPYH;
+		break;
+	case 4:
+		op = (tp->flags & FLOATF) ? ASCOPYS : ASCOPYW;
+		break;
+	case 8:
+		op = (tp->flags & FLOATF) ? ASCOPYD : ASCOPYL;
+		break;
+	default:
+		/* TODO: Need to handle the general case */
+		abort();
+	}
+	code(op, to, from, NULL);
+	return from;
+}
+
 /* TODO: Do field() transformation in sethi */
 
 static Node *
@@ -368,11 +394,11 @@ ternary(Node *np, Node *ret)
 	code(ASBRANCH, rhs(np->left, &aux1), &ifyes, &ifno);
 
 	setlabel(ifyes.u.sym);
-	assign(&ret->type, ret, rhs(colon->left, &aux2));
+	copy(&ret->type, ret, rhs(colon->left, &aux2));
 	code(ASJMP, NULL, &phi, NULL);
 
 	setlabel(ifno.u.sym);
-	assign(&ret->type, ret, rhs(colon->right, &aux3));
+	copy(&ret->type, ret, rhs(colon->right, &aux3));
 	setlabel(phi.u.sym);
 
 	return ret;
