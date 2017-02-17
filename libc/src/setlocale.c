@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <locale.h>
+#include <stddef.h>
 
 char *
 setlocale(int category, const char *locale)
