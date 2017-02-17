@@ -256,7 +256,7 @@ deftype(Type *tp)
 }
 
 static Type *
-newtype(Type *base, int defined)
+newtype(Type *base)
 {
 	Type *tp;
 
@@ -269,7 +269,7 @@ newtype(Type *base, int defined)
 		tp->next = localtypes;
 		localtypes = tp;
 	}
-	if (defined)
+	if (tp->prop & TDEFINED)
 		deftype(tp);
 	return tp;
 }
@@ -296,7 +296,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 			type.prop |= TDEFINED;
 		break;
 	case KRFTN:
-		type.prop |= TK_R;
+		type.prop |= TDEFINED | TK_R;
 		type.op = FTN;
 		type.letter = L_FUNCTION;
 		break;
@@ -304,9 +304,11 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		if (nelem > 0 && pars[nelem-1] == ellipsistype)
 			type.prop |= TELLIPSIS;
 		type.letter = L_FUNCTION;
+		type.prop |= TDEFINED;
 		break;
 	case PTR:
 	        type.letter = L_POINTER;
+		type.prop |= TDEFINED;
 		break;
 	case ENUM:
 		type.letter = inttype->letter;
@@ -321,7 +323,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		type.letter = L_UNION;
 		type.prop |= TAGGREG;
 	create_type:
-		return newtype(&type, 0);
+		return newtype(&type);
 	default:
 		abort();
 	}
@@ -339,7 +341,7 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 		}
 	}
 
-	bp = newtype(&type, 1);
+	bp = newtype(&type);
 	bp->h_next = *tbl;
 	*tbl = bp;
 

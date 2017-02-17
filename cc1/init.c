@@ -277,7 +277,7 @@ initlist(Type *tp)
 
 	if (tp->op == ARY && !(tp->prop & TDEFINED)) {
 		tp->n.elem = in.max;
-		tp->prop |= TDEFINED;
+		deftype(tp);
 	}
 	if (tp->op == ARY || tp->op == STRUCT)
 		in.max = tp->n.elem;
