@@ -3,7 +3,8 @@
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           strrchr.o strcat.o strncpy.o strncat.o strcoll.o \
-          memset.o memcpy.o memmove.o memcmp.o memchr.o
+          memset.o memcpy.o memmove.o memcmp.o memchr.o \
+          setlocale.o
 
 all: libc.a
 
