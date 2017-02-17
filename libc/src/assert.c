@@ -4,10 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void __assert(int status, char *exp, char *file, long line)
+void __assert(char *exp, char *file, long line)
 {
-	if (status)
-		return;
 	fprintf(stderr, "%s:%ld: assertion failed '%s'\n", file, line, exp);
 	abort();
 }

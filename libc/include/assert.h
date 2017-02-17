@@ -2,10 +2,10 @@
 #ifndef _ASSERT_H
 #define _ASSERT_H
 
-void __assert(int status, char *exp, char *file, long line);
+void __assert(char *exp, char *file, long line);
 
 #ifndef NDEBUG
-# define assert(exp) __assert(exp, #exp, __FILE__, __LINE__)
+# define assert(exp) ((exp) ? (void) 0 : __assert(#exp, __FILE__, __LINE__))
 #else
 # define assert(exp) ((void)0)
 #endif
