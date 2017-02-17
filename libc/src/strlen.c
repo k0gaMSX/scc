@@ -5,9 +5,9 @@
 size_t
 strlen(const char *s)
 {
-	const char *t;
+	size_t n = 0;
 
-	for (t = s; *t; ++t)
-		/* nothing */;
-	return t - s;
+	while (*s++)
+		++n;
+	return n;
 }
