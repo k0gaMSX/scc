@@ -5,11 +5,11 @@
 char *
 strrchr(const char *s, int c)
 {
-	char *t;
+	const char *t = s;
 
-	for (t = (char *) s; *t; ++t)
-		/* nothing */;
+	while (*t)
+		++t;
 	while (t > s && *t != c)
 		--t;
-	return (*t == c) ? t : NULL;
+	return (*t == c) ? (char *)t : NULL;
 }
