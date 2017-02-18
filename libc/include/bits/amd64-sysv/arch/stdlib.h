@@ -12,3 +12,8 @@ typedef unsigned long size_t;
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
 #define RAND_MAX     32767
+
+#ifndef _WCHAR_T
+typedef int wchar_t;
+#define _WCHAR_T
+#endif
