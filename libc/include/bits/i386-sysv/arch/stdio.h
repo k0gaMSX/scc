@@ -16,3 +16,4 @@ typedef unsigned long size_t;
 #define L_tmpnam      256
 
 typedef struct _FILE FILE;
+typedef long fpos_t;
