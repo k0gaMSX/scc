@@ -55,7 +55,7 @@ static char *arch, *execpath, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
-static int Mflag, Eflag, Sflag, cflag, kflag, sflag;
+static int Mflag, Eflag, Sflag, cflag, dflag, kflag, sflag;
 static int devnullfd;
 
 extern int failure;
@@ -248,7 +248,7 @@ spawn(int tool)
 			dup2(t->out, 1);
 		if (t->in > -1)
 			dup2(t->in, 0);
-		if (tool != CC1)
+		if (!dflag && tool != CC1)
 			dup2(devnullfd, 2);
 		execvp(t->cmd, t->args.s);
 		fprintf(stderr, "scc: execvp %s: %s\n",
@@ -406,13 +406,13 @@ usage(void)
 {
 	die("usage: scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-gksw] [-m arch] [-M|-E|-S] [-o outfile] file...\n"
+	    "           [-dgksw] [-m arch] [-M|-E|-S] [-o outfile] file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-gksw] [-m arch] [-M|-E|-S] -c file...\n"
+	    "           [-dgksw] [-m arch] [-M|-E|-S] -c file...\n"
 	    "       scc [-D def[=val]]... [-U def]... [-I dir]... "
 	    "[-L dir]... [-l dir]...\n"
-	    "           [-gksw] [-m arch] -c -o outfile file");
+	    "           [-dgksw] [-m arch] -c -o outfile file");
 }
 
 int
@@ -462,6 +462,9 @@ main(int argc, char *argv[])
 	case 'c':
 		cflag = 1;
 		break;
+	case 'd':
+		dflag = 1;
+		break;
 	case 'g':
 		addarg(AS, "-g");
 		addarg(LD, "-g");
@@ -507,12 +510,14 @@ operand:
 	    linkchain.n > 1 && cflag && outfile)
 		usage();
 
+	if (dflag) {
+		if ((devnullfd = open("/dev/null", O_WRONLY)) < 0)
+			fputs("scc: could not open /dev/null\n", stderr);
+	}
+
 	if (!(tmpdir = getenv("TMPDIR")) || !tmpdir[0])
 		tmpdir = ".";
 	tmpdirln = strlen(tmpdir);
-
-	if ((devnullfd = open("/dev/null", O_WRONLY)) < 0)
-		fputs("scc: could not open /dev/null\n", stderr);
 
 	build(&linkchain, (link = !(Mflag || Eflag || Sflag || cflag)));
 
