@@ -17,7 +17,7 @@ extern int ispunct(int c);
 extern int tolower(int c);
 extern int toupper(int c);
 
-#ifdef __USE_MACROS 
+#ifdef __USE_MACROS
 
 #define _U	0x01	/* upper */
 #define _L	0x02	/* lower */
@@ -25,13 +25,15 @@ extern int toupper(int c);
 #define _C	0x08	/* cntrl */
 #define _P	0x10	/* punct */
 #define _S	0x20	/* white space (space/lf/tab) */
-#define _X	0x40	/* hex digit */
+#define _X	0x40	/* hex char */
 #define _SP	0x80	/* hard space (0x20) */
+#define _TB	0x100	/* tabulation */
 
 extern unsigned char _ctype[];
 
 #define isalnum(c)  (_ctype[(unsigned char) c] & (_U|_L|_D))
 #define isalpha(c)  (_ctype[(unsigned char) c] & (_U|_L))
+#define isblank(c)  (_ctype[(unsigned char) c] & (_SP|_TB))
 #define iscntrl(c)  (_ctype[(unsigned char) c] & (_C))
 #define isdigit(c)  (_ctype[(unsigned char) c] & (_D))
 #define isgraph(c)  (_ctype[(unsigned char) c] & (_P|_U|_L|_D))
@@ -45,6 +47,5 @@ extern unsigned char _ctype[];
 #define isascii(c) (((unsigned) c)<=0x7f)
 
 #endif
-
 
 #endif
