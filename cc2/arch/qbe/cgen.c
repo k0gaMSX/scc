@@ -189,7 +189,7 @@ cast(Type *td, Node *ns, Node *nd)
 		 * unsigned version of operations are always +1 the
 		 * signed version
 		 */
-		op += (td->flags & SIGNF) == 0;
+		op += (ts->flags & SIGNF) == 0;
 	} else if (d_isint) {
 		/* conversion from float to int */
 		switch (ts->size) {
