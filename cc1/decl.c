@@ -761,7 +761,7 @@ identifier(struct decl *dcl)
 	if (sym == NULL) {
 		sym = redcl(dcl->sym, tp, dcl->pars, sclass);
 	} else {
-		short flags = sym->flags;
+		int flags = sym->flags;
 
 		sym->type = tp;
 		sym->u.pars = dcl->pars;
