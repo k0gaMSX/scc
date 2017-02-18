@@ -400,7 +400,7 @@ foldunary(Node *np, Node *l)
 			return NULL;
 		break;
 	case OPTR:
-		if (op != OADDR)
+		if (op != OADDR || np->type != l->left->type)
 			return NULL;
 		break;
 	case OADDR:
