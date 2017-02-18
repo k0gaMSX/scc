@@ -4,6 +4,18 @@
 
 #include <arch/stdlib.h>
 
+typedef struct {
+	int quot, rem;
+} div_t;
+
+typedef struct {
+	long quot, rem;
+} ldiv_t;
+
+typedef struct {
+	long long quot, rem;
+} lldiv_t;
+
 extern double atof(const char *nptr);
 extern int atoi(const char *nptr);
 extern long int atol(const char *nptr);
