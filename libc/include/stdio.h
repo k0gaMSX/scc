@@ -12,6 +12,24 @@
 #define SEEK_END        1
 #define SEEK_SET        2
 
+typedef struct {
+	int fd;        	/* file descriptor */
+	char flags;     /* bits for must free buffer on close, line-buffered */
+	char state;     /* last operation was read, write, position, error, eof */
+	char *buf;      /* pointer to i/o buffer */
+	char *rp;       /* read pointer (or write end-of-buffer) */
+	char *wp;       /* write pointer (or read end-of-buffer) */
+	char *lp;       /* actual write pointer used when line-buffering */
+	size_t len;    /* actual length of buffer */
+	char unbuf[1];  /* tiny buffer for unbuffered io */
+} FILE;
+
+extern FILE _IO_stream[FOPEN_MAX];
+
+#define	stderr	(&_IO_stream[2])
+#define	stdin	(&_IO_stream[0])
+#define	stdout	(&_IO_stream[1])
+
 extern int remove(const char *filename);
 extern int rename(const char *old, const char *new);
 extern FILE *tmpfile(void);

@@ -15,5 +15,4 @@ typedef unsigned size_t;
 #define TMP_MAX        25
 #define L_tmpnam      256
 
-typedef struct _FILE FILE;
 typedef long fpos_t;
