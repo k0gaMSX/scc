@@ -20,12 +20,12 @@ static Symbol *htabcpp[NR_SYM_HASH];
 
 #ifndef NDEBUG
 void
-dumpstab(char *msg)
+dumpstab(Symbol **tbl, char *msg)
 {
 	Symbol **bp, *sym;
 
 	fprintf(stderr, "Symbol Table dump at ctx=%u\n%s\n", curctx, msg);
-	for (bp = htab; bp < &htab[NR_SYM_HASH]; ++bp) {
+	for (bp = tbl; bp < &tbl[NR_SYM_HASH]; ++bp) {
 		if (*bp == NULL)
 			continue;
 		fprintf(stderr, "%d", (int) (bp - htab));
@@ -36,6 +36,12 @@ dumpstab(char *msg)
 	}
 	fputs("head:", stderr);
 	for (sym = head; sym; sym = sym->next) {
+		fprintf(stderr, "->[%d,%d:'%s'=%p]",
+		        sym->ns, sym->ctx,
+		        (sym->name) ? sym->name : "", (void *) sym);
+	}
+	fputs("\nlabels:", stderr);
+	for (sym = labels; sym; sym = sym->next) {
 		fprintf(stderr, "->[%d,%d:'%s'=%p]",
 		        sym->ns, sym->ctx,
 		        (sym->name) ? sym->name : "", (void *) sym);

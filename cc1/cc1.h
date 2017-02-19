@@ -389,7 +389,7 @@ extern void typesize(Type *tp);
 extern void flushtypes(void);
 
 /* symbol.c */
-extern void dumpstab(char *msg);
+extern void dumpstab(Symbol **tbl, char *msg);
 extern Symbol *lookup(int ns, char *name, int alloc);
 extern Symbol *nextsym(Symbol *sym, int ns);
 extern Symbol *install(int ns, Symbol *sym);
