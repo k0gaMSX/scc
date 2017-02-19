@@ -187,7 +187,7 @@ newsym(int ns, char *name)
 	sym->id = 0;
 	sym->hide = 0;
 	sym->ns = ns;
-	sym->ctx = (ns == NS_CPP) ? UCHAR_MAX : curctx;
+	sym->ctx = curctx;
 	sym->token = IDEN;
 	sym->flags = 0;
 	sym->u.s = NULL;
