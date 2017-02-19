@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc1/types.c";
+#include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -410,7 +411,7 @@ eqtype(Type *tp1, Type *tp2, int equiv)
 void
 flushtypes(void)
 {
-	Type *tp, *next;
+	Type *tp, *next, **h;
 
 	for (tp = localtypes; tp; tp = next) {
 		next = tp->next;
@@ -423,7 +424,9 @@ flushtypes(void)
 			 * we do know that tp is always the head
 			 * of the collision list
 			 */
-			typetab[HASH(tp)] = tp->h_next;
+			h = &typetab[HASH(tp)];
+			assert(*h == tp);
+			*h = tp->h_next;
 		case STRUCT:
 		case UNION:
 		case ENUM:

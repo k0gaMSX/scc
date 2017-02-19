@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc1/symbol.c";
+#include <assert.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,6 +73,7 @@ unlinkhash(Symbol *sym)
 	if ((sym->flags & SDECLARED) == 0)
 		return;
 	h = hash(sym->name, sym->ns);
+	assert(*h == sym);
 	*h = sym->hash;
 }
 
