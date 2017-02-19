@@ -51,14 +51,13 @@ dumpstab(Symbol **tbl, char *msg)
 #endif
 
 static Symbol **
-hash(const char *s, int ns)
+hash(char *s, int ns)
 {
 	unsigned c, h;
 	Symbol **tab;
 
-
 	for (h = 0; c = *s; ++s)
-		h ^= 33 * c;
+		h = h*33 ^ c;
 	h &= NR_SYM_HASH-1;
 
 	tab = (ns == NS_CPP) ? htabcpp : htab;
