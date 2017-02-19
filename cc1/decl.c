@@ -17,7 +17,7 @@ static char sccsid[] = "@(#) ./cc1/decl.c";
 
 
 struct declarators {
-	unsigned char nr, ns;
+	unsigned char nr;
 	struct declarator {
 		unsigned char op;
 		TINT  nelem;
@@ -272,13 +272,10 @@ static void
 fundcl(struct declarators *dp)
 {
 	Type *types[NR_FUNPARAM], type;
-	Symbol *sym, *syms[NR_FUNPARAM+1], **pars;
+	Symbol *syms[NR_FUNPARAM+1], **pars;
 	int k_r, ntypes, nsyms;
 	size_t size;
 
-	sym = dp->d[0].sym;
-	if ((sym->flags&SDECLARED) == 0)
-		install(dp->ns, sym);
 	pushctx();
 	expect('(');
 	type.n.elem = 0;
@@ -751,23 +748,14 @@ identifier(struct decl *dcl)
 		errorp("declared variable '%s' of incomplete type", name);
 	}
 
-	if (tp->op != FTN) {
-		sym = install(NS_IDEN, sym);
-	} else {
+	sym = install(NS_IDEN, sym);
+	if (tp->op == FTN) {
 		if (sclass == NOSCLASS)
 			sclass = EXTERN;
 		if (!strcmp(name, "main") && tp->type != inttype) {
 			errorp("main shall be defined with a return type of int");
 			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
 		}
-		/*
-		 * function identifiers are installed in fundcl() because
-		 * we have to add a context for the parameters, and if we
-		 * delay the install until here then we will install the
-		 * symbol of the function after the parameters.
-		 */
-		if ((sym->flags&SEMITTED) != 0)
-			sym = NULL;
 	}
 
 	if (sym == NULL) {
@@ -829,7 +817,6 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 
 	do {
 		stack.nr = 0;
-		stack.ns = ns;
 		dcl.pars = NULL;
 		dcl.type = base;
 
@@ -865,8 +852,7 @@ decl(void)
 	 * against GLOBALCTX+1
 	 */
 	if (curctx != GLOBALCTX+1 || yytoken == ';') {
-		if (!(sym->flags & SEMITTED))
-			emit(ODECL, sym);
+		emit(ODECL, sym);
 		/*
 		 * avoid non used warnings in prototypes
 		 */
