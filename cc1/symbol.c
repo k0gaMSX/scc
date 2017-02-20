@@ -88,7 +88,9 @@ unlinkhash(Symbol *sym)
 	if ((sym->flags & SDECLARED) == 0)
 		return;
 	h = hash(sym->name, sym->ns);
-	assert(*h == sym);
+	assert(sym->ns == NS_CPP || *h == sym);
+	while (*h != sym)
+		h = &(*h)->hash;
 	*h = sym->hash;
 }
 
