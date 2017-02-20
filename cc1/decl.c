@@ -703,7 +703,8 @@ redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
 		break;
 	case NOSCLASS:
 		if ((flags & SPRIVATE) == 0) {
-			flags &= ~SEXTERN;
+			if (flags & SEXTERN)
+				flags &= ~(SEXTERN|SEMITTED);
 			flags |= SGLOBAL;
 			break;
 		}
