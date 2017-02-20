@@ -11,13 +11,16 @@ static char sccsid[] = "@(#) ./cc1/symbol.c";
 #include "cc1.h"
 
 #define NR_SYM_HASH 64
+#define NR_CPP_HASH 32
+#define NR_LBL_HASH 16
 
 unsigned curctx;
 static unsigned short counterid;
 
 static Symbol *head, *labels;
 static Symbol *htab[NR_SYM_HASH];
-static Symbol *htabcpp[NR_SYM_HASH];
+static Symbol *htabcpp[NR_CPP_HASH];
+static Symbol *htablbl[NR_LBL_HASH];
 
 #ifndef NDEBUG
 void
@@ -54,15 +57,27 @@ dumpstab(Symbol **tbl, char *msg)
 static Symbol **
 hash(char *s, int ns)
 {
-	unsigned c, h;
+	unsigned c, h, size;
 	Symbol **tab;
 
 	for (h = 0; c = *s; ++s)
 		h = h*33 ^ c;
-	h &= NR_SYM_HASH-1;
 
-	tab = (ns == NS_CPP) ? htabcpp : htab;
-	return &tab[h];
+	switch (ns) {
+	case NS_CPP:
+		tab = htabcpp;
+		size = NR_CPP_HASH-1;
+		break;
+	case NS_LABEL:
+		tab = htablbl;
+		size = NR_LBL_HASH-1;
+		break;
+	default:
+		tab = htab;
+		size = NR_SYM_HASH-1;
+		break;
+	}
+	return &tab[h & size];
 }
 
 static void
