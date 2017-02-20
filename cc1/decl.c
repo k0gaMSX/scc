@@ -178,18 +178,17 @@ parameter(struct decl *dcl)
 		return NULL;
 	}
 	if (!empty(sym, tp, 1)) {
-		Symbol *p = install(NS_IDEN, sym);
-		if (!p && !(funtp->prop & TK_R)) {
+		int isdcl = sym->flags&SDECLARED, isk_r = funtp->prop & TK_R;
+		if (isdcl && !isk_r) {
 			errorp("redefinition of parameter '%s'", name);
 			return NULL;
 		}
-		if (p && (funtp->prop & TK_R)) {
+		if (!isdcl && isk_r) {
 			errorp("declaration for parameter '%s' but no such parameter",
 			       sym->name);
 			return NULL;
 		}
-		if (p)
-			sym = p;
+		sym->flags |= SDECLARED;
 	}
 
 	sym->type = tp;
@@ -307,7 +306,7 @@ static void declarator(struct declarators *dp, unsigned ns);
 static void
 directdcl(struct declarators *dp, unsigned ns)
 {
-	Symbol *sym;
+	Symbol *p, *sym;
 	static int nested;
 
 	if (accept('(')) {
@@ -320,8 +319,10 @@ directdcl(struct declarators *dp, unsigned ns)
 	} else {
 		if (yytoken == IDEN || yytoken == TYPEIDEN) {
 			sym = yylval.sym;
-			if (sym->ctx != curctx)
-				sym = newsym(ns, yytext);
+			if (p = install(ns, sym)) {
+				sym = p;
+				sym->flags &= ~SDECLARED;
+			}
 			next();
 		} else {
 			sym = newsym(ns, NULL);
@@ -646,11 +647,11 @@ field(struct decl *dcl)
 	if (err)
 		return sym;
 
-	if ((sym = install(dcl->ns, sym)) == NULL)
+	if (sym->flags & SDECLARED)
 		error("duplicated member '%s'", name);
+	sym->flags |= SFIELD|SDECLARED;
 	sym->type = tp;
 
-	sym->flags |= SFIELD;
 	if (n == NR_FIELDS)
 		error("too many fields in struct/union");
 	DBG("New field '%s' in namespace %d\n", name, structp->ns);
@@ -748,7 +749,6 @@ identifier(struct decl *dcl)
 		errorp("declared variable '%s' of incomplete type", name);
 	}
 
-	sym = install(NS_IDEN, sym);
 	if (tp->op == FTN) {
 		if (sclass == NOSCLASS)
 			sclass = EXTERN;
@@ -758,10 +758,10 @@ identifier(struct decl *dcl)
 		}
 	}
 
-	if (sym == NULL) {
+	if (sym->flags & SDECLARED) {
 		sym = redcl(dcl->sym, tp, dcl->pars, sclass);
 	} else {
-		int flags = sym->flags;
+		int flags = sym->flags | SDECLARED;
 
 		sym->type = tp;
 		sym->u.pars = dcl->pars;
