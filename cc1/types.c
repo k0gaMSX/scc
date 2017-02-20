@@ -265,7 +265,7 @@ newtype(Type *base)
 	*tp = *base;
 	tp->id = newid();
 
-	if (curctx > GLOBALCTX+1) {
+	if (curfun) {
 		/* it is a type defined in the body of a function */
 		tp->next = localtypes;
 		localtypes = tp;
