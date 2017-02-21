@@ -104,3 +104,4 @@
 0111-doubledef.c
 0112-cond.c
 0113-externredecl.c
+0114-shortassig.c
