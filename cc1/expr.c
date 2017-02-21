@@ -351,23 +351,16 @@ arithmetic(int op, Node *lp, Node *rp)
 static Node *
 pcompare(int op, Node *lp, Node *rp)
 {
-	Node *np;
-	int err = 0;
+	Node *np, *p;
 
 	if (lp->type->prop & TINTEGER)
 		XCHG(lp, rp, np);
+	else if (eqtype(lp->type, pvoidtype, 1))
+		XCHG(lp, rp, np);
 
-	if (rp->type->prop & TINTEGER) {
-		if (!cmpnode(rp, 0))
-			err = 1;
-		rp = convert(rp, pvoidtype, 1);
-	} else if (rp->type->op == PTR) {
-		if (!eqtype(lp->type, rp->type, 1))
-			err = 1;
-	} else {
-		err = 1;
-	}
-	if (err)
+	if ((p = convert(rp, lp->type, 0)) != NULL)
+		rp = p;
+	else
 		errorp("incompatible types in comparison");
 	return node(op, inttype, lp, rp);
 }
