@@ -12,7 +12,7 @@ LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
 all: libc.a
 
 libc.a: $(LIBCOBJ)
-	ar $(ARFLAGS) $@ $?
+	$(AR) $(ARFLAGS) $@ $?
 	ranlib $@
 
 clean:
