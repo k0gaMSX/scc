@@ -438,7 +438,7 @@ extern TUINT ones(int nbytes);
 
 /* expr.c */
 extern Node *decay(Node *), *negate(Node *np), *assign(void);
-extern Node *convert(Node *np, Type *tp1, char iscast);
+extern Node *convert(Node *np, Type *tp1, int iscast);
 extern Node *constexpr(void), *condexpr(int neg), *expr(void);
 extern int isnodecmp(int op);
 extern int negop(int op);

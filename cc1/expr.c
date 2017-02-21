@@ -237,7 +237,7 @@ numericaluop(int op, Node *np)
 }
 
 Node *
-convert(Node *np, Type *newtp, char iscast)
+convert(Node *np, Type *newtp, int iscast)
 {
 	Type *oldtp = np->type;
 
