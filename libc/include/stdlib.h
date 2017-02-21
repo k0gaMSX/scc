@@ -4,6 +4,8 @@
 
 #include <arch/stdlib.h>
 
+#define MB_CUR_MAX 1
+
 typedef struct {
 	int quot, rem;
 } div_t;
@@ -25,11 +27,11 @@ extern float strtof(const char * restrict nptr, char ** restrict endptr);
 extern long double strtold(const char * restrict nptr, char ** restrict endptr);
 extern long int strtol(const char * restrict nptr, char ** restrict endptr, int base);
 extern long long int strtoll(const char * restrict nptr, char ** restrict endptr,
-                      int base);
+                             int base);
 extern unsigned long int strtoul(const char * restrict nptr, char ** restrict endptr,
-                          int base);
+                                 int base);
 extern unsigned long long int strtoull(const char * restrict nptr,
-                                char ** restrict endptr, int base);
+                                       char ** restrict endptr, int base);
 extern int rand(void);
 extern void srand(unsigned int seed);
 extern void *calloc(size_t nmemb, size_t size);
@@ -43,9 +45,9 @@ extern void _Exit(int status);
 extern char *getenv(const char *name);
 extern int system(const char *string);
 extern void *bsearch(const void *key, const void *base, size_t nmemb, size_t size,
-              int (*compar)(const void *, const void *));
+                     int (*compar)(const void *, const void *));
 extern void qsort(void *base, size_t nmemb, size_t size,
-           int (*compar)(const void *, const void *));
+                  int (*compar)(const void *, const void *));
 extern int abs(int j);
 extern long int labs(long int j);
 extern long long int llabs(long long int j);
