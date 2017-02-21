@@ -279,6 +279,7 @@ convert(Node *np, Type *newtp, char iscast)
 		default:
 			return NULL;
 		}
+		break;
 	default:
 		return NULL;
 	}
