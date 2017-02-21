@@ -3,7 +3,7 @@
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           strrchr.o strcat.o strncpy.o strncat.o strcoll.o \
-          strxfrm.o \
+          strxfrm.o strtok.o \
           memset.o memcpy.o memmove.o memcmp.o memchr.o \
           isalnum.o isalpha.o isascii.o isblank.o iscntrl.o isdigit.o \
           isgraph.o islower.o isprint.o ispunct.o isspace.o isupper.o \
