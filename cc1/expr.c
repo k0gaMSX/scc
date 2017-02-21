@@ -352,18 +352,18 @@ arithmetic(int op, Node *lp, Node *rp)
 static Node *
 pcompare(int op, Node *lp, Node *rp)
 {
-	Node *np, *p;
+	Node *np;
 
 	if (lp->type->prop & TINTEGER)
 		XCHG(lp, rp, np);
 	else if (eqtype(lp->type, pvoidtype, 1))
 		XCHG(lp, rp, np);
 
-	if ((p = convert(rp, lp->type, 0)) != NULL)
-		rp = p;
+	if ((np = convert(rp, lp->type, 0)) != NULL)
+		rp = np;
 	else
 		errorp("incompatible types in comparison");
-	return node(op, inttype, lp, rp);
+	return convert(node(op, pvoidtype, lp, rp), inttype, 1);
 }
 
 static Node *
@@ -378,7 +378,7 @@ compare(int op, Node *lp, Node *rp)
 		return pcompare(op, rp, lp);
 	} else if ((ltp->prop & TARITH) && (rtp->prop & TARITH)) {
 		arithconv(&lp, &rp);
-		return node(op, inttype, lp, rp);
+		return convert(node(op, lp->type, lp, rp), inttype, 1);;
 	} else {
 		errorp("incompatible types in comparison");
 		freetree(lp);
