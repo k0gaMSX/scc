@@ -5,12 +5,12 @@
 #endif
 
 #ifndef _SIZET
-typedef unsigned short size_t;
+typedef unsigned size_t;
 #define _SIZET
 #endif
 
 #ifndef _WCHAR_T
-typedef short wchar_t; 
+typedef short wchar_t;
 #define _WCHAR_T
 #endif
 
