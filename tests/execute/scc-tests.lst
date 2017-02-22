@@ -106,3 +106,4 @@
 0113-externredecl.c
 0114-shortassig.c
 0115-null-comparision.c
+0116-floatcmp.c
