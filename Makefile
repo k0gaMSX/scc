@@ -44,6 +44,7 @@ uninstall:
 	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
+	rm -f $(DESTDIR)/$(PREFIX)/bin/cpp
 
 clean-helper:
 	for i in $(DIRS); \
