@@ -3,7 +3,7 @@
 #include <string.h>
 
 void *
-memcpy(void *dst, const void *src, size_t n)
+memcpy(void * restrict dst, const void * restrict src, size_t n)
 {
 	char *s1 = dst;
 	const char *s2 = src;

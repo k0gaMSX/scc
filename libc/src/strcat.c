@@ -3,7 +3,7 @@
 #include <string.h>
 
 char *
-strcat(char *dst, const char *src)
+strcat(char * restrict dst, const char * restrict src)
 {
 	char *ret = dst;
 

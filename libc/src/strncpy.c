@@ -3,7 +3,7 @@
 #include <string.h>
 
 char *
-strncpy(char *dst, const char *src, size_t n)
+strncpy(char * restrict dst, const char * restrict src, size_t n)
 {
 	char *ret = dst;
 

@@ -3,11 +3,11 @@
 #include <string.h>
 
 char *
-strtok(const char *s, const char *delim)
+strtok(char * restrict s, const char * restrict delim)
 {
 	static char *line;
 
-	if (s) 
+	if (s)
 		line = s;
 	if (!s && !line)
 		return NULL;
