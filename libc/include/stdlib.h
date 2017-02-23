@@ -5,6 +5,7 @@
 #include <arch/stdlib.h>
 
 #define MB_CUR_MAX 1
+#define RAND_MAX 32767
 
 typedef struct {
 	int quot, rem;
