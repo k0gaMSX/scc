@@ -4,6 +4,10 @@
 
 #include <arch/stdio.h>
 
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif
+
 #define EOF            -1
 #define _IOFBF          0
 #define _IOLBF          1

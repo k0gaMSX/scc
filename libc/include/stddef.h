@@ -4,6 +4,10 @@
 
 #include <arch/stddef.h>
 
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif
+
 #define offsetof(st, m) ((size_t)&(((st *)0)->m))
 
 #endif

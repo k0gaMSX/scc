@@ -4,6 +4,10 @@
 
 #include <arch/string.h>
 
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif
+
 extern void *memcpy(void * restrict s1, const void * restrict s2, size_t n);
 extern void *memmove(void *s1, const void *s2, size_t n);
 extern char *strcpy(char * restrict s1, const char * restrict s2);

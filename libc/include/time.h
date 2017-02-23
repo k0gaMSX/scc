@@ -3,6 +3,10 @@
 
 #include <arch/time.h>
 
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif
+
 #define CLOCKS_PER_SEC 1000000
 
 typedef long int clock_t;

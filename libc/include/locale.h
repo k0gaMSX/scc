@@ -1,7 +1,9 @@
 #ifndef _LOCALE_H
 #define _LOCALE_H
 
-#include <arch/locale.h>
+#ifndef NULL
+#define NULL ((void *) 0)
+#endif
 
 #define LC_ALL      0
 #define LC_COLLATE  1
