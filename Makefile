@@ -33,18 +33,18 @@ install: all
 	mkdir -p $(DESTDIR)/$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc/
 	cp -f bin/cc?-* $(DESTDIR)/$(PREFIX)/libexec/scc/
-	cp -f bin/cpp.sh $(DESTDIR)/$(PREFIX)/bin/cpp
+	cp -f bin/cpp.sh $(DESTDIR)/$(PREFIX)/bin/scpp
 	cp -f bin/scc $(DESTDIR)/$(PREFIX)/bin/
 	cp -fr libc/include/* $(DESTDIR)/$(PREFIX)/include/scc/
 	find $(DESTDIR)/$(PREFIX)/include/scc/ -type f | xargs chmod 644
 	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
-	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 cpp scc && strip scc
+	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 scpp scc && strip scc
 
 uninstall:
 	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
-	rm -f $(DESTDIR)/$(PREFIX)/bin/cpp
+	rm -f $(DESTDIR)/$(PREFIX)/bin/scpp
 
 clean-helper:
 	for i in $(DIRS); \
