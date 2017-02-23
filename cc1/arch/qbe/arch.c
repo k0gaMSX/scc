@@ -39,6 +39,7 @@ static Type types[] = {
 		.op = PTR,
 		.letter = L_POINTER,
 		.prop = TDEFINED,
+		.type = &types[5], /* char type */
 		.size = 8,
 		.align = 8,
 	},
