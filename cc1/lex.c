@@ -561,8 +561,6 @@ repeat:
 	}
 
 	input->begin = ++input->p;
-	if (ahead() == '"')
-		goto repeat;
 	*bp = '\0';
 
 	yylen = bp - yytext + 1;

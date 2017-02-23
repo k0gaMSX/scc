@@ -600,6 +600,34 @@ notdefined(Symbol *sym)
 	return install(sym->ns, yylval.sym);
 }
 
+static Symbol *
+adjstrings(Symbol *sym)
+{
+	char *s, *t;
+	size_t len, n;
+	Type *tp;
+
+	tp = sym->type;
+	s = sym->u.s;
+	for (len = strlen(s);; len += n) {
+		next();
+		if (yytoken != STRING)
+			break;
+		t = yylval.sym->u.s;
+		n = strlen(t);
+		s = xrealloc(s, len + n + 1);
+		memcpy(s+len, t, n);
+		s[len + n] = '\0';
+		killsym(yylval.sym);
+	}
+	++len;
+	if (tp->n.elem != len) {
+		sym->type = mktype(chartype, ARY, len, NULL);
+		sym->u.s = s;
+	}
+	return sym;
+}
+
 /*************************************************************
  * grammar functions                                         *
  *************************************************************/
@@ -613,12 +641,11 @@ primary(void)
 	sym = yylval.sym;
 	switch (yytoken) {
 	case STRING:
-		np = constnode(sym);
+		np = constnode(adjstrings(sym));
 		sym->flags |= SHASINIT;
 		emit(ODECL, sym);
 		emit(OINIT, np);
-		np = varnode(sym);
-		break;
+		return varnode(sym);
 	case BUILTIN:
 		fun = sym->u.fun;
 		next();
