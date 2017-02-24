@@ -456,6 +456,7 @@ extern void incdir(char *dir);
 extern void outcpp(void);
 extern void defdefine(char *macro, char *val, char *source);
 extern void undefmacro(char *s);
+extern void ppragmaln(void);
 
 /* builtin.c */
 extern void ibuilts(void);

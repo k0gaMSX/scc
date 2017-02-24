@@ -304,23 +304,8 @@ repeat:
 		}
 	}
 
-	if (onlycpp && !wasexpand) {
-		static char file[FILENAME_MAX];
-		static unsigned nline;
-		char *s;
-
-		putchar('\n');
-		if (strcmp(file, filenam)) {
-			strcpy(file, filenam);
-			s = "#line %u %s\n";
-		} else if (nline+1 != lineno) {
-			s = "#line %u\n";
-		} else {
-			s = "";
-		}
-		nline = lineno;
-		printf(s, nline, file);
-	}
+	if (onlycpp && !wasexpand)
+		ppragmaln();
 	return 1;
 }
 

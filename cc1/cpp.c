@@ -781,6 +781,27 @@ error:
 }
 
 void
+ppragmaln(void)
+{
+	static char file[FILENAME_MAX];
+	static unsigned nline;
+	char *s;
+	int i;
+
+	putchar('\n');
+	if (strcmp(file, filenam)) {
+		strcpy(file, filenam);
+		s = "#line %u %s\n";
+	} else if (nline+1 != lineno) {
+		s = "#line %u\n";
+	} else {
+		s = "";
+	}
+	nline = lineno;
+	printf(s, nline, file);
+}
+
+void
 outcpp(void)
 {
 	char c, *s, *t;
