@@ -23,7 +23,7 @@ MANPREFIX = $(PREFIX)/share/man
 SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
              $(CSTDINC) \
              -DPREFIX=\"$(PREFIX)\" \
-             -DNDEBUG \
+             -g \
              $(CFLAGS)
 
 SCC_LDFLAGS = $(LDFLAGS)
