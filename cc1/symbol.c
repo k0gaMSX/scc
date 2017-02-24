@@ -97,6 +97,7 @@ unlinkhash(Symbol *sym)
 void
 pushctx(void)
 {
+	DBG("SYM: pushed context %d", curctx+1);
 	if (++curctx == NR_BLOCK+1)
 		error("too many nested blocks");
 }
@@ -131,6 +132,7 @@ popctx(void)
 	Symbol *next, *sym;
 	int ns, dangling = 0;
 
+	DBG("SYM: poped context %d", curctx);
 	/*
 	 * we have to be careful before popping the current
 	 * context, because since the parser is one token
