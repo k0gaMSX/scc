@@ -16,8 +16,6 @@ atoi(const char *s)
 		sign = -1;
 	case '+':
 		++s;
-	default:
-		break;
 	}
 
 	for (n = 0; isdigit(*s); ++s)
