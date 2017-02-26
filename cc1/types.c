@@ -260,10 +260,16 @@ static Type *
 newtype(Type *base)
 {
 	Type *tp;
+	size_t siz;
 
 	tp = xmalloc(sizeof(*tp));
 	*tp = *base;
 	tp->id = newid();
+
+	if (tp->op == FTN) {
+		siz = tp->n.elem * sizeof(Type *);
+		tp->p.pars = memcpy(xmalloc(siz), tp->p.pars, siz);
+	}
 
 	if (curfun) {
 		/* it is a type defined in the body of a function */
@@ -331,15 +337,8 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	tbl = &typetab[HASH(&type)];
 	for (bp = *tbl; bp; bp = bp->h_next) {
-		if (eqtype(bp, &type, 0)) {
-			/*
-			 * pars was allocated by the caller
-			 * but the type already exists, so
-			 * we have to deallocte it
-			 */
-			free(pars);
+		if (eqtype(bp, &type, 0))
 			return bp;
-		}
 	}
 
 	bp = newtype(&type);

@@ -14,15 +14,20 @@ static char sccsid[] = "@(#) ./cc1/decl.c";
 #define NOREP 0
 #define REP 1
 
+#define NR_DCL_TYP (NR_DECLARATORS+NR_FUNPARAM)
+#define NR_DCL_ARG (NR_DECLARATORS+NR_FUNPARAM+1)
 
 struct declarators {
-	unsigned char nr;
+	unsigned nr;
+	unsigned nr_types, nr_pars;
+	Symbol **pars;
+	Type **tpars;
 	struct declarator {
 		unsigned char op;
 		TINT  nelem;
 		Symbol *sym;
-		Type **tpars;
 		Symbol **pars;
+		Type **tpars;
 	} d [NR_DECLARATORS];
 };
 
@@ -34,6 +39,8 @@ struct decl {
 	Symbol **pars;
 	Type *type;
 	Type *parent;
+	Symbol *bufpars[NR_DCL_ARG];
+	Type *buftpars[NR_DCL_ARG];
 };
 
 static void
@@ -57,7 +64,7 @@ push(struct declarators *dp, int op, ...)
 		break;
 	case KRFTN:
 	case FTN:
-		p->nelem = va_arg(va, TINT);
+		p->nelem = va_arg(va, unsigned);
 		p->tpars = va_arg(va, Type **);
 		p->pars = va_arg(va, Symbol **);
 		break;
@@ -87,7 +94,6 @@ pop(struct declarators *dp, struct decl *dcl)
 		 * function. We  don't need
 		 * the parameter symbols anymore.
 		 */
-		free(dcl->pars);
 		popctx();
 		dcl->pars = NULL;
 	}
@@ -144,7 +150,6 @@ parameter(struct decl *dcl)
 {
 	Symbol *sym = dcl->sym;
 	Type *funtp = dcl->parent, *tp = dcl->type;
-	TINT n = funtp->n.elem;
 	char *name = sym->name;
 	int flags;
 
@@ -201,12 +206,11 @@ static Symbol *dodcl(int rep,
                      unsigned ns,
                      Type *type);
 
-static void
-krfun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
+static unsigned
+krfun(struct declarators *dp)
 {
-	int n = 0;
 	Symbol *sym;
-	int toomany = 0;
+	unsigned  toomany = 0, npars = 0;
 
 	if (yytoken != ')') {
 		do {
@@ -219,85 +223,112 @@ krfun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
 				       yylval.sym->name);
 				continue;
 			}
-			if (n < NR_FUNPARAM) {
-				++n;
-				*syms++ = sym;
+			if (dp->nr_pars < NR_DCL_ARG-1) {
+				++npars;
+				++dp->nr_pars;	
+				*dp->pars++ = sym;
 				continue;
 			}
 			if (!toomany)
-				errorp("too much parameters in function definition");
+				errorp("too many parameters in function definition");
 			toomany = 1;
 		} while (accept(','));
 	}
 
-	*nsyms = n;
-	*ntypes = 1;
-	types[0] = ellipsistype;
+	if (dp->nr_types < NR_DCL_TYP) {
+		++dp->nr_types;
+		*dp->tpars++ = ellipsistype;
+	}
+
+	return 1;
 }
 
-static void
-ansifun(Type *tp, Type *types[], Symbol *syms[], int *ntypes, int *nsyms)
+static unsigned
+ansifun(struct declarators *dp)
 {
-	int npars = 0;
 	Symbol *sym;
-	int toomany = 0, voidparam = 0;
+	unsigned ntype, toomany, distoomany, voidpar;
+	Type type, *tp;
 
+	type.n.elem = 0;
+	type.prop = 0;
+	ntype = toomany = toomany = distoomany = voidpar = 0;
 	do {
-		++npars;
 		if (accept(ELLIPSIS)) {
-			if (npars < 2)
+			if (ntype < 1)
 				errorp("a named argument is requiered before '...'");
-			*syms = NULL;
-			*types++ = ellipsistype;
-		} else if ((sym = dodcl(NOREP, parameter, NS_IDEN, tp)) == NULL) {
-			if (tp->n.elem == 1)
-				voidparam = 1;
-		} else if (npars < NR_FUNPARAM) {
-			*syms++ = sym;
-			*types++ = sym->type;
-		} else if (!toomany) {
-			errorp("too many parameters in function definition");
-			toomany = 1;
+			if (yytoken != ')')
+				errorp("... must be the last parameter");
+			sym = NULL;
+			tp = ellipsistype;
+		} else if ((sym = dodcl(NOREP, parameter, NS_IDEN, &type)) == NULL) {
+			if (type.n.elem == 1 && ntype > 1)
+				voidpar = 1;
+			sym = NULL;
+			tp = NULL;
+		} else {
+			tp = sym->type;
 		}
-		if (npars == 2 && voidparam)
-			errorp("'void' must be the only parameter");
+
+		if (sym) {
+			if (dp->nr_pars == NR_DCL_ARG-1) {
+				toomany = 1;
+			} else {
+				dp->nr_pars++;	
+				*dp->pars++ = sym;
+			}
+		}
+
+		if (tp) {
+			if (dp->nr_types == NR_DCL_TYP) {
+				toomany = 1;
+			} else {
+				ntype++;
+				dp->nr_types++;
+				*dp->tpars++ = tp;
+			}
+		}
+
+		if (toomany == 1 && !distoomany) {
+			errorp("too many parameters in function definition");
+			distoomany = 1;
+		}
 	} while (accept(','));
 
-	*nsyms = *ntypes = voidparam ? 0 : npars;
+	if (voidpar && ntype > 1)
+		errorp("'void' must be the only parameter");
+
+	return ntype;
 }
 
 static void
 fundcl(struct declarators *dp)
 {
-	Type *types[NR_FUNPARAM], type;
-	Symbol *syms[NR_FUNPARAM+1], **pars;
-	int k_r, ntypes, nsyms;
-	size_t size;
+	Symbol **pars = dp->pars;
+	Type **types = dp->tpars;
+	unsigned ntypes, typefun;
+	unsigned (*fun)(struct declarators *dp);
 
 	pushctx();
 	expect('(');
-	type.n.elem = 0;
-	type.prop = 0;
 
-	k_r = (yytoken == ')' || yytoken == IDEN);
-	(k_r ? krfun : ansifun)(&type, types, syms, &ntypes, &nsyms);
+	if (yytoken == ')' || yytoken == IDEN) {
+		typefun = KRFTN;
+		fun = krfun;
+	} else {
+		typefun = FTN;
+		fun = ansifun;
+	}
+
+	ntypes = (*fun)(dp);
 	expect(')');
 
-	type.n.elem = ntypes;
-	if (ntypes <= 0) {
-		type.p.pars = NULL;
-	} else {
-		size = ntypes * sizeof(Type *);
-		type.p.pars = memcpy(xmalloc(size), types, size);
+	if (dp->nr_pars < NR_DCL_ARG) {
+		*dp->pars++ = NULL;
+		++dp->nr_pars;
 	}
-	if (nsyms <= 0) {
-		pars = NULL;
-	} else {
-		size = (nsyms + 1) * sizeof(Symbol *);
-		pars = memcpy(xmalloc(size), syms, size);
-		pars[nsyms] = NULL;
-	}
-	push(dp, (k_r) ? KRFTN : FTN, type.n.elem, type.p.pars, pars);
+
+	push(dp, typefun, ntypes, types, pars);
 }
 
 static void declarator(struct declarators *dp, unsigned ns);
@@ -670,6 +701,21 @@ bad_storage(Type *tp, char *name)
 		errorp("invalid storage class for function '%s'", name);
 }
 
+static Symbol **
+parsdup(Symbol **pars)
+{
+	Symbol **bp;
+	size_t n;
+
+	if (!pars)
+		return NULL;
+
+	for (n = 1, bp = pars; *bp; ++n, ++bp)
+		/* nothing */;
+	n *= sizeof(Symbol *);
+	return memcpy(xmalloc(n), pars, n);
+}
+
 static Symbol *
 redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
 {
@@ -692,7 +738,7 @@ redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
 		goto redeclaration;
 	}
 
-	sym->u.pars = pars;
+	sym->u.pars = parsdup(pars);
 
 	flags = sym->flags;
 	switch (sclass) {
@@ -764,7 +810,7 @@ identifier(struct decl *dcl)
 		int flags = sym->flags | SDECLARED;
 
 		sym->type = tp;
-		sym->u.pars = dcl->pars;
+		sym->u.pars = parsdup(dcl->pars);
 
 		switch (sclass) {
 		case REGISTER:
@@ -816,9 +862,11 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 	base = specifier(&dcl.sclass, &dcl.qualifier);
 
 	do {
-		stack.nr = 0;
-		dcl.pars = NULL;
 		dcl.type = base;
+		dcl.pars = NULL;
+		stack.nr_pars = stack.nr_types = stack.nr = 0;
+		stack.pars = dcl.bufpars;
+		stack.tpars = dcl.buftpars;
 
 		declarator(&stack, ns);
 
