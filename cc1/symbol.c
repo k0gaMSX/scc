@@ -296,7 +296,7 @@ lookup(int ns, char *name, int alloc)
 Symbol *
 install(int ns, Symbol *sym)
 {
-	if (sym->flags & SDECLARED) {
+	if (sym->flags & SDECLARED || sym->ctx != curctx) {
 		if (sym->ctx == curctx && ns == sym->ns)
 			return NULL;
 		sym = newsym(ns, sym->name);
