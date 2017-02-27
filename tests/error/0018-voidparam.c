@@ -1,6 +1,23 @@
+int
+a(void, int i)
+{
+	return 0;
+}
 
 int
-foo(void, int x)
+b(int i, void)
+{
+	return 0;
+}
+
+int
+c(void, void)
+{
+	return 0;
+}
+
+int
+d(void, ...)
 {
 	return 0;
 }
@@ -8,5 +25,5 @@ foo(void, int x)
 int
 main()
 {
-	return foo();
+	return 0;
 }
