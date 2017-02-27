@@ -708,7 +708,7 @@ sethi(Node *np)
 		np->address = 11;
 		break;
 	case OCPL:
-		np->op = OAND;
+		np->op = OBXOR;
 		rp = constnode(NULL, ~(TUINT) 0, &np->type);
 		goto binary;
 	case OSNEG:
