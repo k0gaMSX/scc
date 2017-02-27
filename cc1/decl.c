@@ -19,6 +19,7 @@ static char sccsid[] = "@(#) ./cc1/decl.c";
 
 struct declarators {
 	unsigned nr;
+	unsigned ns;
 	unsigned nr_types, nr_pars;
 	Symbol **pars;
 	Type **tpars;
@@ -331,10 +332,10 @@ fundcl(struct declarators *dp)
 	push(dp, typefun, ntypes, types, pars);
 }
 
-static void declarator(struct declarators *dp, unsigned ns);
+static void declarator(struct declarators *dp);
 
 static void
-directdcl(struct declarators *dp, unsigned ns)
+directdcl(struct declarators *dp)
 {
 	Symbol *p, *sym;
 	static int nested;
@@ -343,19 +344,19 @@ directdcl(struct declarators *dp, unsigned ns)
 		if (nested == NR_SUBTYPE)
 			error("too many declarators nested by parentheses");
 		++nested;
-		declarator(dp, ns);
+		declarator(dp);
 		--nested;
 		expect(')');
 	} else {
 		if (yytoken == IDEN || yytoken == TYPEIDEN) {
 			sym = yylval.sym;
-			if (p = install(ns, sym)) {
+			if (p = install(dp->ns, sym)) {
 				sym = p;
 				sym->flags &= ~SDECLARED;
 			}
 			next();
 		} else {
-			sym = newsym(ns, NULL);
+			sym = newsym(dp->ns, NULL);
 		}
 		push(dp, IDEN, sym);
 	}
@@ -370,7 +371,7 @@ directdcl(struct declarators *dp, unsigned ns)
 }
 
 static void
-declarator(struct declarators *dp, unsigned ns)
+declarator(struct declarators *dp)
 {
 	unsigned  n;
 
@@ -379,7 +380,7 @@ declarator(struct declarators *dp, unsigned ns)
 			/* nothing */;
 	}
 
-	directdcl(dp, ns);
+	directdcl(dp);
 
 	while (n--)
 		push(dp, PTR);
@@ -867,8 +868,9 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 		stack.nr_pars = stack.nr_types = stack.nr = 0;
 		stack.pars = dcl.bufpars;
 		stack.tpars = dcl.buftpars;
+		stack.ns = ns;
 
-		declarator(&stack, ns);
+		declarator(&stack);
 
 		while (pop(&stack, &dcl))
 			/* nothing */;
