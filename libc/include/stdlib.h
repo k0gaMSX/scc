@@ -8,6 +8,8 @@
 #define NULL ((void *) 0)
 #endif
 
+#define _ATEXIT_MAX 32
+
 #define MB_CUR_MAX 1
 #define RAND_MAX 32767
 
