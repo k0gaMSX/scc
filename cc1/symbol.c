@@ -27,9 +27,19 @@ void
 dumpstab(Symbol **tbl, char *msg)
 {
 	Symbol **bp, *sym;
+	unsigned size;
 
 	fprintf(stderr, "Symbol Table dump at ctx=%u\n%s\n", curctx, msg);
-	for (bp = tbl; bp < &tbl[NR_SYM_HASH]; ++bp) {
+	if (tbl == htab)
+		size = NR_SYM_HASH;
+	else if (tbl == htabcpp)
+		size = NR_CPP_HASH;
+	else if (tbl == htablbl)
+		size = NR_LBL_HASH;
+	else
+		abort();
+
+	for (bp = tbl; bp < &tbl[size]; ++bp) {
 		if (*bp == NULL)
 			continue;
 		fprintf(stderr, "%d", (int) (bp - htab));
