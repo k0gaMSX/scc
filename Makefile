@@ -4,7 +4,7 @@
 
 include config.mk
 
-DIRS  = lib cc1 cc2 driver/$(DRIVER)
+DIRS  = lib cc1 cc2 driver/$(DRIVER) libc/src
 
 all: scc-driver
 	for i in $(ARCHS); \
@@ -24,6 +24,11 @@ $(ARCHS):
 	done
 	ln -f cc1/cc1-$@ bin/
 	ln -f cc2/cc2-$@ bin/
+
+libc/src/libc.a:
+
+libc: libc/src/libc.a
+	cd libc/src && $(MAKE) -e CC=scc
 
 tests: all
 	cd tests/execute && $(MAKE) -e tests
