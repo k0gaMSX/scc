@@ -27,13 +27,11 @@ extern int toupper(int c);
 #define _S	0x20	/* white space (space/lf/tab) */
 #define _X	0x40	/* hex char */
 #define _SP	0x80	/* hard space (0x20) */
-#define _TB	0x100	/* tabulation */
 
 extern unsigned char _ctype[];
 
 #define isalnum(c)  (_ctype[(unsigned char) c] & (_U|_L|_D))
 #define isalpha(c)  (_ctype[(unsigned char) c] & (_U|_L))
-#define isblank(c)  (_ctype[(unsigned char) c] & (_SP|_TB))
 #define iscntrl(c)  (_ctype[(unsigned char) c] & (_C))
 #define isdigit(c)  (_ctype[(unsigned char) c] & (_D))
 #define isgraph(c)  (_ctype[(unsigned char) c] & (_P|_U|_L|_D))
