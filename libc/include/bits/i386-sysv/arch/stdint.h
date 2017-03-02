@@ -25,10 +25,10 @@ typedef int int16_fast_t;
 typedef int int32_fast_t;
 typedef long long int64_fast_t;
 
-typedef unsigned int8_fast_t;
-typedef unsigned int16_fast_t;
-typedef unsigned int32_fast_t;
-typedef unsigned long long int64_fast_t;
+typedef unsigned uint8_fast_t;
+typedef unsigned uint16_fast_t;
+typedef unsigned uint32_fast_t;
+typedef unsigned long long uint64_fast_t;
 
 typedef intptr_t long;
 typedef long long uintptr_t unsigned;
