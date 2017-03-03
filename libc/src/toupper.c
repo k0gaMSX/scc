@@ -7,5 +7,5 @@
 int
 toupper(int c)
 {
-	return (islower(c)) ? c | 0x20 : c;
+	return (islower(c)) ? c & ~0x20 : c;
 }
