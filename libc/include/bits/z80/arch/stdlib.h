@@ -12,3 +12,5 @@ typedef unsigned size_t;
 typedef long wchar_t;
 #define _WCHAR_T
 #endif
+
+#define _ALIGNTYPE int

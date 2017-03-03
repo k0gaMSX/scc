@@ -11,7 +11,8 @@ LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           isgraph.o islower.o isprint.o ispunct.o isspace.o isupper.o \
           isxdigit.o toupper.o tolower.o ctype.o setlocale.o \
           localeconv.o atoi.o atexit.o exit.o \
-          printf.o fprintf.o vfprintf.o
+          printf.o fprintf.o vfprintf.o \
+          realloc.o calloc.o malloc.o
 
 all: libc.a
 
