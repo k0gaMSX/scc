@@ -17,12 +17,12 @@ scc-driver:
 	ln -f driver/$(DRIVER)/scc bin/scc
 
 $(ARCHS):
-	pwd=$PWD ;\
+	pwd=$$PWD ;\
 	for i in cc1 cc2; \
 	do \
 		cd $$i; \
 		ARCH=$@ $(MAKE) -e $$i-$@ || exit; \
-		cd $pwd ;\
+		cd $$pwd ;\
 	done
 	ln -f cc1/cc1-$@ bin/
 	ln -f cc2/cc2-$@ bin/
