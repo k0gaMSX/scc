@@ -95,4 +95,8 @@ extern int feof(FILE *fp);
 extern int ferror(FILE *fp);
 extern void perror(const char *s);
 
+#ifdef __USE_MACROS
+#define printf(fmt, ...) fprintf(stdin, fmt, __VA_ARGS__)
+#endif
+
 #endif
