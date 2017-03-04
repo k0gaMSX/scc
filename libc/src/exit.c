@@ -12,5 +12,5 @@ exit(int status)
 
 	for (bp = _atexitf; bp < &_atexitf[_ATEXIT_MAX] && *bp; ++bp)
 		(*bp)();
-	_Exit();
+	_Exit(status);
 }
