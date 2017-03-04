@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#undef atoi
 
 int
 atoi(const char *s)

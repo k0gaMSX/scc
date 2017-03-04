@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef strspn
 
 size_t
 strspn(const char *s1, const char *s2)

@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef strcoll
 
 int
 strcoll(const char *s1, const char *s2)

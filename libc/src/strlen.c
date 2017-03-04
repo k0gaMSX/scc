@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef strlen
 
 size_t
 strlen(const char *s)

@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <stdlib.h>
+#undef atexit
 
 extern void (*_atexitf[_ATEXIT_MAX])(void);
 

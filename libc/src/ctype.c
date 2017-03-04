@@ -2,6 +2,7 @@
 
 #define __USE_MACROS
 #include <ctype.h>
+#undef ctype
 
 unsigned char _ctype[255] = {
 	_C,_C,_C,_C,_C,_C,_C,_C,                        /* 0-7 */

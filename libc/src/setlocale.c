@@ -2,6 +2,7 @@
 
 #include <locale.h>
 #include <stddef.h>
+#undef setlocale
 
 char *
 setlocale(int category, const char *locale)

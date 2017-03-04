@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef strcmp
 
 int
 strcmp(const char *s1, const char *s2)

@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef memset
 
 void *
 memset(void *s, int c, size_t n)

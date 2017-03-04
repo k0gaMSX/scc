@@ -1,5 +1,6 @@
 #include <locale.h>
 #include <limits.h>
+#undef localeconv
 
 struct lconv *
 localeconv(void)

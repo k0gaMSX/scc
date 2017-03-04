@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <string.h>
+#undef strncat
 
 char *
 strncat(char * restrict dst, const char * restrict src, size_t n)
