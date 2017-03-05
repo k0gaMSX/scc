@@ -146,6 +146,145 @@ empty(Symbol *sym, Type *tp, int param)
 	return 0;
 }
 
+static void
+bad_storage(Type *tp, char *name)
+{
+	if (tp->op != FTN)
+		errorp("incorrect storage class for file-scope declaration");
+	else
+		errorp("invalid storage class for function '%s'", name);
+}
+
+static Symbol *
+redcl(Symbol *sym, Type *tp, int sclass)
+{
+	int flags;
+	char *name = sym->name;
+
+	if (!eqtype(sym->type, tp, 1)) {
+		errorp("conflicting types for '%s'", name);
+		return sym;
+	}
+
+	if (sym->token == TYPEIDEN && sclass != TYPEDEF ||
+	    sym->token != TYPEIDEN && sclass == TYPEDEF) {
+		goto redeclaration;
+	}
+	if (curctx != GLOBALCTX && tp->op != FTN) {
+		/* is it the redeclaration of a local variable? */
+		if ((sym->flags & SEXTERN) && sclass == EXTERN)
+			return sym;
+		goto redeclaration;
+	}
+
+	flags = sym->flags;
+	switch (sclass) {
+	case REGISTER:
+	case AUTO:
+		bad_storage(tp, name);
+		break;
+	case NOSCLASS:
+		if ((flags & SPRIVATE) == 0) {
+			if (flags & SEXTERN)
+				flags &= ~(SEXTERN|SEMITTED);
+			flags |= SGLOBAL;
+			break;
+		}
+		errorp("non-static declaration of '%s' follows static declaration",
+		       name);
+		break;
+	case TYPEDEF:
+	case EXTERN:
+		break;
+	case STATIC:
+		if ((flags & (SGLOBAL|SEXTERN)) == 0) {
+			flags |= SPRIVATE;
+			break;
+		}
+		errorp("static declaration of '%s' follows non-static declaration",
+		       name);
+		break;
+	}
+	sym->flags = flags;
+
+	return sym;
+
+redeclaration:
+	errorp("redeclaration of '%s'", name);
+	return sym;
+}
+
+static Symbol *
+identifier(struct decl *dcl)
+{
+	Symbol *sym = dcl->sym;
+	Type *tp = dcl->type;
+	int sclass = dcl->sclass;
+	char *name = sym->name;
+
+	if (empty(sym, tp, 0))
+		return sym;
+
+	/* TODO: Add warning about ANSI limits */
+	if (!(tp->prop & TDEFINED)                &&
+	    sclass != EXTERN && sclass != TYPEDEF &&
+	    !(tp->op == ARY && yytoken == '=')) {
+		errorp("declared variable '%s' of incomplete type", name);
+	}
+
+	if (tp->op == FTN) {
+		if (sclass == NOSCLASS)
+			sclass = EXTERN;
+		if (!strcmp(name, "main") && tp->type != inttype) {
+			errorp("main shall be defined with a return type of int");
+			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
+		}
+	}
+
+	if (sym->flags & SDECLARED) {
+		sym = redcl(dcl->sym, tp, sclass);
+	} else {
+		int flags = sym->flags | SDECLARED;
+
+		sym->type = tp;
+
+		switch (sclass) {
+		case REGISTER:
+		case AUTO:
+			if (curctx != GLOBALCTX && tp->op != FTN) {
+				flags |= (sclass == REGISTER) ? SREGISTER : SAUTO;
+				break;
+			}
+			bad_storage(tp, name);
+		case NOSCLASS:
+			if (tp->op == FTN)
+				flags |= SEXTERN;
+			else
+				flags |= (curctx == GLOBALCTX) ? SGLOBAL : SAUTO;
+			break;
+		case EXTERN:
+			flags |= SEXTERN;
+			break;
+		case STATIC:
+			flags |= (curctx == GLOBALCTX) ? SPRIVATE : SLOCAL;
+			break;
+		case TYPEDEF:
+			flags |= STYPEDEF;
+			sym->u.token = sym->token = TYPEIDEN;
+			break;
+		}
+		sym->flags = flags;
+	}
+
+	if (accept('='))
+		initializer(sym, sym->type);
+	if (!(sym->flags & (SGLOBAL|SEXTERN)) && tp->op != FTN)
+		sym->flags |= SDEFINED;
+	if (sym->token == IDEN && sym->type->op != FTN)
+		emit(ODECL, sym);
+	return sym;
+}
+
 static Symbol *
 parameter(struct decl *dcl)
 {
@@ -690,163 +829,6 @@ field(struct decl *dcl)
 	structp->p.fields[n-1] = sym;
 	structp->n.elem = n;
 
-	return sym;
-}
-
-static void
-bad_storage(Type *tp, char *name)
-{
-	if (tp->op != FTN)
-		errorp("incorrect storage class for file-scope declaration");
-	else
-		errorp("invalid storage class for function '%s'", name);
-}
-
-static Symbol **
-parsdup(Symbol **pars)
-{
-	Symbol **bp;
-	size_t n;
-
-	if (!pars)
-		return NULL;
-
-	for (n = 1, bp = pars; *bp; ++n, ++bp)
-		/* nothing */;
-	n *= sizeof(Symbol *);
-	return memcpy(xmalloc(n), pars, n);
-}
-
-static Symbol *
-redcl(Symbol *sym, Type *tp, Symbol **pars, int sclass)
-{
-	int flags;
-	char *name = sym->name;
-
-	if (!eqtype(sym->type, tp, 1)) {
-		errorp("conflicting types for '%s'", name);
-		return sym;
-	}
-
-	if (sym->token == TYPEIDEN && sclass != TYPEDEF ||
-	    sym->token != TYPEIDEN && sclass == TYPEDEF) {
-		goto redeclaration;
-	}
-	if (curctx != GLOBALCTX && tp->op != FTN) {
-		/* is it the redeclaration of a local variable? */
-		if ((sym->flags & SEXTERN) && sclass == EXTERN)
-			return sym;
-		goto redeclaration;
-	}
-
-	sym->u.pars = parsdup(pars);
-
-	flags = sym->flags;
-	switch (sclass) {
-	case REGISTER:
-	case AUTO:
-		bad_storage(tp, name);
-		break;
-	case NOSCLASS:
-		if ((flags & SPRIVATE) == 0) {
-			if (flags & SEXTERN)
-				flags &= ~(SEXTERN|SEMITTED);
-			flags |= SGLOBAL;
-			break;
-		}
-		errorp("non-static declaration of '%s' follows static declaration",
-		       name);
-		break;
-	case TYPEDEF:
-	case EXTERN:
-		break;
-	case STATIC:
-		if ((flags & (SGLOBAL|SEXTERN)) == 0) {
-			flags |= SPRIVATE;
-			break;
-		}
-		errorp("static declaration of '%s' follows non-static declaration",
-		       name);
-		break;
-	}
-	sym->flags = flags;
-
-	return sym;
-
-redeclaration:
-	errorp("redeclaration of '%s'", name);
-	return sym;
-}
-
-static Symbol *
-identifier(struct decl *dcl)
-{
-	Symbol *sym = dcl->sym;
-	Type *tp = dcl->type;
-	int sclass = dcl->sclass;
-	char *name = sym->name;
-
-	if (empty(sym, tp, 0))
-		return sym;
-
-	/* TODO: Add warning about ANSI limits */
-	if (!(tp->prop & TDEFINED)                &&
-	    sclass != EXTERN && sclass != TYPEDEF &&
-	    !(tp->op == ARY && yytoken == '=')) {
-		errorp("declared variable '%s' of incomplete type", name);
-	}
-
-	if (tp->op == FTN) {
-		if (sclass == NOSCLASS)
-			sclass = EXTERN;
-		if (!strcmp(name, "main") && tp->type != inttype) {
-			errorp("main shall be defined with a return type of int");
-			errorp("please contact __20h__ on irc.freenode.net (#bitreich-en) via IRC");
-		}
-	}
-
-	if (sym->flags & SDECLARED) {
-		sym = redcl(dcl->sym, tp, dcl->pars, sclass);
-	} else {
-		int flags = sym->flags | SDECLARED;
-
-		sym->type = tp;
-		sym->u.pars = parsdup(dcl->pars);
-
-		switch (sclass) {
-		case REGISTER:
-		case AUTO:
-			if (curctx != GLOBALCTX && tp->op != FTN) {
-				flags |= (sclass == REGISTER) ? SREGISTER : SAUTO;
-				break;
-			}
-			bad_storage(tp, name);
-		case NOSCLASS:
-			if (tp->op == FTN)
-				flags |= SEXTERN;
-			else
-				flags |= (curctx == GLOBALCTX) ? SGLOBAL : SAUTO;
-			break;
-		case EXTERN:
-			flags |= SEXTERN;
-			break;
-		case STATIC:
-			flags |= (curctx == GLOBALCTX) ? SPRIVATE : SLOCAL;
-			break;
-		case TYPEDEF:
-			flags |= STYPEDEF;
-			sym->u.token = sym->token = TYPEIDEN;
-			break;
-		}
-		sym->flags = flags;
-	}
-
-	if (accept('='))
-		initializer(sym, sym->type);
-	if (!(sym->flags & (SGLOBAL|SEXTERN)) && tp->op != FTN)
-		sym->flags |= SDEFINED;
-	if (sym->token == IDEN && sym->type->op != FTN)
-		emit(ODECL, sym);
 	return sym;
 }
 
