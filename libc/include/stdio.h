@@ -96,7 +96,7 @@ extern int ferror(FILE *fp);
 extern void perror(const char *s);
 
 #ifdef __USE_MACROS
-#define printf(fmt, ...) fprintf(stdin, fmt, __VA_ARGS__)
+#define printf(...) fprintf(stdout, __VA_ARGS__)
 #endif
 
 #endif
