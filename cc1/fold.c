@@ -590,6 +590,7 @@ identity(Node *np)
 		return NULL;
 	case OMOD:
 		/* i % 1  => i,1 */
+		/* TODO: i % 2^n => i & n-1 */
 		if (isoner)
 			goto change_to_comma;
 	default:
