@@ -33,7 +33,7 @@ libc: libc/src/libc.a
 	cd libc/src && $(MAKE) -e CC=scc
 
 tests: all
-	cd tests/execute && $(MAKE) -e tests
+	cd tests && $(MAKE) -e all
 
 install: all
 	mkdir -p $(DESTDIR)/$(PREFIX)/libexec/scc/
