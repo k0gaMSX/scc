@@ -465,7 +465,6 @@ ansifun(struct declarators *dp,
 static int
 funbody(Symbol *sym, Symbol *pars[])
 {
-	Symbol *par;
 	Type *tp;
 
 	if (!sym)
@@ -492,7 +491,7 @@ funbody(Symbol *sym, Symbol *pars[])
 	curfun = sym;
 	if (sym->type->prop & TK_R) {
 		while (yytoken != '{') {
-			par = dodcl(REP, parameter, NS_IDEN, sym->type);
+			dodcl(REP, parameter, NS_IDEN, sym->type);
 			expect(';');
 		}
 	}
