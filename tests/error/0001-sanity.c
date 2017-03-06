@@ -1,5 +1,7 @@
 /*
-PATTERN: undefined symbol FOO
+PATTERN:
+0001-sanity.c:9: error: 'FOO' undeclared
+.
 */
 
 int main()

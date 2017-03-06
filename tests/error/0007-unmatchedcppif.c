@@ -1,5 +1,7 @@
 /*
-PATTERN: endif
+PATTERN:
+
+.
 */
 
 #ifdef FOO

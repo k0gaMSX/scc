@@ -1,6 +1,7 @@
 /*
-PATTERN: redefinition
-PATTERN: 7
+PATTERN:
+0004-macroredef.c:8: warning: 'X' redefined
+.
 */
 
 #define X 1

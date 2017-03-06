@@ -1,5 +1,7 @@
 /*
-PATTERN: macro argument
+PATTERN:
+
+.
 */
 
 #define X(A, A) 0

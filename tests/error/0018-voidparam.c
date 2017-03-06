@@ -1,3 +1,10 @@
+/*
+PATTERN:
+0018-voidparam.c:27: error: a named argument is requiered before '...'
+.
+*/
+
+
 int
 a(void, int i)
 {

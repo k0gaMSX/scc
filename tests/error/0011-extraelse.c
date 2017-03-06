@@ -1,6 +1,7 @@
-
 /*
-PATTERN: else
+PATTERN:
+
+.
 */
 
 #if 1

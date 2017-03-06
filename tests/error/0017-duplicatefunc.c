@@ -1,3 +1,8 @@
+/*
+PATTERN:
+0017-duplicatefunc.c:15: error: redefinition of 'main'
+.
+*/
 
 int
 main()

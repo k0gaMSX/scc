@@ -1,6 +1,7 @@
-
 /*
-PATTERN: elif
+PATTERN:
+
+.
 */
 
 #elif 1
