@@ -786,7 +786,6 @@ ppragmaln(void)
 	static char file[FILENAME_MAX];
 	static unsigned nline;
 	char *s;
-	int i;
 
 	putchar('\n');
 	if (strcmp(file, filenam)) {

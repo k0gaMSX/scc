@@ -44,7 +44,6 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	char *cp;
 	int i;
 
 	ilex();

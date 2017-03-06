@@ -503,8 +503,8 @@ commutative(Node *np, Node *l, Node *r)
 static Node *
 identity(Node *np)
 {
-	int iszeror, isoner, istruer;
-	int iszerol, isonel, istruel;
+	int iszeror, isoner;
+	int iszerol, isonel;
 	Node *lp = np->left, *rp = np->right;
 
 	if (!rp)
@@ -512,10 +512,8 @@ identity(Node *np)
 
 	iszeror = cmpnode(rp, 0);
 	isoner = cmpnode(rp, 1),
-	istruer = !iszeror && rp->flags & NCONST;
 	iszerol = cmpnode(lp, 0);
-	isonel = cmpnode(lp, 1),
-	istruel = !iszerol && lp->flags & NCONST;
+	isonel = cmpnode(lp, 1);
 
 	switch (np->op) {
 	case OOR:
