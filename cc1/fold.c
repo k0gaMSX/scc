@@ -231,7 +231,7 @@ folduint(int op, Symbol *res, TUINT l, TUINT r)
 	}
 	res->u.u = u & ones(res->type->size);
 
-	DBG("FOLD ui l=%llu %d r=%llu = %llu", l, op, r, i);
+	DBG("FOLD ui l=%llu %d r=%llu = %llu", l, op, r, u);
 	return 1;
 
 sign:
