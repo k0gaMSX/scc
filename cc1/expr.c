@@ -120,7 +120,7 @@ set_p1_p2:
 static int
 null(Node *np)
 {
-	if (!np->flags & NCONST || np->type != pvoidtype)
+	if (!(np->flags&NCONST) || np->type != pvoidtype)
 		return 0;
 	return cmpnode(np, 0);
 }
