@@ -3,6 +3,6 @@
 	.global	_start
 
 _start:
-	call	$main
+	call	main
 	movl    %eax, %edi
-	call	$exit
+	call	exit
