@@ -91,7 +91,6 @@ static int
 pop(struct declarators *dp, struct decl *dcl)
 {
 	struct declarator *p;
-	Symbol **bp;
 
 	if (dp->nr == 0)
 		return 0;
@@ -385,7 +384,6 @@ static void
 krfun(struct declarators *dp,
       Symbol *pars[], unsigned *ntypep, unsigned *nparsp)
 {
-	Symbol *sym;
 	int toomany = 0;
 
 
