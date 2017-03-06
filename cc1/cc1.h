@@ -302,12 +302,12 @@ struct keyword {
 
 struct type {
 	unsigned char op;           /* type builder operator */
-	char ns;                    /* namespace for struct members */
+	unsigned char ns;           /* namespace for struct members */
 	short id;                   /* type id, used in dcls */
 	char letter;                /* letter of the type */
-	unsigned int prop;          /* type properties */
-	unsigned long size;         /* sizeof the type */
+	unsigned char prop;         /* type properties */
 	unsigned char align;        /* align of the type */
+	unsigned long size;         /* sizeof the type */
 	Type *type;                 /* base type */
 	Symbol *tag;                /* symbol of the strug tag */
 	union {
