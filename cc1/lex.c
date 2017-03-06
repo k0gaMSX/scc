@@ -530,7 +530,6 @@ string(void)
 	char *bp = yytext, c;
 
 	*bp++ = '"';
-repeat:
 	for (++input->p; (c = *input->p) != '"'; ++input->p) {
 		if (c == '\0') {
 			errorp("missing terminating '\"' character");
