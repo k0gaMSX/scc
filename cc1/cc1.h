@@ -3,6 +3,7 @@
 #define INPUTSIZ LINESIZ
 
 #define GLOBALCTX 0
+#define PARAMCTX  1
 
 #define NR_USWITCHES 20
 
@@ -22,6 +23,7 @@ enum typeprops {
 	TAGGREG  = 1 << 4,    /* the type is struct or union */
 	TK_R     = 1 << 5,    /* this is a K&R-function */
 	TELLIPSIS= 1 << 6,    /* this function has an ellipsis par */
+	TFUNDEF  = 2 << 7,    /* function definition */
 };
 
 enum inputtype {

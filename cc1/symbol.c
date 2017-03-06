@@ -177,11 +177,6 @@ popctx(void)
 			killsym(sym);
 		}
 		labels = NULL;
-
-		if (curfun) {
-			free(curfun->u.pars);
-			curfun->u.pars = NULL;
-		}
 	}
 
 	if (dangling) {
