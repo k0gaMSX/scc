@@ -92,7 +92,7 @@ addinput(char *fname, Symbol *hide, char *buffer)
 	FILE *fp;
 	char *extp;
 	unsigned flags;
-	size_t infileln;
+	int infileln;
 	Input *newip, *curip = input;
 
 	if (hide) {
