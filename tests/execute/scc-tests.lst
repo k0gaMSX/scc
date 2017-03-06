@@ -52,7 +52,7 @@
 0054-struct.c
 0055-enum.c
 0056-enum.c
-0057-duff.c [TODO]
+0057-duff.c
 0058-bug.c
 0059-multistring.c
 0060-charlit.c
