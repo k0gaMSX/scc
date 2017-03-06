@@ -52,7 +52,7 @@
 0054-struct.c
 0055-enum.c
 0056-enum.c
-0057-duff.c TODO
+0057-duff.c [TODO]
 0058-bug.c
 0059-multistring.c
 0060-charlit.c
@@ -86,12 +86,12 @@
 0091-fptr.c
 0092-fptr.c
 0093-arrayinit.c
-0094-arrayinit.c TODO
+0094-arrayinit.c [TODO]
 0095-arrayselector.c
 0096-inferredarraysize.c
 0097-extern.c
-0098-tentative.c TODO
-0099-tentative.c TODO
+0098-tentative.c [TODO]
+0099-tentative.c [TODO]
 0102-bug.c
 0103-voidparm.c
 0104-qbebug.c
@@ -104,15 +104,15 @@
 0111-doubledef.c
 0112-cond.c
 0113-externredecl.c
-0114-shortassig.c TODO
+0114-shortassig.c [TODO]
 0115-null-comparision.c
-0116-floatcmp.c TODO
+0116-floatcmp.c [TODO]
 0117-pointarith.c
-0118-voidmain.c TODO
+0118-voidmain.c [TODO]
 0119-macrostr.c
 0120-funpar.c
-0121-localinit.c TODO
-0122-localinit.c TODO
-0123-doubleconst.c TODO
-0124-enumstruct.c TODO
+0121-localinit.c [TODO]
+0122-localinit.c [TODO]
+0123-doubleconst.c [TODO]
+0124-enumstruct.c [TODO]
 0125-fundcl.c

@@ -7,12 +7,8 @@ ulimit -c 0
 while read i state
 do
 	printf "%s\t" $i
-	if test "$state" = TODO
-	then
-		echo '[TODO]'
-	else
-		rm -f a.out
-		(scc -Isysinclude -m qbe "$i" && ./a.out) 2>/dev/null &&
-			echo [OK] || echo [FAILED]
-	fi
+	printf "%s" $state
+	rm -f a.out
+	(scc -Isysinclude $CFLAGS "$i" && ./a.out) 2>/dev/null &&
+		echo [OK] || echo [FAILED]
 done
