@@ -224,7 +224,7 @@ emitconst(Node *np)
 		fprintf(outfp,
 		        "#%c%llX",
 		        np->type->letter,
-		        (long long) sym->u.i & ones(tp->size));
+		        (long long) u & ones(tp->size));
 		break;
 	default:
 		abort();
