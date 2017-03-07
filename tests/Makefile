@@ -1,3 +1,4 @@
+.POSIX:
 
 all clean:
 	cd error && make -e $@

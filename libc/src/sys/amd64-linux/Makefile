@@ -1,3 +1,4 @@
+.POSIX:
 
 OBJ = _brk.o _close.o _exit.o _lseek.o _open.o _read.o _write.o
 SRC = $(OBJ:.o=.s)
