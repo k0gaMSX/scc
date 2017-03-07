@@ -187,7 +187,7 @@ settool(int tool, char *infile, int nexttool)
 		addarg(tool, t->outfile);
 		break;
 	case TEEAS:
-		t->outfile = outfname(infile, "as");
+		t->outfile = outfname(infile, "s");
 		addarg(tool, t->outfile);
 		break;
 	case AS:
@@ -275,7 +275,7 @@ toolfor(char *file)
 			return CC2;
 		if (!strcmp(dot, ".qbe"))
 			return QBE;
-		if (!strcmp(dot, ".as"))
+		if (!strcmp(dot, ".s"))
 			return AS;
 		if (!strcmp(dot, ".o"))
 			return LD;
