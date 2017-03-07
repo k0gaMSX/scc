@@ -9,8 +9,13 @@ void
 exit(int status)
 {
 	void (**bp)(void);
+	int i;
 
-	for (bp = _atexitf; bp < &_atexitf[_ATEXIT_MAX] && *bp; ++bp)
-		(*bp)();
+	for (i = _ATEXIT_MAX-1; i >= 0; --i) {
+		if (bp = _atexit[i]) {
+			*_atexit[i] = NULL;
+			(*bp)();
+		}
+	}
 	_Exit(status);
 }
