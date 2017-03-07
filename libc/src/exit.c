@@ -3,19 +3,13 @@
 #include <stdlib.h>
 #undef exit
 
-void (*_atexitf[_ATEXIT_MAX])(void);
+void (*_exitf[_ATEXIT_MAX])(void);
+unsigned _exitn;
 
 void
 exit(int status)
 {
-	void (**bp)(void);
-	int i;
-
-	for (i = _ATEXIT_MAX-1; i >= 0; --i) {
-		if (bp = _atexit[i]) {
-			*_atexit[i] = NULL;
-			(*bp)();
-		}
-	}
+	while (_exitn > 0)
+		(*_exitf[--exitn])();
 	_Exit(status);
 }

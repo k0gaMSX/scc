@@ -1,19 +1,19 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <stdlib.h>
+#include <errno.h>
 #undef atexit
 
-extern void (*_atexitf[_ATEXIT_MAX])(void);
+extern void (*_exitf[_ATEXIT_MAX])(void);
+extern unsigned _exitn;
 
 int
 atexit(void (*fun)(void))
 {
-	void (**bp)(void);
-
-	for (bp = _atexitf; bp < &_atexitf[_ATEXIT_MAX] && *bp; ++bp)
-		/* nothing */;
-	if (bp == &_atexitf[_ATEXIT_MAX])
-		return 0;
-	*bp = fun;
-	return 1;
+	if (_exitn == _ATEXIT_MAX) {
+		errno = ENOMEN;
+		return -1;
+	}
+	_exitf[_exitn++] = fun;
+	return 0;
 }
