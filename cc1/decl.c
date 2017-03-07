@@ -351,7 +351,7 @@ static Symbol *dodcl(int rep,
                      Type *type);
 
 static int
-krargs(Symbol *pars[], unsigned *nparsp)
+krpars(Symbol *pars[], unsigned *nparsp)
 {
 	Symbol *sym;
 	int toomany = 0;
@@ -367,7 +367,7 @@ krargs(Symbol *pars[], unsigned *nparsp)
 			       yylval.sym->name);
 			continue;
 		}
-		if (npars < NR_FUNARG) {
+		if (npars < NR_FUNPARAM) {
 			++npars;
 			*pars++ = sym;
 			continue;
@@ -388,7 +388,7 @@ krfun(struct declarators *dp,
 
 
 	if (yytoken != ')')
-		toomany = krargs(pars, nparsp);
+		toomany = krpars(pars, nparsp);
 	else
 		*nparsp = 0;
 
@@ -434,7 +434,7 @@ ansifun(struct declarators *dp,
 		}
 
 		if (sym) {
-			if (npars == NR_FUNARG) {
+			if (npars == NR_FUNPARAM) {
 				toomany = 1;
 			} else {
 				npars++;
