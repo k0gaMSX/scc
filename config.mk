@@ -18,6 +18,7 @@ MANPREFIX = $(PREFIX)/share/man
 # if your system is not at least POSIX 2004 compatible, adjust CC
 # CC = c99
 # AR = ar
+AS = as
 
 # for Plan9 add -D_SUSV2_SOURCE
 SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
