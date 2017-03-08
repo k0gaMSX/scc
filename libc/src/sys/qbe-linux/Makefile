@@ -11,9 +11,6 @@ OBJ = $(OBJ_GEN)
 
 all: $(OBJ) system.mk
 
-.s.o:
-	$(AS) $< -o $@
-
 system.mk: Makefile
 	echo '$$(SYSOBJ)' = $(OBJ) > system.mk
 

@@ -30,6 +30,9 @@ SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
 
 SCC_LDFLAGS = $(LDFLAGS)
 
+.s.o:
+	$(AS) $< -o $@
+
 .c.o:
 	$(CC) $(SCC_CFLAGS) -o $@ -c $<
 
