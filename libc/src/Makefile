@@ -19,7 +19,7 @@ OBJ = $(LIBCOBJ) $(SYSOBJ)
 
 all: libc.a
 
-$(SYSOJB):
+$(SYSOBJ):
 	cd sys/$(ARCH)-$(SYS) && make all
 
 libc.a: $(OBJ)

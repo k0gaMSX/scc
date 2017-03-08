@@ -12,10 +12,11 @@ OBJ = $(OBJ_GEN)
 all: $(OBJ) system.mk
 
 system.mk: Makefile
-	echo '$$(SYSOBJ)' = $(OBJ) > system.mk
+	echo SYSOBJ = $(OBJ) > system.mk
 
 $(ASM_GEN): syscall.lst
 	awk -f syscall.awk < syscall.lst
 
 clean:
-	rm -f *.s *.o
+	rm -f *.o
+	rm -f $(ASM_GEN)
