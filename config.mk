@@ -5,6 +5,7 @@ VERSION = 0.1
 ARCHS = z80 i386-sysv amd64-sysv qbe
 # default architecure used in nested makefiles
 ARCH = qbe
+SYS = linux
 DRIVER = posix
 
 # Can be c89 or c99

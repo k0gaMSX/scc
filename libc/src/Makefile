@@ -2,6 +2,7 @@
 .POSIX:
 
 include ../../config.mk
+include sys/$(ARCH)-$(SYS)/system.mk
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           strrchr.o strcat.o strncmp.o strncpy.o strncat.o strcoll.o \
@@ -14,11 +15,17 @@ LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           printf.o fprintf.o vfprintf.o \
           realloc.o calloc.o malloc.o
 
+OBJ = $(LIBCOBJ) $(SYSOBJ)
+
 all: libc.a
 
-libc.a: $(LIBCOBJ)
+$(SYSOJB):
+	cd sys/$(ARCH)-$(SYS) && make all
+
+libc.a: $(OBJ)
 	$(AR) $(ARFLAGS) $@ $?
 	ranlib $@
 
 clean:
 	rm -f *.o libc.a
+	cd sys/$(ARCH)-$(SYS) && make clean
