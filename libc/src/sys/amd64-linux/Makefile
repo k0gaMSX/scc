@@ -3,8 +3,11 @@
 
 include ../../../../config.mk
 
-OBJ = _brk.o _close.o _exit.o _lseek.o _open.o _read.o _write.o
-SRC = $(OBJ:.o=.s)
+OBJ_GEN = _read.o _write.o _open.o _close.o _lseek.o _brk.o\
+          _rt_sigaction.o _getpid.o _exit.o _kill.o
+
+ASM_GEN = $(OBJ_GEN:.o=.s)
+OBJ = $(OBJ_GEN)
 
 all: $(OBJ)
 
