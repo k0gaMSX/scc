@@ -28,19 +28,19 @@ extern int toupper(int c);
 #define _X	0x40	/* hex char */
 #define _SP	0x80	/* hard space (0x20) */
 
-extern unsigned char _ctype[];
+extern unsigned char __ctype[];
 
-#define isalnum(c)  (_ctype[(unsigned char) c] & (_U|_L|_D))
-#define isalpha(c)  (_ctype[(unsigned char) c] & (_U|_L))
-#define iscntrl(c)  (_ctype[(unsigned char) c] & (_C))
-#define isdigit(c)  (_ctype[(unsigned char) c] & (_D))
-#define isgraph(c)  (_ctype[(unsigned char) c] & (_P|_U|_L|_D))
-#define islower(c)  (_ctype[(unsigned char) c] & (_L))
-#define isprint(c)  (_ctype[(unsigned char) c] & (_P|_U|_L|_D|_SP))
-#define ispunct(c)  (_ctype[(unsigned char) c] & (_P))
-#define isspace(c)  (_ctype[(unsigned char) c] & (_S))
-#define isupper(c)  (_ctype[(unsigned char) c] & (_U))
-#define isxdigit(c) (_ctype[(unsigned char) c] & (_D|_X))
+#define isalnum(c)  (__ctype[(unsigned char) c] & (_U|_L|_D))
+#define isalpha(c)  (__ctype[(unsigned char) c] & (_U|_L))
+#define iscntrl(c)  (__ctype[(unsigned char) c] & (_C))
+#define isdigit(c)  (__ctype[(unsigned char) c] & (_D))
+#define isgraph(c)  (__ctype[(unsigned char) c] & (_P|_U|_L|_D))
+#define islower(c)  (__ctype[(unsigned char) c] & (_L))
+#define isprint(c)  (__ctype[(unsigned char) c] & (_P|_U|_L|_D|_SP))
+#define ispunct(c)  (__ctype[(unsigned char) c] & (_P))
+#define isspace(c)  (__ctype[(unsigned char) c] & (_S))
+#define isupper(c)  (__ctype[(unsigned char) c] & (_U))
+#define isxdigit(c) (__ctype[(unsigned char) c] & (_D|_X))
 
 #define isascii(c) (((unsigned) c)<=0x7f)
 

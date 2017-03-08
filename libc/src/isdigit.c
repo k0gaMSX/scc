@@ -7,5 +7,5 @@
 int
 isdigit(int c)
 {
-	return _ctype[(unsigned char) c] & (_D);
+	return __ctype[(unsigned char) c] & (_D);
 }

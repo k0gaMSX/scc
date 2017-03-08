@@ -7,5 +7,5 @@
 int
 iscntrl(int c)
 {
-	return _ctype[(unsigned char) c] & (_C);
+	return __ctype[(unsigned char) c] & (_C);
 }

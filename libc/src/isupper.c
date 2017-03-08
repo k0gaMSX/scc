@@ -7,5 +7,5 @@
 int
 isupper(int c)
 {
-	return _ctype[(unsigned char) c] & _U;
+	return __ctype[(unsigned char) c] & _U;
 }

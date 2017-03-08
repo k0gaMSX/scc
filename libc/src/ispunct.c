@@ -7,5 +7,5 @@
 int
 ispunct(int c)
 {
-	return _ctype[(unsigned char) c] & (_P);
+	return __ctype[(unsigned char) c] & (_P);
 }

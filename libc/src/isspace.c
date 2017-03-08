@@ -7,5 +7,5 @@
 int
 isspace(int c)
 {
-	return _ctype[(unsigned char) c] & _S;
+	return __ctype[(unsigned char) c] & _S;
 }

@@ -7,5 +7,5 @@
 int
 isalpha(int c)
 {
-	return _ctype[(unsigned char) c] & (_U|_L);
+	return __ctype[(unsigned char) c] & (_U|_L);
 }
