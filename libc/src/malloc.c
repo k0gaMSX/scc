@@ -1,15 +1,19 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 
 #include "malloc.h"
+#include "syscall.h"
 
-extern void *_sbrk(intptr_t increment);
+#define MAXADDR ((char *)-1)
+#define ERRADDR ((char *)-1)
 
+extern char end[];
 static Header base = { .h.next = &base };
 static Header *freep = &base;
+static char *heap = end;
 
 /*
  * Run over the free list looking for the nearest previous
@@ -66,6 +70,22 @@ free(void *mem)
 	freep = prev;
 }
 
+static void *
+sbrk(uintptr_t inc)
+{
+	char *new, *old = heap;
+
+	if (old >= MAXADDR - inc)
+		return ERRADDR;
+
+	new = old + inc;
+	if (_brk(new) < 0)
+		return ERRADDR;
+	heap = new;
+
+	return old;
+}
+
 static Header *
 morecore(size_t nunits)
 {
@@ -75,8 +95,8 @@ morecore(size_t nunits)
 	if (nunits < NALLOC)
 		nunits = NALLOC;
 
-	rawmem = _sbrk(nunits * sizeof(Header));
-	if (rawmem == (void *)-1)
+	rawmem = sbrk(nunits * sizeof(Header));
+	if (rawmem == ERRADDR)
 		return NULL;
 
 	hp = (Header*)rawmem;
