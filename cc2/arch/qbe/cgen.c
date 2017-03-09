@@ -58,39 +58,25 @@ static char opasms[] = {
 	[OADD] = ASADDS,
 	[OSUB] = ASSUBS,
 	[OMUL] = ASMULS,
-	[OMOD] = ASMODS,
 	[ODIV] = ASDIVS,
-	[OSHL] = ASSHLS,
-	[OSHR] = ASSHRS,
 	[OLT] = ASLTS,
 	[OGT] = ASGTS,
 	[OLE] = ASLES,
 	[OGE] = ASGES,
 	[OEQ] = ASEQS,
 	[ONE] = ASNES,
-	[OBAND] = ASBANDS,
-	[OBOR] = ASBORS,
-	[OBXOR] = ASBXORS,
-	[OCPL] = ASCPLS
 };
 static char opasmd[] = {
 	[OADD] = ASADDD,
 	[OSUB] = ASSUBD,
 	[OMUL] = ASMULD,
-	[OMOD] = ASMODD,
 	[ODIV] = ASDIVD,
-	[OSHL] = ASSHLD,
-	[OSHR] = ASSHRD,
 	[OLT] = ASLTD,
 	[OGT] = ASGTD,
 	[OLE] = ASLED,
 	[OGE] = ASGED,
 	[OEQ] = ASEQD,
 	[ONE] = ASNED,
-	[OBAND] = ASBANDD,
-	[OBOR] = ASBORD,
-	[OBXOR] = ASBXORD,
-	[OCPL] = ASCPLD
 };
 
 extern Type int32type, uint32type, ptrtype;
@@ -515,8 +501,9 @@ rhs(Node *np, Node *ret)
 
 		setlabel(phi->u.sym);
 		return ret;
-        case OSHR:
         case OMOD:
+        case OSHR:
+		assert(tp->flags & INTF);
         case ODIV:
         case OLT:
         case OGT:
@@ -528,13 +515,14 @@ rhs(Node *np, Node *ret)
                  */
                 off = (tp->flags & SIGNF) == 0;
                 goto binary;
-        case OADD:
-        case OSUB:
-        case OMUL:
         case OSHL:
         case OBAND:
         case OBOR:
         case OBXOR:
+		assert(tp->flags & INTF);
+        case OADD:
+        case OSUB:
+        case OMUL:
         case OEQ:
         case ONE:
                 off = 0;
@@ -708,6 +696,7 @@ sethi(Node *np)
 		np->address = 11;
 		break;
 	case OCPL:
+		assert(np->type.flags & INTF);
 		np->op = OBXOR;
 		rp = constnode(NULL, ~(TUINT) 0, &np->type);
 		goto binary;
