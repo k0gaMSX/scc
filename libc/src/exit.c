@@ -10,6 +10,6 @@ void
 exit(int status)
 {
 	while (_exitn > 0)
-		(*_exitf[--exitn])();
+		(*_exitf[--_exitn])();
 	_Exit(status);
 }
