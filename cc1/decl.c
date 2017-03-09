@@ -360,7 +360,6 @@ krpars(Symbol *pars[], unsigned *nparsp)
 	do {
 		sym = yylval.sym;
 		expect(IDEN);
-		sym->type = inttype;
 		sym->flags |= SAUTO;
 		if ((sym = install(NS_IDEN, sym)) == NULL) {
 			errorp("redefinition of parameter '%s'",
@@ -466,6 +465,7 @@ static int
 funbody(Symbol *sym, Symbol *pars[])
 {
 	Type *tp;
+	Symbol **bp, *p;
 
 	if (!sym)
 		return 0;
@@ -493,6 +493,12 @@ funbody(Symbol *sym, Symbol *pars[])
 		while (yytoken != '{') {
 			dodcl(REP, parameter, NS_IDEN, sym->type);
 			expect(';');
+		}
+		for (bp = pars; p = *bp; ++bp) {
+			if (p->type == NULL) {
+				warn("type of '%s' defaults to int", p->name);
+				p->type = inttype;
+			}
 		}
 	}
 	if (sym->flags & STYPEDEF)
