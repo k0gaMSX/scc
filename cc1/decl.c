@@ -908,7 +908,7 @@ field(struct decl *dcl)
 static Symbol *
 dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 {
-	Symbol *sym, *pars[NR_FUNARG+1];
+	Symbol *sym, *pars[NR_FUNPARAM+1];
 	Type *base;
 	struct decl dcl;
 	struct declarators stack;
