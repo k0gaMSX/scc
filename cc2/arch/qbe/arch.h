@@ -43,7 +43,6 @@ enum asmop {
 	ASBANDW,
 	ASBORW,
 	ASBXORW,
-	ASCPLW,
 
 	ASADDL,
 	ASSUBL,
@@ -68,7 +67,6 @@ enum asmop {
 	ASBANDL,
 	ASBORL,
 	ASBXORL,
-	ASCPLL,
 
 	ASADDS,
 	ASSUBS,

@@ -31,7 +31,6 @@ static char opasmw[] = {
 	[OBAND] = ASBANDW,
 	[OBOR] = ASBORW,
 	[OBXOR] = ASBXORW,
-	[OCPL] = ASCPLW
 };
 
 static char opasml[] = {
@@ -51,7 +50,6 @@ static char opasml[] = {
 	[OBAND] = ASBANDL,
 	[OBOR] = ASBORL,
 	[OBXOR] = ASBXORL,
-	[OCPL] = ASCPLL
 };
 
 static char opasms[] = {
