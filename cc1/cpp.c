@@ -790,7 +790,7 @@ ppragmaln(void)
 	putchar('\n');
 	if (strcmp(file, filenam)) {
 		strcpy(file, filenam);
-		s = "#line %u %s\n";
+		s = "#line %u \"%s\"\n";
 	} else if (nline+1 != lineno) {
 		s = "#line %u\n";
 	} else {
