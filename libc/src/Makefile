@@ -2,7 +2,11 @@
 .POSIX:
 
 include ../../config.mk
-include sys/$(ARCH)-$(SYS)/system.mk
+
+SYSDIR = sys/$(ARCH)-$(SYS)
+SYSINC = $(SYSDIR)/system.mk
+
+-include $(SYSINC)
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           strrchr.o strcat.o strncmp.o strncpy.o strncat.o strcoll.o \
@@ -14,18 +18,26 @@ LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           localeconv.o atoi.o atexit.o exit.o \
           printf.o fprintf.o vfprintf.o \
           realloc.o calloc.o malloc.o
+LIBCSYSOBJ = $(SYSOBJ:%=$(SYSDIR)/%)
+OBJ = $(LIBCOBJ) $(LIBCSYSOBJ)
 
-OBJ = $(LIBCOBJ) $(SYSOBJ)
+all: all.bootstrap
+all.start: libc.a
 
-all: libc.a
+clean: clean.bootstrap
+clean.start:
+	rm -f *.o libc.a
+	cd $(SYSDIR) && $(MAKE) -e clean
 
-$(SYSOBJ):
-	cd sys/$(ARCH)-$(SYS) && make all
+all.bootstrap clean.bootstrap: $(SYSINC)
+	$(MAKE) -e $(@:%.bootstrap=%.start)
 
-libc.a: $(OBJ)
-	$(AR) $(ARFLAGS) $@ $?
+$(SYSINC): $(SYSDIR)/Makefile $(SYSDIR)/syscall.lst
+	cd $(SYSDIR) && $(MAKE) -e system.mk
+
+libc.a: $(SYSINC) $(OBJ)
+	$(AR) $(ARFLAGS) $@ $(OBJ)
 	ranlib $@
 
-clean:
-	rm -f *.o libc.a
-	cd sys/$(ARCH)-$(SYS) && make clean
+$(LIBCSYSOBJ):
+	cd $(SYSDIR) && $(MAKE) -e

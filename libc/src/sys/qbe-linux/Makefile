@@ -2,21 +2,32 @@
 .POSIX:
 
 include ../../../../config.mk
+-include system.mk
+-include sysgen.mk
 
-OBJ_GEN = _read.o _write.o _open.o _close.o _lseek.o _brk.o\
-          _rt_sigaction.o _getpid.o _Exit.o _kill.o
+GENASM = $(GENOBJ:.o=.s)
+OBJ =
 
-ASM_GEN = $(OBJ_GEN:.o=.s)
-OBJ = $(OBJ_GEN)
+all: all.bootstrap
+all.start: $(SYSOBJ)
 
-all: $(OBJ) system.mk
+clean: clean.bootstrap
+clean.start:
+	rm -f *.o $(GENASM) system.mk sysgen.mk
 
-system.mk: Makefile
-	echo SYSOBJ = $(OBJ) > system.mk
+all.bootstrap clean.bootstrap: system.mk sysgen.mk
+	$(MAKE) -e $(@:%.bootstrap=%.start)
 
-$(ASM_GEN): syscall.lst
+system.mk: Makefile syscall.lst
+	printf '%s ' 'SYSOBJ =' \
+	       "$$(awk '/^#/{next}{printf "%s.o ", $$2}' syscall.lst)" \
+	       $(OBJ) \
+	> $@
+
+sysgen.mk: syscall.lst
+	printf '%s ' 'GENOBJ =' \
+	       "$$(awk '/^#/{next}{printf "%s.o ", $$2}' syscall.lst)" \
+	> $@
+
+$(GENASM): syscall.lst
 	awk -f syscall.awk < syscall.lst
-
-clean:
-	rm -f *.o
-	rm -f $(ASM_GEN)
