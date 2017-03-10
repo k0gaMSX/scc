@@ -6,7 +6,7 @@ typedef unsigned long size_t;
 #endif
 
 #ifndef _WCHAR_T
-typedef short wchar_t;
+typedef int wchar_t;
 #define _WCHAR_T
 #endif
 

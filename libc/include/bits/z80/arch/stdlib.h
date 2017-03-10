@@ -9,7 +9,7 @@ typedef unsigned size_t;
 #define EXIT_SUCCESS 0
 
 #ifndef _WCHAR_T
-typedef long wchar_t;
+typedef short wchar_t;
 #define _WCHAR_T
 #endif
 
