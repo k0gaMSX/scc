@@ -11,6 +11,6 @@ typedef short wchar_t;
 #endif
 
 #ifndef _PTRDIFF_T
-typedef unsigned long ptrdiff_t;
+typedef long ptrdiff_t;
 #define _PTRDIFF_T
 #endif
