@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 
-typedef sig_atomic_t  int;
+typedef int sig_atomic_t;
 
 #define SIG_ERR    -1
 #define SIG_DFL     0
