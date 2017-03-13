@@ -281,6 +281,8 @@ toolfor(char *file)
 			return LD;
 		if (!strcmp(dot, ".a"))
 			return LD;
+	} else if (!strcmp(file, "-")) {
+		return CC1;
 	}
 
 	die("scc: do not recognize filetype of %s", file);
@@ -503,6 +505,9 @@ operand:
 
 	for (; *argv; --argc, ++argv)
 		goto operand;
+
+	if (Eflag && linkchain.n == 0)
+		newitem(&linkchain, "-");
 
 	if (Eflag && Mflag ||
             (Eflag || Mflag) && (Sflag || kflag) ||
