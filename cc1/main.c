@@ -90,7 +90,7 @@ main(int argc, char *argv[])
 	}
 
 	/*
-	 * we cannot initialize types until we have an
+	 * we cannot initialize arch until we have an
 	 * output stream, because we maybe want to emit new types
 	 */
 	iarch();
