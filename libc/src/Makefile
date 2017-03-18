@@ -6,7 +6,8 @@ include ../../config.mk
 SYSDIR = sys/$(ARCH)-$(SYS)
 SYSINC = $(SYSDIR)/system.mk
 
--include $(SYSINC)
+SYSINCLUDE = /dev/null
+include $(SYSINCLUDE)
 
 LIBCOBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
           strrchr.o strcat.o strncmp.o strncpy.o strncat.o strcoll.o \
@@ -27,10 +28,10 @@ all.start: libc.a
 clean: clean.bootstrap
 clean.start:
 	rm -f *.o libc.a
-	cd $(SYSDIR) && $(MAKE) -e clean
+	cd $(SYSDIR) && $(MAKE) clean
 
 all.bootstrap clean.bootstrap: $(SYSINC)
-	$(MAKE) -e $(@:%.bootstrap=%.start)
+	$(MAKE) -e SYSINCLUDE="$(SYSINC)" $(@:%.bootstrap=%.start)
 
 $(SYSINC): $(SYSDIR)/Makefile $(SYSDIR)/syscall.lst
 	cd $(SYSDIR) && $(MAKE) -e system.mk
@@ -40,4 +41,4 @@ libc.a: $(SYSINC) $(OBJ)
 	ranlib $@
 
 $(LIBCSYSOBJ):
-	cd $(SYSDIR) && $(MAKE) -e
+	cd $(SYSDIR) && $(MAKE)

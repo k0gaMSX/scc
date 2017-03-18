@@ -2,8 +2,11 @@
 .POSIX:
 
 include ../../../../config.mk
--include system.mk
--include sysgen.mk
+
+SYSTEMINC = /dev/null
+include $(SYSTEMINC)
+SYSGENINC = /dev/null
+include $(SYSGENINC)
 
 GENASM = $(GENOBJ:.o=.s)
 OBJ =
@@ -16,7 +19,8 @@ clean.start:
 	rm -f *.o $(GENASM) system.mk sysgen.mk
 
 all.bootstrap clean.bootstrap: system.mk sysgen.mk
-	$(MAKE) -e $(@:%.bootstrap=%.start)
+	$(MAKE) -e SYSTEMINC=system.mk SYSGENINC=sysgen.mk \
+	        $(@:%.bootstrap=%.start)
 
 system.mk: Makefile syscall.lst
 	printf '%s ' 'SYSOBJ =' \
