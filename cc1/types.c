@@ -24,37 +24,37 @@ static struct limits limits[][4] = {
 	{
 		{	/* 0 = unsigned 1 byte */
 			.min.i = 0,
-			.max.i = 255
+			.max.i = 0xff
 		},
 		{	/* 1 = unsigned 2 bytes */
 			.min.i = 0,
-			.max.i = 65535u
+			.max.i = 0xffff
 		},
 		{	/* 2 = unsigned 4 bytes */
 			.min.i = 0,
-			.max.i = 4294967295u
+			.max.i = 0xffffffff
 		},
 		{	/* 3 = unsigned 8 bytes */
 			.min.i = 0,
-			.max.i = 18446744073709551615u
+			.max.i = 0xffffffffffffffff
 		}
 	},
 	{
 		{	/* 0 = signed 1 byte */
-			.min.i = -127,
-			.max.i = 127
+			.min.i = -0x7f-1,
+			.max.i = 0x7f
 		},
 		{	/* 1 = signed 2 byte */
-			.min.i = -32767,
-			.max.i = 32767
+			.min.i = -0x7fff-1,
+			.max.i = 0x7fff
 		},
 		{	/* 2 = signed 4 byte */
-			.min.i = -2147483647L,
-			.max.i = 2147483647L
+			.min.i = -0x7fffffff-1,
+			.max.i = 0x7fffffff
 		},
 		{	/* 3 = signed 8 byte */
-			.min.i = -9223372036854775807LL,
-			.max.i = 9223372036854775807LL,
+			.min.i = -0x7fffffffffffffff-1,
+			.max.i = 0x7fffffffffffffff,
 		}
 	},
 	{
