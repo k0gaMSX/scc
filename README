@@ -53,6 +53,14 @@ grammar ambiguous because it is impossible to differentiate between:
         (int (f))  -> function returning int with one parameter of type f
         (int (f))  -> integer variable f
 
+If you don't believe me try this code:
+
+int
+f(int g())
+{
+	return g();
+}
+
 Function type names are stupid, because they are used as an alias
 of the function pointer types, but it is stupid that something
 like sizeof(int (int)) is not allowed (because here it should be
@@ -71,3 +79,11 @@ have external linkage and file scope. The type of the variable
 is the composition of all the definitions find in the file. The exact
 rules are a bit complex (3.7.2), and SCC ignores  them at this moment
 and it does not allow any definition of variables with incomplete type.
+
+If you don't believe me try this code:
+
+struct foo x;
+
+struct foo {
+	int i;
+};
