@@ -16,6 +16,7 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
 
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
+#include "../../inc/syslibs.h"
 
 enum {
 	CC1,
@@ -118,6 +119,10 @@ inittool(int tool)
 		addarg(tool, "-o");
 		t->outfile = outfile ? outfile : xstrdup("a.out");
 		addarg(tool, t->outfile);
+		for (n = 0; syslibs[n]; ++n) {
+			addarg(tool, "-L");
+			addarg(tool, syslibs[n]);
+		}
 		break;
 	case AS:
 		addarg(tool, "-o");

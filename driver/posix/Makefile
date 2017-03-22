@@ -7,13 +7,16 @@ OBJS = scc.o
 
 all: scc
 
-$(OBJS): ../../inc/cc.h ../../inc/arg.h
-
-../../lib/libcc.a:
-	cd ../../lib && $(MAKE) -e
+$(OBJS): ../../inc/cc.h ../../inc/arg.h ../../inc/syslibs.h
 
 scc: $(OBJS) ../../lib/libcc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJS) ../../lib/libcc.a -o $@
+
+../../inc/syslibs.h: ../../inc/syslibs.def.h
+	cp -f ../../inc/syslibs.def.h ../../inc/syslibs.h
+
+../../lib/libcc.a:
+	cd ../../lib && $(MAKE) -e
 
 clean:
 	rm -f $(OBJS)
