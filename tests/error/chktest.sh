@@ -11,11 +11,10 @@ rm -f test.log
 while read i state
 do
 	echo $i >> test.log
-	printf "%s\t" "$i"
-	printf "%s" "$state"
+	printf "%s\t%s" $i $state
 
-	scc $CFLAGS -w -c "$i" 2> $err
-	echo "/^PATTERN/+;/^\./-w \"$chk\"" | ed -s "$i"
-	diff -c "$chk" "$err" >> test.log  && echo [OK] || echo [FAILED]
+	scc $CFLAGS -w -c $i 2> $err
+	echo "/^PATTERN/+;/^\./-w $chk" | ed -s $i
+	diff -c $chk $err >> test.log  && echo [OK] || echo [FAILED]
 	rm -f *.o
 done
