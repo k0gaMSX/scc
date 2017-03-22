@@ -3,6 +3,7 @@ VERSION = 0.1
 
 ## Customize below to fit your system
 ARCHS = z80 i386-sysv amd64-sysv qbe
+SYSS = linux openbsd
 # default architecure used in nested makefiles
 ARCH = qbe
 SYS = linux

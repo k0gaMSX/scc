@@ -4,7 +4,7 @@
 
 include config.mk
 
-DIRS  = lib cc1 cc2 driver/$(DRIVER) libc/src
+DIRS  = lib cc1 cc2 crt driver/$(DRIVER) libc/src
 
 all: scc-driver
 	for i in $(ARCHS); \
@@ -17,13 +17,19 @@ scc-driver:
 	ln -f driver/$(DRIVER)/scc bin/scc
 
 $(ARCHS):
-	pwd=$$PWD ;\
+	pwd=$$PWD; \
 	for i in cc1 cc2; \
 	do \
 		cd $$i; \
 		ARCH=$@ $(MAKE) -e $$i-$@ || exit; \
-		cd $$pwd ;\
+		cd $$pwd; \
 	done
+	cd crt; \
+	for i in $(SYSS); \
+	do \
+		ARCH=$@ SYS=$$i $(MAKE) -e || exit; \
+	done; \
+	cd $$pwd;
 	ln -f cc1/cc1-$@ bin/
 	ln -f cc2/cc2-$@ bin/
 
@@ -39,9 +45,11 @@ install: all
 	mkdir -p $(DESTDIR)/$(PREFIX)/libexec/scc/
 	mkdir -p $(DESTDIR)/$(PREFIX)/bin/
 	mkdir -p $(DESTDIR)/$(PREFIX)/include/scc/
+	mkdir -p $(DESTDIR)/$(PREFIX)/lib/scc/
 	cp -f bin/cc?-* $(DESTDIR)/$(PREFIX)/libexec/scc/
 	cp -f bin/cpp.sh $(DESTDIR)/$(PREFIX)/bin/scpp
 	cp -f bin/scc $(DESTDIR)/$(PREFIX)/bin/
+	cp -f crt/crt-*.o $(DESTDIR)/$(PREFIX)/lib/scc/
 	cp -fr libc/include/* $(DESTDIR)/$(PREFIX)/include/scc/
 	find $(DESTDIR)/$(PREFIX)/include/scc/ -type f | xargs chmod 644
 	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
@@ -50,6 +58,7 @@ install: all
 uninstall:
 	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
+	rm -rf $(DESTDIR)/$(PREFIX)/lib/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scpp
 
