@@ -4,7 +4,7 @@
 
 include config.mk
 
-DIRS  = lib cc1 cc2 crt driver/$(DRIVER) libc/src
+DIRS  = lib cc1 cc2 crt driver/$(DRIVER)
 
 all: scc-driver
 	for i in $(ARCHS); \
