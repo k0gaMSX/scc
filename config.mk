@@ -24,6 +24,7 @@ AS = as
 
 # for Plan9 add -D_SUSV2_SOURCE
 SCC_CFLAGS = -DARCH=\"$(ARCH)\" \
+             -DSYS=\"$(SYS)\" \
              $(CSTDINC) \
              -DPREFIX=\"$(PREFIX)\" \
              -g \

@@ -76,4 +76,4 @@ clean:
 	rm -f bin/cc* bin/scc
 
 distclean: clean
-	rm -f inc/sysincludes.h inc/syslibs.h
+	rm -f inc/sysincludes.h inc/syslibs.h inc/ldflags.h

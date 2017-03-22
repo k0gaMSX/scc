@@ -17,6 +17,7 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 #include "../../inc/syslibs.h"
+#include "../../inc/ldflags.h"
 
 enum {
 	CC1,
@@ -47,12 +48,12 @@ static struct tool {
 	[QBE]    = { .bin = "qbe",   .cmd = "qbe", },
 	[TEEAS]  = { .bin = "tee",   .cmd = "tee", },
 	[AS]     = { .bin = "as",    .cmd = "as", },
-	[LD]     = { .bin = "gcc",   .cmd = "gcc", }, /* TODO use ld */
+	[LD]     = { .bin = "ld",    .cmd = "ld", },
 	[STRIP]  = { .bin = "strip", .cmd = "strip", },
 };
 
 char *argv0;
-static char *arch, *execpath, *objfile, *outfile;
+static char *arch, *sys, *execpath, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
@@ -98,6 +99,7 @@ static int
 inittool(int tool)
 {
 	struct tool *t = &tools[tool];
+	char *crt;
 	int n;
 
 	if (t->init)
@@ -115,7 +117,8 @@ inittool(int tool)
 			die("scc: target tool path too long");
 		break;
 	case LD:
-		addarg(tool, "-no-pie");
+		for (n = 0; ldflags[n]; ++n)
+			addarg(tool, ldflags[n]);
 		addarg(tool, "-o");
 		t->outfile = outfile ? outfile : xstrdup("a.out");
 		addarg(tool, t->outfile);
@@ -123,6 +126,14 @@ inittool(int tool)
 			addarg(tool, "-L");
 			addarg(tool, syslibs[n]);
 		}
+		n = snprintf(NULL, 0, "%s-%s-%s.o",
+		             PREFIX "/lib/scc/crt", arch, sys);
+		if (n < 0)
+			die("scc: wrong crt file name");
+		crt = xmalloc(++n);
+		n = snprintf(crt, n, "%s-%s-%s.o",
+		             PREFIX "/lib/scc/crt", arch, sys);
+		addarg(tool, crt);
 		break;
 	case AS:
 		addarg(tool, "-o");
@@ -432,6 +443,8 @@ main(int argc, char *argv[])
 
 	if (!(arch = getenv("ARCH")))
 		arch = ARCH;
+	if (!(sys = getenv("SYS")))
+		sys = SYS;
 	if (!(execpath = getenv("SCCEXECPATH")))
 		execpath = PREFIX "/libexec/scc";
 
@@ -492,6 +505,9 @@ main(int argc, char *argv[])
 	case 's':
 		sflag = 1;
 		break;
+	case 't':
+		sys = EARGF(usage());
+		break;
 	case 'W':
 		EARGF(usage());
 	case 'w':
@@ -535,6 +551,7 @@ operand:
 		return failure;
 
 	if (link && !failure) {
+		addarg(LD, xstrdup("-lc"));
 		spawn(settool(LD, NULL, LAST_TOOL));
 		validatetools();
 	}
