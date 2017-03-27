@@ -17,6 +17,7 @@ static char sccsid[] = "@(#) ./cc1/decl.c";
 #define NOQUIET 0
 
 #define NR_DCL_TYP (NR_DECLARATORS+NR_FUNPARAM)
+#define NR_DCL_SYM (NR_DECLARATORS+NR_FUNPARAM+1)
 
 struct declarators {
 	unsigned nr;
@@ -30,6 +31,7 @@ struct declarators {
 		TINT  nelem;
 		Symbol *sym;
 		Type **tpars;
+		Symbol **pars;
 	} d [NR_DECLARATORS];
 };
 
@@ -40,8 +42,11 @@ struct decl {
 	Symbol *sym;
 	Type *type;
 	Type *parent;
+	Symbol **pars;
+	Symbol *bufpars[NR_DCL_SYM];
 	Type *buftpars[NR_DCL_TYP];
 };
+
 
 static void
 endfundcl(Type *tp, Symbol **pars)
@@ -79,6 +84,7 @@ push(struct declarators *dp, int op, ...)
 	case FTN:
 		p->nelem = va_arg(va, unsigned);
 		p->tpars = va_arg(va, Type **);
+		p->pars = va_arg(va, Symbol **);
 		break;
 	case IDEN:
 		p->sym = va_arg(va, Symbol *);
@@ -102,7 +108,8 @@ pop(struct declarators *dp, struct decl *dcl)
 	}
 
 	if (dcl->type->op == FTN)
-		endfundcl(dcl->type, dp->pars);
+		endfundcl(dcl->type, dcl->pars);
+	dcl->pars = p->pars;
 
 	dcl->type = mktype(dcl->type, p->op, p->nelem, p->tpars);
 	return 1;
@@ -351,7 +358,7 @@ static Symbol *dodcl(int rep,
                      Type *type);
 
 static int
-krpars(Symbol *pars[], unsigned *nparsp)
+krpars(struct declarators *dp)
 {
 	Symbol *sym;
 	int toomany = 0;
@@ -368,30 +375,25 @@ krpars(Symbol *pars[], unsigned *nparsp)
 		}
 		if (npars < NR_FUNPARAM) {
 			++npars;
-			*pars++ = sym;
+			*dp->pars++ = sym;
 			continue;
 		}
 		if (!toomany)
 		toomany = 1;
 	} while (accept(','));
 
-	*nparsp = npars;
 	return toomany;
 }
 
-static void
-krfun(struct declarators *dp,
-      Symbol *pars[], unsigned *ntypep, unsigned *nparsp)
+static unsigned
+krfun(struct declarators *dp)
 {
 	int toomany = 0;
 
 
 	if (yytoken != ')')
-		toomany = krpars(pars, nparsp);
-	else
-		*nparsp = 0;
+		toomany = krpars(dp);
 
-	*ntypep = 1;
 	if (dp->nr_types == NR_DCL_TYP) {
 		toomany = 1;
 	} else {
@@ -401,11 +403,11 @@ krfun(struct declarators *dp,
 
 	if (toomany)
 		errorp("too many parameters in function definition");
+	return 1;
 }
 
-static void
-ansifun(struct declarators *dp,
-        Symbol *pars[], unsigned *ntypep, unsigned *nparsp)
+static unsigned
+ansifun(struct declarators *dp)
 {
 	Symbol *sym;
 	unsigned npars, ntype, toomany, distoomany, voidpar;
@@ -437,7 +439,7 @@ ansifun(struct declarators *dp,
 				toomany = 1;
 			} else {
 				npars++;
-				*pars++ = sym;
+				*dp->pars++ = sym;
 			}
 		}
 
@@ -457,8 +459,7 @@ ansifun(struct declarators *dp,
 		errorp("too many parameters in function definition");
 	if (voidpar && ntype > 1)
 		errorp("'void' must be the only parameter");
-	*ntypep = ntype;
-	*nparsp = npars;
+	return ntype;
 }
 
 static int
@@ -525,8 +526,9 @@ static void
 fundcl(struct declarators *dp)
 {
 	Type **types = dp->tpars;
-	unsigned npars, ntypes, typefun;
-	void (*fun)(struct declarators *, Symbol **, unsigned *, unsigned *);
+	unsigned ntypes, typefun;
+	Symbol **pars = dp->pars;
+	unsigned (*fun)(struct declarators *);
 
 	pushctx();
 	expect('(');
@@ -537,11 +539,11 @@ fundcl(struct declarators *dp)
 		typefun = FTN;
 		fun = ansifun;
 	}
-	(*fun)(dp, dp->pars, &ntypes, &npars);
-	dp->pars[npars] = NULL;
+	ntypes = (*fun)(dp);
+	*dp->pars++= NULL;
 	expect(')');
 
-	push(dp, typefun, ntypes, types);
+	push(dp, typefun, ntypes, types, pars);
 }
 
 static void declarator(struct declarators *dp);
@@ -908,7 +910,7 @@ field(struct decl *dcl)
 static Symbol *
 dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 {
-	Symbol *sym, *pars[NR_FUNPARAM+1];
+	Symbol *sym;
 	Type *base;
 	struct decl dcl;
 	struct declarators stack;
@@ -921,16 +923,16 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 		dcl.type = base;
 		stack.nr_types = stack.nr = 0;
 		stack.tpars = dcl.buftpars;
+		stack.pars = dcl.bufpars;
 		stack.dcl = &dcl;
 		stack.ns = ns;
-		stack.pars = pars;
 
 		declarator(&stack);
 
 		while (pop(&stack, &dcl))
 			/* nothing */;
 		sym = (*fun)(&dcl);
-		if (funbody(sym, pars))
+		if (funbody(sym, dcl.pars))
 			return sym;
 	} while (rep && accept(','));
 
