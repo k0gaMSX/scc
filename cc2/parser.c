@@ -154,7 +154,7 @@ static void *stack[STACKSIZ], **sp = stack;
 static Node *
 push(void *elem)
 {
-	if (sp == stack[STACKSIZ])
+	if (sp == &stack[STACKSIZ])
 		error(ESTACKO);
 	return *sp++ = elem;
 }
@@ -387,7 +387,7 @@ bswitch(char *token, union tokenop u)
 	struct swtch *cur;
 	Node *np = newnode(u.op);
 
-	if (swp == &swtbl[NR_BLOCK+1])
+	if (swp == &swtbl[NR_BLOCK])
 		error(EWTACKO);
 	cur = swp++;
 	cur->nr = 0;
