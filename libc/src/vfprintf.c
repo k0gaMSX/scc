@@ -34,10 +34,10 @@ printn(FILE * restrict fp, int n, int b, int sign)
 int
 vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 {
-	int c, base, sign, cnt;
+	int c, base, sign, cnt = 0;
 	char *s;
 
-	while (( c = *fmt++) != '\0') {
+	while ((c = *fmt++) != '\0') {
 		if (c == '%') {
 			sign = 0;
 			switch (*fmt++) {
