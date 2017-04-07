@@ -219,7 +219,7 @@ emitconst(Node *np)
 		printf("%ld", (long) np->u.i & 0xFFFFFFFF);
 		break;
         case 8:
-                printf("%lld", (long long) np->u.i & 0xFFFFFFFF);
+                printf("%lld", (long long) np->u.i);
                 break;
 	default:
 		abort();
