@@ -1,6 +1,6 @@
 #!/bin/sh
 
-trap 'tabs -8;rm -f a.out' 0 1 2 3 15
+trap 'tabs -8;rm -f a.out; exit 1' 0 1 2 3 15
 tabs 40
 ulimit -c 0
 rm -f test.log
