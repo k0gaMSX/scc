@@ -389,6 +389,7 @@ foldunary(Node *np, Node *l)
 	case OCAST:
 		if (op != OCAST)
 			return foldcast(np, l);
+		/* TODO: This is wrong: (float)(int) 7.2 */
 		DBG("FOLD unary collapse %d", np->op);
 		np->left = l->left;
 		l->left = NULL;
