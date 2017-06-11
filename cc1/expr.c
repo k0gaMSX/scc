@@ -120,6 +120,8 @@ set_p1_p2:
 static int
 null(Node *np)
 {
+	if (np->op == OCAST)
+		np = simplify(np);
 	if (!(np->flags&NCONST) || np->type != pvoidtype)
 		return 0;
 	return cmpnode(np, 0);
