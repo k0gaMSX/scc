@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc1/fold.c";
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -428,10 +429,7 @@ fold(Node *np)
 	Node *p, *lp = np->left, *rp = np->right;
 	Type *tp = np->type;
 
-	if (!lp && !rp)
-		return np;
-	if (!rp && (p = foldunary(np, lp)) != NULL)
-		return p;
+	assert(lp && rp);
 	if ((op == ODIV || op == OMOD) && cmpnode(rp, 0)) {
 		warn("division by 0");
 		return NULL;
@@ -657,6 +655,21 @@ simplify(Node *np)
 		return foldternary(np, l, r);
 	case OCALL:
 	case OPAR:
+	case OSYM:
+		return np;
+	case OSNEG:
+	case OCPL:
+	case OADDR:
+	case OPTR:
+	case INC:
+	case DEC:
+	case OASSIGN:
+	case OA_ADD:
+	case OA_SUB:
+	case OCAST:
+		assert(!r);
+		if ((p = foldunary(np, l)) != NULL)
+			return p;
 		return np;
 	default:
 		commutative(np, l, r);
