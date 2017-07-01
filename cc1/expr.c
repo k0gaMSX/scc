@@ -827,16 +827,36 @@ postfix(Node *lp)
 	}
 }
 
+static Node *
+defined(void)
+{
+	Symbol *sym;
+	int paren;
+
+	disexpand = 1;
+	next();
+	paren = accept('(');
+	if (yytoken != IDEN && yytoken != TYPEIDEN)
+		cpperror("operator 'defined' requires an identifier");
+	if (yytoken == TYPEIDEN || !(yylval.sym->flags & SDECLARED))
+		sym = zero;
+	else
+		sym = one;
+	disexpand = 0;
+	next();
+	if (paren)
+		expect(')');
+	return constnode(sym);
+}
+
 static Node *cast(int);
 
 static Node *
 unary(int needdecay)
 {
 	Node *(*fun)(int, Node *), *np;
-	Symbol *sym;
 	int op;
 	Type *tp;
-	int paren;
 
 	switch (yytoken) {
 	case '!': op = 0;     fun = negation;     break;
@@ -859,24 +879,9 @@ unary(int needdecay)
 		goto chk_decay;
 	case IDEN:
 	case TYPEIDEN:
-		if (lexmode != CPPMODE || strcmp(yylval.sym->name, "defined"))
-			goto call_postfix;
-		disexpand = 1;
-		next();
-		paren = accept('(');
-		if (yytoken != IDEN && yytoken != TYPEIDEN)
-			cpperror("operator 'defined' requires an identifier");
-		if (yytoken == TYPEIDEN || !(yylval.sym->flags & SDECLARED))
-			sym = zero;
-		else
-			sym = one;
-		disexpand = 0;
-		next();
-		if (paren)
-			expect(')');
-		return constnode(sym);
+		if (lexmode == CPPMODE && !strcmp(yylval.sym->name, "defined"))
+			return defined();
 	default:
-	call_postfix:
 		np = postfix(primary());
 		goto chk_decay;
 	}
