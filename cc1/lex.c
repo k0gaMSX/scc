@@ -77,7 +77,7 @@ setloc(char *fname, unsigned line)
 
 	if ((len = strlen(fname)) >= FILENAME_MAX)
 		die("file name too long: '%s'", fname);
-	memcpy(filenam, fname, len);
+	memmove(filenam, fname, len);
 	filenam[len] = '\0';
 
 	free(input->filenam);
