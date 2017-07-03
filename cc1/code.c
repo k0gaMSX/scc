@@ -337,7 +337,7 @@ static void
 emitdesig(Node *np, Type *tp)
 {
 	Symbol *sym;
-	size_t n;
+	size_t n; /* TODO: This should be SIZET */
 	Node *aux;
 	Type *p;
 
@@ -362,7 +362,11 @@ emitdesig(Node *np, Type *tp)
 		aux = (sym) ? *sym->u.init : convert(constnode(zero), tp, 0);
 		emitexp(OEXPR, aux);
 		break;
-	/* TODO: case UNION: */
+	case UNION:
+		n = tp->n.elem-1;
+		aux = (sym) ? sym->u.init[n] : NULL;
+		emitdesig(aux, tp->p.fields[n]->type);
+		break;
 	case STRUCT:
 	case ARY:
 		for (n = 0; n < tp->n.elem; ++n) {
