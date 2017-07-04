@@ -126,11 +126,16 @@ killsym(Symbol *sym)
 	if (sym->ns == NS_TAG)
 		sym->type->prop &= ~TDEFINED;
 	unlinkhash(sym);
-	if ((name = sym->name) != NULL && sym->ns != NS_CPP) {
-		if ((f & (SUSED|SGLOBAL|SDECLARED)) == SDECLARED)
-			warn("'%s' defined but not used", name);
-		if ((f & SDEFINED) == 0 && sym->ns == NS_LABEL)
-			errorp("label '%s' is not defined", name);
+	if ((name = sym->name) != NULL) {
+		switch (sym->ns) {
+		case NS_LABEL:
+			if ((f & SDEFINED) == 0)
+				errorp("label '%s' is not defined", name);
+		case NS_IDEN:
+			if ((f & (SUSED|SGLOBAL|SDECLARED)) == SDECLARED)
+				warn("'%s' defined but not used", name);
+			break;
+		}
 	}
 	free(name);
 	free(sym);
