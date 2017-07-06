@@ -289,6 +289,42 @@ initlist(Type *tp)
 	return mkcompound(&in);
 }
 
+static void
+autoinit(Symbol *sym, Node *np)
+{
+	Symbol *hidden;
+	Type *tp = sym->type;
+	size_t n; /* FIXME: It should be SIZET */
+
+	if (!(np->flags & NCONST))
+		abort(); /* TODO: Implement not constant initializers */
+
+repeat:
+	switch (tp->op) {
+	case UNION:
+		n = tp->n.elem-1;
+		tp = tp->p.fields[n]->type;
+		np = np->sym->u.init[n];
+		goto repeat;
+	case ARY:
+	case STRUCT:
+		hidden = newsym(NS_IDEN, NULL);
+		hidden->type = sym->type;
+		hidden->flags |= SLOCAL | SHASINIT;
+		emit(ODECL, hidden);
+		emit(OINIT, np);
+		emit(ODECL, sym);
+		emit(OEXPR,
+		     node(OASSIGN, tp, varnode(sym), varnode(hidden)));
+		break;
+	default:
+		emit(ODECL, sym);
+		np = node(OASSIGN, tp, varnode(sym), np);
+		emit(OEXPR, np);
+		break;
+	}
+}
+
 void
 initializer(Symbol *sym, Type *tp)
 {
@@ -318,8 +354,6 @@ initializer(Symbol *sym, Type *tp)
 		errorp("'%s' has both '%s' and initializer",
 		       sym->name, (flags&SEXTERN) ? "extern" : "typedef");
 	} else {
-		emit(ODECL, sym);
-		np = node(OASSIGN, tp, varnode(sym), np);
-		emit(OEXPR, np);
+		autoinit(sym, np);
 	}
 }
