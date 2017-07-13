@@ -364,8 +364,8 @@ emitdesig(Node *np, Type *tp)
 		break;
 	case UNION:
 		n = tp->n.elem-1;
-		aux = (sym) ? sym->u.init[n] : NULL;
-		emitdesig(aux, tp->p.fields[n]->type);
+		aux = (sym) ? sym->u.init[0] : NULL;
+		emitdesig(aux, aux->type);
 		break;
 	case STRUCT:
 	case ARY:

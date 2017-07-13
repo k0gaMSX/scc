@@ -322,11 +322,8 @@ autoinit(Symbol *sym, Node *np)
 repeat:
 	switch (tp->op) {
 	case UNION:
-		if (!(np->flags & NCONST))
-			abort(); /* TODO */
-		n = tp->n.elem-1;
-		tp = tp->p.fields[n]->type;
-		np = np->sym->u.init[n];
+		np = np->sym->u.init[0];
+		tp = np->type;
 		goto repeat;
 	case ARY:
 	case STRUCT:
