@@ -296,18 +296,20 @@ autoinit(Symbol *sym, Node *np)
 	Type *tp = sym->type;
 	size_t n; /* FIXME: It should be SIZET */
 
-	if (!(np->flags & NCONST))
-		abort(); /* TODO: Implement not constant initializers */
 
 repeat:
 	switch (tp->op) {
 	case UNION:
+		if (!(np->flags & NCONST))
+			abort(); /* TODO */
 		n = tp->n.elem-1;
 		tp = tp->p.fields[n]->type;
 		np = np->sym->u.init[n];
 		goto repeat;
 	case ARY:
 	case STRUCT:
+		if (!(np->flags & NCONST))
+			abort(); /* TODO */
 		hidden = newsym(NS_IDEN, NULL);
 		hidden->type = sym->type;
 		hidden->flags |= SLOCAL | SHASINIT;
