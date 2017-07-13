@@ -667,6 +667,7 @@ simplify(Node *np)
 	case OA_ADD:
 	case OA_SUB:
 	case OCAST:
+	case ONEG:
 		assert(!r);
 		if ((p = foldunary(np, l)) != NULL)
 			return p;
