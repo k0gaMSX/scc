@@ -656,6 +656,17 @@ simplify(Node *np)
 	case OCALL:
 	case OPAR:
 	case OSYM:
+	case OASSIGN:
+	case OA_MUL:
+	case OA_DIV:
+	case OA_MOD:
+	case OA_ADD:
+	case OA_SUB:
+	case OA_SHL:
+	case OA_SHR:
+	case OA_AND:
+	case OA_XOR:
+	case OA_OR:
 		return np;
 	case OSNEG:
 	case OCPL:
@@ -663,9 +674,6 @@ simplify(Node *np)
 	case OPTR:
 	case INC:
 	case DEC:
-	case OASSIGN:
-	case OA_ADD:
-	case OA_SUB:
 	case OCAST:
 	case ONEG:
 		assert(!r);
