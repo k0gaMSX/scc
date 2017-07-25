@@ -19,22 +19,19 @@ struct designator {
 };
 
 struct init {
-	Type *type;
-	size_t pos;
-	size_t max;
+	TUINT pos;
+	TUINT max;
 	struct designator *tail;
 	struct designator *head;
 };
 
-
 static TINT
-arydesig(Init *ip)
+arydesig(Type *tp, Init *ip)
 {
 	TINT npos;
 	Node *np;
-	Type *tp = ip->type;
 
-	if (ip->type->op != ARY)
+	if (tp->op != ARY)
 		errorp("array index in non-array initializer");
 	next();
 	np = constexpr();
@@ -49,11 +46,10 @@ arydesig(Init *ip)
 }
 
 static TINT
-fielddesig(Init *ip)
+fielddesig(Type *tp, Init *ip)
 {
 	int ons;
 	Symbol *sym, **p;
-	Type *tp = ip->type;
 
 	if (!(tp->prop & TAGGREG))
 		errorp("field name not in record or union initializer");
@@ -64,6 +60,7 @@ fielddesig(Init *ip)
 	if (yytoken != IDEN)
 		unexpected();
 	sym = yylval.sym;
+	next();
 	if ((sym->flags & SDECLARED) == 0) {
 		errorp("unknown field '%s' specified in initializer",
 		      sym->name);
@@ -71,24 +68,49 @@ fielddesig(Init *ip)
 	}
 	for (p = tp->p.fields; *p != sym; ++p)
 		/* nothing */;
-	next();
 	return p - tp->p.fields;
 }
 
 static Init *
-designation(Init *ip)
+init(Init *ip)
 {
-	TINT (*fun)(Init *);
+	ip->tail = ip->head = NULL;
+	ip->pos = ip->max = 0;
+	return ip;
+}
 
-	switch (yytoken) {
-	case '[': fun = arydesig;   break;
-	case '.': fun = fielddesig; break;
-	default:  return ip;
+static Node *
+str2ary(Type *tp)
+{
+	Node *np;
+	Type *btp = tp->type;;
+	Symbol *sym;
+	size_t len;
+	char *s;
+
+	np = assign();
+	sym = np->left->sym;
+	if (btp != chartype && btp != uchartype && btp != schartype) {
+		errorp("array of inappropriate type initialized from string constant");
+		return constnode(zero);
 	}
 
-	ip->pos  = (*fun)(ip);
-	expect('=');
-	return ip;
+	len = sym->type->n.elem-1;
+	if (!(tp->prop & TDEFINED)) {
+		tp->n.elem = len+1;
+		deftype(tp);
+	} else if (tp->n.elem < len) {
+		warn("initializer-string for array of chars is too long");
+	}
+
+	len = tp->n.elem;
+	s = sym->u.s;
+	sym = newstring(NULL, len);
+	strncpy(sym->u.s, s, len);
+	np->sym = sym;
+	np->type = sym->type;
+
+	return np;
 }
 
 static Node *
@@ -96,87 +118,69 @@ initialize(Type *tp)
 {
 	Node *np;
 	Symbol *sym;
-	Type *btp;
-	size_t len;
-	char *s;
-	int isstring;
 
-	if ((tp->op == ARY || tp->op == STRUCT) &&
-	    yytoken != '{' && yytoken != STRING) {
+	if (tp->op == ARY && yytoken == STRING)
+		return str2ary(tp);
+
+	if (yytoken == '{' || tp->op == STRUCT || tp->op == ARY)
 		return initlist(tp);
-	}
 
-	isstring = yytoken == STRING;
-	np = (yytoken == '{') ? initlist(tp) : assign();
-
-	if (isstring && tp->op == ARY) {
-		sym = np->left->sym;
-		btp = tp->type;
-		if (btp != chartype  &&
-		    btp != uchartype &&
-		    btp != schartype) {
-			errorp("array of inappropriate type initialized from string constant");
-			goto return_zero;
-		}
-		len = sym->type->n.elem-1;
-		if (!(tp->prop & TDEFINED)) {
-			tp->n.elem = len+1;
-			deftype(tp);
-		} else if (tp->n.elem < len) {
-			warn("initializer-string for array of chars is too long");
-		}
-		len = tp->n.elem;
-		s = sym->u.s;
-		sym = newstring(NULL, len);
-		strncpy(sym->u.s, s, len);
-		np->sym = sym;
-		np->type = sym->type;
-
+	np = assign();
+	if (eqtype(tp, np->type, 1))
 		return np;
-	} else {
-		if (eqtype(tp, np->type, 1))
-			return np;
-		np = convert(decay(np), tp, 0);
-		if (!np) {
-			errorp("incorrect initializer");
-			goto return_zero;
-		}
-	}
-	return simplify(np);
 
-return_zero:
-	return constnode(zero);
+	np = convert(decay(np), tp, 0);
+	if (!np) {
+		errorp("incorrect initializer");
+		return constnode(zero);
+	}
+
+	return simplify(np);
 }
 
 static Node *
-mkcompound(Init *ip)
+mkcompound(Init *ip, Type *tp)
 {
 	Node **v, **p;
 	size_t n;
 	struct designator *dp, *next;
 	Symbol *sym;
 
-	if ((n = ip->max) == 0) {
-		v = NULL;
-	} else if (n > SIZE_MAX / sizeof(*v)) {
-		errorp("compound literal too big");
-		return constnode(zero);
-	} else {
-		n *= sizeof(*v);
-		v = memset(xmalloc(n), 0, n);
+	if (tp->op == UNION) {
+		Node *np = NULL;
 
+		v = xmalloc(sizeof(*v));
 		for (dp = ip->head; dp; dp = next) {
-			p = &v[dp->pos];
-			freetree(*p);
-			*p = dp->expr;
+			freetree(np);
+			np = dp->expr;
 			next = dp->next;
 			free(dp);
+		}
+		*v = np;
+	} else {
+		n = (tp->prop&TDEFINED) ? tp->n.elem : ip->max;
+		if (n == 0) {
+			v = NULL;
+		} else if (n > SIZE_MAX / sizeof(*v)) {
+			errorp("compound literal too big");
+			return constnode(zero);
+		} else {
+			n *= sizeof(*v);
+			v = memset(xmalloc(n), 0, n);
+
+			for (dp = ip->head; dp; dp = next) {
+				p = &v[dp->pos];
+				freetree(*p);
+				*p = dp->expr;
+				next = dp->next;
+				free(dp);
+			}
 		}
 	}
 
 	sym = newsym(NS_IDEN, NULL);
 	sym->u.init = v;
-	sym->type = ip->type;
+	sym->type = tp;
 	sym->flags |= SINITLST;
 
 	return constnode(sym);
@@ -198,95 +202,114 @@ newdesig(Init *ip, Node *np)
 		ip->tail->next = dp;
 		ip->tail = dp;
 	}
+
+	if (ip->pos+1 > ip->max)
+		ip->max = ip->pos+1;
 }
 
 Node *
 initlist(Type *tp)
 {
 	Init in;
-	int braces, scalar, toomany, outbound;
-	Type *newtp;
 	Node *np;
+	Type *curtp;
+	int braces, scalar, toomany, outbound;
+	TINT nelem = tp->n.elem;
+	static int depth;
 
-	in.tail = in.head = NULL;
-	in.type = tp;
-	in.pos = 0;
-	in.max = 0;
+	if (depth == NR_SUBTYPE)
+		error("too many nested initializers");
+	++depth;
+	init(&in);
 	braces = scalar = toomany = 0;
 
 	if (accept('{'))
 		braces = 1;
 
 	do {
-		if (yytoken == '}')
-			break;
-		outbound = 0;
-		designation(&in);
-		switch (tp->op) {
-		case ARY:
-			newtp = tp->type;
-			if (!(tp->prop & TDEFINED) || in.pos < tp->n.elem)
+		curtp = inttype;
+		switch (yytoken) {
+		case '[':
+			in.pos = arydesig(tp, &in);
+			curtp = tp->type;
+			goto desig_list;
+		case '.':
+			in.pos = fielddesig(tp, &in);
+			if (in.pos < nelem)
+				curtp = tp->p.fields[in.pos]->type;
+		desig_list:
+			if (yytoken == '[' || yytoken == '.') {
+				np = initlist(curtp);
+				goto new_desig;
+			}
+			expect('=');
+		default:
+			outbound = 0;
+
+			switch (tp->op) {
+			case ARY:
+				curtp = tp->type;
+				if (!(tp->prop & TDEFINED) || in.pos < tp->n.elem)
+					break;
+				if (!toomany)
+					warn("excess elements in array initializer");
+				toomany = 1;
+				outbound = 1;
 				break;
-			if (!toomany)
-				warn("excess elements in array initializer");
-			outbound = 1;
-			toomany = 1;
-			break;
-		/* TODO: case UNION: */
-		case STRUCT:
-			if (in.pos < tp->n.elem) {
-				newtp = tp->p.fields[in.pos]->type;
+			case UNION:
+			case STRUCT:
+				if (in.pos < nelem) {
+					curtp = tp->p.fields[in.pos]->type;
+					break;
+				}
+				if (!toomany)
+					warn("excess elements in struct initializer");
+				toomany = 1;
+				outbound = 1;
+				break;
+			default:
+				curtp = tp;
+				if (!scalar)
+					warn("braces around scalar initializer");
+				scalar = 1;
+				if (in.pos == 0)
+					break;
+				if (!toomany)
+					warn("excess elements in scalar initializer");
+				toomany = 1;
+				outbound = 1;
 				break;
 			}
-			newtp = inttype;
-			if (!toomany)
-				warn("excess elements in struct initializer");
-			toomany = 1;
-			outbound = 1;
-			break;
-		default:
-			newtp = tp;
-			if (!scalar)
-				warn("braces around scalar initializer");
-			scalar = 1;
-			if (in.pos == 0)
-				break;
-			if (!toomany)
-				warn("excess elements in scalar initializer");
-			toomany = 1;
-			outbound = 1;
-			break;
+			np = initialize(curtp);
+			if (outbound) {
+				freetree(np);
+				np = NULL;
+			}
 		}
 
-		np = initialize(newtp);
-		if (outbound)
-			freetree(np);
-		else
+new_desig:
+		if (np)
 			newdesig(&in, np);
-
 		if (++in.pos == 0)
 			errorp("compound literal too big");
-		if (in.pos > in.max)
-			in.max = in.pos;
-		if (tp->n.elem == in.pos && !braces)
+		if (nelem == in.pos && !braces)
 			break;
 	} while (accept(','));
 
 	if (braces)
 		expect('}');
 
+
 	if (tp->op == ARY && !(tp->prop & TDEFINED)) {
 		tp->n.elem = in.max;
 		deftype(tp);
 	}
-	if (tp->op == ARY || tp->op == STRUCT)
-		in.max = tp->n.elem;
-	else if (in.max == 0) {
-		errorp("empty scalar initializer");
+	if (in.max == 0) {
+		errorp("empty braced initializer");
 		return constnode(zero);
 	}
 
-	return mkcompound(&in);
+	return mkcompound(&in, tp);
 }
 
 static void
@@ -294,8 +317,6 @@ autoinit(Symbol *sym, Node *np)
 {
 	Symbol *hidden;
 	Type *tp = sym->type;
-	size_t n; /* FIXME: It should be SIZET */
-
 
 repeat:
 	switch (tp->op) {
