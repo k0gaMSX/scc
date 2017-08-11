@@ -317,6 +317,7 @@ autoinit(Symbol *sym, Node *np)
 {
 	Symbol *hidden;
 	Type *tp = sym->type;
+	size_t n; /* FIXME: It should be SIZET */
 
 repeat:
 	switch (tp->op) {
