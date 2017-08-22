@@ -11,7 +11,6 @@ static char sccsid[] = "@(#) ./cc1/cpp.c";
 #include "../inc/cc.h"
 #include "cc1.h"
 
-extern char *sysincludes[];
 static char *argp, *macroname;
 static unsigned arglen;
 static unsigned ncmdlines;
@@ -509,10 +508,6 @@ include(void)
 
 	n = dirinclude.n;
 	for (bp = dirinclude.s; n--; ++bp) {
-		if (includefile(*bp, file, filelen))
-			goto its_done;
-	}
-	for (bp = sysincludes; *bp; ++bp) {
 		if (includefile(*bp, file, filelen))
 			goto its_done;
 	}

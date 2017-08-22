@@ -11,10 +11,6 @@ extern int debug;
 #define DBGON()
 #endif
 
-#ifndef PREFIX
-#define PREFIX "/usr/local/"
-#endif
-
 #define TINT        long long
 #define TUINT       unsigned long long
 #define TFLOAT      double

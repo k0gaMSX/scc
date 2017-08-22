@@ -14,6 +14,7 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
 #include <stdlib.h>
 #include <string.h>
 
+#include "config.h"
 #include "../../inc/arg.h"
 #include "../../inc/cc.h"
 #include "../../inc/syslibs.h"
@@ -53,11 +54,12 @@ static struct tool {
 };
 
 char *argv0;
-static char *arch, *sys, *execpath, *objfile, *outfile;
+static char *arch, *sys, *abi, *format;
+static char *execpath, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
-static int Mflag, Eflag, Sflag, cflag, dflag, kflag, sflag;
+static int Mflag, Eflag, Sflag, cflag, dflag, kflag, sflag, Qflag = USEQBE;
 static int devnullfd;
 
 extern int failure;
@@ -99,7 +101,7 @@ static int
 inittool(int tool)
 {
 	struct tool *t = &tools[tool];
-	char *crt;
+	char *crt, *fmt;
 	int n;
 
 	if (t->init)
@@ -108,7 +110,8 @@ inittool(int tool)
 	switch (tool) {
 	case CC1: /* FALLTHROUGH */
 	case CC2:
-		n = snprintf(t->bin, sizeof(t->bin), "%s-%s", t->cmd, arch);
+		fmt = (Qflag && tool == CC2) ? "%s-qbe_%s-%s" : "%s-%s-%s";
+		n = snprintf(t->bin, sizeof(t->bin), fmt, t->cmd, arch, abi);
 		if (n < 0 || n >= sizeof(t->bin))
 			die("scc: target tool name too long");
 
@@ -359,10 +362,10 @@ buildfile(char *file, int tool)
 			nexttool = CC2;
 			break;
 		case CC2:
-			if (!arch || strcmp(arch, "qbe"))
-				nexttool = (Sflag || kflag) ? TEEAS : AS;
-			else
+			if (Qflag)
 				nexttool = kflag ? TEEQBE : QBE;
+			else
+				nexttool = (Sflag || kflag) ? TEEAS : AS;
 			break;
 		case TEEQBE:
 			nexttool = QBE;
@@ -445,6 +448,10 @@ main(int argc, char *argv[])
 		arch = ARCH;
 	if (!(sys = getenv("SYS")))
 		sys = SYS;
+	if (!(abi = getenv("ABI")))
+		abi = ABI;
+	if (!(format = getenv("FORMAT")))
+		format = FORMAT;
 	if (!(execpath = getenv("SCCEXECPATH")))
 		execpath = PREFIX "/libexec/scc";
 
@@ -512,6 +519,12 @@ main(int argc, char *argv[])
 		EARGF(usage());
 	case 'w':
 		addarg(CC1, "-w");
+		break;
+	case 'q':
+		Qflag = 0;
+		break;
+	case 'Q':
+		Qflag = 1;
 		break;
 	case '-':
 		fprintf(stderr,

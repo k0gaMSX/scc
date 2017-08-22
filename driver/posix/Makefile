@@ -3,24 +3,33 @@
 
 include ../../config.mk
 
-OBJS = scc.o
+LIBDIR    = ../../lib/cc
+
+OBJ = scc.o
+HDR = config.h \
+      ../../inc/cc.h \
+      ../../inc/arg.h \
+      ../../inc/syslibs.h \
+      ../../inc/ldflags.h
 
 all: scc
 
-$(OBJS): ../../inc/cc.h ../../inc/arg.h ../../inc/syslibs.h ../../inc/ldflags.h
+dep:
+	PREFIX=$(PREFIX) USEQBE=$(USEQBE) ./gendep.sh $(TARGET)
 
-scc: $(OBJS) ../../lib/libcc.a
-	$(CC) $(SCC_LDFLAGS) $(OBJS) ../../lib/libcc.a -o $@
+$(OBJ): $(HDR)
 
-../../inc/syslibs.h: ../../inc/syslibs.def.h
-	cp -f ../../inc/syslibs.def.h ../../inc/syslibs.h
+scc: $(OBJ) $(LIBDIR)/libcc.a
+	$(CC) $(SCC_LDFLAGS) $(OBJ) -lcc -o $@
 
-../../inc/ldflags.h: ../../inc/ldflags.def.h
-	cp -f ../../inc/ldflags.def.h ../../inc/ldflags.h
-
-../../lib/libcc.a:
-	cd ../../lib && $(MAKE) -e
+$(LIBDIR)/libcc.a:
+	cd $(LIBDIR) && $(MAKE)
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJ)
 	rm -f scc
+
+distclean: clean
+	rm -f config.h
+
+include ../../lib/cc/libdep.mk

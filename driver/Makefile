@@ -3,13 +3,5 @@
 
 include ../config.mk
 
-DIRS = cc
-
 all dep clean distclean:
-	@pwd=$$PWD; \
-	for i in $(DIRS); \
-	do \
-		cd $$i; \
-		$(MAKE) $@; \
-		cd $$pwd; \
-	done
+	cd $(DRIVER) && $(MAKE) $@
