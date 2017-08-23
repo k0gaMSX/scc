@@ -13,6 +13,8 @@ OBJ = main.o parser.o peep.o symbol.o node.o code.o optm.o
 HDR = cc2.h ../inc/$(STD)/cstd.h ../inc/cc.h
 
 all:
+	mkdir -p ../rootdir/libexec/scc/
+	cp cc2-* ../rootdir/libexec/scc/
 
 dep:
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)

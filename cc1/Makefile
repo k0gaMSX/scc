@@ -15,6 +15,8 @@ OBJ = types.o decl.o lex.o error.o symbol.o main.o expr.o \
 HDR = cc1.h ../inc/cc.h ../inc/$(STD)/cstd.h ../inc/sysincludes.h
 
 all:
+	mkdir -p ../rootdir/libexec/scc/
+	cp cc1-* ../rootdir/libexec/scc/
 
 cpp.o: stallman.msg
 

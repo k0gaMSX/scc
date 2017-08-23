@@ -55,7 +55,7 @@ static struct tool {
 
 char *argv0;
 static char *arch, *sys, *abi, *format;
-static char *execpath, *objfile, *outfile;
+static char *prefix, *objfile, *outfile;
 static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
@@ -115,7 +115,8 @@ inittool(int tool)
 		if (n < 0 || n >= sizeof(t->bin))
 			die("scc: target tool name too long");
 
-		n = snprintf(t->cmd, sizeof(t->cmd), "%s/%s", execpath, t->bin);
+		n = snprintf(t->cmd, sizeof(t->cmd),
+		             "%s/libexec/scc/%s", prefix, t->bin);
 		if (n < 0 || n >= sizeof(t->cmd))
 			die("scc: target tool path too long");
 		break;
@@ -129,13 +130,13 @@ inittool(int tool)
 			addarg(tool, "-L");
 			addarg(tool, syslibs[n]);
 		}
-		n = snprintf(NULL, 0, "%s-%s-%s.o",
-		             PREFIX "/lib/scc/crt", arch, sys);
+		n = snprintf(NULL, 0, "%s/%s-%s-%s.o",
+		             prefix, "lib/scc/crt", arch, sys);
 		if (n < 0)
 			die("scc: wrong crt file name");
 		crt = xmalloc(++n);
-		n = snprintf(crt, n, "%s-%s-%s.o",
-		             PREFIX "/lib/scc/crt", arch, sys);
+		n = snprintf(crt, n, "%s/%s-%s-%s.o",
+		             prefix, "lib/scc/crt", arch, sys);
 		addarg(tool, crt);
 		break;
 	case AS:
@@ -452,8 +453,8 @@ main(int argc, char *argv[])
 		abi = ABI;
 	if (!(format = getenv("FORMAT")))
 		format = FORMAT;
-	if (!(execpath = getenv("SCCEXECPATH")))
-		execpath = PREFIX "/libexec/scc";
+	if (!(prefix = getenv("SCCPREFIX")))
+		prefix = PREFIX;
 
 	ARGBEGIN {
 	case 'D':
