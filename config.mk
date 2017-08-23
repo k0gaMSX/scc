@@ -2,20 +2,18 @@
 VERSION = 0.1
 
 ## Customize below to fit your system
-# TARGET is defined by backend-arch-abi-sys
+# TARGETS is defined by a list of backend-arch-abi-sys. First
+# element of the list becomes the default target
 
-TARGETS = z80-scc-dos-com \
-          amd64-sysv-linux-elf \
+TARGETS = amd64-sysv-linux-elf \
           i386-sysv-linux-elf \
           amd64-sysv-openbsd-elf
 
 # USEQBE selects QBE by default in the targets that support it
 USEQBE = 1
 
-#MKQBE enable build of 
+#MKQBE enable build of qbe backends
 MKQBE = 1
-
-TARGET  = amd64-sys-linux-elf
 
 DRIVER = posix
 

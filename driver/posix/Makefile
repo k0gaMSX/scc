@@ -17,7 +17,7 @@ all: scc scpp
 	cp scc scpp ../../rootdir/bin/
 
 dep:
-	PREFIX=$(PREFIX) USEQBE=$(USEQBE) ./gendep.sh $(TARGET)
+	PREFIX=$(PREFIX) USEQBE=$(USEQBE) ./gendep.sh $(TARGETS)
 
 $(OBJ): $(HDR)
 

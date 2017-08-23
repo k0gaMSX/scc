@@ -9,7 +9,7 @@ PREFIX=${PREFIX-$HOME}
 USEQBE=${USEQBE:-1}
 
 echo $@ |
-(IFS=- read arch abi sys format r
+(IFS='- 	' read arch abi sys format r
 echo \#define PREFIX \"$PREFIX\"
 echo \#define USEQBE $USEQBE
 echo \#define ARCH \"$arch\"
