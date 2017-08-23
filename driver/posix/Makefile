@@ -21,7 +21,7 @@ dep:
 
 $(OBJ): $(HDR)
 
-scc: $(OBJ) $(LIBDIR)/libcc.a
+scc: $(OBJ) $(LIBDIR)/libscc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
 scpp: cpp.sh config.h
