@@ -98,6 +98,16 @@ setargv0(int tool, char *arg)
 }
 
 static int
+qbe(int tool)
+{
+	if (tool != CC2 || !Qflag)
+		return 0;
+	if (!strcmp(arch, "amd64") && !strcmp(abi, "sysv"))
+		return 1;
+	return 0;
+}
+
+static int
 inittool(int tool)
 {
 	struct tool *t = &tools[tool];
@@ -110,7 +120,7 @@ inittool(int tool)
 	switch (tool) {
 	case CC1: /* FALLTHROUGH */
 	case CC2:
-		fmt = (Qflag && tool == CC2) ? "%s-qbe_%s-%s" : "%s-%s-%s";
+		fmt = (qbe(tool)) ? "%s-qbe_%s-%s" : "%s-%s-%s";
 		n = snprintf(t->bin, sizeof(t->bin), fmt, t->cmd, arch, abi);
 		if (n < 0 || n >= sizeof(t->bin))
 			die("scc: target tool name too long");
