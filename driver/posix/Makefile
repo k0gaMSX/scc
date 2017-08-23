@@ -1,9 +1,9 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
-include ../../config.mk
-
 LIBDIR    = ../../lib/cc
+include ../../config.mk
+include $(LIBDIR)/libdep.mk
 
 OBJ = scc.o
 HDR = config.h \
@@ -43,4 +43,3 @@ clean:
 distclean: clean
 	rm -f config.h
 
-include ../../lib/cc/libdep.mk

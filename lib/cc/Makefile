@@ -1,13 +1,13 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
-include ../../config.mk
-
 LIBDIR = ./
+include ../../config.mk
+include libdep.mk
 
 all: libcc.a
 
-libcc.a:
+libcc.a: $(LIB-OBJ)
 	ar $(ARFLAGS) $@ $?
 	ranlib $@
 
@@ -17,4 +17,3 @@ clean:
 	rm -f *.o *.a
 
 distclean: clean
-include libdep.mk

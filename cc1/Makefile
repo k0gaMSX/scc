@@ -4,10 +4,11 @@
 # Makefile is only used as a template for makefile.
 # If you modify Makefile remember to run make dep
 
+LIBDIR    = ../lib/cc
 include ../config.mk
+include $(LIBDIR)/libdep.mk
 
 MOREFLAGS = -I../inc/$(STD)
-LIBDIR    = ../lib/cc
 
 OBJ = types.o decl.o lex.o error.o symbol.o main.o expr.o \
       code.o stmt.o cpp.o fold.o init.o builtin.o
@@ -34,4 +35,3 @@ clean:
 distclean: clean
 	rm -f makefile
 
-include ../lib/cc/libdep.mk

@@ -6,5 +6,3 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/xmalloc.o \
           $(LIBDIR)/xrealloc.o \
           $(LIBDIR)/xstrdup.o \
-
-$(LIBDIR)/libcc.a: $(LIB-OBJ)
