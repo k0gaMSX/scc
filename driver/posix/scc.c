@@ -35,7 +35,7 @@ enum {
 
 static struct tool {
 	char   cmd[PATH_MAX];
-	char   bin[16];
+	char   bin[32];
 	char  *outfile;
 	struct items args;
 	unsigned nparams;
