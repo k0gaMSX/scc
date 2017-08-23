@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./lib/xcalloc.c";
 #include <stdlib.h>
-#include "../../inc/cc.h"
+#include "../../inc/scc.h"
 
 void *
 xcalloc(size_t n, size_t size)

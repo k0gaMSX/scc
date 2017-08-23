@@ -3,7 +3,7 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/optm.c";
 
 #include <stddef.h>
 
-#include "../../../inc/cc.h"
+#include "../../../inc/scc.h"
 #include "../../cc2.h"
 
 Node *

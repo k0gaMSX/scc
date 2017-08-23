@@ -7,7 +7,7 @@ static char sccsid[] = "@(#) ./cc1/main.c";
 #include <errno.h>
 
 #include "../inc/arg.h"
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 char *argv0, *infile;

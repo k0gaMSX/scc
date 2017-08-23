@@ -6,7 +6,7 @@ static char sccsid[] = "@(#) ./cc1/init.c";
 #include <string.h>
 
 #include <cstd.h>
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 

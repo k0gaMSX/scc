@@ -1,21 +1,21 @@
 /* See LICENSE file for copyright and license details. */
-static char sccsid[] = "@(#) ./lib/debug.c";
+static char sccsid[] = "@(#) ./lib/die.c";
 #include <stdarg.h>
+#include <stdlib.h>
 #include <stdio.h>
 
-#include "../../inc/cc.h"
+#include "../../inc/scc.h"
 
-int debug;
+int failure;
 
 void
-dbg(const char *fmt, ...)
+die(const char *fmt, ...)
 {
-	if (!debug)
-		return;
+	failure = 1;
 	va_list va;
 	va_start(va, fmt);
 	vfprintf(stderr, fmt, va);
 	putc('\n', stderr);
 	va_end(va);
-	return;
+	exit(1);
 }

@@ -6,7 +6,7 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/cgen.c";
 
 #include <cstd.h>
 #include "arch.h"
-#include "../../../inc/cc.h"
+#include "../../../inc/scc.h"
 #include "../../cc2.h"
 
 enum sflags {

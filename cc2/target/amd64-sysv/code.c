@@ -6,7 +6,7 @@ static char sccsid[] = "@(#) ./cc2/arch/amd64-sysv/code.c";
 
 #include <cstd.h>
 #include "arch.h"
-#include "../../../inc/cc.h"
+#include "../../../inc/scc.h"
 #include "../../cc2.h"
 
 enum segment {

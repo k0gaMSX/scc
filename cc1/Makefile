@@ -4,7 +4,7 @@
 # Makefile is only used as a template for makefile.
 # If you modify Makefile remember to run make dep
 
-LIBDIR    = ../lib/cc
+LIBDIR    = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
@@ -13,7 +13,7 @@ MOREFLAGS = -I../inc/$(STD)
 OBJ = types.o decl.o lex.o error.o symbol.o main.o expr.o \
       code.o stmt.o cpp.o fold.o init.o builtin.o
 
-HDR = cc1.h ../inc/cc.h ../inc/$(STD)/cstd.h ../inc/sysincludes.h
+HDR = cc1.h ../inc/scc.h ../inc/$(STD)/cstd.h ../inc/sysincludes.h
 
 all:
 	mkdir -p ../rootdir/libexec/scc/
@@ -21,7 +21,7 @@ all:
 
 cpp.o: stallman.msg
 
-$(LIBDIR)/libcc.a:
+$(LIBDIR)/libscc.a:
 	cd $(LIBDIR) && $(MAKE)
 
 dep:

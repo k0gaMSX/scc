@@ -4,14 +4,14 @@
 # Makefile is only used as a template for makefile.
 # If you modify Makefile remember to run make dep
 
-LIBDIR    = ../lib/cc
+LIBDIR    = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
 MOREFLAGS = -I../inc/$(STD)
 
 OBJ = main.o parser.o peep.o symbol.o node.o code.o optm.o
-HDR = cc2.h ../inc/$(STD)/cstd.h ../inc/cc.h
+HDR = cc2.h ../inc/$(STD)/cstd.h ../inc/scc.h
 
 all:
 	mkdir -p ../rootdir/libexec/scc/
@@ -20,7 +20,7 @@ all:
 dep:
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)
 
-$(LIBDIR)/libcc.a:
+$(LIBDIR)/libscc.a:
 	cd $(LIBDIR) && $(MAKE)
 
 main.o: error.h

@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./lib/xstrdup.c";
 #include <string.h>
-#include "../../inc/cc.h"
+#include "../../inc/scc.h"
 
 char *
 xstrdup(const char *s)

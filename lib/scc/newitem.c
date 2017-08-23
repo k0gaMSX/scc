@@ -1,4 +1,4 @@
-#include "../../inc/cc.h"
+#include "../../inc/scc.h"
 
 void
 newitem(struct items *items, char *item)

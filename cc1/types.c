@@ -7,7 +7,7 @@ static char sccsid[] = "@(#) ./cc1/types.c";
 #include <string.h>
 
 #include <cstd.h>
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 #define NR_TYPE_HASH 16

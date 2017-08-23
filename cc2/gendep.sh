@@ -7,8 +7,8 @@ gentarget()
 include target/$1/target.mk
 \$(OBJ-$1): \$(HDR)
 all: cc2-$1
-cc2-$1: \$(OBJ-$1) \$(LIBDIR)/libcc.a
-	\$(CC) \$(SCC_LDFLAGS) \$(OBJ-$1) -lcc -o \$@
+cc2-$1: \$(OBJ-$1) \$(LIBDIR)/libscc.a
+	\$(CC) \$(SCC_LDFLAGS) \$(OBJ-$1) -lscc -o \$@
 
 EOF
 }

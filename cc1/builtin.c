@@ -3,7 +3,7 @@ static char sccsid[] = "@(#) ./cc1/builtin.c";
 
 #include <stdio.h>
 
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 static Node *

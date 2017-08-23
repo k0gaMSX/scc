@@ -16,7 +16,7 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
 
 #include "config.h"
 #include "../../inc/arg.h"
-#include "../../inc/cc.h"
+#include "../../inc/scc.h"
 #include "../../inc/syslibs.h"
 #include "../../inc/ldflags.h"
 

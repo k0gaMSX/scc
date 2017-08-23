@@ -10,7 +10,7 @@ static char sccsid[] = "@(#) ./cc1/lex.c";
 #include <string.h>
 
 #include <cstd.h>
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 unsigned yytoken;

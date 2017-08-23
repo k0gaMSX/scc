@@ -1,13 +1,13 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
-LIBDIR    = ../../lib/cc
+LIBDIR    = ../../lib/scc
 include ../../config.mk
 include $(LIBDIR)/libdep.mk
 
 OBJ = scc.o
 HDR = config.h \
-      ../../inc/cc.h \
+      ../../inc/scc.h \
       ../../inc/arg.h \
       ../../inc/syslibs.h \
       ../../inc/ldflags.h
@@ -22,7 +22,7 @@ dep:
 $(OBJ): $(HDR)
 
 scc: $(OBJ) $(LIBDIR)/libcc.a
-	$(CC) $(SCC_LDFLAGS) $(OBJ) -lcc -o $@
+	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
 scpp: cpp.sh config.h
 	set -x ;\

@@ -8,7 +8,7 @@ static char sccsid[] = "@(#) ./cc1/cpp.c";
 #include <time.h>
 
 #include <cstd.h>
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 static char *argp, *macroname;

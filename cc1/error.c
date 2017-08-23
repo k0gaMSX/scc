@@ -4,7 +4,7 @@ static char sccsid[] = "@(#) ./cc1/error.c";
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 #define MAXERRNUM 10

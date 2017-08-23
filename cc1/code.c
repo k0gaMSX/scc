@@ -5,7 +5,7 @@ static char sccsid[] = "@(#) ./cc1/code.c";
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc1.h"
 
 static void emitbin(unsigned, void *),

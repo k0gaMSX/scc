@@ -19,8 +19,8 @@ do
 all: cc1-$i
 OBJ-$i= \$(OBJ)  target/$i/arch.o
 \$(OBJ-$i): \$(HDR)
-cc1-$i: \$(OBJ-$i) \$(LIBDIR)/libcc.a
-	\$(CC) \$(SCC_LDFLAGS) \$(OBJ-$i) -lcc -o \$@
+cc1-$i: \$(OBJ-$i) \$(LIBDIR)/libscc.a
+	\$(CC) \$(SCC_LDFLAGS) \$(OBJ-$i) -lscc -o \$@
 
 EOF
 	echo

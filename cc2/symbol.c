@@ -5,7 +5,7 @@ static char sccsid[] = "@(#) ./cc2/symbol.c";
 #include <stdlib.h>
 #include <string.h>
 
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 
 #include "cc2.h"
 

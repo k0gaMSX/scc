@@ -1,5 +1,5 @@
 
-#include "../inc/cc.h"
+#include "../inc/scc.h"
 #include "cc2.h"
 
 Node *

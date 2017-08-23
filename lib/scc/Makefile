@@ -5,9 +5,9 @@ LIBDIR = ./
 include ../../config.mk
 include libdep.mk
 
-all: libcc.a
+all: libscc.a
 
-libcc.a: $(LIB-OBJ)
+libscc.a: $(LIB-OBJ)
 	ar $(ARFLAGS) $@ $?
 	ranlib $@
 
