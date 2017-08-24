@@ -2,10 +2,13 @@
 
 include ../../config.mk
 
-all: crt-$(ARCH)-$(SYS).o
+all:
 
-crt-$(ARCH)-$(SYS).o: $(ARCH)-$(SYS)/crt.o
-	ln -f $(ARCH)-$(SYS)/crt.o $@
+dep:
+	./gendep.sh $(TARGETS)
 
 clean:
-	rm -f */crt.o crt-*.o
+	rm -f */crt.o
+
+distclean: clean
+	rm -f makefile

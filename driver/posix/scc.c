@@ -140,13 +140,15 @@ inittool(int tool)
 			addarg(tool, "-L");
 			addarg(tool, syslibs[n]);
 		}
-		n = snprintf(NULL, 0, "%s/%s-%s-%s.o",
-		             prefix, "lib/scc/crt", arch, sys);
+		n = snprintf(NULL, 0,
+		             "%s/lib/scc/crt/%s-%s-%s/crt.o",
+		             prefix, arch, abi, sys);
 		if (n < 0)
 			die("scc: wrong crt file name");
 		crt = xmalloc(++n);
-		n = snprintf(crt, n, "%s/%s-%s-%s.o",
-		             prefix, "lib/scc/crt", arch, sys);
+		sprintf(crt,
+		        "%s/lib/scc/crt/%s-%s-%s/crt.o",
+		        prefix, arch, abi, sys);
 		addarg(tool, crt);
 		break;
 	case AS:

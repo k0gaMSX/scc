@@ -3,7 +3,7 @@
 
 include ../config.mk
 
-DIRS = scc
+DIRS = scc crt
 
 all dep clean distclean:
 	@pwd=$$PWD; \
