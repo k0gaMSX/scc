@@ -332,7 +332,7 @@ validatetools(void)
 		if (waitpid(t->pid, &st, 0) < 0 ||
 		    !WIFEXITED(st) ||
 		    WEXITSTATUS(st) != 0) {
-			if (!WIFEXITED(st)) {
+			if (!WIFEXITED(st) || tool != CC1 && tool != CC2) {
 				fprintf(stderr,
 				        "scc:%s: internal error\n", t->bin);
 			}
