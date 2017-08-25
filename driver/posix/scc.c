@@ -280,12 +280,12 @@ spawn(int tool)
 			dup2(t->out, 1);
 		if (t->in > -1)
 			dup2(t->in, 0);
-		if (!dflag && tool != CC1)
+		if (!dflag && tool != CC1 && tool != LD)
 			dup2(devnullfd, 2);
 		execvp(t->cmd, t->args.s);
 		fprintf(stderr, "scc: execvp %s: %s\n",
 		        t->cmd, strerror(errno));
-		_exit(1);
+		abort();
 	default:
 		if (t->in > -1)
 			close(t->in);
@@ -334,7 +334,8 @@ validatetools(void)
 		if (waitpid(t->pid, &st, 0) < 0 ||
 		    !WIFEXITED(st) ||
 		    WEXITSTATUS(st) != 0) {
-			if (!WIFEXITED(st) || tool != CC1 && tool != CC2) {
+			if (!WIFEXITED(st) ||
+			    !failure && tool != CC1 && tool != LD) {
 				fprintf(stderr,
 				        "scc:%s: internal error\n", t->bin);
 			}
