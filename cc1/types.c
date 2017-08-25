@@ -298,6 +298,10 @@ mktype(Type *tp, int op, TINT nelem, Type *pars[])
 
 	switch (op) {
 	case ARY:
+		if (tp == voidtype) {
+			errorp("declaration of symbol as array of voids");
+			tp = inttype;
+		}
 		type.letter = L_ARRAY;
 		if (nelem != 0)
 			type.prop |= TDEFINED;
