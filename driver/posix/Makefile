@@ -32,7 +32,7 @@ scpp: cpp.sh config.h
 	chmod +x $$$$.sh && \
 	mv $$$$.sh scpp
 
-$(LIBDIR)/libcc.a:
+$(LIBDIR)/libscc.a:
 	cd $(LIBDIR) && $(MAKE)
 
 clean:
