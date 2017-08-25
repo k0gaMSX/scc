@@ -36,12 +36,10 @@ tests: all
 
 install: all
 	cp -r rootdir/* $(DESTDIR)/$(PREFIX)/
-	find $(DESTDIR)/$(PREFIX)/include/scc/ -type f | xargs chmod 644
 	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
 	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 scpp scc && strip scc
 
 uninstall:
-	rm -rf $(DESTDIR)/$(PREFIX)/include/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
 	rm -rf $(DESTDIR)/$(PREFIX)/lib/scc/
 	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
