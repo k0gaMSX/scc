@@ -60,7 +60,7 @@ static char *tmpdir;
 static size_t tmpdirln;
 static struct items objtmp, objout;
 static int Mflag, Eflag, Sflag, cflag, dflag, kflag, sflag, Qflag = USEQBE;
-static int devnullfd;
+static int devnullfd = -1;
 
 extern int failure;
 
@@ -563,7 +563,7 @@ operand:
 	    linkchain.n > 1 && cflag && outfile)
 		usage();
 
-	if (dflag) {
+	if (!dflag) {
 		if ((devnullfd = open("/dev/null", O_WRONLY)) < 0)
 			fputs("scc: could not open /dev/null\n", stderr);
 	}
