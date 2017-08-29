@@ -1,4 +1,3 @@
-
 #if defined X
 X
 #endif

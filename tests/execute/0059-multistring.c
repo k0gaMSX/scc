@@ -1,6 +1,3 @@
-
-
-
 int main()
 {
 	char * s;

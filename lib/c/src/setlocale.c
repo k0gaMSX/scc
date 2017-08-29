@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 #include <locale.h>
 #include <stddef.h>
 #undef setlocale

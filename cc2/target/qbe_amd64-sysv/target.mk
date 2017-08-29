@@ -1,4 +1,3 @@
-
 OBJ-qbe_amd64-sysv = $(OBJ)  \
         target/qbe/cgen.o \
         target/qbe/optm.o \

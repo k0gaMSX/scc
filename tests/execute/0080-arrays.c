@@ -1,4 +1,3 @@
-
 int
 foo(int x[100])
 {

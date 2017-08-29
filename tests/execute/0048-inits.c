@@ -1,4 +1,3 @@
-
 struct { int a; int b; int c; } s = {1, 2, 3};
 
 int

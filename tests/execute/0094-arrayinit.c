@@ -1,4 +1,3 @@
-
 typedef struct {
 	int v;
 	int sub[2];

@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc1/error.c";
 #include <stdarg.h>
 #include <stdio.h>

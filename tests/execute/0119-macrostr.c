@@ -1,4 +1,3 @@
-
 #define B "b"
 
 char s[] = "a" B "c";

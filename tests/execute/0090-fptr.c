@@ -1,4 +1,3 @@
-
 struct S
 {
 	int	(*fptr)();

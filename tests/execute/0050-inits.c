@@ -1,5 +1,3 @@
-
-
 int x = 10;
 
 struct S {int a; int *p;};

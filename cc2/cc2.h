@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 enum iflags {
 	BBENTRY =    1,        /* basic block entry */
 };

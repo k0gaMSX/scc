@@ -1,4 +1,3 @@
-# See LICENSE file for copyright and license details.
 BEGIN {
 	print "char *errlist[] = {"
 }

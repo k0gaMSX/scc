@@ -1,4 +1,3 @@
-
 #if (-2) != -2
 #error fail
 #endif

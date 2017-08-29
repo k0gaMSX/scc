@@ -1,4 +1,3 @@
-
 /*
  * Test a comment that goes beyond of the end of an
  * included file

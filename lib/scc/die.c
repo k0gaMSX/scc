@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./lib/die.c";
 #include <stdarg.h>
 #include <stdlib.h>

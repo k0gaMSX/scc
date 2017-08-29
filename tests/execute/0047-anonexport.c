@@ -1,4 +1,3 @@
-
 typedef struct {
 	int a;
 	union {

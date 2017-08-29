@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./lib/xrealloc.c";
 #include <stdlib.h>
 #include "../../inc/scc.h"

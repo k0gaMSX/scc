@@ -1,4 +1,3 @@
-
 int strlen(char *);
 
 int

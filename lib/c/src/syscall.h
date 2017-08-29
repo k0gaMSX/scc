@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 extern void *_brk(void *addr);
 extern int _open(char *path, int flags, int perm);
 extern int _close(int fd);

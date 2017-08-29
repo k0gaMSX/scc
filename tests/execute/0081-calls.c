@@ -1,4 +1,3 @@
-
 int
 f1(char *p)
 {

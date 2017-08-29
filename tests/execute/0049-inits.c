@@ -1,5 +1,3 @@
-
-
 struct S {int a; int b;};
 struct S s = { .b = 2, .a = 1};
 

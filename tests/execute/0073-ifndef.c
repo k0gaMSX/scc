@@ -1,5 +1,3 @@
-
-
 #ifndef DEF
 int x = 0;
 #endif

@@ -1,4 +1,3 @@
-
 struct range {
 	long quant;
 } *a;

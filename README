@@ -1,4 +1,3 @@
-
 Derivations from standard C
 ===========================
 This compiler is aimed to be being fully compatible with the C99 standard, but

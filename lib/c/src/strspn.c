@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 #include <string.h>
 #undef strspn
 

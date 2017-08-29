@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 #define STDC_VERSION    "199409L"
 
 /* Translation limits */

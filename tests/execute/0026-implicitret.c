@@ -1,4 +1,3 @@
-
 main()
 {
 	return 0;

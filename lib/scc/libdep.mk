@@ -1,4 +1,3 @@
-
 LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/die.o \
           $(LIBDIR)/newitem.o \

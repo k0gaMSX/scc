@@ -1,4 +1,3 @@
-/* See LICENSE file for copyright and license details. */
 static char sccsid[] = "@(#) ./cc2/arch/i386-sysv/optm.c";
 
 #include "../../../inc/scc.h"

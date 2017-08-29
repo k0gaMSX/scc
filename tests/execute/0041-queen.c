@@ -1,4 +1,3 @@
-
 int *calloc(int, int);
 
 int N;

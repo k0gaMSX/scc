@@ -1,4 +1,3 @@
-# See LICENSE file for copyright and license details.
 .POSIX:
 
 # Makefile is only used as a template for makefile.

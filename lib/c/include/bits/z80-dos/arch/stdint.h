@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 #define INT8_MAX  0x7F
 #define INT8_MIN  (-INT8_MAX-1)
 #define UINT8_MAX 0xFF

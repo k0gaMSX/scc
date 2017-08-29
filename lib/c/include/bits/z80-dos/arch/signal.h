@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 typedef char sig_atomic_t;
 
 #define SIG_ERR    -1

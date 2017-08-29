@@ -1,4 +1,3 @@
-
 int
 f2(int c, int b)
 {

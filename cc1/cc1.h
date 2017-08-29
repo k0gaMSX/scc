@@ -1,5 +1,3 @@
-/* See LICENSE file for copyright and license details. */
-
 #define INPUTSIZ LINESIZ
 
 #define GLOBALCTX 0

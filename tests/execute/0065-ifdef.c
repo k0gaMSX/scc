@@ -1,4 +1,3 @@
-
 #ifdef FOO
 	XXX
 #ifdef BAR
