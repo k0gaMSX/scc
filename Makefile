@@ -35,12 +35,12 @@ tests: all
 	cd tests && $(MAKE) -e all
 
 install: all
-	cp -r rootdir/* $(DESTDIR)/$(PREFIX)/
-	cd $(DESTDIR)/$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
-	cd $(DESTDIR)/$(PREFIX)/bin && chmod 755 scpp scc && strip scc
+	cp -r rootdir/* $(DESTDIR)$(PREFIX)/
+	cd $(DESTDIR)$(PREFIX)/libexec/scc/ && chmod 755 cc* && strip cc*
+	cd $(DESTDIR)$(PREFIX)/bin && chmod 755 scpp scc && strip scc
 
 uninstall:
-	rm -rf $(DESTDIR)/$(PREFIX)/libexec/scc/
-	rm -rf $(DESTDIR)/$(PREFIX)/lib/scc/
-	rm -f $(DESTDIR)/$(PREFIX)/bin/scc
-	rm -f $(DESTDIR)/$(PREFIX)/bin/scpp
+	rm -rf $(DESTDIR)$(PREFIX)/libexec/scc/
+	rm -rf $(DESTDIR)$(PREFIX)/lib/scc/
+	rm -f $(DESTDIR)$(PREFIX)/bin/scc
+	rm -f $(DESTDIR)$(PREFIX)/bin/scpp
