@@ -64,7 +64,6 @@ vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 				s = va_arg(va, char *);
 				while ((c = *s++) != '\0')
 					putc(c, fp);
-				/* passthrou */
 			default:
 				continue;
 			}

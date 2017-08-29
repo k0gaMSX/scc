@@ -330,7 +330,6 @@ blockit(Symbol *lbreak, Symbol *lcont, Switch *lswitch)
 	case TYPEIDEN:
 		if (ahead() == ':')
 			goto parse_stmt;
-		/* PASSTHROUGH */
 	case TYPE:
 	case TQUALIFIER:
 	case SCLASS:

@@ -257,7 +257,6 @@ convert(Node *np, Type *newtp, int iscast)
 		case PTR:
 			if (oldtp->op == FLOAT || !cmpnode(np, 0) && !iscast)
 				return NULL;
-			/* PASSTHROUGH */
 		case INT:
 		case FLOAT:
 		case ENUM:

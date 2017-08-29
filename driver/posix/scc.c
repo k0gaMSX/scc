@@ -118,7 +118,7 @@ inittool(int tool)
 		return tool;
 
 	switch (tool) {
-	case CC1: /* FALLTHROUGH */
+	case CC1:
 	case CC2:
 		fmt = (qbe(tool)) ? "%s-qbe_%s-%s" : "%s-%s-%s";
 		n = snprintf(t->bin, sizeof(t->bin), fmt, t->cmd, arch, abi);
