@@ -69,8 +69,10 @@ as(char *text, char *xargs)
 		return;
 	}
 	(*op->format)(op, args);
-	cursec->pc += op->size;
 	cursec->curpc += op->size;
+	cursec->pc += op->size;
+	if (cursec->pc > cursec->max)
+		cursec->max = cursec->pc;
 }
 
 int

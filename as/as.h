@@ -10,7 +10,7 @@ typedef struct ins Ins;
 typedef struct op Op;
 typedef struct arg Arg;
 typedef void Format(Op *, Arg *);
-typedef struct sec Section;
+typedef struct section Section;
 
 enum {
 	BITS16,
@@ -34,13 +34,12 @@ struct arg {
 	TUINT val;
 };
 
-struct bucket;
-
-struct sec {
+struct section {
 	char *name;
-	struct bucket *mem;
+	char *mem;
 	int flags;
 	TUINT base;
+	TUINT max;
 	TUINT curpc;
 	TUINT pc;
 };
