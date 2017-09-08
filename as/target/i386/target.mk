@@ -1,5 +1,6 @@
 
 target/i386/ins.o: target/i386/ins.h
+target/i386/instbl.o: target/i386/ins.h
 
 target/i386/instbl.c: target/x86/gen.awk target/x86/i386.dat
 	set -e ;\

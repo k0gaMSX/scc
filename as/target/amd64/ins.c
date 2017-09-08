@@ -3,4 +3,4 @@
 #include "../../as.h"
 #include "ins.h"
 
-TUINT maxaddr = 0xFFFFFFFF;
+TUINT maxaddr = 0xFFFFFFFFFFFFFFFF;

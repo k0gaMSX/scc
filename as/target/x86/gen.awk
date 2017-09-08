@@ -3,6 +3,7 @@ BEGIN	{
 	FS = "\t"
 	printf "#include \"../../../inc/scc.h\"\n"\
 	       "#include \"../../as.h\"\n"\
+	       "#include \"../../ins.h\"\n"\
 	       "#include \"ins.h\"\n\n"
 	nop = 0; nvar = 0
 }

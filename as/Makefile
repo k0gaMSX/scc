@@ -4,12 +4,13 @@ LIBDIR  = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
-OBJ = main.o emit.o
+OBJ = main.o emit.o ins.o
 HDR = ../inc/scc.h as.h
 
 all:
 
 $(OBJ): $(HDR)
+ins.o: ins.h
 
 as: $(OBJ)
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@

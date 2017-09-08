@@ -3,7 +3,7 @@
 
 include config.mk
 
-DIRS  = inc cc1 cc2 driver lib
+DIRS  = inc cc1 cc2 driver lib as
 
 FORALL = @set -e ;\
 	pwd=$$PWD; \
