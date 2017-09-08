@@ -20,7 +20,7 @@ static Section data = {
 static Section text = {
 	.name = "text",
 	.next = &data,
-	.flags = SRELOC|SEXEC|SFILE
+	.flags = SRELOC|SFILE
 };
 
 Section *cursec = &text, *headp = &text;

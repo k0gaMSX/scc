@@ -2,7 +2,6 @@ enum secflags {
 	SRELOC,
 	SREAD,
 	SWRITE,
-	SEXEC,
 	SFILE,
 };
 
