@@ -42,11 +42,13 @@ struct section {
 	TUINT max;
 	TUINT curpc;
 	TUINT pc;
+	struct section *next;
 };
 
 extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
+extern Section *section(char *name);
 
 extern Section *cursec;
 extern int nr_ins;
