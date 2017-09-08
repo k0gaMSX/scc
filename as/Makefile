@@ -14,6 +14,10 @@ $(OBJ): $(HDR)
 as: $(OBJ)
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
+$(LIBDIR)/libscc.a:
+	cd $(LIBDIR) && $(MAKE)
+
+
 dep:
 	./gendep.sh $(TARGETS)
 
