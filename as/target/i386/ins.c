@@ -3,6 +3,8 @@
 #include "../../as.h"
 #include "ins.h"
 
+TUINT maxaddr = ((TUINT) 1 << 32) -1;
+
 void
 direct(Op *op, Arg *args)
 {

@@ -55,3 +55,4 @@ extern int nr_ins;
 extern Ins instab[];
 extern Op optab[];
 extern int pass;
+extern TUINT maxaddr;

@@ -50,6 +50,7 @@ as(char *text, char *xargs)
 	Ins *ins;
 	Op *op, *lim;
 	Arg *args;
+	TUINT pc, curpc;
 	
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
 
@@ -69,10 +70,25 @@ as(char *text, char *xargs)
 		return;
 	}
 	(*op->format)(op, args);
+
+	pc = cursec->pc;
+	curpc = cursec->curpc;
+
 	cursec->curpc += op->size;
 	cursec->pc += op->size;
+
+	if (pass == 2)
+		return;
+
 	if (cursec->pc > cursec->max)
 		cursec->max = cursec->pc;
+
+	if (pc > cursec->pc ||
+	    curpc > cursec->curpc ||
+	    cursec->curpc > maxaddr ||
+	    cursec->pc > maxaddr) {
+		die("address overflow");
+	}
 }
 
 int
