@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "../inc/scc.h"
@@ -15,9 +16,16 @@ int pass;
 static void
 isec(Section *sec)
 {
+	TUINT siz;
+
 	sec->curpc = sec->pc = sec->base;
-	if (sec->max > 0)
-		sec->mem = xmalloc(sec->max - sec->base);
+	if (pass == 1 || sec->flags & SFILE)
+		return;
+
+	siz = sec->max - sec->base;
+	if (siz > SIZE_MAX)
+		die("out of memory");
+	sec->mem = xmalloc(sec->max - sec->base);
 }
 
 void
@@ -33,7 +41,7 @@ emit(Section *sec, char *bytes, int nbytes)
 {
 	TUINT addr;
 
-	if (pass == 1 || !(sec->flags & SFILE))
+	if (!sec->mem)
 		return;
 
 	for (addr = sec->pc - sec->base; nbytes--; addr++)
