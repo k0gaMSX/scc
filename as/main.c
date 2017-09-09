@@ -63,7 +63,7 @@ getargs(char *s)
 	Arg *ap;
 	static Arg args[NARGS];
 
-	for (ap = args; ; ++ap) {
+	for (ap = args; s; ++ap) {
 		while (isspace(*s))
 			++s;
 		if (*s == '\0')

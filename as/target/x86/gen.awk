@@ -72,7 +72,7 @@ function str2args(s, args, i, out)
 		a = substr(a, RLENGTH+1)
 		if (a ~ /^\+$/) {
 			return out "|AREP"
-		} else {
+		} else if (a != "") {
 			print "wrong arg", a
 			exit 1
 		}
