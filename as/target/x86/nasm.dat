@@ -1118,7 +1118,6 @@ RDMSR		void				[	0f 32]					PENT,PRIV
 RDPMC		void				[	0f 33]					P6
 RDTSC		void				[	0f 31]					PENT
 RDTSCP		void				[	0f 01 f9]				X86_64
-RET		void				[	c3]					8086,BND
 RET		imm				[i:	c2 iw]					8086,SW,BND
 RETF		void				[	cb]					8086
 RETF		imm				[i:	ca iw]					8086,SW
