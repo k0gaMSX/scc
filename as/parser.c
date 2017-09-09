@@ -106,4 +106,5 @@ repeat:
 	buff[n-1] = '\0';
 	if (extract(buff, linep) == 0)
 		goto repeat;
+	return 1;
 }
