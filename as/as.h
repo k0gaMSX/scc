@@ -5,15 +5,22 @@ enum secflags {
 	SFILE,
 };
 
+enum args {
+	AIMM = 1,
+	AMAX,
+        AREP  = 1 << 7,
+};
+
+enum endianess {
+	BIG_ENDIAN    = -1,
+	LITTLE_ENDIAN = 1
+};
+
 typedef struct ins Ins;
 typedef struct op Op;
 typedef struct arg Arg;
 typedef void Format(Op *, Arg *);
 typedef struct section Section;
-
-enum {
-	BITS16,
-};
 
 struct ins {
 	int begin, end;
@@ -25,11 +32,11 @@ struct op {
 	int size;
 	void (*format)(Op *, Arg *);
 	char *bytes;
-	char *args;
+	unsigned char *args;
 };
 
 struct arg {
-	int type;
+	unsigned char type;
 	TUINT val;
 };
 
@@ -48,6 +55,7 @@ extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
+extern void incpc(int siz);
 
 extern Section *cursec;
 extern int nr_ins;
@@ -55,3 +63,4 @@ extern Ins instab[];
 extern Op optab[];
 extern int pass;
 extern TUINT maxaddr;
+extern int endian;

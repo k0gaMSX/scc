@@ -4,3 +4,4 @@
 #include "ins.h"
 
 TUINT maxaddr = 0xFFFFFFFF;
+int endian = LITTLE_ENDIAN;

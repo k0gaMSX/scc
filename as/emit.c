@@ -43,13 +43,6 @@ isect(Section *sec)
 }
 
 Section *
-addsect(char *name, TUINT base, int flags)
-{
-	Section *sec;
-
-}
-
-Section *
 section(char *name)
 {
 	Section *sec;
@@ -78,15 +71,11 @@ isections(void)
 }
 
 void
-emit(Section *sec, char *bytes, int nbytes)
+emit(Section *sec, char *bytes, int n)
 {
-	TUINT addr;
-
-	if (!sec->mem)
-		return;
-
-	for (addr = sec->pc - sec->base; nbytes--; addr++)
-		sec->mem[addr] = *bytes++;
+	if (sec->mem)
+		memcpy(&sec->mem[sec->pc - sec->base], bytes, n);
+	incpc(n);
 }
 
 void

@@ -1,4 +1,5 @@
 
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +9,8 @@
 #include "as.h"
 
 #define MAXLINE 100
+#define NARGS 20
+
 int nerrors;
 
 void
@@ -28,7 +31,6 @@ cmp(const void *f1, const void *f2)
 {
 	const Ins *ins = f2;
 
-
 	return strcmp(f1, ins->str);
 }
 
@@ -38,10 +40,81 @@ match(Op *op, Arg *args)
 	return 1;
 }
 
-Arg *
-getargs(char *text)
+Arg
+number(char *s, int base)
 {
-	return NULL;
+	Arg arg;
+	TUINT n;
+
+	/* TODO: Check overflow here */
+	arg.type = AIMM;
+	for (n = 0; *s; n += *s++ - '0')
+		n *= base;
+	arg.val = n;
+
+	return arg;
+}
+
+Arg *
+getargs(char *s)
+{
+	char *t;
+	int ch, len;
+	Arg *ap;
+	static Arg args[NARGS];
+
+	for (ap = args; ; ++ap) {
+		while (isspace(*s))
+			++s;
+		if (*s == '\0')
+			break;
+		if (ap == &args[NARGS-1])
+			die("too many arguments in one instruction");
+
+		for (t = s; *s && *s != ','; s++)
+			/* nothing */;
+		len = t - s;
+		if (len == 0)
+			goto wrong_operand;
+
+		if (*s)
+			*s++ = '\0';
+
+		ch = *t;
+		if (isdigit(ch)) {
+			*ap = number(t, (s[len-1] == 'H') ? 16 : 10);
+			continue;
+		}
+wrong_operand:
+		error("wrong operand '%s'", t);
+	}
+	ap->type = 0;
+
+	return args;
+}
+
+void
+incpc(int siz)
+{
+	TUINT pc, curpc;
+	pc = cursec->pc;
+	curpc = cursec->curpc;
+
+	cursec->curpc += siz;
+	cursec->pc += siz;
+
+	if (pass == 2)
+		return;
+
+	if (cursec->pc > cursec->max)
+		cursec->max = cursec->pc;
+
+	if (pc > cursec->pc ||
+	    curpc > cursec->curpc ||
+	    cursec->curpc > maxaddr ||
+	    cursec->pc > maxaddr) {
+		die("address overflow");
+	}
 }
 
 void
@@ -50,7 +123,6 @@ as(char *text, char *xargs)
 	Ins *ins;
 	Op *op, *lim;
 	Arg *args;
-	TUINT pc, curpc;
 	
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
 
@@ -70,25 +142,6 @@ as(char *text, char *xargs)
 		return;
 	}
 	(*op->format)(op, args);
-
-	pc = cursec->pc;
-	curpc = cursec->curpc;
-
-	cursec->curpc += op->size;
-	cursec->pc += op->size;
-
-	if (pass == 2)
-		return;
-
-	if (cursec->pc > cursec->max)
-		cursec->max = cursec->pc;
-
-	if (pc > cursec->pc ||
-	    curpc > cursec->curpc ||
-	    cursec->curpc > maxaddr ||
-	    cursec->pc > maxaddr) {
-		die("address overflow");
-	}
 }
 
 int

@@ -1,2 +1,2 @@
 
-Format direct;
+Format direct, defb, defw, defd, defq;
