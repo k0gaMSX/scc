@@ -50,10 +50,6 @@
 ;# Special instructions (pseudo-ops)
 ; These MUST be first in this file and must maintain the pattern of
 ; Dx by size, RESx by size, and INCBIN in that order.
-DB		ignore				ignore						ignore
-DW		ignore				ignore						ignore
-DD		ignore				ignore						ignore
-DQ		ignore				ignore						ignore
 DT		ignore				ignore						ignore
 DO		ignore				ignore						ignore
 DY		ignore				ignore						ignore
