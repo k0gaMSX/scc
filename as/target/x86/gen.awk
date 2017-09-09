@@ -51,22 +51,28 @@ function str2args(s, args, i, out)
 {
 	split(s, args, /,/)
 	for (i in args) {
-		if (args[i] == "none")
+		a = args[i]
+		if (a == "none") {
 			break
-		else if (args[i] ~ /imm8/)
+		} else if (match(a, /^imm8/)) {
 			out = "AIMM8"
-		else if (args[i] ~ /imm16/)
+		} else if (match(a, /^imm16/)) {
 			out = "AIMM16"
-		else if (args[i] ~ /imm32/)
+		} else if (match(a, /^imm32/)) {
 			out = "AIMM32"
-		else if (args[i] ~ /imm64/)
+		} else if (match(a, /^imm64/)) {
 			out = "AIMM64"
-		else {
-			print "wrong arg", args[i]
+		} else {
+			print "wrong arg", a
 			exit 1
 		}
-		if (args[i] ~ /\*$/)
+		a = substr(a, RLENGTH+1)
+		if (a ~ /^\+$/) {
 			return out "|AREP"
+		} else {
+			print "wrong arg", a
+			exit 1
+		}
 		out = out ","
 	}
 	out = out "0"

@@ -1,6 +1,6 @@
 # Tab 16, tabs 16, :set ts=16
 # op	args	size	bytes	format
-DB	imm8*	0	none	defb
-DW	imm16*	0	none	defw
-DD	imm32*	0	none	defd
-DQ	imm64*	0	none	defq
+DB	imm8+	0	none	defb
+DW	imm16+	0	none	defw
+DD	imm32+	0	none	defd
+DQ	imm64+	0	none	defq
