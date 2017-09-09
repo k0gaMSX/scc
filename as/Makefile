@@ -10,7 +10,6 @@ HDR = ../inc/scc.h as.h
 all:
 
 $(OBJ): $(HDR)
-ins.o: ins.h
 
 as: $(OBJ)
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@

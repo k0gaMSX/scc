@@ -3,7 +3,6 @@ BEGIN	{
 	FS = "\t"
 	printf "#include \"../../../inc/scc.h\"\n"\
 	       "#include \"../../as.h\"\n"\
-	       "#include \"../../ins.h\"\n"\
 	       "#include \"../x86/args.h\"\n"\
 	       "#include \"ins.h\"\n\n"
 	nop = 0; nvar = 0
@@ -20,8 +19,12 @@ BEGIN	{
 	opsize[nvar] = $3
 	opbytes[nvar] = ($4 == "none") ? "" : $4
 	opformat[nvar++] = $5
+	formats[$5] = 1
 }
 END	{
+	for (i in formats)
+		printf "Format %s;\n", i
+
 	printf "int nr_ins = %d;\n\n", nop
 	print "struct ins instab[] = {"
 	for (i = 0; i < nop; i++) {
