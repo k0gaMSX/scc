@@ -6,9 +6,15 @@
 #include "../inc/scc.h"
 #include "as.h"
 
+static Section abss = {
+	.name = "abs",
+	.flags = SREAD|SWRITE
+};
+
 static Section bss = {
 	.name = "bss",
-	.flags = SRELOC|SREAD|SWRITE
+	.flags = SRELOC|SREAD|SWRITE,
+	.next = &abss
 };
 
 static Section data = {
