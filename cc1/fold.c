@@ -1,6 +1,5 @@
 static char sccsid[] = "@(#) ./cc1/fold.c";
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "../inc/scc.h"

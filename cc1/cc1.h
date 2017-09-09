@@ -361,6 +361,7 @@ struct yystype {
 	unsigned char token;
 };
 
+#ifdef stdin
 struct input {
 	char flags;
 	unsigned lineno;
@@ -370,6 +371,7 @@ struct input {
 	char *line, *begin, *p;
 	struct input *next;
 };
+#endif
 
 /* error.c */
 extern void error(char *fmt, ...);
@@ -481,7 +483,7 @@ extern unsigned curctx;
 extern Symbol *curfun, *zero, *one;
 extern char *infile;
 extern unsigned lineno;
-extern char filenam[FILENAME_MAX];
+extern char filenam[];
 
 extern Type *voidtype, *pvoidtype, *booltype,
             *uchartype,   *chartype, *schartype,
