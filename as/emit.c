@@ -6,6 +6,8 @@
 #include "../inc/scc.h"
 #include "as.h"
 
+#define HASHSIZ 64
+
 static Section abss = {
 	.name = "abs",
 	.flags = SREAD|SWRITE
@@ -32,6 +34,39 @@ static Section text = {
 Section *cursec = &text, *headp = &text;
 
 int pass;
+
+static Symbol *hashtbl[HASHSIZ];
+
+Symbol *
+lookup(char *name)
+{
+	unsigned h;
+	Symbol *sym;
+	int c;
+	char *t, *s;
+
+	s = name;
+	for (h = 0; c = *s; ++s)
+		h = h*33 ^ c;
+	h &= HASHSIZ-1;
+
+	c = *name;
+	for (sym = hashtbl[h]; sym; sym = sym->next) {
+		t = sym->name;
+		if (c == *t && !strcmp(t, name))
+			return sym;
+	}
+
+	sym = xmalloc(sizeof(sym));
+	sym->name = xstrdup(name);
+	sym->type = FUNDEF;
+	sym->desc = 0;
+	sym->value = 0;
+	sym->next = hashtbl[h];
+	hashtbl[h] = sym;
+
+	return sym;
+}
 
 char *
 pack(TUINT v, int n, int inc)

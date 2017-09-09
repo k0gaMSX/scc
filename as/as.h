@@ -5,6 +5,14 @@ enum secflags {
 	SFILE,
 };
 
+enum symflags {
+	FUNDEF  = 'U',
+	FABS    = 'A',
+	FCOMMON = 'C',
+	FBSS    = 'B',
+	FDATA   = 'D',
+};
+
 enum args {
 	AIMM = 1,
 	AMAX,
@@ -21,6 +29,7 @@ typedef struct op Op;
 typedef struct arg Arg;
 typedef void Format(Op *, Arg *);
 typedef struct section Section;
+typedef struct symbol Symbol;
 
 struct line {
 	char *label;
@@ -57,6 +66,14 @@ struct section {
 	struct section *next;
 };
 
+struct symbol {
+	char *name;
+	char type;
+	short desc;
+	TUINT value;
+	struct symbol *next;
+};
+
 extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
@@ -65,6 +82,7 @@ extern void incpc(int siz);
 extern char *pack(TUINT v, int n, int inc);
 extern void error(char *msg, ...);
 extern Arg *getargs(char *s);
+extern Symbol *lookup(char *name);
 
 /* Avoid errors in files where stdio is not included */
 #ifdef stdin
