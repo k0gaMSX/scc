@@ -56,6 +56,7 @@ extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
 extern void incpc(int siz);
+extern char *pack(TUINT v, int n, int inc);
 
 extern Section *cursec;
 extern int nr_ins;

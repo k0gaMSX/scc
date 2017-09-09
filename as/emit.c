@@ -27,6 +27,21 @@ Section *cursec = &text, *headp = &text;
 
 int pass;
 
+char *
+pack(TUINT v, int n, int inc)
+{
+	static char buf[sizeof(TUINT)];
+	int idx;
+
+	idx = (inc < 0) ? n-1 : 0;
+	while (n--) {
+		buf[idx] = v;
+		idx += inc;
+		v >>= 8;
+	}
+	return buf;
+}
+
 static void
 isect(Section *sec)
 {
