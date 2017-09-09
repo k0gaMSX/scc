@@ -22,6 +22,12 @@ typedef struct arg Arg;
 typedef void Format(Op *, Arg *);
 typedef struct section Section;
 
+struct line {
+	char *label;
+	char *op;
+	char *args;
+};
+
 struct ins {
 	int begin, end;
 	char *str;
@@ -57,6 +63,13 @@ extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
 extern void incpc(int siz);
 extern char *pack(TUINT v, int n, int inc);
+extern void error(char *msg, ...);
+extern Arg *getargs(char *s);
+
+/* Avoid errors in files where stdio is not included */
+#ifdef stdin
+extern int next(FILE *fp, struct line *linep);
+#endif
 
 extern Section *cursec;
 extern int nr_ins;

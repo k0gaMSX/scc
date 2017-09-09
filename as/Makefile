@@ -4,7 +4,7 @@ LIBDIR  = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
-OBJ = main.o emit.o ins.o
+OBJ = main.o emit.o ins.o parser.o
 HDR = ../inc/scc.h as.h
 
 all:
@@ -16,7 +16,6 @@ as: $(OBJ)
 
 $(LIBDIR)/libscc.a:
 	cd $(LIBDIR) && $(MAKE)
-
 
 dep:
 	./gendep.sh $(TARGETS)
