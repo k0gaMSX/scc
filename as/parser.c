@@ -63,31 +63,70 @@ wrong_operand:
 	return args;
 }
 
-int
-extract(char *p, struct line *linep)
+static char *
+field(char **oldp)
 {
-	linep->label = p;
-	linep->op = NULL;
-	linep->args = NULL;
+	char *s, *begin;
+	int c;
 
-	if ((p = strchr(p, '\t')) == NULL)
-		return 0;
-	*p++ = '\0';
+	if ((begin = *oldp) == NULL)
+		return NULL;
 
-	linep->op = p;
-	if ((p = strchr(p, '\t')) == NULL)
-		return 1;
-	*p++ = '\0';
+	for (s = begin; ; s++) {
+		switch (c = *s) {
+		case '\t':
+			*s++ = '\0';
+			*oldp = s;
+			goto out_loop;
+		case ';':
+			*s = '\0';
+		case '\0':
+			*oldp = NULL;
+			goto out_loop;
+		case '\'':
+			if (*++s == '\0' || *++s != '\'')
+				error("invalid character constant");
+			break;
+		case '"':
+			while ((c = *++s) && c != '"')
+				/* nothing */;
+			if (c == '\0')
+				error("unterminated string");
+			break;
+		default:
+			*s = toupper(c);
+			break;
+		}
+	}
 
-	linep->args = p;
-	if ((p = strchr(p, '\t')) == NULL)
-		return 2;
-	*p = '\0';
-	return 3;
+out_loop:
+	return (*begin != '\0') ? begin : NULL;
+}
+
+static int
+extract(char *s, struct line *lp)
+{
+	int r = 0;
+
+	if (lp->label = field(&s))
+		r++;
+	if (lp->op = field(&s))
+		r++;
+	if (lp->args = field(&s))
+		r++;
+
+	if (s) {
+		while (isspace(*s))
+			++s;
+		if (*s != '\0' && *s != ';')
+			error("trailing characters at the end of the line");
+	}
+
+	return r;
 }
 
 int
-next(FILE *fp, struct line *linep)
+next(FILE *fp, struct line *lp)
 {
 	size_t n;
 	static char buff[MAXLINE];
@@ -97,14 +136,14 @@ repeat:
 		return 0;
 
 	n = strlen(buff);
-	if (n == 0 || buff[0] == ';')
+	if (n == 0)
 		goto repeat;
 	if (buff[n-1] != '\n') {
-		error("buff too long");
+		error("line too long");
 		goto repeat;
 	}
 	buff[n-1] = '\0';
-	if (extract(buff, linep) == 0)
+	if (extract(buff, lp) == 0)
 		goto repeat;
 	return 1;
 }
