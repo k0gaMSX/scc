@@ -41,29 +41,30 @@ Symbol *
 lookup(char *name)
 {
 	unsigned h;
-	Symbol *sym;
+	Symbol *sym, **list;
 	int c;
 	char *t, *s;
 
-	s = name;
-	for (h = 0; c = *s; ++s)
+	h = 0;
+	for (s = name; c = *s; ++s)
 		h = h*33 ^ c;
 	h &= HASHSIZ-1;
 
 	c = *name;
-	for (sym = hashtbl[h]; sym; sym = sym->next) {
+	list = &hashtbl[h];
+	for (sym = *list; sym; sym = sym->next) {
 		t = sym->name;
 		if (c == *t && !strcmp(t, name))
 			return sym;
 	}
 
-	sym = xmalloc(sizeof(sym));
+	sym = xmalloc(sizeof(*sym));
 	sym->name = xstrdup(name);
 	sym->type = FUNDEF;
 	sym->desc = 0;
 	sym->value = 0;
-	sym->next = hashtbl[h];
-	hashtbl[h] = sym;
+	sym->next = *list;
+	*list = sym;
 
 	return sym;
 }
