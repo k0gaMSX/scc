@@ -118,7 +118,7 @@ section(char *name)
 		sec->next = headp;
 		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
 	}
-	cursec = sec;
+	return cursec = sec;
 }
 
 void
