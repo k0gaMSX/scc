@@ -80,6 +80,9 @@ pack(TUINT v, int n, int inc)
 		idx += inc;
 		v >>= 8;
 	}
+
+	if (v)
+		error("overflow in immediate value");
 	return buf;
 }
 
