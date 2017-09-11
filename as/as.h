@@ -96,3 +96,5 @@ extern Op optab[];
 extern int pass;
 extern TUINT maxaddr;
 extern int endian;
+extern Symbol *linesym;
+extern char *filename;

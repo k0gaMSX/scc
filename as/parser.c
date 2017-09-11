@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,26 @@
 #define NARGS 20
 #define MAXLINE 100
 
+char *filename;
+int nerrors;
+
+static unsigned lineno;
+
+void
+error(char *msg, ...)
+{
+	va_list va;
+
+	va_start(va, msg);
+	fprintf(stderr, "as:%s:%u: ", filename, lineno);
+	vfprintf(stderr, msg, va);
+	putc('\n', stderr);
+	nerrors++;
+	va_end(va);
+
+	if (nerrors == 10)
+		die("as: too many errors");
+}
 
 Arg
 number(char *s, int base)
@@ -134,6 +155,9 @@ next(FILE *fp, struct line *lp)
 repeat:
 	if (!fgets(buff, sizeof(buff), fp))
 		return 0;
+
+	if (++lineno == 0)
+		die("as: file too long");
 
 	n = strlen(buff);
 	if (n == 0)

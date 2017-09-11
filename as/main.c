@@ -1,26 +1,10 @@
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../inc/scc.h"
 #include "as.h"
-
-int nerrors;
-
-void
-error(char *msg, ...)
-{
-	va_list va;
-
-	va_start(va, msg);
-	fputs("as: ", stderr);
-	vfprintf(stderr, msg, va);
-	putc('\n', stderr);
-	nerrors++;
-	va_end(va);
-}
 
 int
 cmp(const void *f1, const void *f2)
@@ -92,6 +76,7 @@ dopass(char *fname)
 {
 	struct line line;
 	FILE *fp;
+	extern int nerrors;
 
 	if ((fp = fopen(fname, "r")) == NULL)
 		die("as: error opening '%s'", fname);
@@ -118,6 +103,7 @@ main(int argc, char *argv[])
 	if (argc != 2)
 		usage();
 
+	filename = argv[1];
 	for (pass = 1; pass <= 2 && dopass(argv[1]); pass++)
 		/* nothing */;
 	writeout("a.out");
