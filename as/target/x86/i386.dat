@@ -1,4 +1,5 @@
 # Tab 16, tabs 16, :set ts=16
 # op	args	size	bytes	format
+EQU	imm32	0	none	equ
 NOP	none	1	0x90	direct
 RET	none	1	0xc3	direct

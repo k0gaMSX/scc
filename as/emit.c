@@ -9,26 +9,26 @@
 #define HASHSIZ 64
 
 static Section abss = {
-	.name = "abs",
-	.flags = SREAD|SWRITE
+	.name  = "abs",
+	.flags = TABS|SREAD|SWRITE,
 };
 
 static Section bss = {
-	.name = "bss",
-	.flags = SRELOC|SREAD|SWRITE,
-	.next = &abss
+	.name  = "bss",
+	.flags = TBSS|SRELOC|SREAD|SWRITE,
+	.next  = &abss,
 };
 
 static Section data = {
-	.name = "data",
-	.next = &bss,
-	.flags = SRELOC|SREAD|SWRITE|SFILE
+	.name  = "data",
+	.flags = TDATA|SRELOC|SREAD|SWRITE|SFILE,
+	.next  = &bss,
 };
 
 static Section text = {
-	.name = "text",
-	.next = &data,
-	.flags = SRELOC|SFILE
+	.name  = "text",
+	.flags = TTEXT|SRELOC|SFILE,
+	.next  = &data,
 };
 
 Section *cursec = &text, *headp = &text;
@@ -36,6 +36,7 @@ Section *cursec = &text, *headp = &text;
 int pass;
 
 static Symbol *hashtbl[HASHSIZ];
+Symbol *linesym;
 
 Symbol *
 lookup(char *name)
@@ -60,12 +61,48 @@ lookup(char *name)
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = xstrdup(name);
-	sym->type = FUNDEF;
+	sym->flags = (cursec->flags & TMASK) | FLOCAL | FUNDEF;
 	sym->desc = 0;
 	sym->value = 0;
 	sym->next = *list;
 	*list = sym;
 
+	return sym;
+}
+
+Symbol *
+deflabel(char *name)
+{
+	static Symbol *cursym;
+	Symbol *sym;
+	char label[MAXSYM+1];
+
+	if (*name == '.') {
+		int r;
+
+		if (!cursym) {
+			error("local label '%s' without global label", name);
+			return NULL;
+		}
+		r = snprintf(label, sizeof(label),
+		             "%s%s",
+		             cursym->name, name);
+		if (r == sizeof(label)) {
+			error("local label '%s' in '%s' produces too long symbol",
+			      name, cursym->name);
+			return NULL;
+		}
+		name = label;
+	}
+
+	sym = lookup(name);
+	if (pass == 1 && (sym->flags & FUNDEF) == 0)
+		error("redefinition of label '%s'", name);
+	sym->flags &= ~FUNDEF;
+	sym->value = cursec->curpc;
+
+	if (*name != '.')
+		cursym = sym;
 	return sym;
 }
 

@@ -38,3 +38,12 @@ defq(Op *op, Arg *args)
 {
 	def(args, 8);
 }
+
+void
+equ(Op *op, Arg *args)
+{
+	if (!linesym)
+		error("label definition lacks a label");
+	else
+		linesym->value = args->val;
+}

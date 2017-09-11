@@ -82,8 +82,17 @@ dopass(char *fname)
 		die("as: error opening '%s'", fname);
 
 	isections();
-	while (next(fp, &line))
-		as(line.op, line.args);
+	while (next(fp, &line)) {
+		linesym = NULL;
+
+		if (line.label)
+			linesym = deflabel(line.label);
+
+		if (line.op)
+			as(line.op, line.args);
+		else if (line.args)
+			error("arguments without an opcode");
+	}
 
 	if (fclose(fp))
 		die("as: error reading from input file '%s'", fname);

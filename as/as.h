@@ -1,16 +1,27 @@
+/*
+ * First 3 bits of flags in segments and symbols are for the
+ * type of segment
+ */
+enum symtype {
+	TABS    = 1,
+	TTEXT   = 2,
+	TBSS    = 3,
+	TDATA   = 4,
+	TMASK   = 7,
+};
+
 enum secflags {
-	SRELOC,
-	SREAD,
-	SWRITE,
-	SFILE,
+	SRELOC  = 1 << 4,
+	SREAD   = 1 << 5,
+	SWRITE  = 1 << 6,
+	SFILE   = 1 << 7,
 };
 
 enum symflags {
-	FUNDEF  = 'U',
-	FABS    = 'A',
-	FCOMMON = 'C',
-	FBSS    = 'B',
-	FDATA   = 'D',
+	FCOMMON = 1 << 4,
+	FLOCAL  = 1 << 5,
+	FEXTERN = 1 << 6,
+	FUNDEF  = 1 << 7,
 };
 
 enum args {
@@ -23,6 +34,8 @@ enum endianess {
 	BIG_ENDIAN    = -1,
 	LITTLE_ENDIAN = 1
 };
+
+#define MAXSYM 63
 
 typedef struct ins Ins;
 typedef struct op Op;
@@ -58,7 +71,7 @@ struct arg {
 struct section {
 	char *name;
 	char *mem;
-	int flags;
+	unsigned char flags;
 	TUINT base;
 	TUINT max;
 	TUINT curpc;
@@ -68,7 +81,8 @@ struct section {
 
 struct symbol {
 	char *name;
-	char type;
+	unsigned char flags;
+	char pass;
 	short desc;
 	TUINT value;
 	struct symbol *next;
@@ -83,6 +97,7 @@ extern char *pack(TUINT v, int n, int inc);
 extern void error(char *msg, ...);
 extern Arg *getargs(char *s);
 extern Symbol *lookup(char *name);
+extern Symbol *deflabel(char *name);
 
 /* Avoid errors in files where stdio is not included */
 #ifdef stdin
