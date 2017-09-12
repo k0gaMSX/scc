@@ -198,6 +198,10 @@ repeat:
 	case '\n':
 		newline();
 		break;
+	default:
+		if (!isprint(c) && !ispunct(c))
+			warn("invalid input character. The shame of UB is yours");
+		break;
 	}
 
 	return c;
