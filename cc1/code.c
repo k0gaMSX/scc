@@ -7,17 +7,17 @@ static char sccsid[] = "@(#) ./cc1/code.c";
 #include "../inc/scc.h"
 #include "cc1.h"
 
-static void emitbin(unsigned, void *),
-            emitcast(unsigned, void *),
-            emitsym(unsigned, void *),
-            emitexp(unsigned, void *),
-            emitsymid(unsigned, void *),
-            emittext(unsigned, void *),
-            emitfun(unsigned, void *),
-            emitdcl(unsigned, void *),
-            emitinit(unsigned, void *),
-            emittype(unsigned, void *),
-            emitbuilt(unsigned, void *);
+static void emitbin(int, void *),
+            emitcast(int, void *),
+            emitsym(int, void *),
+            emitexp(int, void *),
+            emitsymid(int, void *),
+            emittext(int, void *),
+            emitfun(int, void *),
+            emitdcl(int, void *),
+            emitinit(int, void *),
+            emittype(int, void *),
+            emitbuilt(int, void *);
 
 char *optxt[] = {
 	[OADD] = "+",
@@ -75,7 +75,7 @@ char *optxt[] = {
 	[OFIELD] = "."
 };
 
-void (*opcode[])(unsigned, void *) = {
+void (*opcode[])(int, void *) = {
 	[OADD] = emitbin,
 	[OSUB] = emitbin,
 	[OMUL] = emitbin,
@@ -176,7 +176,7 @@ prtree(Node *np)
 }
 
 void
-emit(unsigned op, void *arg)
+emit(int op, void *arg)
 {
 	extern int failure;
 
@@ -231,7 +231,7 @@ emitconst(Node *np)
 }
 
 static void
-emitsym(unsigned op, void *arg)
+emitsym(int op, void *arg)
 {
 	Node *np = arg;
 
@@ -263,7 +263,7 @@ emitletter(Type *tp)
 }
 
 static void
-emittype(unsigned op, void *arg)
+emittype(int op, void *arg)
 {
 	TINT n;
 	Symbol **sp;
@@ -390,7 +390,7 @@ emit_expression:
 }
 
 static void
-emitinit(unsigned op, void *arg)
+emitinit(int op, void *arg)
 {
 	Node *np = arg;
 
@@ -400,7 +400,7 @@ emitinit(unsigned op, void *arg)
 }
 
 static void
-emitdcl(unsigned op, void *arg)
+emitdcl(int op, void *arg)
 {
 	Symbol *sym = arg;
 
@@ -422,7 +422,7 @@ emitdcl(unsigned op, void *arg)
 }
 
 static void
-emitcast(unsigned op, void *arg)
+emitcast(int op, void *arg)
 {
 	Node *np = arg, *lp = np->left;
 
@@ -432,7 +432,7 @@ emitcast(unsigned op, void *arg)
 }
 
 static void
-emitbin(unsigned op, void *arg)
+emitbin(int op, void *arg)
 {
 	Node *np = arg;
 	char *s;
@@ -446,7 +446,7 @@ emitbin(unsigned op, void *arg)
 }
 
 static void
-emitbuilt(unsigned op, void *arg)
+emitbuilt(int op, void *arg)
 {
 	Node *np = arg;
 
@@ -458,7 +458,7 @@ emitbuilt(unsigned op, void *arg)
 
 
 static void
-emitexp(unsigned op, void *arg)
+emitexp(int op, void *arg)
 {
 	Node *np = arg;
 
@@ -468,7 +468,7 @@ emitexp(unsigned op, void *arg)
 }
 
 static void
-emitfun(unsigned op, void *arg)
+emitfun(int op, void *arg)
 {
 	Symbol *sym = arg, **sp;
 
@@ -481,20 +481,20 @@ emitfun(unsigned op, void *arg)
 }
 
 static void
-emittext(unsigned op, void *arg)
+emittext(int op, void *arg)
 {
 	fputs(optxt[op], outfp);
 }
 
 static void
-emitsymid(unsigned op, void *arg)
+emitsymid(int op, void *arg)
 {
 	Symbol *sym = arg;
 	fprintf(outfp, optxt[op], sym->id);
 }
 
 Node *
-node(unsigned op, Type *tp, Node *lp, Node *rp)
+node(int op, Type *tp, Node *lp, Node *rp)
 {
 	Node *np;
 

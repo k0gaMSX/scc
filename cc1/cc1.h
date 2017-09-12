@@ -383,7 +383,7 @@ extern Type *deftype(Type *tp);
 
 /* types.c */
 extern int eqtype(Type *tp1, Type *tp2, int eqflag);
-extern Type *ctype(unsigned type, unsigned sign, unsigned size);
+extern Type *ctype(int type, int sign, int size);
 extern Type *mktype(Type *tp, int op, TINT nelem, Type *data[]);
 extern Type *duptype(Type *base);
 extern struct limits *getlimits(Type *tp);
@@ -413,8 +413,8 @@ extern void decl(void);
 
 /* lex.c */
 extern int ahead(void);
-extern unsigned next(void);
-extern void expect(unsigned tok);
+extern int next(void);
+extern void expect(int tok);
 extern void discard(void);
 extern int addinput(char *fname, Symbol *hide, char *buffer);
 extern void delinput(void);
@@ -425,8 +425,8 @@ extern int setloc(char *fname, unsigned line);
 
 /* code.c */
 extern void prtree(Node *np);
-extern void emit(unsigned, void *);
-extern Node *node(unsigned op, Type *tp, Node *left, Node *rigth);
+extern void emit(int, void *);
+extern Node *node(int op, Type *tp, Node *left, Node *rigth);
 extern Node *varnode(Symbol *sym);
 extern Node *constnode(Symbol *sym);
 extern Node *sizeofnode(Type *tp);
@@ -472,7 +472,7 @@ extern int valid_va_list(Type *tp);
  */
 extern struct yystype yylval;
 extern char yytext[];
-extern unsigned yytoken;
+extern int yytoken;
 extern unsigned short yylen;
 extern int disexpand;
 extern unsigned cppctx;

@@ -106,7 +106,7 @@ getlimits(Type *tp)
 }
 
 Type *
-ctype(unsigned type, unsigned sign, unsigned size)
+ctype(int type, int sign, int size)
 {
 	switch (type) {
 	case CHAR:

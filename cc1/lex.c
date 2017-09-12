@@ -12,7 +12,7 @@ static char sccsid[] = "@(#) ./cc1/lex.c";
 #include "../inc/scc.h"
 #include "cc1.h"
 
-unsigned yytoken;
+int yytoken;
 struct yystype yylval;
 char yytext[STRINGSIZ+3];
 unsigned short yylen;
@@ -376,7 +376,7 @@ overflow:
 	return sym;
 }
 
-static unsigned
+static int
 integer(char *s, int base)
 {
 	Type *tp;
@@ -412,7 +412,7 @@ convert:
 }
 
 static char *
-digits(unsigned base)
+digits(int base)
 {
 	char *p;
 	int c;
@@ -439,7 +439,7 @@ end:
 	return yytext;
 }
 
-static unsigned
+static int
 number(void)
 {
 	int base;
@@ -504,7 +504,7 @@ escape(void)
 	return c;
 }
 
-static unsigned
+static int
 character(void)
 {
 	int c;
@@ -528,7 +528,7 @@ character(void)
 	return CONSTANT;
 }
 
-static unsigned
+static int
 string(void)
 {
 	char *bp = yytext;
@@ -559,7 +559,7 @@ string(void)
 	return STRING;
 }
 
-static unsigned
+static int
 iden(void)
 {
 	Symbol *sym;
@@ -583,7 +583,7 @@ iden(void)
 	return sym->token;
 }
 
-static unsigned
+static int
 follow(int expect, int ifyes, int ifno)
 {
 	if (*input->p++ == expect)
@@ -592,7 +592,7 @@ follow(int expect, int ifyes, int ifno)
 	return ifno;
 }
 
-static unsigned
+static int
 minus(void)
 {
 	switch (*input->p++) {
@@ -603,7 +603,7 @@ minus(void)
 	}
 }
 
-static unsigned
+static int
 plus(void)
 {
 	switch (*input->p++) {
@@ -613,7 +613,7 @@ plus(void)
 	}
 }
 
-static unsigned
+static int
 relational(int op, int equal, int shift, int assig)
 {
 	int c;
@@ -626,7 +626,7 @@ relational(int op, int equal, int shift, int assig)
 	return op;
 }
 
-static unsigned
+static int
 logic(int op, int equal, int logic)
 {
 	int c;
@@ -639,7 +639,7 @@ logic(int op, int equal, int logic)
 	return op;
 }
 
-static unsigned
+static int
 dot(void)
 {
 	int c;
@@ -652,10 +652,10 @@ dot(void)
 	return ELLIPSIS;
 }
 
-static unsigned
+static int
 operator(void)
 {
-	unsigned t;
+	int t;
 
 	switch (t = *input->p++) {
 	case '<': t = relational('<', LE, SHL, SHL_EQ); break;
@@ -714,7 +714,7 @@ return_byte:
 	return c;
 }
 
-unsigned
+int
 next(void)
 {
 	int c;
@@ -743,7 +743,7 @@ next(void)
 }
 
 void
-expect(unsigned tok)
+expect(int tok)
 {
 	if (yytoken != tok) {
 		if (isgraph(tok))
