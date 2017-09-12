@@ -5,5 +5,5 @@
 int
 isalpha(int c)
 {
-	return __ctype[(unsigned char) c] & (_U|_L);
+	return (__ctype+1)[c] & (_U|_L);
 }

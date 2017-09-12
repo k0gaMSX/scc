@@ -2,7 +2,9 @@
 #include <ctype.h>
 #undef ctype
 
-unsigned char __ctype[255] = {
+/* __ctype is shifted by one to match EOF */
+unsigned char __ctype[256] = {
+	0,                                              /* EOF */
 	_C,_C,_C,_C,_C,_C,_C,_C,                        /* 0-7 */
 	_C,_C|_S,_C|_S,_C|_S,_C|_S,_C|_S,_C,_C,         /* 8-15 */
 	_C,_C,_C,_C,_C,_C,_C,_C,                        /* 16-23 */

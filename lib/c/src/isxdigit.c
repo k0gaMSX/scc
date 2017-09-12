@@ -5,5 +5,5 @@
 int
 isxdigit(int c)
 {
-	return __ctype[(unsigned char) c] & (_D|_X);
+	return (__ctype+1)[c] & (_D|_X);
 }
