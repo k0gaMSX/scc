@@ -188,7 +188,7 @@ emit(unsigned op, void *arg)
 static void
 emitvar(Symbol *sym)
 {
-	char c;
+	int c;
 	short flags = sym->flags;
 
 	if (flags & SLOCAL)

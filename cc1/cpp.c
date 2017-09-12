@@ -184,7 +184,8 @@ parsepars(char *buffer, char **listp, int nargs)
 static size_t
 copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 {
-	char delim, prevc, c, *p, *arg, *bp = buffer;
+	int delim, prevc, c;
+	char *p, *arg, *bp = buffer;
 	size_t size;
 
 	for (prevc = '\0'; c = *s; prevc = c, ++s) {
@@ -797,7 +798,8 @@ ppragmaln(void)
 void
 outcpp(void)
 {
-	char c, *s, *t;
+	int c;
+	char *s, *t;
 
 	for (next(); yytoken != EOFTOK; next()) {
 		if (onlyheader)

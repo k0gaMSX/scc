@@ -276,8 +276,8 @@ Symbol *
 lookup(int ns, char *name, int alloc)
 {
 	Symbol *sym;
-	int sns;
-	char *t, c;
+	int sns, c;
+	char *t;
 
 	c = *name;
 	for (sym = *hash(name, ns); sym; sym = sym->hash) {

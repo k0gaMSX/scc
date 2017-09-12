@@ -377,7 +377,7 @@ overflow:
 }
 
 static unsigned
-integer(char *s, char base)
+integer(char *s, int base)
 {
 	Type *tp;
 	Symbol *sym;
@@ -414,7 +414,8 @@ convert:
 static char *
 digits(unsigned base)
 {
-	char c, *p;
+	char *p;
+	int c;
 
 	for (p = input->p; c = *p; ++p) {
 		switch (base) {
@@ -441,7 +442,7 @@ end:
 static unsigned
 number(void)
 {
-	char base;
+	int base;
 
 	if (*input->p != '0') {
 		base = 10;
@@ -457,7 +458,7 @@ number(void)
 	return integer(digits(base), base);
 }
 
-static char
+static int
 escape(void)
 {
 	int c, base;
@@ -506,7 +507,7 @@ escape(void)
 static unsigned
 character(void)
 {
-	char c;
+	int c;
 	Symbol *sym;
 
 	if ((c = *++input->p) == '\\')
@@ -530,7 +531,8 @@ character(void)
 static unsigned
 string(void)
 {
-	char *bp = yytext, c;
+	char *bp = yytext;
+	int c;
 
 	*bp++ = '"';
 	for (++input->p; (c = *input->p) != '"'; ++input->p) {
@@ -614,7 +616,7 @@ plus(void)
 static unsigned
 relational(int op, int equal, int shift, int assig)
 {
-	char c;
+	int c;
 
 	if ((c = *input->p++) == '=')
 		return equal;
@@ -627,7 +629,7 @@ relational(int op, int equal, int shift, int assig)
 static unsigned
 logic(int op, int equal, int logic)
 {
-	char c;
+	int c;
 
 	if ((c = *input->p++) == '=')
 		return equal;
@@ -640,7 +642,7 @@ logic(int op, int equal, int logic)
 static unsigned
 dot(void)
 {
-	char c;
+	int c;
 
 	if ((c = *input->p) != '.')
 		return '.';
@@ -753,7 +755,7 @@ expect(unsigned tok)
 	}
 }
 
-char
+int
 ahead(void)
 {
 	skipspaces();
@@ -770,7 +772,7 @@ void
 discard(void)
 {
 	extern jmp_buf recover;
-	char c;
+	int c;
 
 	input->begin = input->p;
 	for (c = yytoken; ; c = *input->begin++) {

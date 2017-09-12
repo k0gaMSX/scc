@@ -412,7 +412,7 @@ extern Type *typename(void);
 extern void decl(void);
 
 /* lex.c */
-extern char ahead(void);
+extern int ahead(void);
 extern unsigned next(void);
 extern void expect(unsigned tok);
 extern void discard(void);
