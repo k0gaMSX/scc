@@ -1,4 +1,4 @@
-static char sccsid[] = "@(#) ./lib/debug.c";
+static char sccsid[] = "@(#) ./lib/scc/debug.c";
 #include <stdarg.h>
 #include <stdio.h>
 

@@ -1,4 +1,4 @@
-static char sccsid[] = "@(#) ./lib/xcalloc.c";
+static char sccsid[] = "@(#) ./lib/scc/xcalloc.c";
 #include <stdlib.h>
 #include "../../inc/scc.h"
 
