@@ -13,7 +13,7 @@ static char sccsid[] = "@(#) ./cc2/arch/qbe/code.c";
 
 static void binary(void), unary(void), store(void), jmp(void), ret(void),
             branch(void), call(void), ecall(void), param(void),
-            alloc(void), form2local(void), ldir(void), vastart(void),
+            asalloc(void), form2local(void), ldir(void), vastart(void),
             vaarg(void);
 
 static struct opdata {
@@ -146,7 +146,7 @@ static struct opdata {
 	[ASCALLEX] = {.fun = ecall, .txt = ", ...)"},
 	[ASPAR] = {.fun = param, .txt = "%s %s, "},
 	[ASPARE] = {.fun = param, .txt = "%s %s"},
-	[ASALLOC] = {.fun = alloc},
+	[ASALLOC] = {.fun = asalloc},
 	[ASFORM] = {.fun = form2local},
 
 	[ASVSTAR] = {.fun = vastart},
@@ -516,7 +516,7 @@ vaarg(void)
 }
 
 static void
-alloc(void)
+asalloc(void)
 {
 	Symbol *sym = pc->to.u.sym;
 	Type *tp = &sym->type;

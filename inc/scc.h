@@ -19,6 +19,20 @@ struct items {
 	unsigned n;
 };
 
+typedef struct alloc Alloc;
+
+struct arena;
+union hdr;
+
+struct alloc {
+	size_t size;
+	size_t nmemb;
+	size_t padding;
+	struct arena *arena;
+	union hdr *freep;
+};
+
+
 extern void die(const char *fmt, ...);
 extern void dbg(const char *fmt, ...);
 extern void newitem(struct items *items, char *item);
@@ -26,3 +40,7 @@ extern void *xmalloc(size_t size);
 extern void *xcalloc(size_t nmemb, size_t size);
 extern char *xstrdup(const char *s);
 extern void *xrealloc(void *buff, register size_t size);
+extern Alloc *alloc(size_t size, size_t nmemb);
+extern void dealloc(Alloc *allocp);
+extern void *new(Alloc *allocp);
+extern void delete(Alloc *allocp, void *p);
