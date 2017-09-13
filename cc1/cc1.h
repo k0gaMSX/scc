@@ -321,14 +321,14 @@ struct type {
 };
 
 struct symbol {
-	char *name;
-	Type *type;
-	unsigned short id;
 	unsigned char ctx;
 	unsigned char hide;
 	char ns;
+	unsigned short id;
+	unsigned short flags;
+	char *name;
+	Type *type;
 	unsigned char token;
-	short flags;
 	union {
 		TINT i;
 		TUINT u;
@@ -345,9 +345,9 @@ struct symbol {
 
 struct node {
 	unsigned char op;
+	unsigned char flags;
 	Type *type;
 	Symbol *sym;
-	char flags;
 	struct node *left, *right;
 };
 
