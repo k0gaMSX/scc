@@ -1,3 +1,4 @@
+static char sccsid[] = "@(#) ./as/main.c";
 
 #include <stdio.h>
 #include <stdlib.h>

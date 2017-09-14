@@ -1,3 +1,4 @@
+static char sccsid[] = "@(#) ./as/emit.c";
 
 #include <stdio.h>
 #include <stdint.h>

@@ -1,3 +1,4 @@
+static char sccsid[] = "@(#) ./as/parser.c";
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>

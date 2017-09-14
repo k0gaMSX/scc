@@ -1,3 +1,4 @@
+static char sccsid[] = "@(#) ./as/target/i386/ins.c";
 
 #include "../../../inc/scc.h"
 #include "../../as.h"
