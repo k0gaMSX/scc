@@ -20,7 +20,7 @@ all:
 
 cpp.o: stallman.msg
 
-$(LIBDIR)/libscc.a:
+$(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
 dep:
