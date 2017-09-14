@@ -196,7 +196,7 @@ getname(char *t, union tokenop u)
 static void
 symbol(char *token, union tokenop u)
 {
-	Node *np = newnode(u.op & 0xFF);
+	Node *np = node(u.op & 0xFF);
 	Symbol *sym = getsym(atoi(token+1));
 
 	sclass = u.op >> 8;
@@ -228,13 +228,13 @@ constant(char *token, union tokenop u)
 	++token;
 	if (*token == '"') {
 		++token;
-		np = newnode(OSTRING);
+		np = node(OSTRING);
 		np->type.flags = STRF;
 		np->type.size = strlen(token);
 		np->type.align = int8type.align;
 		np->u.s = xstrdup(token);
 	} else {
-		np = newnode(OCONST);
+		np = node(OCONST);
 		np->type = *gettype(token++);
 		for (v = 0; c = *token++; v += c) {
 			v <<= 4;
@@ -249,7 +249,7 @@ static void
 assign(char *token, union tokenop u)
 {
 	int subop;
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 
 	switch (subop = *++token) {
 	case '+':
@@ -282,7 +282,7 @@ assign(char *token, union tokenop u)
 static void
 ternary(char *token, union tokenop u)
 {
-	Node *ask = newnode(OASK), *colon = newnode(OCOLON);
+	Node *ask = node(OASK), *colon = node(OCOLON);
 	Type *tp = gettype(token+1);
 
 	colon->right = pop();
@@ -337,7 +337,7 @@ repeat:
 static void
 oreturn(char *token, union tokenop u)
 {
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 
 	if (token = strtok(NULL, "\t\n"))
 		eval(token);
@@ -384,7 +384,7 @@ static void
 bswitch(char *token, union tokenop u)
 {
 	struct swtch *cur;
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 
 	if (swp == &swtbl[NR_BLOCK])
 		error(EWTACKO);
@@ -420,7 +420,7 @@ ocase(char *token, union tokenop u)
 static void
 jump(char *token, union tokenop u)
 {
-	Node *aux, *np = newnode(u.op);
+	Node *aux, *np = node(u.op);
 
 	eval(strtok(NULL, "\t\n"));
 
@@ -435,13 +435,13 @@ jump(char *token, union tokenop u)
 static void
 loop(char *token, union tokenop u)
 {
-	push(newnode(u.op));
+	push(node(u.op));
 }
 
 static void
 unary(char *token, union tokenop u)
 {
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 
 	np->type = *gettype(token+1);
 	np->left = pop();
@@ -452,7 +452,7 @@ unary(char *token, union tokenop u)
 static void
 call(char *token, union tokenop u)
 {
-	Node *np, *par, *fun = newnode(u.op);
+	Node *np, *par, *fun = node(u.op);
 
 	for (par = NULL;; par = np) {
 		np = pop();
@@ -470,7 +470,7 @@ call(char *token, union tokenop u)
 static void
 builtin(char *token, union tokenop u)
 {
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 	char *name;
 	unsigned subop, nchilds;
 
@@ -504,7 +504,7 @@ builtin(char *token, union tokenop u)
 static void
 binary(char *token, union tokenop u)
 {
-	Node *np = newnode(u.op);
+	Node *np = node(u.op);
 
 	np->type = *gettype(token+1);
 	np->right = pop();
@@ -697,14 +697,14 @@ beginfun(void)
 	curfun = lastfun;
 	inpars = 1;
 	pushctx();
-	addstmt(newnode(OBFUN), SETCUR);
+	addstmt(node(OBFUN), SETCUR);
 }
 
 static void
 endfun(void)
 {
 	endf = 1;
-	addstmt(newnode(OEFUN), SETCUR);
+	addstmt(node(OEFUN), SETCUR);
 }
 
 void

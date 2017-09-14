@@ -72,7 +72,7 @@ label2node(Node *np, Symbol *sym)
 	if(!sym)
 		sym = newlabel();
 	if (!np)
-		np = newnode(OLABEL);
+		np = node(OLABEL);
 	np->op = OLABEL;
 	np->u.sym = sym;
 
@@ -83,7 +83,7 @@ Node *
 constnode(Node *np, TUINT n, Type *tp)
 {
 	if (!np)
-		np = newnode(OCONST);
+		np = node(OCONST);
 	np->op = OCONST;
 	np->left = NULL;
 	np->right = NULL;

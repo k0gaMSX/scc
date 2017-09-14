@@ -85,7 +85,7 @@ tmpnode(Node *np, Type *tp)
 	Symbol *sym;
 
 	if (!np)
-		np = newnode(OTMP);
+		np = node(OTMP);
 	sym = getsym(TMPSYM);
 	sym->type = np->type = *tp;
 	flags = tp->flags & ~(PARF|INITF);
@@ -222,7 +222,7 @@ call(Node *np, Node *fun, Node *ret)
 	Node aux, **q, *p, *pars[NR_FUNPARAM];
 
 	for (n = 0, p = np->right; p; p = p->right)
-		pars[n++] = rhs(p->left, newnode(OTMP));
+		pars[n++] = rhs(p->left, node(OTMP));
 
 	tp = &np->type;
 	code(ASCALL, tmpnode(ret, tp), fun, NULL);

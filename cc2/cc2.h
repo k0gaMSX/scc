@@ -238,7 +238,7 @@ extern void cleannodes(void);
 extern void delnode(Node *np);
 extern void deltree(Node *np);
 extern void prtree(Node *np), prforest(char *msg);
-extern Node *newnode(int op);
+extern Node *node(int op);
 extern Node *addstmt(Node *np, int flags);
 extern Node *delstmt(void);
 extern Node *nextstmt(void);

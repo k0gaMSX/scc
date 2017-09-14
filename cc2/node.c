@@ -15,7 +15,7 @@ static Alloc *arena;
 
 
 Node *
-newnode(int op)
+node(int op)
 {
 	struct arena *ap;
 	Node *np;

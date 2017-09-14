@@ -26,7 +26,7 @@ optm_dep(Node *np)
 		 */
 		op = (np->prev) ? np->prev->op : 0;
 		if (!op || op == ONOP || op == OBRANCH || (op != ORET && op != OJMP))
-			addstmt(newnode(ORET), KEEPCUR);
+			addstmt(node(ORET), KEEPCUR);
 		break;
 	case OBRANCH:
 		if (!next->label) {
