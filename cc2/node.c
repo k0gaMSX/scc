@@ -11,13 +11,8 @@ static char sccsid[] = "@(#) ./cc2/node.c";
 Node *curstmt;
 Symbol *curfun;
 
-struct arena {
-	Node *mem;
-	struct arena *next;
-};
+static Alloc *arena;
 
-static struct arena *arena;
-static Node *freep;
 
 Node *
 newnode(int op)
@@ -25,21 +20,9 @@ newnode(int op)
 	struct arena *ap;
 	Node *np;
 
-	if (!freep) {
-		ap = xmalloc(sizeof(*ap));
-		ap->mem = xcalloc(NNODES, sizeof(Node));
-		ap->next = arena;
-		arena = ap;
-		for (np = ap->mem; np < &ap->mem[NNODES-1]; ++np)
-			np->left = np+1;
-		np->left = NULL;
-		freep = np;
-	}
-
-	np = freep;
-	freep = np->left;
-
-	memset(np, 0, sizeof(*np));
+	if (!arena)
+		arena = alloc(sizeof(Node), NNODES);
+	np = memset(new(arena), 0, sizeof(*np));
 	np->op = op;
 
 	return np;
@@ -125,8 +108,7 @@ nextstmt(void)
 void
 delnode(Node *np)
 {
-	np->left = freep;
-	freep = np;
+	delete(arena, np);
 }
 
 void
@@ -142,15 +124,10 @@ deltree(Node *np)
 void
 cleannodes(void)
 {
-	struct arena *ap, *next;
-
-	for (ap = arena; ap; ap = next) {
-		next = ap->next;
-		free(ap->mem);
-		free(ap);
+	if (arena) {
+		dealloc(arena);
+		arena = NULL;
 	}
-	arena = NULL;
-	freep = NULL;
 	curstmt = NULL;
 }
 
