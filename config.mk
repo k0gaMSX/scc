@@ -31,6 +31,7 @@ MANPREFIX = $(PREFIX)/share/man
 AS = as
 
 # for Plan9 add -D_SUSV2_SOURCE
+# for NetBSD add -D_ANSI_SOURCE
 SCC_CFLAGS = $(MOREFLAGS) \
              -g \
              $(CFLAGS)
