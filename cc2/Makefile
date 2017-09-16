@@ -7,7 +7,7 @@ LIBDIR    = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
-MOREFLAGS = -I../inc/$(STD)
+MOREFLAGS = -I../inc/$(STD) $(CC2_CFLAGS)
 
 OBJ = main.o parser.o peep.o symbol.o node.o code.o optm.o
 HDR = cc2.h ../inc/$(STD)/cstd.h ../inc/scc.h
@@ -16,8 +16,9 @@ all:
 	mkdir -p ../rootdir/libexec/scc/
 	cp cc2-* ../rootdir/libexec/scc/
 
-dep:
+dep: ../config.mk Makefile
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)
+	touch dep
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
@@ -35,4 +36,5 @@ clean:
 
 distclean: clean
 	rm -f makefile
+	rm -f dep
 

@@ -1,8 +1,6 @@
 # scc - Suckless C Compiler
 .POSIX:
 
-include config.mk
-
 DIRS  = inc cc1 cc2 driver lib as
 
 FORALL = @set -e ;\
@@ -22,11 +20,19 @@ clean:
 	rm -rf rootdir
 
 distclean:
+	touch config.mk    # we need config.mk for makes in $DIRS
 	$(FORALL)
 	rm -f dep
 	rm -rf rootdir
+	rm -f config.mk
 
-dep: config.mk
+config.mk:
+	trap "rm -f $$.mk" 0 2 3; \
+	(cat config.mk.def ;\
+	sed -n '/^# '`uname`'/,/^$$/p' system.mk) > $$.mk && \
+	mv $$.mk config.mk
+
+dep:	config.mk
 	$(FORALL)
 	touch dep
 

@@ -30,9 +30,8 @@ MANPREFIX = $(PREFIX)/share/man
 # AR = ar
 AS = as
 
-# for Plan9 add -D_SUSV2_SOURCE
-# for NetBSD add -D_ANSI_SOURCE
 SCC_CFLAGS = $(MOREFLAGS) \
+             $(SYSCFLAGS) \
              -g \
              $(CFLAGS)
 
@@ -47,3 +46,4 @@ SCC_LDFLAGS = -L$(LIBDIR)/ $(LDFLAGS)
 .c:
 	$(CC) $(SCC_CFLAGS) $(SCC_LDFLAGS) -o $@ $<
 
+# system specific flags

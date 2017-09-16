@@ -7,7 +7,7 @@ LIBDIR    = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
-MOREFLAGS = -I../inc/$(STD)
+MOREFLAGS = -I../inc/$(STD) $(CC1_CFLAGS)
 
 OBJ = types.o decl.o lex.o error.o symbol.o main.o expr.o \
       code.o stmt.o cpp.o fold.o init.o builtin.o
@@ -23,8 +23,9 @@ cpp.o: stallman.msg
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
-dep:
+dep: ../config.mk Makefile
 	./gendep.sh $(TARGETS)
+	touch dep
 
 clean:
 	rm -f *.o
@@ -33,4 +34,4 @@ clean:
 
 distclean: clean
 	rm -f makefile
-
+	rm -f dep

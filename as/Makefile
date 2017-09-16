@@ -6,6 +6,7 @@ include $(LIBDIR)/libdep.mk
 
 OBJ = main.o emit.o ins.o parser.o
 HDR = ../inc/scc.h as.h
+MOREFLAGS = $(AS_CFLAGS)
 
 all:
 
@@ -17,8 +18,9 @@ as: $(OBJ)
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
-dep:
+dep: ../config.mk Makefile
 	./gendep.sh $(TARGETS)
+	touch dep
 
 clean:
 	rm -f *.o
@@ -27,5 +29,5 @@ clean:
 	rm -f as-*
 
 distclean: clean
-	rm -f makefile
+	rm -f makefile dep
 
