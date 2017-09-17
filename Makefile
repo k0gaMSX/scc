@@ -32,7 +32,7 @@ config.mk:
 	sed -n '/^# '`uname`'/,/^$$/p' system.mk) > $$.mk && \
 	mv $$.mk config.mk
 
-dep:	config.mk
+dep: config.mk system.mk
 	$(FORALL)
 	touch dep
 
