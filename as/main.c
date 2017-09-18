@@ -8,6 +8,12 @@ static char sccsid[] = "@(#) ./as/main.c";
 #include "as.h"
 
 int
+match(Op *op, Arg *args)
+{
+	return 1;
+}
+
+static int
 cmp(const void *f1, const void *f2)
 {
 	const Ins *ins = f2;
@@ -15,37 +21,7 @@ cmp(const void *f1, const void *f2)
 	return strcmp(f1, ins->str);
 }
 
-int
-match(Op *op, Arg *args)
-{
-	return 1;
-}
-
-void
-incpc(int siz)
-{
-	TUINT pc, curpc;
-	pc = cursec->pc;
-	curpc = cursec->curpc;
-
-	cursec->curpc += siz;
-	cursec->pc += siz;
-
-	if (pass == 2)
-		return;
-
-	if (cursec->pc > cursec->max)
-		cursec->max = cursec->pc;
-
-	if (pc > cursec->pc ||
-	    curpc > cursec->curpc ||
-	    cursec->curpc > maxaddr ||
-	    cursec->pc > maxaddr) {
-		die("address overflow");
-	}
-}
-
-void
+static void
 as(char *text, char *xargs)
 {
 	Ins *ins;
@@ -53,7 +29,6 @@ as(char *text, char *xargs)
 	Arg *args;
 	
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
-
 	if (!ins) {
 		error("invalid instruction");
 		return;
@@ -72,7 +47,7 @@ as(char *text, char *xargs)
 	(*op->format)(op, args);
 }
 
-int
+static int
 dopass(char *fname)
 {
 	struct line line;
@@ -83,7 +58,7 @@ dopass(char *fname)
 		die("as: error opening '%s'", fname);
 
 	isections();
-	while (next(fp, &line)) {
+	while (nextline(fp, &line)) {
 		linesym = NULL;
 
 		if (line.label)
@@ -114,7 +89,7 @@ main(int argc, char *argv[])
 		usage();
 
 	filename = argv[1];
-	for (pass = 1; pass <= 2 && dopass(argv[1]); pass++)
+	for (pass = 1; pass <= 2 && dopass(filename); pass++)
 		/* nothing */;
 	writeout("a.out");
 

@@ -32,7 +32,7 @@ error(char *msg, ...)
 		die("as: too many errors");
 }
 
-Arg
+static Arg
 number(char *s, int base)
 {
 	Arg arg;
@@ -97,7 +97,7 @@ field(char **oldp)
 	for (s = begin; ; s++) {
 		switch (c = *s) {
 		case '\t':
-			*s++ = '\0';
+			*s = '\0';
 			*oldp = s;
 			goto out_loop;
 		case ';':
@@ -148,7 +148,7 @@ extract(char *s, struct line *lp)
 }
 
 int
-next(FILE *fp, struct line *lp)
+nextline(FILE *fp, struct line *lp)
 {
 	size_t n;
 	static char buff[MAXLINE];

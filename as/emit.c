@@ -126,6 +126,31 @@ pack(TUINT v, int n, int inc)
 }
 
 static void
+incpc(int siz)
+{
+	TUINT pc, curpc;
+	pc = cursec->pc;
+	curpc = cursec->curpc;
+
+	cursec->curpc += siz;
+	cursec->pc += siz;
+
+	if (pass == 2)
+		return;
+
+	if (cursec->pc > cursec->max)
+		cursec->max = cursec->pc;
+
+	if (pc > cursec->pc ||
+	    curpc > cursec->curpc ||
+	    cursec->curpc > maxaddr ||
+	    cursec->pc > maxaddr) {
+		die("address overflow");
+	}
+}
+
+
+static void
 isect(Section *sec)
 {
 	TUINT siz;

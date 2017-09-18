@@ -88,22 +88,28 @@ struct symbol {
 	struct symbol *next;
 };
 
+/* emit.c */
+extern char *pack(TUINT v, int n, int inc);
 extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
-extern void incpc(int siz);
-extern char *pack(TUINT v, int n, int inc);
-extern void error(char *msg, ...);
-extern Arg *getargs(char *s);
+
+/* main.c */
 extern Symbol *lookup(char *name);
 extern Symbol *deflabel(char *name);
 
+/* parser.c */
+extern Arg *getargs(char *s);
+extern void error(char *msg, ...);
 /* Avoid errors in files where stdio is not included */
 #ifdef stdin
-extern int next(FILE *fp, struct line *linep);
+extern int nextline(FILE *fp, struct line *linep);
 #endif
 
+/*
+ * Definition of global variables
+ */
 extern Section *cursec;
 extern int nr_ins;
 extern Ins instab[];
