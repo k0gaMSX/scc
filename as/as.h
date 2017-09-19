@@ -43,6 +43,7 @@ typedef struct arg Arg;
 typedef void Format(Op *, Arg *);
 typedef struct section Section;
 typedef struct symbol Symbol;
+typedef struct node Node;
 
 struct line {
 	char *label;
@@ -88,6 +89,13 @@ struct symbol {
 	struct symbol *next;
 };
 
+struct node {
+	char op;
+	struct symbol *sym;
+	struct node *left;
+	struct node *right;
+};
+
 /* emit.c */
 extern char *pack(TUINT v, int n, int inc);
 extern void isections(void);
@@ -106,6 +114,9 @@ extern void error(char *msg, ...);
 #ifdef stdin
 extern int nextline(FILE *fp, struct line *linep);
 #endif
+
+/* expr.c */
+extern Node *expr(void);
 
 /*
  * Definition of global variables
