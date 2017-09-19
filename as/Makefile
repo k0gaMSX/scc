@@ -6,7 +6,7 @@ include $(LIBDIR)/libdep.mk
 
 OBJ = main.o emit.o ins.o parser.o expr.o
 HDR = ../inc/scc.h as.h
-MOREFLAGS = $(AS_CFLAGS)
+MOREFLAGS = -I../inc/$(STD) $(AS_CFLAGS)
 
 all:
 

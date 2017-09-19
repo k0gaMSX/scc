@@ -116,7 +116,7 @@ extern int nextline(FILE *fp, struct line *linep);
 #endif
 
 /* expr.c */
-extern Node *expr(void);
+extern Node *expr(char *s);
 
 /*
  * Definition of global variables

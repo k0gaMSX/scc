@@ -1,7 +1,9 @@
 static char sccsid[] = "@(#) ./as/node.c";
 
+#include <ctype.h>
 #include <string.h>
 
+#include <cstd.h>
 #include "../inc/scc.h"
 #include "as.h"
 
@@ -9,17 +11,20 @@ static char sccsid[] = "@(#) ./as/node.c";
 
 enum tokens {
 	IDEN = 1,
+	NUMBER,
+	REG,
 	CHAR,
 	STRING,
 	SHL,
 	SHR,
 	GE,
-	LT,
+	LE,
 };
 
 static Alloc *arena;
 static int yytoken;
-static char *yytext;
+static char yytext[INTIDENTSIZ+1], *textp, *endp;
+static size_t yylen;
 
 #define accept(t) (yytoken == (t) ? next() : 0)
 
@@ -50,9 +55,97 @@ unary(int op, Node *np)
 }
 
 static int
+follow(int expect1, int expect2, int ifyes1, int ifyes2, int ifno)
+{
+	int c;
+
+	if ((c = *++textp) == expect1)
+		return ifyes1;
+	if (c == expect2)
+		return ifyes2;
+	--textp;
+	return ifno;
+}
+
+static void
+tok2str(void)
+{
+	if ((yylen = endp - textp) > INTIDENTSIZ) {
+		error("token too big");
+		yylen = INTIDENTSIZ;
+	}
+	memcpy(yytext, textp, yylen);
+	yytext[yylen] = '\0';
+	textp = endp;
+}
+
+static int
+iden(void)
+{
+	int c;
+	char *p;
+
+	for (endp = textp; isalnum(c = *endp) || c == '_' || c == '.'; ++endp)
+		/* nothing */;
+	return IDEN;
+}
+
+static int
+number(void)
+{
+	int c;
+	char *p;
+
+	for (endp = textp; isxdigit(*endp); ++endp)
+		/* nothing */;
+	return NUMBER;
+}
+
+static int
+character(void)
+{
+	int c;
+	char *p;
+
+	for (endp = textp+1; *endp != '\''; ++endp)
+		/* nothing */;
+	return CHAR;
+}
+
+static int
+string(void)
+{
+	int c;
+	char *p;
+
+	for (endp = textp+1; *endp != '"'; ++endp)
+		/* nothing */;
+	return STRING;
+}
+
+static int
 next(void)
 {
-	return 0;
+	int c;
+
+	while (isspace(*textp))
+		++textp;
+	c = *textp;
+	if (isalpha(c) || c == '_' || c == '.')
+		c = iden();
+	else if (isdigit(c))
+		c = number();
+	else if (c == '>')
+		c = follow('=', '>', LE, SHL, '>');
+	else if (c == '<')
+		c = follow('=', '<', GE, SHR, '>');
+	else if (c == '\'')
+		c = character();
+	else if (c == '\"')
+		c = string();
+	tok2str();
+
+	return c;
 }
 
 static void
@@ -73,12 +166,15 @@ expect(int token)
 /* grammar functions                                                     */
 /*************************************************************************/
 
+static Node *or(void);
+
 static Node *
 primary(void)
 {
 	Node *np;
 
 	switch (yytoken) {
+	case NUMBER:
 	case IDEN:
 	case CHAR:
 	case STRING:
@@ -87,7 +183,7 @@ primary(void)
 		break;
 	case '(':
 		next();
-		np = expr();
+		np = or();
 		expect(')');
 		break;
 	default:
@@ -152,7 +248,7 @@ relational(void)
 		case '>':
 		case '=':
 		case GE:
-		case LT:
+		case LE:
 			next();
 			np = binary(op, np, add());
 			break;
@@ -184,8 +280,8 @@ and(void)
 	return np;
 }
 
-Node *
-expr(void)
+static Node *
+or(void)
 {
 	int op;
 	Node *np;
@@ -201,4 +297,18 @@ expr(void)
 		default: return np;
 		}
 	}
+}
+
+Node *
+expr(char *s)
+{
+	Node *np;
+
+	textp = s;
+	next();
+	np = or();
+
+	if (*textp != '\0')
+		error("trailing characters in expression '%s'", textp);
+	return np;
 }
