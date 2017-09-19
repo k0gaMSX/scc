@@ -150,6 +150,7 @@ relational(void)
 		switch (op = yytoken) {
 		case '<':
 		case '>':
+		case '=':
 		case GE:
 		case LT:
 			next();
