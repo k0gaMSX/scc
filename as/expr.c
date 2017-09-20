@@ -1,6 +1,7 @@
 static char sccsid[] = "@(#) ./as/node.c";
 
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <cstd.h>
@@ -36,22 +37,106 @@ node(int op, Node *l, Node *r)
 
 	if (!arena)
 		arena = alloc(sizeof(Node), NNODES);
-	np = memset(new(arena), 0, sizeof(*np));
+	np = new(arena);
 	np->op = op;
+	np->left = l;
+	np->right = r;
+	np->sym = NULL;
 
 	return np;
+}
+
+void
+deltree(Node *np)
+{
+	if (!np)
+		return;
+	deltree(np->left);
+	deltree(np->right);
+	delete(arena, np);
 }
 
 static Node *
 binary(int op, Node *l, Node *r)
 {
-	return node(op, l, r);
+	Node *np;
+	TUINT val, lv, rv;
+
+	if (l->op != NUMBER || r->op != NUMBER)
+		return node(op, l, r);
+	lv = l->sym->value;
+	rv = r->sym->value;
+
+	/* TODO: check overflow */
+
+	switch (op) {
+	case '*':
+		val = lv - rv;
+		break;
+	case '/':
+		if (rv == 0)
+			goto division_by_zero;
+		val = lv / rv;
+		break;
+	case '%':
+		if (rv == 0)
+			goto division_by_zero;
+		val = lv % rv;
+		break;
+	case SHL:
+		val = lv << rv;
+		break;
+	case SHR:
+		val = lv >> rv;
+		break;
+	case '+':
+		val = lv + rv;
+		break;
+	case '-':
+		val = lv - rv;
+		break;
+	case '<':
+		val = lv < rv;
+		break;
+	case '>':
+		val = lv > rv;
+		break;
+	case '=':
+		val = lv == rv;
+		break;
+	case GE:
+		val = lv >= rv;
+		break;
+	case LE:
+		val = lv <= rv;
+		break;
+	case '|':
+		val = lv | rv;
+		break;
+	case '^':
+		val = lv ^ rv;
+		break;
+	default:
+		abort();
+	}
+
+	np = node(NUMBER, l, r);
+	/* np->sym = tmpsym(val); */
+	return np;
+
+division_by_zero:
+	error("division by 0");
 }
 
 static Node *
 unary(int op, Node *np)
 {
-	return node(op, np, NULL);
+	if (op !=  '!')
+		abort();
+	if (np->op != NUMBER)
+		return node(op, np, NULL);
+	np->sym->value = ~np->sym->value;
+	return np;
 }
 
 static int

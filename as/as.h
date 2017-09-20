@@ -57,8 +57,8 @@ struct ins {
 };
 
 struct op {
-	int flags;
-	int size;
+	unsigned char flags;
+	char size;
 	void (*format)(Op *, Arg *);
 	char *bytes;
 	unsigned char *args;
@@ -90,7 +90,7 @@ struct symbol {
 };
 
 struct node {
-	char op;
+	unsigned char op;
 	struct symbol *sym;
 	struct node *left;
 	struct node *right;
@@ -117,6 +117,7 @@ extern int nextline(FILE *fp, struct line *linep);
 
 /* expr.c */
 extern Node *expr(char *s);
+extern void deltree(Node *np);
 
 /*
  * Definition of global variables
