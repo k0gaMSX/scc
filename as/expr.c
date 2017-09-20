@@ -273,7 +273,6 @@ primary(void)
 		break;
 	default:
 		unexpected();
-		return NULL;
 	}
 
 	return np;
@@ -296,7 +295,8 @@ mul(void)
 			next();
 			binary(op, np, primary());
 			break;
-		default: return np;
+		default:
+			return np;
 		}
 	}
 }
@@ -315,7 +315,8 @@ add(void)
 			next();
 			np = binary(op, np, mul());
 			break;
-		default: return np;
+		default:
+			return np;
 		}
 	}
 }
@@ -337,7 +338,8 @@ relational(void)
 			next();
 			np = binary(op, np, add());
 			break;
-		default: return np;
+		default:
+			return np;
 		}
 	}
 }
@@ -379,7 +381,8 @@ or(void)
 			next();
 			np = binary(op, np, and());
 			break;
-		default: return np;
+		default:
+			return np;
 		}
 	}
 }
