@@ -1,11 +1,9 @@
-BEGIN {
-	print "char *errlist[] = {"
-}
-/^enum nerrors \{/     {inhome = 1}
+/^enum nerrors \{/     {print "char *errlist[] = {"; inhome = 1}
+
 inhome && /E[A-Z]*, /  {sub(/,/, "", $1)
                         printf("\t[%s] = \"", $1)
-                        for (i = 3; i < NF-1; ++i)
-                        	printf("%s ", $i)
-                        printf("%s\",\n", $(NF-1));}
-inhome && /^}/          {print "};" ; inhome = 0}
+                        for (i = 3; i <= NF-1; ++i)
+				printf("%s%s", $i, (i == NF-1) ? "\"" : " ")
+			print ","}
 
+inhome && /^}/          {print "};" ; inhome = 0}
