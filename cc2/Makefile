@@ -20,9 +20,6 @@ dep: ../config.mk Makefile
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)
 	touch dep
 
-$(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
-
 main.o: error.h
 
 error.h: cc2.h

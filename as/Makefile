@@ -15,9 +15,6 @@ $(OBJ): $(HDR)
 as: $(OBJ)
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
-$(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
-
 dep: ../config.mk Makefile
 	./gendep.sh $(TARGETS)
 	touch dep

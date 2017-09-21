@@ -18,9 +18,6 @@ all:
 	mkdir -p ../rootdir/libexec/scc/
 	cp cc1-* ../rootdir/libexec/scc/
 
-$(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
-
 dep: ../config.mk Makefile
 	./gendep.sh $(TARGETS)
 	touch dep
