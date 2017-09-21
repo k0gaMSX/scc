@@ -221,6 +221,8 @@ tmpsym(TUINT val)
 void
 killtmp(void)
 {
+	if (!tmpalloc)
+		return;
 	dealloc(tmpalloc);
 	tmpalloc = NULL;
 }
