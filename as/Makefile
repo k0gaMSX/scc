@@ -4,7 +4,7 @@ LIBDIR  = ../lib/scc
 include ../config.mk
 include $(LIBDIR)/libdep.mk
 
-OBJ = main.o emit.o ins.o parser.o expr.o
+OBJ = main.o symbol.o ins.o parser.o expr.o
 HDR = ../inc/scc.h as.h
 MOREFLAGS = -I../inc/$(STD) $(AS_CFLAGS)
 

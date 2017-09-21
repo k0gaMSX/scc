@@ -96,7 +96,7 @@ struct node {
 	struct node *right;
 };
 
-/* emit.c */
+/* symbol.c */
 extern char *pack(TUINT v, int n, int inc);
 extern void isections(void);
 extern void writeout(char *name);
