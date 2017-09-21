@@ -14,7 +14,6 @@ enum tokens {
 	IDEN = 1,
 	NUMBER,
 	REG,
-	CHAR,
 	STRING,
 	SHL,
 	SHR,
@@ -22,10 +21,16 @@ enum tokens {
 	LE,
 };
 
+union yylval {
+	TUINT val;
+	Symbol *sym;
+};
+
 static Alloc *arena;
 static int yytoken;
 static char yytext[INTIDENTSIZ+1], *textp, *endp;
 static size_t yylen;
+static union yylval yylval;
 
 #define accept(t) (yytoken == (t) ? next() : 0)
 
@@ -121,7 +126,7 @@ binary(int op, Node *l, Node *r)
 	}
 
 	np = node(NUMBER, l, r);
-	/* np->sym = tmpsym(val); */
+	np->sym = tmpsym(val);
 	return np;
 
 division_by_zero:
@@ -172,6 +177,9 @@ iden(void)
 
 	for (endp = textp; isalnum(c = *endp) || c == '_' || c == '.'; ++endp)
 		/* nothing */;
+	tok2str();
+	yylval.sym = lookup(yytext);
+
 	return IDEN;
 }
 
@@ -183,6 +191,9 @@ number(void)
 
 	for (endp = textp; isxdigit(*endp); ++endp)
 		/* nothing */;
+	tok2str();
+	yylval.sym = tmpsym(atoi(yytext));  /* TODO: parse the string */
+
 	return NUMBER;
 }
 
@@ -194,7 +205,7 @@ character(void)
 
 	for (endp = textp+1; *endp != '\''; ++endp)
 		/* nothing */;
-	return CHAR;
+	return NUMBER;
 }
 
 static int
@@ -261,9 +272,9 @@ primary(void)
 	switch (yytoken) {
 	case NUMBER:
 	case IDEN:
-	case CHAR:
 	case STRING:
 		np = node(yytoken, NULL, NULL);
+		np->sym = yylval.sym;
 		next();
 		break;
 	case '(':

@@ -102,6 +102,8 @@ extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
+extern Symbol *tmpsym(TUINT val);
+extern void killtmp(void);
 
 /* main.c */
 extern Symbol *lookup(char *name);

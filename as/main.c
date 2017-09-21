@@ -72,6 +72,13 @@ dopass(char *fname)
 
 	if (fclose(fp))
 		die("as: error reading from input file '%s'", fname);
+	if (pass == 2)
+		writeout("a.out");
+	/*
+	 * kill tmp symbols because they are not needed anymore
+	 */
+	killtmp();
+
 	return nerrors == 0;
 }
 
@@ -89,9 +96,10 @@ main(int argc, char *argv[])
 		usage();
 
 	filename = argv[1];
-	for (pass = 1; pass <= 2 && dopass(filename); pass++)
-		/* nothing */;
-	writeout("a.out");
+	for (pass = 1; pass <= 2; pass++) {
+		if (!dopass(filename))
+			return 1;
+	}
 
 	return 0;
 }

@@ -8,6 +8,7 @@ static char sccsid[] = "@(#) ./as/emit.c";
 #include "as.h"
 
 #define HASHSIZ 64
+#define NALLOC  10
 
 static Section abss = {
 	.name  = "abs",
@@ -37,6 +38,8 @@ Section *cursec = &text, *headp = &text;
 int pass;
 
 static Symbol *hashtbl[HASHSIZ];
+static Alloc *tmpalloc;
+
 Symbol *linesym;
 
 Symbol *
@@ -199,6 +202,27 @@ emit(Section *sec, char *bytes, int n)
 	if (sec->mem)
 		memcpy(&sec->mem[sec->pc - sec->base], bytes, n);
 	incpc(n);
+}
+
+Symbol *
+tmpsym(TUINT val)
+{
+	Symbol *sym;
+
+	if (!tmpalloc)
+		tmpalloc = alloc(sizeof(*sym), NALLOC);
+	sym = new(tmpalloc);
+	sym->value = val;
+	sym->flags = TABS;
+
+	return sym;
+}
+
+void
+killtmp(void)
+{
+	dealloc(tmpalloc);
+	tmpalloc = NULL;
 }
 
 void
