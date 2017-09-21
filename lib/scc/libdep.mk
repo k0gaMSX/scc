@@ -6,8 +6,3 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/xrealloc.o \
           $(LIBDIR)/xstrdup.o \
           $(LIBDIR)/alloc.o \
-
-all:
-
-$(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
