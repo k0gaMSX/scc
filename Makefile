@@ -8,7 +8,7 @@ FORALL = @set -e ;\
 	for i in $(DIRS); \
 	do \
 		cd $$i; \
-		$(MAKE) $@; \
+		$(MAKE) $(MAKEFLAGS) $@; \
 		cd $$pwd; \
 	done
 
