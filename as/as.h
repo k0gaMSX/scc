@@ -39,11 +39,10 @@ enum endianess {
 
 typedef struct ins Ins;
 typedef struct op Op;
-typedef struct arg Arg;
-typedef void Format(Op *, Arg *);
 typedef struct section Section;
 typedef struct symbol Symbol;
 typedef struct node Node;
+typedef void Format(Op *, Node **);
 
 struct line {
 	char *label;
@@ -59,14 +58,9 @@ struct ins {
 struct op {
 	unsigned char flags;
 	char size;
-	void (*format)(Op *, Arg *);
+	void (*format)(Op *, Node **);
 	char *bytes;
 	unsigned char *args;
-};
-
-struct arg {
-	unsigned char type;
-	TUINT val;
 };
 
 struct section {
@@ -110,7 +104,7 @@ extern Symbol *lookup(char *name);
 extern Symbol *deflabel(char *name);
 
 /* parser.c */
-extern Arg *getargs(char *s);
+extern Node **getargs(char *s);
 extern void error(char *msg, ...);
 /* Avoid errors in files where stdio is not included */
 #ifdef stdin

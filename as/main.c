@@ -8,7 +8,7 @@ static char sccsid[] = "@(#) ./as/main.c";
 #include "as.h"
 
 int
-match(Op *op, Arg *args)
+match(Op *op, Node **args)
 {
 	return 1;
 }
@@ -26,8 +26,8 @@ as(char *text, char *xargs)
 {
 	Ins *ins;
 	Op *op, *lim;
-	Arg *args;
-	
+	Node **args;
+
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
 	if (!ins) {
 		error("invalid instruction");

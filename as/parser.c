@@ -32,55 +32,33 @@ error(char *msg, ...)
 		die("as: too many errors");
 }
 
-static Arg
-number(char *s, int base)
-{
-	Arg arg;
-	TUINT n;
-
-	/* TODO: Check overflow here */
-	arg.type = AIMM;
-	for (n = 0; *s; n += *s++ - '0')
-		n *= base;
-	arg.val = n;
-
-	return arg;
-}
-
-Arg *
+Node **
 getargs(char *s)
 {
 	char *t;
 	int ch, len;
-	Arg *ap;
-	static Arg args[NARGS];
+	Node **ap;
+	static Node *args[NARGS];
 
-	for (ap = args; s; ++ap) {
+	if (!s)
+		return NULL;
+
+	for (ap = args; ; *ap++ = expr(t)) {
 		while (isspace(*s))
 			++s;
 		if (*s == '\0')
 			break;
 		if (ap == &args[NARGS-1])
-			die("too many arguments in one instruction");
+			error("too many arguments in one instruction");
 
 		for (t = s; *s && *s != ','; s++)
 			/* nothing */;
+		*s++ = '\0';
 		len = t - s;
 		if (len == 0)
-			goto wrong_operand;
-
-		if (*s)
-			*s++ = '\0';
-
-		ch = *t;
-		if (isdigit(ch)) {
-			*ap = number(t, (s[len-1] == 'H') ? 16 : 10);
-			continue;
-		}
-wrong_operand:
-		error("wrong operand '%s'", t);
+			error("wrong operand '%s'", t);
 	}
-	ap->type = 0;
+	*ap = NULL;
 
 	return args;
 }

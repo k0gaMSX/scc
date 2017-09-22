@@ -4,47 +4,49 @@ static char sccsid[] = "@(#) ./as/ins.c";
 #include "as.h"
 
 void
-direct(Op *op, Arg *args)
+direct(Op *op, Node **args)
 {
 	emit(cursec, op->bytes, op->size);
 }
 
 void
-def(Arg *args, int siz)
+def(Node **args, int siz)
 {
-	for ( ; args->type; ++args)
-		emit(cursec, pack(args->val, siz, endian), siz);
+	Node *np;
+
+	for ( ; np = *args; ++args)
+		emit(cursec, pack(np->sym->value, siz, endian), siz);
 }
 
 void
-defb(Op *op, Arg *args)
+defb(Op *op, Node **args)
 {
 	def(args, 1);
 }
 
 void
-defw(Op *op, Arg *args)
+defw(Op *op, Node **args)
 {
 	def(args, 2);
 }
 
 void
-defd(Op *op, Arg *args)
+defd(Op *op, Node **args)
 {
 	def(args, 4);
 }
 
 void
-defq(Op *op, Arg *args)
+defq(Op *op, Node **args)
 {
 	def(args, 8);
 }
 
 void
-equ(Op *op, Arg *args)
+equ(Op *op, Node **args)
 {
 	if (!linesym)
 		error("label definition lacks a label");
 	else
-		linesym->value = args->val;
+		linesym->value = (*args)->sym->value;
 }
