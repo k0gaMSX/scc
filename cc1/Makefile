@@ -21,7 +21,7 @@ all:
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
-dep: ../config.mk Makefile
+dep:
 	./gendep.sh $(TARGETS)
 	touch dep
 

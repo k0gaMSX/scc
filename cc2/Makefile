@@ -16,7 +16,7 @@ all:
 	mkdir -p ../rootdir/libexec/scc/
 	cp cc2-* ../rootdir/libexec/scc/
 
-dep: ../config.mk Makefile
+dep:
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)
 	touch dep
 

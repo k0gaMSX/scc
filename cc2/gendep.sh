@@ -27,7 +27,7 @@ sort -u |
 (cat Makefile
 while read i
 do
-	if test ${MKQBE-0} -eq 1
+	if test ${MKQBE:-0} -eq 1
 	then
 		case $i in
 		amd64-sysv)

@@ -12,7 +12,7 @@ FORALL = @set -e ;\
 		cd $$pwd; \
 	done
 
-all: dep
+all:
 	$(FORALL)
 
 clean:
@@ -21,6 +21,7 @@ clean:
 
 distclean:
 	touch config.mk    # we need config.mk for makes in $DIRS
+	find . -name makefile | xargs rm -f
 	$(FORALL)
 	rm -f dep
 	rm -rf rootdir
@@ -32,9 +33,8 @@ config.mk:
 	sed -n '/^# '`uname`'/,/^$$/p' system.mk) > $$.mk && \
 	mv $$.mk config.mk
 
-dep: config.mk system.mk
+dep: config.mk
 	$(FORALL)
-	touch dep
 
 tests: all
 	cd tests && $(MAKE) -e all
