@@ -1,4 +1,4 @@
-static char sccsid[] = "@(#) ./as/emit.c";
+static char sccsid[] = "@(#) ./as/symbol.c";
 
 #include <stdio.h>
 #include <stdint.h>
