@@ -132,6 +132,7 @@ static void
 incpc(int siz)
 {
 	TUINT pc, curpc;
+
 	pc = cursec->pc;
 	curpc = cursec->curpc;
 
