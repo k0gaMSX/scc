@@ -112,7 +112,7 @@ extern int nextline(FILE *fp, struct line *linep);
 #endif
 
 /* expr.c */
-extern Node *expr(char *s);
+extern Node *expr(char **s);
 extern void deltree(Node *np);
 
 /*

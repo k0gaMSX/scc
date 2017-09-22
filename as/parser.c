@@ -35,33 +35,17 @@ error(char *msg, ...)
 Node **
 getargs(char *s)
 {
-	char *t;
-	int ch, len;
 	Node **ap;
 	static Node *args[NARGS];
 
 	if (!s)
 		return NULL;
 
-	for (ap = args; ; *ap++ = expr(t)) {
-		while (isspace(*s))
-			++s;
-		if (*s == '\0')
-			break;
-		if (ap == &args[NARGS-1])
-			error("too many arguments in one instruction");
-
-		for (t = s; *s && *s != ','; s++)
-			/* nothing */;
-		len = t - s;
-		if (*s != '\0')
-			*s++ = '\0';
-		if (len == 0)
-			error("wrong operand '%s'", t);
+	for (ap = args; ap < &args[NARGS-1]; ++ap) {
+		if ((*ap = expr(&s)) == NULL)
+			return args;
 	}
-	*ap = NULL;
-
-	return args;
+	error("too many arguments in one instruction");
 }
 
 static char *

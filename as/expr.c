@@ -175,8 +175,8 @@ iden(void)
 	int c;
 	char *p;
 
-	for (endp = textp+1; isalnum(c = *endp) || c == '_' || c == '.'; ++endp)
-		/* nothing */;
+	while (isalnum(c = *endp) || c == '_' || c == '.')
+		++endp;
 	tok2str();
 	yylval.sym = lookup(yytext);
 
@@ -189,8 +189,8 @@ number(void)
 	int c;
 	char *p;
 
-	for (endp = textp+1; isxdigit(*endp); ++endp)
-		/* nothing */;
+	while (isxdigit(*endp))
+		++endp;
 	tok2str();
 	yylval.sym = tmpsym(atoi(yytext));  /* TODO: parse the string */
 
@@ -203,8 +203,8 @@ character(void)
 	int c;
 	char *p;
 
-	for (endp = textp+1; *endp != '\''; ++endp)
-		/* nothing */;
+	while (*endp != '\'')
+		++endp;
 	return NUMBER;
 }
 
@@ -214,9 +214,24 @@ string(void)
 	int c;
 	char *p;
 
-	for (endp = textp+1; *endp != '"'; ++endp)
-		/* nothing */;
+	while (*endp != '"')
+		++endp;
 	return STRING;
+}
+
+static int
+operator(void)
+{
+	int c;
+
+	++endp;
+	if ((c = *textp) == '>')
+		c = follow('=', '>', LE, SHL, '>');
+	else if (c == '<')
+		c = follow('=', '<', GE, SHR, '>');
+	tok2str();
+
+	return c;
 }
 
 static int
@@ -226,19 +241,24 @@ next(void)
 
 	while (isspace(*textp))
 		++textp;
-	c = *textp;
+
+	endp = textp;
+	if ((c = *textp) == '\0') {
+		strcpy(yytext, "EOF");
+		yylen = 3;
+		return EOF;
+	}
+
 	if (isalpha(c) || c == '_' || c == '.')
 		c = iden();
 	else if (isdigit(c))
 		c = number();
-	else if (c == '>')
-		c = follow('=', '>', LE, SHL, '>');
-	else if (c == '<')
-		c = follow('=', '<', GE, SHR, '>');
-	else if (c == '\'')
-		c = character();
 	else if (c == '\"')
 		c = string();
+	else if (c == '\'')
+		c = character();
+	else
+		c = operator();
 
 	return yytoken = c;
 }
@@ -398,15 +418,20 @@ or(void)
 }
 
 Node *
-expr(char *s)
+expr(char **s)
 {
 	Node *np;
 
-	textp = s;
+	if (*s == '\0')
+		return NULL;
+
+	textp = *s;
 	next();
 	np = or();
 
-	if (*textp != '\0')
-		error("trailing characters in expression '%s'", textp);
+	if (yytoken != ',' && yytoken != EOF)
+		error("trailing characters in expression '%s:%s'", *s, textp);
+	*s = endp;
+
 	return np;
 }
