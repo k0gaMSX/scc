@@ -175,7 +175,7 @@ iden(void)
 	int c;
 	char *p;
 
-	for (endp = textp; isalnum(c = *endp) || c == '_' || c == '.'; ++endp)
+	for (endp = textp+1; isalnum(c = *endp) || c == '_' || c == '.'; ++endp)
 		/* nothing */;
 	tok2str();
 	yylval.sym = lookup(yytext);
@@ -189,7 +189,7 @@ number(void)
 	int c;
 	char *p;
 
-	for (endp = textp; isxdigit(*endp); ++endp)
+	for (endp = textp+1; isxdigit(*endp); ++endp)
 		/* nothing */;
 	tok2str();
 	yylval.sym = tmpsym(atoi(yytext));  /* TODO: parse the string */
@@ -239,9 +239,8 @@ next(void)
 		c = character();
 	else if (c == '\"')
 		c = string();
-	tok2str();
 
-	return c;
+	return yytoken = c;
 }
 
 static void

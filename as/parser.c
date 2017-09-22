@@ -53,8 +53,9 @@ getargs(char *s)
 
 		for (t = s; *s && *s != ','; s++)
 			/* nothing */;
-		*s++ = '\0';
 		len = t - s;
+		if (*s != '\0')
+			*s++ = '\0';
 		if (len == 0)
 			error("wrong operand '%s'", t);
 	}
