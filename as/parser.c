@@ -95,15 +95,14 @@ field(char **oldp)
 		return NULL;
 
 	for (s = begin; ; s++) {
-		switch (c = *s) {
-		case '\t':
-			*s = '\0';
-			*oldp = s;
-			goto out_loop;
-		case ';':
-			*s = '\0';
+		switch (*s) {
 		case '\0':
 			*oldp = NULL;
+			goto out_loop;
+		case '\t':
+		case ';':
+			*s = '\0';
+			*oldp = s+1;
 			goto out_loop;
 		case '\'':
 			if (*++s == '\0' || *++s != '\'')
@@ -116,7 +115,7 @@ field(char **oldp)
 				error("unterminated string");
 			break;
 		default:
-			*s = toupper(c);
+			*s = toupper(*s);
 			break;
 		}
 	}
