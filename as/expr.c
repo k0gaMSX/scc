@@ -11,6 +11,7 @@ static char sccsid[] = "@(#) ./as/node.c";
 #define NNODES   10
 
 enum tokens {
+	EOS = -1,
 	IDEN = 1,
 	NUMBER,
 	REG,
@@ -244,21 +245,20 @@ next(void)
 
 	endp = textp;
 	if ((c = *textp) == '\0') {
-		strcpy(yytext, "EOF");
+		strcpy(yytext, "EOS");
 		yylen = 3;
-		return EOF;
-	}
-
-	if (isalpha(c) || c == '_' || c == '.')
+		c = EOS;
+	} else 	if (isalpha(c) || c == '_' || c == '.') {
 		c = iden();
-	else if (isdigit(c))
+	} else if (isdigit(c)) {
 		c = number();
-	else if (c == '\"')
+	} else if (c == '\"') {
 		c = string();
-	else if (c == '\'')
+	} else if (c == '\'') {
 		c = character();
-	else
+	} else {
 		c = operator();
+	}
 
 	return yytoken = c;
 }
@@ -422,15 +422,15 @@ expr(char **s)
 {
 	Node *np;
 
-	if (*s == '\0')
+	textp = *s;
+	if (*textp == '\0')
 		return NULL;
 
-	textp = *s;
 	next();
 	np = or();
 
-	if (yytoken != ',' && yytoken != EOF)
-		error("trailing characters in expression '%s:%s'", *s, textp);
+	if (yytoken != ',' && yytoken != EOS)
+		error("trailing characters in expression '%s'", textp);
 	*s = endp;
 
 	return np;
