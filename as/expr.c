@@ -125,8 +125,10 @@ binary(int op, Node *l, Node *r)
 	default:
 		abort();
 	}
+	deltree(l);
+	deltree(r);
 
-	np = node(NUMBER, l, r);
+	np = node(NUMBER, NULL, NULL);
 	np->sym = tmpsym(val);
 	return np;
 
