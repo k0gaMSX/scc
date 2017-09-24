@@ -1,5 +1,6 @@
 static char sccsid[] = "@(#) ./as/symbol.c";
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -59,7 +60,7 @@ lookup(char *name)
 	list = &hashtbl[h];
 	for (sym = *list; sym; sym = sym->next) {
 		t = sym->name;
-		if (c == *t && !strcmp(t, name))
+		if (c == *t && !casecmp(t, name))
 			return sym;
 	}
 

@@ -18,7 +18,7 @@ cmp(const void *f1, const void *f2)
 {
 	const Ins *ins = f2;
 
-	return strcmp(f1, ins->str);
+	return casecmp(f1, ins->str);
 }
 
 static void

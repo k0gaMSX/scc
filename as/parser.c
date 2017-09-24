@@ -77,9 +77,6 @@ field(char **oldp)
 			if (c == '\0')
 				error("unterminated string");
 			break;
-		default:
-			*s = toupper(*s);
-			break;
 		}
 	}
 

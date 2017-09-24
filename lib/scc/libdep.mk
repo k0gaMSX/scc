@@ -6,3 +6,4 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/xrealloc.o \
           $(LIBDIR)/xstrdup.o \
           $(LIBDIR)/alloc.o \
+          $(LIBDIR)/casecmp.o \
