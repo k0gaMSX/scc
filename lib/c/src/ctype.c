@@ -2,6 +2,8 @@
 #include <ctype.h>
 #undef ctype
 
+int __ctmp;
+
 /* __ctype is shifted by one to match EOF */
 unsigned char __ctype[257] = {
 	0,                                              /* EOF */
