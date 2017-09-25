@@ -30,17 +30,17 @@ extern int toupper(int c);
 extern unsigned char __ctype[];
 extern int __ctmp;
 
-#define isalnum(c)  ((__ctype+1)[(c)] & (_U|_L|_D))
-#define isalpha(c)  ((__ctype+1)[(c)] & (_U|_L))
-#define iscntrl(c)  ((__ctype+1)[(c)] & (_C))
-#define isdigit(c)  ((__ctype+1)[(c)] & (_D))
-#define isgraph(c)  ((__ctype+1)[(c)] & (_P|_U|_L|_D))
-#define islower(c)  ((__ctype+1)[(c)] & (_L))
-#define isprint(c)  ((__ctype+1)[(c)] & (_P|_U|_L|_D|_SP))
-#define ispunct(c)  ((__ctype+1)[(c)] & (_P))
-#define isspace(c)  ((__ctype+1)[(c)] & (_S))
-#define isupper(c)  ((__ctype+1)[(c)] & (_U))
-#define isxdigit(c) ((__ctype+1)[(c)] & (_D|_X))
+#define isalnum(c)  ((__ctype+1)[c] & (_U|_L|_D))
+#define isalpha(c)  ((__ctype+1)[c] & (_U|_L))
+#define iscntrl(c)  ((__ctype+1)[c] & (_C))
+#define isdigit(c)  ((__ctype+1)[c] & (_D))
+#define isgraph(c)  ((__ctype+1)[c] & (_P|_U|_L|_D))
+#define islower(c)  ((__ctype+1)[c] & (_L))
+#define isprint(c)  ((__ctype+1)[c] & (_P|_U|_L|_D|_SP))
+#define ispunct(c)  ((__ctype+1)[c] & (_P))
+#define isspace(c)  ((__ctype+1)[c] & (_S))
+#define isupper(c)  ((__ctype+1)[c] & (_U))
+#define isxdigit(c) ((__ctype+1)[c] & (_D|_X))
 
 #define tolower(c) ((__ctmp=c, isupper(__ctmp) ? __ctmp | 0x20 : __ctmp))
 #define toupper(c) ((__ctmp=c, islower(__ctmp) ? __ctmp & ~0x20 : __ctmp))
