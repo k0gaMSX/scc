@@ -56,11 +56,11 @@ lookup(char *name)
 		h = h*33 ^ c;
 	h &= HASHSIZ-1;
 
-	c = *name;
+	c = toupper(*name);
 	list = &hashtbl[h];
 	for (sym = *list; sym; sym = sym->next) {
 		t = sym->name;
-		if (c == *t && !casecmp(t, name))
+		if (c == toupper(*t) && !casecmp(t, name))
 			return sym;
 	}
 

@@ -1,5 +1,6 @@
 static char sccsid[] = "@(#) ./as/main.c";
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,8 +18,14 @@ static int
 cmp(const void *f1, const void *f2)
 {
 	const Ins *ins = f2;
+	const char *s = f1;
+	int d;
 
-	return casecmp(f1, ins->str);
+	d = toupper(*ins->str) - toupper(*s);
+	if (d != 0)
+		return d;
+
+	return casecmp(s, ins->str);
 }
 
 static void
