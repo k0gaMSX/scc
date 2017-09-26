@@ -88,9 +88,14 @@ static int
 extract(char *s, struct line *lp)
 {
 	int r = 0;
+	size_t len;
 
-	if (lp->label = field(&s))
+	if (lp->label = field(&s)) {
+		len = strlen(lp->label);
+		if (lp->label[len-1] == ':')
+			lp->label[len-1] = '\0';
 		r++;
+	}
 	if (lp->op = field(&s))
 		r++;
 	if (lp->args = field(&s))
