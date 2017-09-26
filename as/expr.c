@@ -298,6 +298,12 @@ primary(void)
 		np->sym = yylval.sym;
 		next();
 		break;
+	case '[':
+		next();
+		np = or();
+		expect(']');
+		np = node('@', np, NULL);
+		break;
 	case '(':
 		next();
 		np = or();
