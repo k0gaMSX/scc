@@ -3,10 +3,12 @@
  * type of segment
  */
 enum symtype {
+	TUNDEF  = 0,
 	TABS    = 1,
 	TTEXT   = 2,
 	TBSS    = 3,
 	TDATA   = 4,
+	TREG    = 5,
 	TMASK   = 7,
 };
 
@@ -95,7 +97,7 @@ extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
 
 /* main.c */
-extern Symbol *lookup(char *name);
+extern Symbol *lookup(char *name, int type);
 extern Symbol *deflabel(char *name);
 
 /* parser.c */

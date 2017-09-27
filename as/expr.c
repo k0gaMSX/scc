@@ -181,7 +181,7 @@ iden(void)
 	while (isalnum(c = *endp) || c == '_' || c == '.')
 		++endp;
 	tok2str();
-	yylval.sym = lookup(yytext);
+	yylval.sym = lookup(yytext, TUNDEF);
 
 	return IDEN;
 }
@@ -238,6 +238,21 @@ operator(void)
 }
 
 static int
+reg(void)
+{
+	int c;
+	char *p;
+
+	while (isalnum(c = *endp))
+		++endp;
+	tok2str();
+	yylval.sym = lookup(yytext, TREG);
+	if (!yylval.sym->argtype)
+		error("incorrect register name");
+	return REG;
+}
+
+static int
 next(void)
 {
 	int c;
@@ -246,20 +261,34 @@ next(void)
 		++textp;
 
 	endp = textp;
-	if ((c = *textp) == '\0') {
+
+	switch (c = *textp) {
+	case '\0':
 		strcpy(yytext, "EOS");
 		yylen = 3;
 		c = EOS;
-	} else 	if (isalpha(c) || c == '_' || c == '.') {
-		c = iden();
-	} else if (isdigit(c)) {
-		c = number();
-	} else if (c == '\"') {
+		break;
+	case '"':
 		c = string();
-	} else if (c == '\'') {
+		break;
+	case '\'':
 		c = character();
-	} else {
-		c = operator();
+		break;
+	case '%':
+		c = reg();
+		break;
+	case '#':
+	case '$':
+		c = number();
+		break;
+	default:
+		if (isdigit(c))
+			c = number();
+		else if (isalpha(c) || c == '_' || c == '.')
+			c = iden();
+		else
+			c = operator();
+		break;
 	}
 
 	return yytoken = c;
@@ -291,6 +320,7 @@ primary(void)
 	Node *np;
 
 	switch (yytoken) {
+	case REG:
 	case NUMBER:
 	case IDEN:
 	case STRING:

@@ -44,11 +44,11 @@ static Alloc *tmpalloc;
 Symbol *linesym;
 
 Symbol *
-lookup(char *name)
+lookup(char *name, int type)
 {
 	unsigned h;
 	Symbol *sym, **list;
-	int c;
+	int c, symtype;
 	char *t, *s;
 
 	h = 0;
@@ -60,13 +60,17 @@ lookup(char *name)
 	list = &hashtbl[h];
 	for (sym = *list; sym; sym = sym->next) {
 		t = sym->name;
-		if (c == toupper(*t) && !casecmp(t, name))
-			return sym;
+		if (c != toupper(*t) || casecmp(t, name))
+			continue;
+		symtype = sym->flags & TMASK;
+		if (symtype != TUNDEF && symtype != type)
+			continue;
+		return sym;
 	}
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = xstrdup(name);
-	sym->flags = (cursec->flags & TMASK) | FLOCAL | FUNDEF;
+	sym->flags = (cursec->flags & TMASK) | FLOCAL | FUNDEF | type;
 	sym->desc = 0;
 	sym->value = 0;
 	sym->next = *list;
@@ -100,7 +104,7 @@ deflabel(char *name)
 		name = label;
 	}
 
-	sym = lookup(name);
+	sym = lookup(name, TUNDEF);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
 	sym->flags &= ~FUNDEF;
