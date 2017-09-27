@@ -35,32 +35,17 @@ error(char *msg, ...)
 Node **
 getargs(char *s)
 {
-	char *t;
-	int ch, len;
 	Node **ap;
 	static Node *args[NARGS];
 
 	if (!s)
 		return NULL;
 
-	for (ap = args; ; *ap++ = expr(t)) {
-		while (isspace(*s))
-			++s;
-		if (*s == '\0')
-			break;
-		if (ap == &args[NARGS-1])
-			error("too many arguments in one instruction");
-
-		for (t = s; *s && *s != ','; s++)
-			/* nothing */;
-		*s++ = '\0';
-		len = t - s;
-		if (len == 0)
-			error("wrong operand '%s'", t);
+	for (ap = args; ap < &args[NARGS-1]; ++ap) {
+		if ((*ap = expr(&s)) == NULL)
+			return args;
 	}
-	*ap = NULL;
-
-	return args;
+	error("too many arguments in one instruction");
 }
 
 static char *
@@ -92,9 +77,6 @@ field(char **oldp)
 			if (c == '\0')
 				error("unterminated string");
 			break;
-		default:
-			*s = toupper(*s);
-			break;
 		}
 	}
 
@@ -106,9 +88,14 @@ static int
 extract(char *s, struct line *lp)
 {
 	int r = 0;
+	size_t len;
 
-	if (lp->label = field(&s))
+	if (lp->label = field(&s)) {
+		len = strlen(lp->label);
+		if (lp->label[len-1] == ':')
+			lp->label[len-1] = '\0';
 		r++;
+	}
 	if (lp->op = field(&s))
 		r++;
 	if (lp->args = field(&s))

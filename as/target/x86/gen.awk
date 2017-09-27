@@ -40,24 +40,29 @@ END	{
 	print "struct op optab[] = {"
 	for (i = 0; i < nvar; i++) {
 		printf "\t{\n" \
-		       "\t\t.bytes = (char []) {%s},\n"\
 		       "\t\t.size = %d,\n"\
-		       "\t\t.format = %s,\n"\
-		       "\t\t.args = (char []) {%s}\n"\
-		       "\t},\n",
-		 opbytes[i], opsize[i], opformat[i], str2args(opargs[i])
+		       "\t\t.format = %s,\n",
+		       opsize[i], opformat[i]
+
+		if (opbytes[i] != "")
+			printf "\t\t.bytes = (char []) {%s},\n", opbytes[i]
+
+		a = str2args(opargs[i])
+		if (a != "")
+			printf "\t\t.args = (char []) {%s}\n", a
+
+		print "\t},"
 	}
 	print "};"
 }
 
 function str2args(s, args, i, out)
 {
-	split(s, args, /,/)
+	if (split(s, args, /,/) == 0 || args[1] == "none")
+		return ""
 	for (i in args) {
 		a = args[i]
-		if (a == "none") {
-			break
-		} else if (match(a, /^imm8/)) {
+		if (match(a, /^imm8/)) {
 			out = "AIMM8"
 		} else if (match(a, /^imm16/)) {
 			out = "AIMM16"

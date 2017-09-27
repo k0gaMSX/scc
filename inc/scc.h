@@ -44,3 +44,4 @@ extern Alloc *alloc(size_t size, size_t nmemb);
 extern void dealloc(Alloc *allocp);
 extern void *new(Alloc *allocp);
 extern void delete(Alloc *allocp, void *p);
+extern int casecmp(const char *s1, const char *s2);
