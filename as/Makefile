@@ -28,5 +28,5 @@ clean:
 	rm -f as-*
 
 distclean: clean
-	rm -f makefile dep
+	rm -f makefile
 

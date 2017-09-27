@@ -23,7 +23,6 @@ distclean:
 	touch config.mk    # we need config.mk for makes in $DIRS
 	find . -name makefile | xargs rm -f
 	$(FORALL)
-	rm -f dep
 	rm -rf rootdir
 	rm -f config.mk
 

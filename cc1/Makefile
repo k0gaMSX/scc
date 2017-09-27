@@ -31,4 +31,3 @@ clean:
 
 distclean: clean
 	rm -f makefile
-	rm -f dep
