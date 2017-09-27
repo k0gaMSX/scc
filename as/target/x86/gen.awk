@@ -1,6 +1,5 @@
 
 BEGIN		{
-		print "bits=",bits > "/dev/stderr"
 		FS = "\t"
 		printf "#include \"../../../inc/scc.h\"\n"\
 		       "#include \"../../as.h\"\n"\
