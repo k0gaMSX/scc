@@ -3,13 +3,12 @@ BEGIN		{
 		FS = "\t"
 		printf "#include \"../../../inc/scc.h\"\n"\
 		       "#include \"../../as.h\"\n"\
-		       "#include \"../" proc "/proc.h\"\n"\
-		       "#include \"ins.h\"\n\n"
+		       "#include \"../" family "/proc.h\"\n"
 		nop = 0; nvar = 0
 }
 		{sub(/#.*/,"")}
 
-$6 !~ bits	{next}
+$6 !~ cpu	{next}
 
 /^$/		{next}
 

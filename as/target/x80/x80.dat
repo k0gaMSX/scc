@@ -1,0 +1,18 @@
+# Tab 16, tabs 16, :set ts=16
+# op	args	size	bytes	format	cpu
+.DB	imm8+	0	none	defb	Z80,R800,GB80
+.DEFB	imm8+	0	none	defb	Z80,R800,GB80
+.BYTE	imm8+	0	none	defb	Z80,R800,GB80
+.DW	imm16+	0	none	defw	Z80,R800,GB80
+.DEFW	imm16+	0	none	defw	Z80,R800,GB80
+.SHORT	imm16+	0	none	defw	Z80,R800,GB80
+.WORD	imm16+	0	none	defw	Z80,R800,GB80
+.DD	imm32+	0	none	defd	Z80,R800,GB80
+.DEFD	imm32+	0	none	defd	Z80,R800,GB80
+.LONG	imm32+	0	none	defd	Z80,R800,GB80
+.INT	imm16+	0	none	defd	Z80,R800,GB80
+.DQ	imm64+	0	none	defq	Z80,R800,GB80
+.DEFQ	imm64+	0	none	defq	Z80,R800,GB80
+.EQU	imm16	0	none	equ	Z80,R800,GB80
+NOP	none	1	0x00	direct	Z80,R800,GB80
+RET	none	1	0xc9	direct	Z80,R800,GB80

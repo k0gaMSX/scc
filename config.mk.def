@@ -6,6 +6,7 @@ VERSION = 0.1
 # element of the list becomes the default target
 
 TARGETS = amd64-sysv-linux-elf \
+          z80-scc-none-none \
           i386-sysv-linux-elf \
           amd64-sysv-openbsd-elf
 
