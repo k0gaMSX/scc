@@ -67,7 +67,7 @@ struct op {
 	unsigned char flags;
 	char size;
 	void (*format)(Op *, Node **);
-	char *bytes;
+	unsigned char *bytes;
 	unsigned char *args;
 };
 

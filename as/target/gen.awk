@@ -48,12 +48,12 @@ END		{
 			       opsize[i], opformat[i]
 
 			if (opbytes[i] != "")
-				printf "\t\t.bytes = (char []) {%s},\n",
+				printf "\t\t.bytes = (unsigned char []) {%s},\n",
 				        opbytes[i]
 
 			a = str2args(opargs[i])
 			if (a != "")
-				printf "\t\t.args = (char []) {%s}\n", a
+				printf "\t\t.args = (unsigned char []) {%s}\n", a
 
 			print "\t},"
 		}
