@@ -10,7 +10,7 @@ enum args {
 	AREG_CS,
 	AREG_DS,
 	AREG_SS,
-	AREG_ES
+	AREG_ES,
 	AREG_FS,
 	AREG_GS,
 
@@ -68,9 +68,6 @@ enum args {
 
 	AREG_SP,
 	AREG_SPL,
-	AREG_ESP,
-	AREG_RSP,
-
 	AREG_ESP,
 	AREG_RSP,
 
