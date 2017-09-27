@@ -63,13 +63,11 @@ deltree(Node *np)
 }
 
 static Node *
-binary(int op, Node *l, Node *r)
+fold(int op, Node *l, Node *r)
 {
 	Node *np;
 	TUINT val, lv, rv;
 
-	if (l->op != NUMBER || r->op != NUMBER)
-		return node(op, l, r);
 	lv = l->sym->value;
 	rv = r->sym->value;
 
@@ -130,10 +128,29 @@ binary(int op, Node *l, Node *r)
 
 	np = node(NUMBER, NULL, NULL);
 	np->sym = tmpsym(val);
+	np->addr = AIMM;
 	return np;
 
 division_by_zero:
 	error("division by 0");
+}
+
+static Node *
+binary(int op, Node *l, Node *r)
+{
+	int addr;
+	Node *np;
+
+	if (l->op == NUMBER || r->op == NUMBER)
+		return fold(op, l, r);
+	if (l->addr == AIMM && r->addr == AIMM)
+		addr = AIMM;
+	else
+		error("incorrect operand");
+	np = node(op, l, r);
+	np->addr = addr;
+
+	return np;
 }
 
 static Node *
@@ -317,27 +334,23 @@ static Node *or(void);
 static Node *
 primary(void)
 {
+	int addr;
 	Node *np;
 
 	switch (yytoken) {
 	case REG:
-	case NUMBER:
+		addr = AREG;
+		goto basic_atom;
 	case IDEN:
+	case NUMBER:
+		addr = AIMM;
+		goto basic_atom;
 	case STRING:
+		addr = ASTR;
+	basic_atom:
 		np = node(yytoken, NULL, NULL);
 		np->sym = yylval.sym;
 		next();
-		break;
-	case '[':
-		next();
-		np = or();
-		expect(']');
-		np = node('@', np, NULL);
-		break;
-	case '(':
-		next();
-		np = or();
-		expect(')');
 		break;
 	default:
 		unexpected();

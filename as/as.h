@@ -31,6 +31,18 @@ enum endianess {
 	LITTLE_ENDIAN = 1
 };
 
+enum common_args {
+	AIMM = 1,
+	ASTR,
+	AREG,
+	AIMM8,
+	AIMM16,
+	AIMM32,
+	AIMM64,
+	AMAX,
+	AREP = 128
+};
+
 #define MAXSYM 63
 
 typedef struct ins Ins;
@@ -82,6 +94,7 @@ struct symbol {
 
 struct node {
 	unsigned char op;
+	unsigned char addr;
 	struct symbol *sym;
 	struct node *left;
 	struct node *right;

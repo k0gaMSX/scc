@@ -1,13 +1,6 @@
 
 enum args {
-	AIMM = 1,
-
-	AIMM8,
-	AIMM16,
-	AIMM32,
-	AIMM64,
-
-	AREG_AF,
+	AREG_AF = AMAX,
 	AREG_A,
 	AREG_F,
 
@@ -34,6 +27,4 @@ enum args {
 	AREG_R,
 	AREG_I,
 	AREG_AF_,
-
-	AREP,
 };
