@@ -71,6 +71,8 @@ match(Op *op, Node **args)
 			np = *args++;
 			if (np->addr != AIMM)
 				return 0;
+			if (toobig(np, arg))
+				return 0;
 			break;
 		default:
 			abort();

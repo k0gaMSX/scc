@@ -108,6 +108,7 @@ extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
 extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
+extern int toobig(Node *np, int type);
 
 /* main.c */
 extern Symbol *lookup(char *name, int type);

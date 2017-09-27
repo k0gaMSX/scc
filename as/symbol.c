@@ -115,6 +115,13 @@ deflabel(char *name)
 	return sym;
 }
 
+int
+toobig(Node *np, int type)
+{
+	/* TODO */
+	return 0;
+}
+
 char *
 pack(TUINT v, int n, int inc)
 {
