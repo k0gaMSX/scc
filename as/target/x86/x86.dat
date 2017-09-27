@@ -1,11 +1,23 @@
 # Tab 16, tabs 16, :set ts=16
 # op	args	size	bytes	format	cpu
-DB	imm8+	0	none	defb	BITS16,BITS32,BITS64
-DW	imm16+	0	none	defw	BITS16,BITS32,BITS64
-DD	imm32+	0	none	defd	BITS16,BITS32,BITS64
-DQ	imm64+	0	none	defq	BITS16,BITS32,BITS64
-EQU	imm16	0	none	equ	BITS16
-EQU	imm32	0	none	equ	BITS32
-EQU	imm64	0	none	equ	BITS64
+.DB	imm8+	0	none	defb	BITS16,BITS32,BITS64
+.DEFB	imm8+	0	none	defb	BITS16,BITS32,BITS64
+.BYTE	imm8+	0	none	defb	BITS16,BITS32,BITS64
+.DW	imm16+	0	none	defw	BITS16,BITS32,BITS64
+.DEFW	imm16+	0	none	defw	BITS16,BITS32,BITS64
+.SHORT	imm16+	0	none	defw	BITS16,BITS32,BITS64
+.WORD	imm16+	0	none	defw	BITS16
+.WORD	imm32+	0	none	defd	BITS32,BITS64
+.DD	imm32+	0	none	defd	BITS16,BITS32,BITS64
+.DEFD	imm32+	0	none	defd	BITS16,BITS32,BITS64
+.LONG	imm32+	0	none	defd	BITS16,BITS32
+.LONG	imm64+	0	none	defq	BITS64
+.INT	imm32+	0	none	defd	BITS32,BITS64
+.INT	imm16+	0	none	defd	BITS16
+.DQ	imm64+	0	none	defq	BITS16,BITS32,BITS64
+.DEFQ	imm64+	0	none	defq	BITS16,BITS32,BITS64
+.EQU	imm16	0	none	equ	BITS16
+.EQU	imm32	0	none	equ	BITS32
+.EQU	imm64	0	none	equ	BITS64
 NOP	none	1	0x90	direct	BITS16,BITS32,BITS64
 RET	none	1	0xc3	direct	BITS16,BITS32,BITS64
