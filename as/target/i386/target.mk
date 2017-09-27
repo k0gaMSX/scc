@@ -13,4 +13,5 @@ target/i386/instbl.c: target/x86/gen.awk $(I386_TBL)
 
 OBJ-i386 = $(OBJ) \
 	target/i386/instbl.o \
-	target/i386/ins.o
+	target/i386/ins.o \
+	target/i386/proc.o

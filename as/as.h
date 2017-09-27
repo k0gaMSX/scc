@@ -24,12 +24,6 @@ enum symflags {
 	FUNDEF  = 1 << 7,
 };
 
-enum args {
-	AIMM = 1,
-	AMAX,
-        AREP  = 1 << 7,
-};
-
 enum endianess {
 	BIG_ENDIAN    = -1,
 	LITTLE_ENDIAN = 1
@@ -78,6 +72,7 @@ struct symbol {
 	char *name;
 	unsigned char flags;
 	char pass;
+	char argtype;
 	short desc;
 	TUINT value;
 	struct symbol *next;
@@ -114,6 +109,10 @@ extern int nextline(FILE *fp, struct line *linep);
 /* expr.c */
 extern Node *expr(char *s);
 extern void deltree(Node *np);
+
+/* proc.c */
+extern void iproc(void);
+extern int match(Op *op, Node **args);
 
 /*
  * Definition of global variables

@@ -13,4 +13,5 @@ target/amd64/instbl.c: target/x86/gen.awk $(AMD64_TBL)
 
 OBJ-amd64 = $(OBJ) \
 	target/amd64/instbl.o \
-	target/i386/ins.o
+	target/i386/ins.o \
+	target/amd64/proc.o

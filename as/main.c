@@ -7,12 +7,6 @@ static char sccsid[] = "@(#) ./as/main.c";
 #include "../inc/scc.h"
 #include "as.h"
 
-int
-match(Op *op, Node **args)
-{
-	return 1;
-}
-
 static int
 cmp(const void *f1, const void *f2)
 {
