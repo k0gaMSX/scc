@@ -32,6 +32,7 @@ enum args {
 	AREG_IYH,
 
 	AREG_R,
+	AREG_I,
 	AREG_AF_,
 
 	AREP,

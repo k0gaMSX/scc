@@ -38,10 +38,16 @@ iarch(void)
 		"IYH", AREG_IYH,
 
 		"R", AREG_R,
+		"I", AREG_I,
 		"AF_", AREG_AF_,
 
 		NULL,
-	};
+	}, *bp;
+
+	for (bp = regs; bp->name; ++bp) {
+		Symbol *sym = lookup(bp->name);
+		sym->argtype = bp->type;
+	}
 }
 
 int
