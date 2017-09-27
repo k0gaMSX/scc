@@ -53,23 +53,25 @@ iarch(void)
 int
 match(Op *op, Node **args)
 {
-	char *p;
-	int a, olda;
+	unsigned char *p;
+	int arg;
+	Node *np;
 
 	if (!op->args)
 		return args == NULL;
 
-	for (p = op->args; *p; ++p) {
-		if (*p != AREP)
-			a = *p;
-		else
+	for (p = op->args; (arg = *p) && *args; ++p) {
+		if (arg & AREP)
 			--p;
-
-		switch (a) {
+		switch (arg & ~AREP) {
 		case AIMM8:
 		case AIMM16:
 		case AIMM32:
 		case AIMM64:
+			np = *args++;
+			if (np->addr != AIMM)
+				return 0;
+			break;
 		default:
 			abort();
 		}

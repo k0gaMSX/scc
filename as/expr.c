@@ -350,6 +350,7 @@ primary(void)
 	basic_atom:
 		np = node(yytoken, NULL, NULL);
 		np->sym = yylval.sym;
+		np->addr = addr;
 		next();
 		break;
 	default:
