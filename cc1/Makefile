@@ -23,7 +23,6 @@ $(LIBDIR)/libscc.a: $(LIB-OBJ)
 
 dep:
 	./gendep.sh $(TARGETS)
-	touch dep
 
 clean:
 	rm -f *.o
