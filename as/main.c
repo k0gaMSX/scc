@@ -15,19 +15,23 @@ cmp(const void *f1, const void *f2)
 	const char *s = f1;
 	int d;
 
-	d = toupper(*ins->str) - toupper(*s);
-	if (d != 0)
+	if ((d = *s - *ins->str) != 0)
 		return d;
 
-	return casecmp(s, ins->str);
+	return strcmp(s, ins->str);
 }
 
 static void
 as(char *text, char *xargs)
 {
+	int c;
+	char *p;
 	Ins *ins;
 	Op *op, *lim;
 	Node **args;
+
+	for (p = text; c = *p; ++p)
+		*p = toupper(c);
 
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
 	if (!ins) {
