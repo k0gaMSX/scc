@@ -1,6 +1,7 @@
 static char sccsid[] = "@(#) ./as/main.c";
 
 #include <ctype.h>
+#include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,12 +59,16 @@ dopass(char *fname)
 	struct line line;
 	FILE *fp;
 	extern int nerrors;
+	extern jmp_buf recover;
 
 	if ((fp = fopen(fname, "r")) == NULL)
 		die("as: error opening '%s'", fname);
 
 	isections();
 	while (nextline(fp, &line)) {
+		if (setjmp(recover))
+			continue;
+
 		linesym = NULL;
 
 		if (line.label)

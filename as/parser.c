@@ -1,5 +1,6 @@
 static char sccsid[] = "@(#) ./as/parser.c";
 #include <ctype.h>
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +14,7 @@ static char sccsid[] = "@(#) ./as/parser.c";
 
 char *filename;
 int nerrors;
+jmp_buf recover;
 
 static unsigned lineno;
 
@@ -30,6 +32,7 @@ error(char *msg, ...)
 
 	if (nerrors == 10)
 		die("as: too many errors");
+	longjmp(recover, 1);
 }
 
 Node **
