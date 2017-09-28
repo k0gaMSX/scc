@@ -4,7 +4,7 @@ static char sccsid[] = "@(#) ./as/ins.c";
 #include "as.h"
 
 void
-direct(Op *op, Node **args)
+noargs(Op *op, Node **args)
 {
 	emit(cursec, op->bytes, op->size);
 }

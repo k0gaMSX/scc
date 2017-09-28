@@ -19,5 +19,5 @@
 .EQU	imm16	0	none	equ	BITS16
 .EQU	imm32	0	none	equ	BITS32
 .EQU	imm64	0	none	equ	BITS64
-NOP	none	1	0x90	direct	BITS16,BITS32,BITS64
-RET	none	1	0xc3	direct	BITS16,BITS32,BITS64
+NOP	none	1	0x90	noargs	BITS16,BITS32,BITS64
+RET	none	1	0xc3	noargs	BITS16,BITS32,BITS64
