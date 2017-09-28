@@ -72,7 +72,7 @@ match(Op *op, Node **args)
 			if (np->addr != AIMM)
 				return 0;
 			if (toobig(np, arg))
-				return 0;
+				error("overflow in immediate operand");
 			break;
 		default:
 			abort();
