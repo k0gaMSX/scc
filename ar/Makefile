@@ -1,13 +1,21 @@
 .POSIX:
 
+LIBDIR    = ../lib/scc
 include ../config.mk
+include $(LIBDIR)/libdep.mk
 
-OBJ = ar.o $(DRIVER/stat.c
-MOREFLAGS=-I$(DRIVER)
+OBJ       = main.o $(DRIVER)/stat.c
+MOREFLAGS = -I$(DRIVER)
 
-all: ar
+all: ar-$(DRIVER)
 
-ar.o: $(DRIVER)/stat.h
+ar-$(DRIVER): $(OBJ) $(LIBDIR)/libscc.a
+	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
+
+$(LIBDIR)/libscc.a: $(LIB-OBJ)
+	cd $(LIBDIR) && $(MAKE)
+
+main.o: $(DRIVER)/stat.h
 
 dep:
 clean:
