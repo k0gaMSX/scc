@@ -1,5 +1,5 @@
 
-Z80_LST = target/z80/instbl.o target/z80/ins.o target/z80/proc.o
+Z80_LST = target/z80/instbl.o target/z80/ins.o target/z80/proc.o target/x80/ins.o
 
 $(Z80_LST): target/x80/proc.h
 

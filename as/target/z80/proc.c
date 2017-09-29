@@ -64,6 +64,12 @@ match(Op *op, Node **args)
 		if (arg & AREP)
 			--p;
 		switch (arg & ~AREP) {
+		case AREG_8:
+			if (np->op != AREG)
+				return 0;
+			if (r8(np->sym->argtype) == -1)
+				return 0;
+			break;
 		case AIMM8:
 		case AIMM16:
 		case AIMM32:
@@ -78,5 +84,6 @@ match(Op *op, Node **args)
 			abort();
 		}
 	}
-	return 1;
+
+	return (!arg || arg & AREP) && !*args;
 }

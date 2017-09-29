@@ -260,6 +260,8 @@ reg(void)
 	int c;
 	char *p;
 
+	if (*textp == '%')
+		++textp, ++endp;
 	while (isalnum(c = *endp))
 		++endp;
 	tok2str();

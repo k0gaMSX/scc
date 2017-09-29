@@ -51,3 +51,4 @@ OUTI	none	2	0xed,0xa3	noargs	Z80,R800
 OTIR	none	2	0xed,0xb3	noargs	Z80,R800
 OUTD	none	2	0xed,0xab	noargs	Z80,R800
 OTDR	none	2	0xed,0xbb	noargs	Z80,R800
+LD	reg_8,imm8	2	0x06	r8_imm	Z80,R800,GB80

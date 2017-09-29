@@ -74,6 +74,8 @@ function str2args(s, args, i, out)
 			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
 			out = "AIMM64"
+		} else if (match(a, /^reg_8/)) {
+			out = out "AREG_8"
 		} else {
 			print "wrong arg", a
 			exit 1

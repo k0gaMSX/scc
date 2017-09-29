@@ -105,6 +105,7 @@ main(int argc, char *argv[])
 	if (argc != 2)
 		usage();
 
+	iarch();
 	filename = argv[1];
 	for (pass = 1; pass <= 2; pass++) {
 		if (!dopass(filename))
