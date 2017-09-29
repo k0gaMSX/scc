@@ -91,7 +91,7 @@ lookup(char *name, int type)
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = xstrdup(name);
-	sym->flags = (cursec->flags & TMASK) | FLOCAL | FUNDEF | type;
+	sym->flags = FLOCAL | FUNDEF | type;
 	sym->desc = 0;
 	sym->value = 0;
 	sym->next = *list;
