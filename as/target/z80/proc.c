@@ -63,6 +63,7 @@ match(Op *op, Node **args)
 	for (p = op->args; (arg = *p) && *args; ++p) {
 		if (arg & AREP)
 			--p;
+		np = *args++;
 		switch (arg & ~AREP) {
 		case AREG_8:
 			if (np->op != AREG)
@@ -74,7 +75,6 @@ match(Op *op, Node **args)
 		case AIMM16:
 		case AIMM32:
 		case AIMM64:
-			np = *args++;
 			if (np->addr != AIMM)
 				return 0;
 			if (toobig(np, arg))

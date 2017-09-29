@@ -60,11 +60,12 @@ END		{
 		print "};"
 }
 
-function str2args(s, args, i, out)
+function str2args(s, args, i, out, n)
 {
-	if (split(s, args, /,/) == 0 || args[1] == "none")
+	n = split(s, args, /,/)
+	if (n == 0 || args[1] == "none")
 		return ""
-	for (i in args) {
+	for (i = 1; i <= n; i++) {
 		a = args[i]
 		if (match(a, /^imm8/)) {
 			out = out "AIMM8"
