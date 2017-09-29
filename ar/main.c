@@ -1,3 +1,4 @@
+static char sccsid[] = "@(#) ./ar/main.c";
 
 #include <errno.h>
 #include <stdio.h>
