@@ -128,7 +128,7 @@ extern Node *expr(char **s);
 extern void deltree(Node *np);
 
 /* proc.c */
-extern void iproc(void);
+extern void iarch(void);
 extern int match(Op *op, Node **args);
 
 /*
