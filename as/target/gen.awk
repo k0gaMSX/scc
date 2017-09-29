@@ -67,11 +67,11 @@ function str2args(s, args, i, out)
 	for (i in args) {
 		a = args[i]
 		if (match(a, /^imm8/)) {
-			out = "AIMM8"
+			out = out "AIMM8"
 		} else if (match(a, /^imm16/)) {
-			out = "AIMM16"
+			out = out "AIMM16"
 		} else if (match(a, /^imm32/)) {
-			out = "AIMM32"
+			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
 			out = "AIMM64"
 		} else {
