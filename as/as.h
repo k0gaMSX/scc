@@ -109,6 +109,7 @@ extern Section *section(char *name);
 extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
 extern int toobig(Node *np, int type);
+extern void dumpstab(char *msg);
 
 /* main.c */
 extern Symbol *lookup(char *name, int type);

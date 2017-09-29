@@ -43,6 +43,27 @@ static Alloc *tmpalloc;
 
 Symbol *linesym;
 
+#ifndef NDEBUG
+void
+dumpstab(char *msg)
+{
+	Symbol **bp, *sym;
+
+	fprintf(stderr, "%s\n", msg);
+	for (bp = hashtbl; bp < &hashtbl[HASHSIZ]; ++bp) {
+		if (*bp == NULL)
+			continue;
+
+		fprintf(stderr, "[%d]", (int) (bp - hashtbl));
+		for (sym = *bp; sym; sym = sym->next) {
+			fprintf(stderr, " -> %s:%0X:%0X",
+			       sym->name, sym->flags, sym->argtype);
+		}
+		putc('\n', stderr);
+	}
+}
+#endif
+
 Symbol *
 lookup(char *name, int type)
 {
