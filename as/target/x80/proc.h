@@ -28,7 +28,11 @@ enum args {
 	AREG_I,
 	AREG_AF_,
 
-	AREG_8,		/* class register for B, C, D, E, H, L and A */
+	AREG_RCLASS,  /* register class for B, C, D, E, H, L and A */
+	AREG_PCLASS,  /* register class for B, C, D, E, IXH, IXL and A */
+	AREG_QCLASS,  /* register class for B, C, D, E, IYH, IYL and A */
 };
 
-extern int r8(int reg);
+extern int rclass(int reg);
+extern int pclass(int reg);
+extern int qclass(int reg);

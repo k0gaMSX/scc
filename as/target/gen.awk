@@ -75,8 +75,12 @@ function str2args(s, args, i, out, n)
 			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
 			out = "AIMM64"
-		} else if (match(a, /^reg_8/)) {
-			out = out "AREG_8"
+		} else if (match(a, /^reg_p/)) {
+			out = out "AREG_PCLASS"
+		} else if (match(a, /^reg_q/)) {
+			out = out "AREG_QCLASS"
+		} else if (match(a, /^reg_r/)) {
+			out = out "AREG_RCLASS"
 		} else {
 			print "wrong arg", a
 			exit 1
@@ -85,7 +89,7 @@ function str2args(s, args, i, out, n)
 		if (a ~ /^\+$/) {
 			return out "|AREP"
 		} else if (a != "") {
-			print "wrong arg", a
+			print "wrong arg", a > "/dev/stderr"
 			exit 1
 		}
 		out = out ","

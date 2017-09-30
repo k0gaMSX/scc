@@ -65,10 +65,22 @@ match(Op *op, Node **args)
 			--p;
 		np = *args++;
 		switch (arg & ~AREP) {
-		case AREG_8:
+		case AREG_RCLASS:
 			if (np->op != AREG)
 				return 0;
-			if (r8(np->sym->argtype) == -1)
+			if (!rclass(np->sym->argtype))
+				return 0;
+			break;
+		case AREG_PCLASS:
+			if (np->op != AREG)
+				return 0;
+			if (!pclass(np->sym->argtype))
+				return 0;
+			break;
+		case AREG_QCLASS:
+			if (np->op != AREG)
+				return 0;
+			if (!qclass(np->sym->argtype))
 				return 0;
 			break;
 		case AIMM8:

@@ -51,4 +51,14 @@ OUTI	none	2	0xed,0xa3	noargs	Z80,R800
 OTIR	none	2	0xed,0xb3	noargs	Z80,R800
 OUTD	none	2	0xed,0xab	noargs	Z80,R800
 OTDR	none	2	0xed,0xbb	noargs	Z80,R800
-LD	reg_8,imm8	2	0x06	r8_imm	Z80,R800,GB80
+
+# p is any register from B, C, D, E, IXL, IXH, A
+# q is any register from B, C, D, E, IYL, IYH, A
+# r is any register from B, C, D, E, L, H, A
+
+LD	reg_r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
+LD	reg_p,imm8	3	0xdd,0x06	r8_imm8	Z80,R800
+LD	reg_q,imm8	3	0xfd,0x06	r8_imm8	Z80,R800
+LD	reg_r,reg_r	1	0x40	r8_r8	Z80,R800,GB80
+LD	reg_p,reg_p	2	0xdd,0x40	r8_r8	Z80,R800
+LD	reg_q,reg_q	2	0xfd,0x40	r8_r8	Z80,R800
