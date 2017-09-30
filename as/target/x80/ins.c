@@ -94,6 +94,20 @@ r8_imm8(Op *op, Node **args)
 }
 
 void
+imm8(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[3];
+	int n = op->size;
+
+	par2 = args[1];
+
+	memcpy(buf, op->bytes, n-1);
+	buf[n-1] = par2->sym->value;
+	emit(cursec, buf, n);
+}
+
+void
 r8_r8(Op *op, Node **args)
 {
 	Node *par1, *par2;
@@ -105,5 +119,19 @@ r8_r8(Op *op, Node **args)
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= reg2int(par1->sym->argtype) << 3 | 
 	            reg2int(par2->sym->argtype);
+	emit(cursec, buf, n);
+}
+
+void
+r8(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[3];
+	int n = op->size;
+
+	par1 = args[0];
+	par2 = args[1];
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= reg2int(par2->sym->argtype);
 	emit(cursec, buf, n);
 }

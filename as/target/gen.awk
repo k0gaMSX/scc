@@ -81,6 +81,8 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_QCLASS"
 		} else if (match(a, /^reg_r/)) {
 			out = out "AREG_RCLASS"
+		} else if (match(a, /^regA/)) {
+			out = out "AREG_A"
 		} else {
 			print "wrong arg", a
 			exit 1

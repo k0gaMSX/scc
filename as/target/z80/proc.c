@@ -65,6 +65,10 @@ match(Op *op, Node **args)
 			--p;
 		np = *args++;
 		switch (arg & ~AREP) {
+		case AREG_A:
+			if (np->op != AREG || np->sym->argtype != AREG_A)
+				return 0;
+			break;
 		case AREG_RCLASS:
 			if (np->op != AREG)
 				return 0;
