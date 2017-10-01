@@ -123,7 +123,7 @@ r8_r8(Op *op, Node **args)
 }
 
 void
-r8(Op *op, Node **args)
+xx_r8_2(Op *op, Node **args)
 {
 	Node *par1, *par2;
 	unsigned char buf[3];
@@ -131,7 +131,38 @@ r8(Op *op, Node **args)
 
 	par1 = args[0];
 	par2 = args[1];
+
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= reg2int(par2->sym->argtype);
+	emit(cursec, buf, n);
+}
+
+void
+r8_xx_2(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[3];
+	int n = op->size;
+
+	par1 = args[0];
+	par2 = args[1];
+
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= reg2int(par2->sym->argtype) << 3;
+	emit(cursec, buf, n);
+}
+
+void
+r8_xx_1(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[3];
+	int n = op->size;
+
+	par1 = args[0];
+	par2 = args[1];
+
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= reg2int(par1->sym->argtype) << 3;
 	emit(cursec, buf, n);
 }

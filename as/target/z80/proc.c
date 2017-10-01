@@ -65,6 +65,12 @@ match(Op *op, Node **args)
 			--p;
 		np = *args++;
 		switch (arg & ~AREP) {
+		case AINDER_HL:
+			if (np->op != AINDIR)
+				return 0;
+			if (np->left->sym->argtype != AREG_HL)
+				return 0;
+			break;
 		case AREG_A:
 			if (np->op != AREG || np->sym->argtype != AREG_A)
 				return 0;

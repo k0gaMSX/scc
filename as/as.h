@@ -39,6 +39,10 @@ enum common_args {
 	AIMM16,
 	AIMM32,
 	AIMM64,
+	AINDIR,
+	AINDEX,
+	ADIRECT,
+	AREG_OFF,
 	AMAX,
 	AREP = 128
 };

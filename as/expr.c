@@ -145,6 +145,8 @@ binary(int op, Node *l, Node *r)
 		return fold(op, l, r);
 	if (l->addr == AIMM && r->addr == AIMM)
 		addr = AIMM;
+	else if (l->addr == AREG && r->addr == AIMM)
+		addr = AREG_OFF;
 	else
 		error("incorrect operand");
 	np = node(op, l, r);
@@ -327,6 +329,26 @@ expect(int token)
 	next();
 }
 
+Node *
+content(Node *np)
+{
+	int op;
+
+	switch (np->addr) {
+	case AREG:
+		op = AINDIR;
+		goto new_node;
+	case AREG_OFF:
+		op = AINDEX;
+		goto new_node;
+	case AIMM:
+		op = ADIRECT;
+	new_node:
+		return node(op, np, NULL);
+	}
+	return np;
+}
+
 /*************************************************************************/
 /* grammar functions                                                     */
 /*************************************************************************/
@@ -336,7 +358,7 @@ static Node *or(void);
 static Node *
 primary(void)
 {
-	int addr;
+	int addr, op;
 	Node *np;
 
 	switch (yytoken) {
@@ -354,6 +376,12 @@ primary(void)
 		np->sym = yylval.sym;
 		np->addr = addr;
 		next();
+		break;
+	case '(':
+		next();
+		np = or();
+		expect(')');
+		np = content(np);
 		break;
 	default:
 		unexpected();
