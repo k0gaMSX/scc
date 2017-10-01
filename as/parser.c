@@ -62,11 +62,12 @@ field(char **oldp)
 
 	for (s = begin; ; s++) {
 		switch (*s) {
+		case ';':
+			*s = '\0';
 		case '\0':
 			*oldp = NULL;
 			goto out_loop;
 		case '\t':
-		case ';':
 			*s = '\0';
 			*oldp = s+1;
 			goto out_loop;
