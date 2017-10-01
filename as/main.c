@@ -63,12 +63,10 @@ dopass(char *fname)
 
 	if ((fp = fopen(fname, "r")) == NULL)
 		die("as: error opening '%s'", fname);
-
 	isections();
-	while (nextline(fp, &line)) {
-		if (setjmp(recover))
-			continue;
 
+	setjmp(recover);
+	while (nextline(fp, &line)) {
 		linesym = NULL;
 
 		if (line.label)
