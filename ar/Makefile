@@ -19,6 +19,6 @@ main.o: $(DRIVER)/stat.h
 
 dep:
 clean:
-	rm -f ar *.o $(DRIVER)/*.o
+	rm -f ar-* *.o $(DRIVER)/*.o
 
 distclean: clean
