@@ -34,7 +34,7 @@ static Section text = {
 	.next  = &data,
 };
 
-Section *cursec = &text, *headp = &text;
+Section *cursec = &text, *seclist = &text;
 
 int pass;
 
@@ -207,7 +207,7 @@ section(char *name)
 {
 	Section *sec;
 
-	for (sec = headp; sec; sec = sec->next) {
+	for (sec = seclist; sec; sec = sec->next) {
 		if (!strcmp(sec->name, name))
 			break;
 	}
@@ -215,7 +215,7 @@ section(char *name)
 		sec = xmalloc(sizeof(*sec));
 		sec->name = xstrdup(name);
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
-		sec->next = headp;
+		sec->next = seclist;
 		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
 	}
 	return cursec = sec;
@@ -226,7 +226,7 @@ isections(void)
 {
 	Section *sec;
 
-	for (sec = headp; sec; sec = sec->next)
+	for (sec = seclist; sec; sec = sec->next)
 		isect(sec);
 }
 
@@ -259,23 +259,4 @@ killtmp(void)
 		return;
 	dealloc(tmpalloc);
 	tmpalloc = NULL;
-}
-
-void
-writeout(char *name)
-{
-	FILE *fp;
-	Section *secp;
-
-	if ((fp = fopen(name, "wb")) == NULL)
-		die("error opening output file '%s'\n", name);
-
-	for (secp = headp; secp; secp = secp->next) {
-		if (!secp->mem)
-			continue;
-		fwrite(secp->mem, secp->max - secp->base, 1, fp);
-	}
-
-	if (fclose(fp))
-		die("error writing the output file");
 }

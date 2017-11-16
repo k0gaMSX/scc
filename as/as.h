@@ -138,7 +138,7 @@ extern int match(Op *op, Node **args);
 /*
  * Definition of global variables
  */
-extern Section *cursec;
+extern Section *cursec, *seclist;
 extern int nr_ins;
 extern Ins instab[];
 extern Op optab[];
