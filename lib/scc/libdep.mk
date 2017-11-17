@@ -7,3 +7,5 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/xstrdup.o \
           $(LIBDIR)/alloc.o \
           $(LIBDIR)/casecmp.o \
+          $(LIBDIR)/lunpack.o \
+          $(LIBDIR)/lpack.o \
