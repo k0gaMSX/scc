@@ -105,7 +105,6 @@ struct node {
 };
 
 /* symbol.c */
-extern char *pack(TUINT v, int n, int inc);
 extern void isections(void);
 extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
@@ -134,6 +133,9 @@ extern void deltree(Node *np);
 /* proc.c */
 extern void iarch(void);
 extern int match(Op *op, Node **args);
+
+/* ins.c */
+extern char *tobytes(TUINT v, int n, int inc);
 
 /*
  * Definition of global variables

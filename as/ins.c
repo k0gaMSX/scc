@@ -3,6 +3,24 @@ static char sccsid[] = "@(#) ./as/ins.c";
 #include "../inc/scc.h"
 #include "as.h"
 
+char *
+tobytes(TUINT v, int nbytes, int inc)
+{
+	static char buf[sizeof(TUINT)];
+	int idx;
+
+	idx = (inc < 0) ? nbytes-1 : 0;
+	while (nbytes--) {
+		buf[idx] = v;
+		idx += inc;
+		v >>= 8;
+	}
+
+	if (v)
+		error("overflow in immediate value");
+	return buf;
+}
+
 void
 noargs(Op *op, Node **args)
 {
@@ -15,7 +33,7 @@ def(Node **args, int siz)
 	Node *np;
 
 	for ( ; np = *args; ++args)
-		emit(cursec, pack(np->sym->value, siz, endian), siz);
+		emit(cursec, tobytes(np->sym->value, siz, endian), siz);
 }
 
 void
