@@ -34,6 +34,14 @@ struct arena {
 	union hdr *array;
 };
 
+struct alloc {
+	size_t size;
+	size_t nmemb;
+	size_t padding;
+	struct arena *arena;
+	union hdr *freep;
+};
+
 static void
 newarena(Alloc *allocp)
 {

@@ -21,18 +21,6 @@ struct items {
 
 typedef struct alloc Alloc;
 
-struct arena;
-union hdr;
-
-struct alloc {
-	size_t size;
-	size_t nmemb;
-	size_t padding;
-	struct arena *arena;
-	union hdr *freep;
-};
-
-
 extern void die(const char *fmt, ...);
 extern void dbg(const char *fmt, ...);
 extern void newitem(struct items *items, char *item);
