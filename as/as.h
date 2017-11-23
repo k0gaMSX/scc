@@ -54,7 +54,13 @@ typedef struct op Op;
 typedef struct section Section;
 typedef struct symbol Symbol;
 typedef struct node Node;
+typedef struct string String;
 typedef void Format(Op *, Node **);
+
+struct string {
+	char *buf;
+	size_t offset;
+};
 
 struct line {
 	char *label;
@@ -76,7 +82,7 @@ struct op {
 };
 
 struct section {
-	char *name;
+	String name;
 	char *mem;
 	unsigned char flags;
 	TUINT base;
@@ -87,7 +93,7 @@ struct section {
 };
 
 struct symbol {
-	char *name;
+	String name;
 	unsigned char flags;
 	char pass;
 	char argtype;
@@ -113,6 +119,7 @@ extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
 extern int toobig(Node *np, int type);
 extern void dumpstab(char *msg);
+extern String newstring(char *s);
 
 /* main.c */
 extern Symbol *lookup(char *name, int type);

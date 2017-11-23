@@ -12,24 +12,24 @@ static char sccsid[] = "@(#) ./as/symbol.c";
 #define NALLOC  10
 
 static Section abss = {
-	.name  = "abs",
+	.name  = (String) {"abs"},
 	.flags = TABS|SREAD|SWRITE,
 };
 
 static Section bss = {
-	.name  = "bss",
+	.name  = (String) {"bss"},
 	.flags = TBSS|SRELOC|SREAD|SWRITE,
 	.next  = &abss,
 };
 
 static Section data = {
-	.name  = "data",
+	.name  = (String) {"data"},
 	.flags = TDATA|SRELOC|SREAD|SWRITE|SFILE,
 	.next  = &bss,
 };
 
 static Section text = {
-	.name  = "text",
+	.name  = (String) {"text"},
 	.flags = TTEXT|SRELOC|SFILE,
 	.next  = &data,
 };
@@ -57,7 +57,7 @@ dumpstab(char *msg)
 		fprintf(stderr, "[%d]", (int) (bp - hashtbl));
 		for (sym = *bp; sym; sym = sym->next) {
 			fprintf(stderr, " -> %s:%0X:%0X",
-			       sym->name, sym->flags, sym->argtype);
+			       sym->name.buf, sym->flags, sym->argtype);
 		}
 		putc('\n', stderr);
 	}
@@ -80,7 +80,7 @@ lookup(char *name, int type)
 	c = toupper(*name);
 	list = &hashtbl[h];
 	for (sym = *list; sym; sym = sym->next) {
-		t = sym->name;
+		t = sym->name.buf;
 		if (c != toupper(*t) || casecmp(t, name))
 			continue;
 		symtype = sym->flags & TMASK;
@@ -90,7 +90,7 @@ lookup(char *name, int type)
 	}
 
 	sym = xmalloc(sizeof(*sym));
-	sym->name = xstrdup(name);
+	sym->name = newstring(name);
 	sym->flags = FLOCAL | FUNDEF | type;
 	sym->desc = 0;
 	sym->value = 0;
@@ -116,10 +116,10 @@ deflabel(char *name)
 		}
 		r = snprintf(label, sizeof(label),
 		             "%s%s",
-		             cursym->name, name);
+		             cursym->name.buf, name);
 		if (r == sizeof(label)) {
 			error("local label '%s' in '%s' produces too long symbol",
-			      name, cursym->name);
+			      name, cursym->name.buf);
 			return NULL;
 		}
 		name = label;
@@ -190,12 +190,12 @@ section(char *name)
 	Section *sec;
 
 	for (sec = seclist; sec; sec = sec->next) {
-		if (!strcmp(sec->name, name))
+		if (!strcmp(sec->name.buf, name))
 			break;
 	}
 	if (!sec) {
 		sec = xmalloc(sizeof(*sec));
-		sec->name = xstrdup(name);
+		sec->name = newstring(name);
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
 		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
@@ -241,4 +241,16 @@ killtmp(void)
 		return;
 	dealloc(tmpalloc);
 	tmpalloc = NULL;
+}
+
+String
+newstring(char *s)
+{
+	size_t len = strlen(s) + 1;
+	String str;
+
+	str.offset = 0;
+	str.buf = xmalloc(len);
+	memcpy(str.buf, s, len);
+	return str;
 }
