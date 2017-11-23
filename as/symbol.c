@@ -41,7 +41,7 @@ int pass;
 static Symbol *hashtbl[HASHSIZ];
 static Alloc *tmpalloc;
 
-Symbol *linesym;
+Symbol *linesym, *symlist;
 
 #ifndef NDEBUG
 void
@@ -55,7 +55,7 @@ dumpstab(char *msg)
 			continue;
 
 		fprintf(stderr, "[%d]", (int) (bp - hashtbl));
-		for (sym = *bp; sym; sym = sym->next) {
+		for (sym = *bp; sym; sym = sym->hash) {
 			fprintf(stderr, " -> %s:%0X:%0X",
 			       sym->name.buf, sym->flags, sym->argtype);
 		}
@@ -79,7 +79,7 @@ lookup(char *name, int type)
 
 	c = toupper(*name);
 	list = &hashtbl[h];
-	for (sym = *list; sym; sym = sym->next) {
+	for (sym = *list; sym; sym = sym->hash) {
 		t = sym->name.buf;
 		if (c != toupper(*t) || casecmp(t, name))
 			continue;
@@ -92,12 +92,11 @@ lookup(char *name, int type)
 	sym = xmalloc(sizeof(*sym));
 	sym->name = newstring(name);
 	sym->flags = FLOCAL | FUNDEF | type;
-	sym->desc = 0;
 	sym->value = 0;
-	sym->next = *list;
-	*list = sym;
+	sym->hash = *list;
+	sym->next = symlist;
 
-	return sym;
+	return symlist = *list = sym;
 }
 
 Symbol *

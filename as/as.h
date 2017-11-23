@@ -95,11 +95,11 @@ struct section {
 struct symbol {
 	String name;
 	unsigned char flags;
-	char pass;
-	char argtype;
-	short desc;
+	unsigned char pass;
+	unsigned char argtype;
 	TUINT value;
 	struct symbol *next;
+	struct symbol *hash;
 };
 
 struct node {
@@ -154,5 +154,5 @@ extern Op optab[];
 extern int pass;
 extern TUINT maxaddr;
 extern int endian;
-extern Symbol *linesym;
+extern Symbol *linesym, *symlist;
 extern char *filename;
