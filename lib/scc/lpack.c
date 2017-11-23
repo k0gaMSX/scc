@@ -3,9 +3,9 @@
 #include "../../inc/scc.h"
 
 int
-lpack(char *dst, char *fmt, ...)
+lpack(unsigned char *dst, char *fmt, ...)
 {
-	char *bp;
+	unsigned char *bp;
 	unsigned s;
 	unsigned long l;
 	unsigned long long q;

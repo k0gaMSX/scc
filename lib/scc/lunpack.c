@@ -3,9 +3,9 @@
 #include "../../inc/scc.h"
 
 int
-lunpack(char *src, char *fmt, ...)
+lunpack(unsigned char *src, char *fmt, ...)
 {
-	char *bp, *cp;
+	unsigned char *bp, *cp;
 	unsigned short *sp;
 	unsigned s;
 	unsigned long *lp, l;

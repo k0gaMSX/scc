@@ -33,5 +33,5 @@ extern void dealloc(Alloc *allocp);
 extern void *new(Alloc *allocp);
 extern void delete(Alloc *allocp, void *p);
 extern int casecmp(const char *s1, const char *s2);
-extern int lpack(char *dst, char *fmt, ...);
-extern int lunpack(char *src, char *fmt, ...);
+extern int lpack(unsigned char *dst, char *fmt, ...);
+extern int lunpack(unsigned char *src, char *fmt, ...);
