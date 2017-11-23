@@ -17,3 +17,4 @@ driver/posix/config.h
 driver/posix/scpp
 rootdir/
 ar/ar-*
+nm/nm
