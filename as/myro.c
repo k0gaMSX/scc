@@ -118,14 +118,11 @@ void
 writeout(char *name)
 {
 	FILE *fp;
-	long hdrpos;
-	struct myrohdr hdr = {0};
+	struct myrohdr hdr = { .magic = MYROMAGIC };
 
 	if ((fp = fopen(name, "wb")) == NULL)
 		die("error opening output file '%s'\n", name);
 
-	fputs("uobj", fp);
-	hdrpos = ftell(fp);
 	writehdr(fp, &hdr);
 	hdr.strsize = writestrings(fp);
 	hdr.secsize = writesections(fp);
@@ -133,7 +130,7 @@ writeout(char *name)
 	hdr.relsize = writerelocs(fp);
 	writedata(fp);
 
-	fseek(fp, hdrpos, SEEK_SET);
+	fseek(fp, 0, SEEK_SET);
 	writehdr(fp, &hdr);
 
 	if (fclose(fp))

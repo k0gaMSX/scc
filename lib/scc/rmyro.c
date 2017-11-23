@@ -2,6 +2,7 @@ static char sccsid[] = "@(#) ./lib/scc/rmyro.c";
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "../../inc/scc.h"
 #include "../../inc/myro.h"
@@ -15,13 +16,15 @@ readhdr(FILE *fp, struct myrohdr *hdr)
 	fread(buf, sizeof(buf), 1, fp);
 	if (ferror(fp))
 		return EOF;
-	len = lunpack(buf, "lqqqqq",
+	strncpy(hdr->magic, buf, MYROMAGIC_SIZ);
+	len = lunpack(buf + MYROMAGIC_SIZ, "lqqqqq",
 	              &hdr->format,
 	              &hdr->entry,
 	              &hdr->strsize,
 	              &hdr->secsize,
 	              &hdr->symsize,
 	              &hdr->relsize);
+	len += MYROMAGIC_SIZ;
 	assert(len == MYROHDR_SIZ);
 
 	return len;

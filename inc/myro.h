@@ -1,10 +1,14 @@
 
-#define MYROHDR_SIZ    48
+#define MYROHDR_SIZ    52
 #define MYROSECT_SIZ   24
 #define MYROSYM_SIZ    24
 #define MYROREL_SIZ    20
 
+#define MYROMAGIC_SIZ   4
+#define MYROMAGIC      "uobj"
+
 struct myrohdr {
+	char magic[4];
 	unsigned long format;
 	unsigned long long entry;
 	unsigned long long strsize;
