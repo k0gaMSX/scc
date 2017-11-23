@@ -10,3 +10,4 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/lunpack.o \
           $(LIBDIR)/lpack.o \
           $(LIBDIR)/wmyro.o \
+          $(LIBDIR)/rmyro.o \

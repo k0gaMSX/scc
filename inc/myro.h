@@ -44,3 +44,7 @@ extern int writehdr(FILE *fp, struct myrohdr *hdr);
 extern int writesec(FILE *fp, struct myrosect *sect);
 extern int writesym(FILE *fp, struct myrosym *sym);
 extern int writerel(FILE *fp, struct myrorel *rel);
+extern int readhdr(FILE *fp, struct myrohdr *hdr);
+extern int readsec(FILE *fp, struct myrosect *sect);
+extern int readsym(FILE *fp, struct myrosym *sym);
+extern int readrel(FILE *fp, struct myrorel *rel);

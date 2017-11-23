@@ -1,5 +1,6 @@
 static char sccsid[] = "@(#) ./lib/scc/wmyro.c";
 
+#include <assert.h>
 #include <stdio.h>
 
 #include "../../inc/scc.h"
@@ -18,6 +19,7 @@ writehdr(FILE *fp, struct myrohdr *hdr)
 	            hdr->secsize,
 	            hdr->symsize,
 	            hdr->relsize);
+	assert(MYROHDR_SIZ == len);
 	fwrite(buf, len, 1, fp);
 
 	return (ferror(fp)) ? EOF : len;
@@ -36,6 +38,7 @@ writesec(FILE *fp, struct myrosect *sect)
 	            sect->aligment,
 	            sect->offset,
 	            sect->len);
+	assert(MYROSECT_SIZ == len);
 	fwrite(buf, len, 1, fp);
 
 	return (ferror(fp)) ? EOF : len;
@@ -54,6 +57,7 @@ writesym(FILE *fp, struct myrosym *sym)
 	            sym->flags,
 	            sym->offset,
 	            sym->len);
+	assert(MYROSYM_SIZ == len);
 	fwrite(buf, len, 1, fp);
 
 	return (ferror(fp)) ? EOF : len;
@@ -72,6 +76,7 @@ writerel(FILE *fp, struct myrorel *rel)
 	            rel->nbits,
 	            rel->shift,
 	            rel->offset);
+	assert(MYROREL_SIZ == len);
 	fwrite(buf, len, 1, fp);
 
 	return (ferror(fp)) ? EOF : len;
