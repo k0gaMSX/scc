@@ -49,6 +49,7 @@ enum common_args {
 
 #define MAXSYM 63
 
+typedef struct reloc Reloc;
 typedef struct ins Ins;
 typedef struct op Op;
 typedef struct section Section;
@@ -71,6 +72,15 @@ struct line {
 struct ins {
 	int begin, end;
 	char *str;
+};
+
+struct reloc {
+	size_t offset;
+	Symbol *sym;
+	unsigned char flags;
+	unsigned char size;
+	unsigned char nbits;
+	unsigned char shift;
 };
 
 struct op {
@@ -112,7 +122,6 @@ struct node {
 
 /* symbol.c */
 extern void isections(void);
-extern void writeout(char *name);
 extern void emit(Section *sec, char *bytes, int nbytes);
 extern Section *section(char *name);
 extern Symbol *tmpsym(TUINT val);
@@ -143,6 +152,15 @@ extern int match(Op *op, Node **args);
 
 /* ins.c */
 extern char *tobytes(TUINT v, int n, int inc);
+
+/* format.c */
+extern void writeout(char *name);
+extern void reloc(Symbol *sym,
+                  unsigned flags,
+                  unsigned size,
+                  unsigned nbits,
+                  unsigned shift);
+
 
 /*
  * Definition of global variables

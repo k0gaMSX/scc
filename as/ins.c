@@ -32,8 +32,13 @@ def(Node **args, int siz)
 {
 	Node *np;
 
-	for ( ; np = *args; ++args)
-		emit(cursec, tobytes(np->sym->value, siz, endian), siz);
+	for ( ; np = *args; ++args) {
+		Symbol *sym = np->sym;
+
+		if (sym->flags & FUNDEF)
+			reloc(sym, 0, siz, siz * 8, 0);
+		emit(cursec, tobytes(sym->value, siz, endian), siz);
+	}
 }
 
 void
