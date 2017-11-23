@@ -5,11 +5,11 @@ static char sccsid[] = "@(#) ./lib/scc/wmyro.c";
 #include "../../inc/scc.h"
 #include "../../inc/myro.h"
 
-size_t
+int
 writehdr(FILE *fp, struct myrohdr *hdr)
 {
-	unsigned char buf[sizeof(*hdr)];
-	size_t len;
+	unsigned char buf[MYROHDR_SIZ];
+	int len;
 
 	len = lpack(buf, "lqqqqq",
 	            hdr->format,
@@ -20,14 +20,14 @@ writehdr(FILE *fp, struct myrohdr *hdr)
 	            hdr->relsize);
 	fwrite(buf, len, 1, fp);
 
-	return len;
+	return (ferror(fp)) ? EOF : len;
 }
 
-size_t
+int
 writesec(FILE *fp, struct myrosect *sect)
 {
-	unsigned char buf[sizeof(*sect)];
-	size_t len;
+	unsigned char buf[MYROSECT_SIZ];
+	int len;
 
 	len = lpack(buf, "lsccqq",
 	            sect->name,
@@ -38,14 +38,14 @@ writesec(FILE *fp, struct myrosect *sect)
 	            sect->len);
 	fwrite(buf, len, 1, fp);
 
-	return len;
+	return (ferror(fp)) ? EOF : len;
 }
 
-size_t
+int
 writesym(FILE *fp, struct myrosym *sym)
 {
-	unsigned char buf[sizeof(*sym)];
-	size_t len;
+	unsigned char buf[MYROSYM_SIZ];
+	int len;
 
 	len = lpack(buf, "llccqq",
 	            sym->name,
@@ -56,14 +56,14 @@ writesym(FILE *fp, struct myrosym *sym)
 	            sym->len);
 	fwrite(buf, len, 1, fp);
 
-	return len;
+	return (ferror(fp)) ? EOF : len;
 }
 
-size_t
+int
 writerel(FILE *fp, struct myrorel *rel)
 {
-	unsigned char buf[sizeof(*rel)];
-	size_t len;
+	unsigned char buf[MYROREL_SIZ];
+	int len;
 
 	len = lpack(buf, "lccccq",
 	            rel->id,
@@ -74,5 +74,5 @@ writerel(FILE *fp, struct myrorel *rel)
 	            rel->offset);
 	fwrite(buf, len, 1, fp);
 
-	return len;
+	return (ferror(fp)) ? EOF : len;
 }

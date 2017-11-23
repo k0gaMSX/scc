@@ -1,4 +1,9 @@
 
+#define MYROHDR_SIZ    48
+#define MYROSECT_SIZ   24
+#define MYROSYM_SIZ    24
+#define MYROREL_SIZ    20
+
 struct myrohdr {
 	unsigned long format;
 	unsigned long long entry;
@@ -35,7 +40,7 @@ struct myrorel {
 	unsigned long long offset;
 };
 
-extern size_t writehdr(FILE *fp, struct myrohdr *hdr);
-extern size_t writesec(FILE *fp, struct myrosect *sect);
-extern size_t writesym(FILE *fp, struct myrosym *sym);
-extern size_t writerel(FILE *fp, struct myrorel *rel);
+extern int writehdr(FILE *fp, struct myrohdr *hdr);
+extern int writesec(FILE *fp, struct myrosect *sect);
+extern int writesym(FILE *fp, struct myrosym *sym);
+extern int writerel(FILE *fp, struct myrorel *rel);
