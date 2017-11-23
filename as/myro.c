@@ -5,80 +5,11 @@ static char sccsid[] = "@(#) ./as/myro.c";
 #include <string.h>
 
 #include "../inc/scc.h"
+#include "../inc/myro.h"
 #include "as.h"
-
-struct myrohdr {
-	unsigned long format;
-	unsigned long long entry;
-	unsigned long long strsize;
-	unsigned long long secsize;
-	unsigned long long symsize;
-	unsigned long long relsize;
-};
-
-struct myrosect {
-	unsigned long name;
-	unsigned short flags;
-	unsigned char fill;
-	unsigned char aligment;
-	unsigned long long offset;
-	unsigned long long len;
-};
-
-struct myrosym {
-	unsigned long name;
-	unsigned long type;
-	unsigned char section;
-	unsigned char flags;
-	unsigned long long offset;
-	unsigned long long len;
-};
-
-struct myrorel {
-	unsigned long id;
-	unsigned char flags;
-	unsigned char size;
-	unsigned char nbits;
-	unsigned char shift;
-	unsigned long long offset;
-};
 
 static Reloc *relocs;
 static size_t relcap, relsiz;
-
-static void
-writehdr(FILE *fp, struct myrohdr *hdr)
-{
-	unsigned char buf[sizeof(*hdr)];
-	size_t len;
-
-	len = lpack(buf, "lqqqqq",
-	            hdr->format,
-	            hdr->entry,
-	            hdr->strsize,
-	            hdr->secsize,
-	            hdr->symsize,
-	            hdr->relsize);
-	fwrite(buf, len, 1, fp);
-}
-
-static size_t
-writesec(FILE *fp, struct myrosect *sect)
-{
-	unsigned char buf[sizeof(*sect)];
-	size_t len;
-
-	len = lpack(buf, "lsccqq",
-	            sect->name,
-	            sect->flags,
-	            sect->fill,
-	            sect->aligment,
-	            sect->offset,
-	            sect->len);
-	fwrite(buf, len, 1, fp);
-
-	return len;
-}
 
 static size_t
 writestrings(FILE *fp)
@@ -132,24 +63,6 @@ writesections(FILE *fp)
 }
 
 static size_t
-writesym(FILE *fp, struct myrosym *sym)
-{
-	unsigned char buf[sizeof(*sym)];
-	size_t len;
-
-	len = lpack(buf, "llccqq",
-	            sym->name,
-	            sym->type,
-	            sym->section,
-	            sym->flags,
-	            sym->offset,
-	            sym->len);
-	fwrite(buf, len, 1, fp);
-
-	return len;
-}
-
-static size_t
 writesymbols(FILE *fp)
 {
 	Symbol *sym;
@@ -167,22 +80,6 @@ writesymbols(FILE *fp)
 	}
 
 	return off;
-}
-
-static size_t
-writerel(FILE *fp, struct myrorel *rel)
-{
-	unsigned char buf[sizeof(*rel)];
-	size_t len;
-
-	len = lpack(buf, "lccccq",
-	            rel->id,
-	            rel->flags,
-	            rel->size,
-	            rel->nbits,
-	            rel->shift,
-	            rel->offset);
-	return len;
 }
 
 static size_t

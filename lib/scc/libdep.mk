@@ -9,3 +9,4 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/casecmp.o \
           $(LIBDIR)/lunpack.o \
           $(LIBDIR)/lpack.o \
+          $(LIBDIR)/wmyro.o \
