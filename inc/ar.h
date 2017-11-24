@@ -18,3 +18,4 @@ struct arhdr {
 
 extern int wrarhdr(FILE *fp, struct arhdr *hdr);
 extern int wrarfile(FILE *fp, struct arhdr *hdr);
+extern int rdarhdr(FILE *fp, struct arhdr *hdr);
