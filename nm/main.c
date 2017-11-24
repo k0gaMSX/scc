@@ -14,6 +14,11 @@ static char sccsid[] = "@(#) ./nm/main.c";
 
 char *argv0;
 int radix = 16;
+int Pflag;
+int Aflag;
+int vflag;
+int gflag;
+int uflag;
 
 static int
 myrofile(char *fname, FILE *fp)
@@ -159,20 +164,39 @@ file_error:
 void
 usage(void)
 {
-	fputs("nm [-APv][ -g| -u][-t format] file...\n", stderr);
+	fputs("nm [-APv][ -g| -u][-t format] [file...]\n", stderr);
 	exit(1);
 }
 
 int
 main(int argc, char *argv[])
 {
+	char *t;
+
 	ARGBEGIN {
 	case 'A':
+		Aflag = 1;
+		break;
 	case 'g':
+		gflag = 1;
+		break;
 	case 'u':
+		uflag = 1;
+		break;
 	case 'v':
-	/* case 't': */
-		;
+		vflag = 1;
+		break;
+	case 't':
+		t = EARGF(usage());
+		if (!strcmp(t, "o"))
+			radix = 8;
+		else if (!strcmp(t, "d"))
+			radix = 10;
+		else if (!strcmp(t, "x"))
+			radix = 16;
+		else
+			usage();
+		break;
 	default:
 		usage();
 	} ARGEND
