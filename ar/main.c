@@ -7,6 +7,9 @@ static char sccsid[] = "@(#) ./ar/main.c";
 
 #include <stat.h>
 
+#include "../inc/scc.h"
+#include "../inc/ar.h"
+
 int
 main(int argc, char *argv[])
 {
@@ -15,47 +18,31 @@ main(int argc, char *argv[])
 	FILE *fp, *arfile;
 	char *fname, *arname = "lib.a";
 	struct stat st;
+	struct arhdr hdr;
 
 	if ((arfile = fopen(arname, "wb")) == NULL) {
 		perror("ar:error opening library file");
 		exit(1);
 	}
 
-	fputs("!<arch>\n", arfile);
+	fputs(ARMAGIC, arfile);
 	while ((fname = *++argv) != NULL) {
-		if ((n = strlen(fname)) > 16) {
-			fprintf(stderr, "ar:too long file name '%s'\n", fname);
-			exit(3);
-		}
-		if (stat(fname, &st) < 0) {
-			fprintf(stderr,
-			        "ar:error opening object file '%s':%s\n",
-			        fname, strerror(errno));
-			exit(2);
-		}
-		fprintf(arfile,
-		        "%-16s%-12llu%-6u%-6u%-8o%-10llu`\n",
-		        fname,
-		        (unsigned long long) st.st_atime,
-		        (int) st.st_uid, (int) st.st_gid,
-		        (int) st.st_mode,
-		        (unsigned long long) st.st_size);
-		if ((fp = fopen(fname, "rb")) == NULL) {
-			fprintf(stderr,
-			        "ar: error opening file '%s':%s\n",
-			        fname, strerror(errno));
-			exit(3);
-		}
-		while ((c = getc(fp)) != EOF)
-			putc(c, arfile);
-		if (st.st_size & 1)
-			putc('\n', arfile);
-		if (fclose(fp)) {
-			fprintf(stderr,
-			        "ar:error reading from input file '%s':%s\n",
-			        fname, strerror(errno));
-			exit(4);
-		}
+		if ((n = strlen(fname)) > ARNAME_SIZ)
+			die("ar: %s: too long file name", fname);
+		if (stat(fname, &st) < 0)
+			goto member_error;
+
+		strcpy(hdr.name, fname);
+		hdr.time = st.st_atime;
+		hdr.uid = st.st_uid;
+		hdr.gid = st.st_gid;
+		hdr.mode = st.st_mode;
+		hdr.size = st.st_mode;
+
+		if (wrarhdr(arfile, &hdr) < 0)
+			goto member_error;
+		if (wrarfile(arfile, &hdr) < 0)
+			goto member_error;
 	}
 
 	if (fclose(arfile)) {
@@ -65,4 +52,7 @@ main(int argc, char *argv[])
 	}
 
 	return 0;
+
+member_error:
+	die("ar: %s: %s", fname, strerror(errno));
 }
