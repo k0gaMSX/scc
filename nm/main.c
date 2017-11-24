@@ -1,6 +1,8 @@
 static char sccsid[] = "@(#) ./nm/main.c";
 
 #include <errno.h>
+#include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,16 +60,37 @@ static void
 nm(char *fname, char *member, FILE *fp)
 {
 	struct myrohdr hdr;
-	size_t n;
+	struct myrosym *syms;
+	size_t n, siz;
 
-	if (rdmyrohdr(fp, &hdr) < 0)
+	if (rdmyrohdr(fp, &hdr) < 0) {
+		fprintf(stderr, "nm: %s: incorrect header\n", member);
 		return;
+	}
+
+	if (hdr.symsize / MYROSYM_SIZ > SIZE_MAX)
+		goto too_big;
 
 	n = hdr.symsize / MYROSYM_SIZ;
 	if (n == 0) {
 		fprintf(stderr, "nm: %s: no name list\n", member);
 		return;
 	}
+
+	if (n > SIZE_MAX / sizeof(struct myrosym))
+		goto too_big;
+
+	siz = n * sizeof(struct myrosym);
+	syms = xmalloc(n);
+
+	while (n--)
+		;
+
+	return;
+
+too_big:
+	fprintf(stderr, "nm: %s: too big symbol table\n", member);
+	return;
 }
 
 static void
