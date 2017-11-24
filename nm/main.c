@@ -15,12 +15,6 @@ static char sccsid[] = "@(#) ./nm/main.c";
 char *argv0;
 int radix = 16;
 
-void
-fdie(char *fname)
-{
-	die("nm: %s: %s", fname, strerror(errno));
-}
-
 static int
 myrofile(char *fname, FILE *fp)
 {
