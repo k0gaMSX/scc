@@ -8,7 +8,7 @@ static char sccsid[] = "@(#) ./lib/scc/wmyro.c";
 #include "../../inc/myro.h"
 
 int
-writehdr(FILE *fp, struct myrohdr *hdr)
+wrmyrohdr(FILE *fp, struct myrohdr *hdr)
 {
 	unsigned char buf[MYROHDR_SIZ];
 	int len;
@@ -29,7 +29,7 @@ writehdr(FILE *fp, struct myrohdr *hdr)
 }
 
 int
-writesec(FILE *fp, struct myrosect *sect)
+wrmyrosec(FILE *fp, struct myrosect *sect)
 {
 	unsigned char buf[MYROSECT_SIZ];
 	int len;
@@ -48,7 +48,7 @@ writesec(FILE *fp, struct myrosect *sect)
 }
 
 int
-writesym(FILE *fp, struct myrosym *sym)
+wrmyrosym(FILE *fp, struct myrosym *sym)
 {
 	unsigned char buf[MYROSYM_SIZ];
 	int len;
@@ -67,7 +67,7 @@ writesym(FILE *fp, struct myrosym *sym)
 }
 
 int
-writerel(FILE *fp, struct myrorel *rel)
+wrmyrorel(FILE *fp, struct myrorel *rel)
 {
 	unsigned char buf[MYROREL_SIZ];
 	int len;

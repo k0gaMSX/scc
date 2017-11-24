@@ -50,7 +50,7 @@ nm(char *fname, char *member, FILE *fp)
 	size_t n;
 
 	rewind(fp);
-	if (readhdr(fp, &hdr) == EOF)
+	if (rdmyrohdr(fp, &hdr) == EOF)
 		fdie(fname);
 	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ))
 	n = hdr.symsize / MYROSYM_SIZ;

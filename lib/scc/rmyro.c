@@ -8,7 +8,7 @@ static char sccsid[] = "@(#) ./lib/scc/rmyro.c";
 #include "../../inc/myro.h"
 
 int
-readhdr(FILE *fp, struct myrohdr *hdr)
+rdmyrohdr(FILE *fp, struct myrohdr *hdr)
 {
 	unsigned char buf[MYROHDR_SIZ];
 	int len;
@@ -31,7 +31,7 @@ readhdr(FILE *fp, struct myrohdr *hdr)
 }
 
 int
-readsec(FILE *fp, struct myrosect *sect)
+rdmyrosec(FILE *fp, struct myrosect *sect)
 {
 	unsigned char buf[MYROSECT_SIZ];
 	int len;
@@ -52,7 +52,7 @@ readsec(FILE *fp, struct myrosect *sect)
 }
 
 int
-readsym(FILE *fp, struct myrosym *sym)
+rdmyrosym(FILE *fp, struct myrosym *sym)
 {
 	unsigned char buf[MYROSYM_SIZ];
 	int len;
@@ -73,7 +73,7 @@ readsym(FILE *fp, struct myrosym *sym)
 }
 
 int
-readrel(FILE *fp, struct myrorel *rel)
+rdmyrorel(FILE *fp, struct myrorel *rel)
 {
 	unsigned char buf[MYROREL_SIZ];
 	int len;

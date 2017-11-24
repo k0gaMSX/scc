@@ -56,7 +56,7 @@ writesections(FILE *fp)
 		sect.aligment = 0;
 		sect.offset = off;
 		sect.len = 0;
-		off += writesec(fp, &sect);
+		off += wrmyrosec(fp, &sect);
 	}
 
 	return off;
@@ -76,7 +76,7 @@ writesymbols(FILE *fp)
 		symbol.flags = 0;
 		symbol.offset = off;
 		symbol.len = 0;
-		off += writesym(fp, &symbol);
+		off += wrmyrosym(fp, &symbol);
 	}
 
 	return off;
@@ -97,7 +97,7 @@ writerelocs(FILE *fp)
 		reloc.nbits = bp->nbits;
 		reloc.shift = bp->shift;
 		reloc.offset = bp->offset;
-		off += writerel(fp, &reloc);
+		off += wrmyrorel(fp, &reloc);
 	}
 	return off;
 }
@@ -123,7 +123,7 @@ writeout(char *name)
 	if ((fp = fopen(name, "wb")) == NULL)
 		die("error opening output file '%s'\n", name);
 
-	writehdr(fp, &hdr);
+	wrmyrohdr(fp, &hdr);
 	hdr.strsize = writestrings(fp);
 	hdr.secsize = writesections(fp);
 	hdr.symsize = writesymbols(fp);
@@ -131,7 +131,7 @@ writeout(char *name)
 	writedata(fp);
 
 	fseek(fp, 0, SEEK_SET);
-	writehdr(fp, &hdr);
+	wrmyrohdr(fp, &hdr);
 
 	if (fclose(fp))
 		die("error writing the output file");
