@@ -94,8 +94,17 @@ ar(char *fname, FILE *fp)
 	long pos;
 
 	while (rdarhdr(fp, &hdr) != EOF) {
-		if ((pos = ftell(fp)) & 1)
+		pos = ftell(fp);
+		if (pos > LONG_MAX - hdr.size) {
+			fprintf(stderr,
+			        "nm: %s: overflow in size of archive\n",
+			        fname);
+			return;
+		}
+		pos += hdr.size;
+		if (hdr.size & 1)
 			++pos;
+
 		if (myrofile(fname, fp)) {
 			nm(fname, hdr.name, fp);
 		} else {
