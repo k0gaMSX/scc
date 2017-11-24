@@ -118,7 +118,7 @@ ar(char *fname, FILE *fp)
 
 	while (rdarhdr(fp, &hdr) != EOF) {
 		pos = ftell(fp);
-		if (pos > LONG_MAX - hdr.size) {
+		if (pos == -1 || pos > LONG_MAX - hdr.size) {
 			fprintf(stderr,
 			        "nm: %s: overflow in size of archive\n",
 			        fname);
