@@ -8,25 +8,76 @@ static char sccsid[] = "@(#) ./nm/main.c";
 #include "../inc/arg.h"
 #include "../inc/scc.h"
 #include "../inc/myro.h"
+#include "../inc/ar.h"
 
 char *argv0;
 int radix = 16;
 
 void
-nm(char *fname)
+fdie(char *fname)
+{
+	die("nm: %s: %s", fname, strerror(errno));
+}
+
+static int
+myrofile(char *fname, FILE *fp)
+{
+	char magic[MYROMAGIC_SIZ];
+
+	rewind(fp);
+	fread(magic, sizeof(magic), 1, fp);
+	if (ferror(fp))
+		fdie(fname);
+	return strncmp(magic, MYROMAGIC, MYROMAGIC_SIZ) == 0;
+}
+
+static int
+arfile(char *fname, FILE *fp)
+{
+	char magic[ARMAGIC_SIZ];
+
+	rewind(fp);
+	fread(magic, sizeof(magic), 1, fp);
+	if (ferror(fp))
+		fdie(fname);
+	return strncmp(magic, ARMAGIC, ARMAGIC_SIZ) == 0;
+}
+
+static void
+nm(char *fname, char *member, FILE *fp)
+{
+	struct myrohdr hdr;
+	size_t n;
+
+	rewind(fp);
+	if (readhdr(fp, &hdr) == EOF)
+		fdie(fname);
+	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ))
+	n = hdr.symsize / MYROSYM_SIZ;
+	if (n == 0) {
+		fprintf(stderr, "nm: %s: no name list\n", member);
+		return;
+	}
+}
+
+void
+doit(char *fname)
 {
 	FILE *fp;
-	struct myrohdr hdr;
+	char magic[20];
 
 	if ((fp = fopen(fname, "rb")) == NULL)
-		goto file_error;
-	if (readhdr(fp, &hdr) == EOF)
-		goto file_error;
-	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ))
+		fdie(fname);
+
+	if (myrofile(fname, fp))
+		nm(fname, fname, fp);
+	else if (arfile(fname, fp))
+		/* run over the members */;
+	else
 		die("nm: %s: File format not recognized", fname);
 
-file_error:
-	die("nm: %s: %s", fname, strerror(errno));
+	if (fclose(fp) == EOF)
+		fdie(fname);
 }
 
 void
@@ -51,10 +102,10 @@ main(int argc, char *argv[])
 	} ARGEND
 
 	if (argc == 0) {
-		nm("a.out");
+		doit("a.out");
 	} else {
 		while (argc-- > 0)
-			nm(*++argv);
+			doit(*++argv);
 	}
 
 	return 0;
