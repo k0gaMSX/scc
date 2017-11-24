@@ -55,12 +55,15 @@ nm(char *fname, char *member, FILE *fp)
 {
 	struct myrohdr hdr;
 	struct myrosym *syms;
-	size_t n, siz;
+	size_t n, i;
+	long off;
 
 	if (rdmyrohdr(fp, &hdr) < 0) {
 		fprintf(stderr, "nm: %s: incorrect header\n", member);
 		return;
 	}
+	if ((off = ftell(fp)) < 0)
+		return;
 
 	if (hdr.symsize / MYROSYM_SIZ > SIZE_MAX)
 		goto too_big;
@@ -73,13 +76,28 @@ nm(char *fname, char *member, FILE *fp)
 
 	if (n > SIZE_MAX / sizeof(struct myrosym))
 		goto too_big;
+	if (off > LONG_MAX - hdr.strsize)
+		goto offset_overflow;
+	off += hdr.strsize;
+	if (off > LONG_MAX - hdr.secsize)
+		goto offset_overflow;
+	off += hdr.secsize;
 
-	siz = n * sizeof(struct myrosym);
-	syms = xmalloc(n);
+	if (fseek(fp, off, SEEK_SET) < 0)
+		return;
 
-	while (n--)
-		;
+	syms = xmalloc(n * sizeof(struct myrosym));
+	for (i = 0; n--; ++i) {
+		if (rdmyrosym(fp, &syms[i]) < 0)
+			return;
+	}
+	free(syms);
 
+	return;
+
+offset_overflow:
+	fprintf(stderr, "nm: %s: overflow in headers of archive\n",
+		fname);
 	return;
 
 too_big:
