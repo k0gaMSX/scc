@@ -23,24 +23,39 @@ static int
 myrofile(char *fname, FILE *fp)
 {
 	char magic[MYROMAGIC_SIZ];
+	fpos_t pos;
 
-	rewind(fp);
+	if (fgetpos(fp, &pos) < 0)
+		fdie(fname);
+
 	fread(magic, sizeof(magic), 1, fp);
 	if (ferror(fp))
 		fdie(fname);
-	return strncmp(magic, MYROMAGIC, MYROMAGIC_SIZ) == 0;
+
+	if (!strncmp(magic, MYROMAGIC, MYROMAGIC_SIZ))
+		return 1;
+
+	if (fsetpos(fp, &pos) < 0)
+		fdie(fname);
+	return 0;
 }
 
 static int
 arfile(char *fname, FILE *fp)
 {
 	char magic[ARMAGIC_SIZ];
+	fpos_t pos;
 
-	rewind(fp);
 	fread(magic, sizeof(magic), 1, fp);
 	if (ferror(fp))
 		fdie(fname);
-	return strncmp(magic, ARMAGIC, ARMAGIC_SIZ) == 0;
+
+	if (!strncmp(magic, ARMAGIC, ARMAGIC_SIZ))
+		return 1;
+
+	if (fsetpos(fp, &pos) < 0)
+		fdie(fname);
+	return 0;
 }
 
 static void
@@ -49,10 +64,9 @@ nm(char *fname, char *member, FILE *fp)
 	struct myrohdr hdr;
 	size_t n;
 
-	rewind(fp);
-	if (rdmyrohdr(fp, &hdr) == EOF)
+	if (rdmyrohdr(fp, &hdr) < 0)
 		fdie(fname);
-	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ))
+
 	n = hdr.symsize / MYROSYM_SIZ;
 	if (n == 0) {
 		fprintf(stderr, "nm: %s: no name list\n", member);
@@ -60,11 +74,26 @@ nm(char *fname, char *member, FILE *fp)
 	}
 }
 
+static void
+ar(char *fname, FILE *fp)
+{
+	struct arhdr hdr;
+
+	while (rdarhdr(fp, &hdr) != EOF) {
+		if (myrofile(fname, fp)) {
+			nm(fname, hdr.name, fp);
+		} else {
+			fprintf(stderr,
+			        "nm: skipping member %s in archive %s\n",
+			        hdr.name, fname);
+		}
+	}
+}
+
 void
 doit(char *fname)
 {
 	FILE *fp;
-	char magic[20];
 
 	if ((fp = fopen(fname, "rb")) == NULL)
 		fdie(fname);
@@ -72,9 +101,9 @@ doit(char *fname)
 	if (myrofile(fname, fp))
 		nm(fname, fname, fp);
 	else if (arfile(fname, fp))
-		/* run over the members */;
+		ar(fname, fp);
 	else
-		die("nm: %s: File format not recognized", fname);
+		fprintf(stderr, "nm: %s: File format not recognized", fname);
 
 	if (fclose(fp) == EOF)
 		fdie(fname);
