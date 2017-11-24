@@ -21,7 +21,7 @@ int gflag;
 int uflag;
 
 static int
-myrofile(char *fname, FILE *fp)
+object(char *fname, FILE *fp)
 {
 	char magic[MYROMAGIC_SIZ];
 	fpos_t pos;
@@ -38,7 +38,7 @@ myrofile(char *fname, FILE *fp)
 }
 
 static int
-arfile(char *fname, FILE *fp)
+archive(char *fname, FILE *fp)
 {
 	char magic[ARMAGIC_SIZ];
 	fpos_t pos;
@@ -128,7 +128,7 @@ ar(char *fname, FILE *fp)
 		if (hdr.size & 1)
 			++pos;
 
-		if (myrofile(fname, fp)) {
+		if (object(fname, fp)) {
 			nm(fname, hdr.name, fp);
 		} else {
 			fprintf(stderr,
@@ -147,9 +147,9 @@ doit(char *fname)
 	if ((fp = fopen(fname, "rb")) == NULL)
 		goto file_error;
 
-	if (myrofile(fname, fp))
+	if (object(fname, fp))
 		nm(fname, fname, fp);
-	else if (arfile(fname, fp))
+	else if (archive(fname, fp))
 		ar(fname, fp);
 	else
 		fprintf(stderr, "nm: %s: File format not recognized", fname);
