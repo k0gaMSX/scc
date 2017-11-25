@@ -12,6 +12,10 @@ all: ar-$(DRIVER)
 ar-$(DRIVER): $(OBJ) $(LIBDIR)/libscc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
+main.o: ../inc/scc.h ../inc/ar.h
+
+$(DRIVER)/stat.o: $(DRIVER)/stat.h
+
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 

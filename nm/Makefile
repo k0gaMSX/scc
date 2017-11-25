@@ -11,6 +11,8 @@ all: nm
 nm: $(OBJ) $(LIBDIR)/libscc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
+main.o: ../inc/scc.h ../inc/ar.h ../inc/myro.h
+
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 

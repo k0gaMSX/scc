@@ -15,6 +15,8 @@ $(OBJ): $(HDR)
 as: $(OBJ)
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
+myro.o: ../inc/myro.h
+
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
 	cd $(LIBDIR) && $(MAKE)
 
