@@ -14,12 +14,13 @@ static char sccsid[] = "@(#) ./nm/main.c";
 
 char *argv0;
 char *strings;
-int radix = 16;
-int Pflag;
-int Aflag;
-int vflag;
-int gflag;
-int uflag;
+static int radix = 16;
+static int Pflag;
+static int Aflag;
+static int vflag;
+static int gflag;
+static int uflag;
+static int archflag;
 
 static int
 object(char *fname, FILE *fp)
@@ -74,7 +75,7 @@ typeof(struct myrosym *sym)
 }
 
 static void
-print(char *member, struct myrosym *sym, FILE *fp)
+print(char *file, char *member, struct myrosym *sym, FILE *fp)
 {
 	char *fmt, *name = strings + sym->name;
 	int type = typeof(sym);
@@ -85,7 +86,7 @@ print(char *member, struct myrosym *sym, FILE *fp)
 		return;
 
 	if (Aflag)
-		fprintf(fp, "%s: ", member);
+		fprintf(fp, (archflag) ? "%s[%s]: " : "%s: ", file, member);
 	if (Pflag) {
 		fprintf(fp, "%s %c", name, type);
 		if (type != 'U') {
@@ -159,7 +160,7 @@ nm(char *fname, char *member, FILE *fp)
 	}
 	qsort(syms, n, sizeof(*syms), cmp);
 	for (i = 0; i < n; ++i)
-		print(member, &syms[i], fp);
+		print(fname, member, &syms[i], fp);
 
 
 free_arrays:
@@ -179,6 +180,7 @@ ar(char *fname, FILE *fp)
 	struct arhdr hdr;
 	long pos;
 
+	archflag = 1;
 	while (rdarhdr(fp, &hdr) != EOF) {
 		pos = ftell(fp);
 		if (pos == -1 || pos > LONG_MAX - hdr.size) {
@@ -207,6 +209,7 @@ doit(char *fname)
 {
 	FILE *fp;
 
+	archflag = 0;
 	if ((fp = fopen(fname, "rb")) == NULL)
 		goto file_error;
 
