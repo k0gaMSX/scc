@@ -13,6 +13,7 @@ static char sccsid[] = "@(#) ./nm/main.c";
 #include "../inc/ar.h"
 
 char *argv0;
+char *strings;
 int radix = 16;
 int Pflag;
 int Aflag;
@@ -55,15 +56,71 @@ archive(char *fname, FILE *fp)
 	return 0;
 }
 
+static int
+cmp(const void *p1, const void *p2)
+{
+	const struct myrosym *s1 = p1, *s2 = p2;
+
+	if (vflag)
+		return s1->offset - s2->offset;
+	else
+		return strcmp(strings + s1->name, strings + s2->name);
+}
+
+static int
+typeof(struct myrosym *sym)
+{
+	return 'U';
+}
+
+static void
+print(char *member, struct myrosym *sym, FILE *fp)
+{
+	char *fmt, *name = strings + sym->name;
+	int type = typeof(sym);
+
+	if (uflag && type != 'U')
+		return;
+	if (gflag && type != 'A' && type != 'B' && type != 'D')
+		return;
+
+	if (Aflag)
+		fprintf(fp, "%s: ", member);
+	if (Pflag) {
+		fprintf(fp, "%s %c", name, type);
+		if (type != 'U') {
+			if (radix == 8)
+				fmt = "%llo %llo";
+			else if (radix == 10)
+				fmt = "%llu %llu";
+			else
+				fmt = "%llx %llx";
+			fprintf(fp, fmt, sym->offset, sym->len);
+		}
+	} else {
+		if (type == 'U')
+			fmt = "                ";
+		else if (radix == 8)
+			fmt = "%016.16llo";
+		else if (radix == 8)
+			fmt = "%016.16lld";
+		else
+			fmt = "%016.16llx";
+		fprintf(fp, fmt, sym->offset);
+		fprintf(fp, " %c %s", type, name);
+	}
+	putc('\n', fp);
+}
+
 static void
 nm(char *fname, char *member, FILE *fp)
 {
 	struct myrohdr hdr;
 	struct myrosym *syms = NULL;
-	char *strings = NULL;
 	size_t n, i;
 	long off;
 
+	strings = NULL;
 	if (rdmyrohdr(fp, &hdr) < 0) {
 		fprintf(stderr, "nm: %s: incorrect header\n", member);
 		return;
@@ -94,10 +151,16 @@ nm(char *fname, char *member, FILE *fp)
 	if (fseek(fp, off, SEEK_SET) < 0)
 		goto free_arrays;
 
-	for (i = 0; n--; ++i) {
+	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(fp, &syms[i]) < 0)
 			goto free_arrays;
+		if (syms[i].name >= hdr.strsize)
+			goto offset_overflow;
 	}
+	qsort(syms, n, sizeof(*syms), cmp);
+	for (i = 0; i < n; ++i)
+		print(member, &syms[i], fp);
+
 
 free_arrays:
 	free(syms);
@@ -174,6 +237,9 @@ main(int argc, char *argv[])
 	char *t;
 
 	ARGBEGIN {
+	case 'P':
+		Pflag = 1;
+		break;
 	case 'A':
 		Aflag = 1;
 		break;
