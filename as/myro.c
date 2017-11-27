@@ -8,6 +8,8 @@ static char sccsid[] = "@(#) ./as/myro.c";
 #include "../inc/myro.h"
 #include "as.h"
 
+#define FORMAT "z80-scc"
+
 static Reloc *relocs;
 static size_t relcap, relsiz;
 
@@ -20,8 +22,8 @@ writestrings(FILE *fp)
 	Section *sp;
 	String str;
 
-	fputs("z80-scc", fp);
-	off = 7;
+	fwrite(FORMAT, sizeof(FORMAT), 1, fp);
+	off = sizeof(FORMAT);
 
 	for (sym = symlist; sym; sym = sym->next) {
 		str = sym->name;
