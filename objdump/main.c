@@ -149,6 +149,31 @@ printrelocs(struct myrohdr *hdr, FILE *fp)
 	return 0;
 }
 
+static int
+printdata(struct myrohdr *hdr, FILE *fp)
+{
+	unsigned long off;
+	int c, i, j;
+
+	puts("data:");
+	for (off = 0; ; off += 32) {
+		printf("\t%08x:", off);
+		for (i = 0; i < 2; i++) {
+			for (j = 0; j < 16; j++) {
+				if ((c = getc(fp)) == EOF)
+					goto exit_loop;
+				printf(" %02X", c);
+			}
+			putchar('\t');
+		}
+		putchar('\n');
+	}
+
+exit_loop:
+	putchar('\n');
+	return (ferror(fp)) ? -1 : 0;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -187,6 +212,8 @@ main(int argc, char *argv[])
 		if (printsymbols(&hdr, fp) < 0)
 			goto wrong_file;
 		if (printrelocs(&hdr, fp) < 0)
+			goto wrong_file;
+		if (printdata(&hdr, fp) < 0)
 			goto wrong_file;
 
 		goto close_file;
