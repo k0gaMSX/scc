@@ -20,24 +20,26 @@ writestrings(FILE *fp)
 	size_t len;
 	Symbol *sym;
 	Section *sp;
-	String str;
+	String *str;
 
 	fwrite(FORMAT, sizeof(FORMAT), 1, fp);
 	off = sizeof(FORMAT);
 
 	for (sym = symlist; sym; sym = sym->next) {
-		str = sym->name;
-		len = strlen(str.buf) + 1;
-		fwrite(str.buf, len, 1, fp);
-		str.offset = off;
+		if ((sym->flags & TMASK) == TREG)
+			continue;
+		str = &sym->name;
+		len = strlen(str->buf) + 1;
+		fwrite(str->buf, len, 1, fp);
+		str->offset = off;
 		off += len;
 	}
 
 	for (sp = seclist; sp; sp = sp->next) {
-		str = sp->name;
-		len = strlen(str.buf) + 1;
-		fwrite(str.buf, len, 1, fp);
-		str.offset = off;
+		str = &sp->name;
+		len = strlen(str->buf) + 1;
+		fwrite(str->buf, len, 1, fp);
+		str->offset = off;
 		off += len;
 	}
 
@@ -72,6 +74,8 @@ writesymbols(FILE *fp)
 	struct myrosym symbol;
 
 	for (sym = symlist; sym; sym = sym->next) {
+		if ((sym->flags & TMASK) == TREG)
+			continue;
 		symbol.name = sym->name.offset;
 		symbol.type = -1;
 		symbol.section = -1;
