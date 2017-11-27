@@ -122,6 +122,33 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 	return 0;
 }
 
+static int
+printrelocs(struct myrohdr *hdr, FILE *fp)
+{
+	size_t n, i;
+	struct myrorel rel;
+
+	puts("relocs:");
+	n = hdr->relsize / MYROREL_SIZ;
+	for (i = 0; i < n; ++i) {
+		if (rdmyrorel(fp, &rel) < 0)
+			return -1;
+		printf("\tid: %lu\n"
+		       "\tflags: %x\n"
+		       "\tsize: %u\n"
+		       "\tnbits: %u\n"
+		       "\tshift: %u\n"
+		       "\toffset: %llu\n",
+		       rel.id,
+		       rel.flags,
+		       rel.size,
+		       rel.nbits,
+		       rel.shift,
+		       rel.offset);
+	}
+	return 0;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -140,7 +167,8 @@ main(int argc, char *argv[])
 			goto wrong_file;
 		if (hdr.strsize > SIZE_MAX ||
 		    hdr.secsize > SIZE_MAX / MYROSECT_SIZ ||
-		    hdr.symsize > SIZE_MAX / MYROSYM_SIZ) {
+		    hdr.symsize > SIZE_MAX / MYROSYM_SIZ  ||
+		    hdr.relsize > SIZE_MAX / MYROREL_SIZ) {
 			goto overflow;
 		}
 		strsiz = hdr.strsize;
@@ -157,6 +185,8 @@ main(int argc, char *argv[])
 		if (printsections(&hdr, fp) < 0)
 			goto wrong_file;
 		if (printsymbols(&hdr, fp) < 0)
+			goto wrong_file;
+		if (printrelocs(&hdr, fp) < 0)
 			goto wrong_file;
 
 		goto close_file;
