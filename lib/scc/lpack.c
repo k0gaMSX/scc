@@ -48,5 +48,5 @@ lpack(unsigned char *dst, char *fmt, ...)
 	}
 	va_end(va);
 
-	return dst - bp;
+	return bp - dst;
 }

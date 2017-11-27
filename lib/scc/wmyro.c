@@ -13,15 +13,15 @@ wrmyrohdr(FILE *fp, struct myrohdr *hdr)
 	unsigned char buf[MYROHDR_SIZ];
 	int len;
 
-	strncpy(buf, hdr->magic, MYROMAGIC_SIZ);
-	len = lpack(buf + MYROMAGIC_SIZ, "lqqqqq",
+	len = lpack(buf, "cccclqqqqq",
+	            hdr->magic[0], hdr->magic[1],
+	            hdr->magic[2], hdr->magic[3],
 	            hdr->format,
 	            hdr->entry,
 	            hdr->strsize,
 	            hdr->secsize,
 	            hdr->symsize,
 	            hdr->relsize);
-	len += MYROMAGIC_SIZ;
 	assert(MYROHDR_SIZ == len);
 	fwrite(buf, len, 1, fp);
 
