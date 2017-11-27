@@ -1,6 +1,7 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,7 +17,8 @@ getstring(unsigned long off)
 {
 	size_t n;
 
-	
+	if ((int32_t) off == -1)
+		return "";
 	if (off < SIZE_MAX) {
 		for (n = off; n < strsiz && strings[n]; ++n)
 			;
