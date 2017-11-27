@@ -49,6 +49,25 @@ printhdr(struct myrohdr *hdr)
 	       hdr->relsize);
 }
 
+static void
+printstrings(struct myrohdr *hdr)
+{
+	size_t off, begin;;
+	char *s = NULL;
+
+	puts("strings:");
+	for (off = 0; off < strsiz; off++) {
+		if (s == NULL) {
+			s = &strings[off];
+			begin = off;
+		}
+		if (strings[off] == '\0') {
+			printf("\t[%zd] \"%s\"\n", begin, s);
+			s = NULL;
+		}
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -77,6 +96,7 @@ main(int argc, char *argv[])
 		}
 
 		printhdr(&hdr);
+		printstrings(&hdr);
 
 
 		goto close_file;
