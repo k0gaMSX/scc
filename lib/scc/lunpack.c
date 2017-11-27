@@ -53,5 +53,5 @@ lunpack(unsigned char *src, char *fmt, ...)
 	}
 	va_end(va);
 
-	return src - bp;
+	return bp - src;
 }

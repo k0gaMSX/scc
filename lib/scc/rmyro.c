@@ -16,15 +16,15 @@ rdmyrohdr(FILE *fp, struct myrohdr *hdr)
 	fread(buf, sizeof(buf), 1, fp);
 	if (ferror(fp))
 		return EOF;
-	strncpy(hdr->magic, buf, MYROMAGIC_SIZ);
-	len = lunpack(buf + MYROMAGIC_SIZ, "lqqqqq",
+	len = lunpack(buf, "cccclqqqqq",
+	              hdr->magic+0, hdr->magic+1,
+	              hdr->magic+2, hdr->magic+3,
 	              &hdr->format,
 	              &hdr->entry,
 	              &hdr->strsize,
 	              &hdr->secsize,
 	              &hdr->symsize,
 	              &hdr->relsize);
-	len += MYROMAGIC_SIZ;
 	assert(len == MYROHDR_SIZ);
 
 	return len;
