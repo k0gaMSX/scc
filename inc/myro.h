@@ -44,6 +44,16 @@ struct myrorel {
 	unsigned long long offset;
 };
 
+enum myrosecflg {
+	MYROSEC_READ  = 1 << 0,
+	MYROSEC_WRITE = 1 << 1,
+	MYROSEC_EXEC  = 1 << 2,
+	MYROSEC_LOAD  = 1 << 3,
+	MYROSEC_FILE  = 1 << 4,
+	MYROSEC_ABS   = 1 << 5,
+	MYROSEC_BLOB  = 1 << 6,
+};
+
 extern int wrmyrohdr(FILE *fp, struct myrohdr *hdr);
 extern int wrmyrosec(FILE *fp, struct myrosect *sect);
 extern int wrmyrosym(FILE *fp, struct myrosym *sym);

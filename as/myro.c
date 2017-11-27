@@ -46,6 +46,20 @@ writestrings(FILE *fp)
 	return off;
 }
 
+static unsigned
+getsecflags(Section *sp)
+{
+	unsigned flags = MYROSEC_LOAD;
+
+	if (sp->flags & SREAD)
+		flags |= MYROSEC_READ;
+	if (sp->flags & SWRITE)
+		flags |= MYROSEC_WRITE;
+	if (sp->flags & SFILE)
+		flags |= MYROSEC_FILE;
+	return flags;
+}
+
 static size_t
 writesections(FILE *fp)
 {
@@ -55,7 +69,7 @@ writesections(FILE *fp)
 
 	for (sp = seclist; sp; sp = sp->next) {
 		sect.name = sp->name.offset;
-		sect.flags = 0;
+		sect.flags = getsecflags(sp);
 		sect.fill = sp->fill;
 		sect.aligment = sp->aligment;
 		sect.offset = off;
