@@ -20,7 +20,7 @@ getstring(unsigned long off)
 	if (off < SIZE_MAX) {
 		for (n = off; n < strsiz && strings[n]; ++n)
 			;
-		if (n != strsiz)
+		if (n < strsiz)
 			return &strings[off];
 	}
 	fprintf(stderr, "objdump: wrong string offset %lu\n", off);
@@ -95,6 +95,33 @@ printsections(struct myrohdr *hdr, FILE *fp)
 	return 0;
 }
 
+static int
+printsymbols(struct myrohdr *hdr, FILE *fp)
+{
+	size_t n, i;
+	struct myrosym sym;
+
+	puts("symbols:");
+	n = hdr->symsize / MYROSYM_SIZ;
+	for (i = 0; i < n; ++i) {
+		if (rdmyrosym(fp, &sym) < 0)
+			return -1;
+		printf("\tname: %lu (\"%s\")\n"
+		       "\ttype: %lu (\"%s\")\n"
+		       "\tsection: %u\n"
+		       "\tflags: %x\n"
+		       "\toffset: %llu\n"
+		       "\tlength: %llu\n\n",
+		       sym.name, getstring(sym.name),
+		       sym.type, getstring(sym.type),
+		       sym.section,
+		       sym.flags,
+		       sym.offset,
+		       sym.len);
+	}
+	return 0;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -112,7 +139,8 @@ main(int argc, char *argv[])
 		if (rdmyrohdr(fp, &hdr) < 0)
 			goto wrong_file;
 		if (hdr.strsize > SIZE_MAX ||
-		    hdr.secsize > SIZE_MAX / MYROSECT_SIZ) {
+		    hdr.secsize > SIZE_MAX / MYROSECT_SIZ ||
+		    hdr.symsize > SIZE_MAX / MYROSYM_SIZ) {
 			goto overflow;
 		}
 		strsiz = hdr.strsize;
@@ -128,7 +156,8 @@ main(int argc, char *argv[])
 		printstrings(&hdr);
 		if (printsections(&hdr, fp) < 0)
 			goto wrong_file;
-
+		if (printsymbols(&hdr, fp) < 0)
+			goto wrong_file;
 
 		goto close_file;
 		
