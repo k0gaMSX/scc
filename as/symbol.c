@@ -198,6 +198,8 @@ section(char *name)
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
 		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
+		sec->fill = 0;
+		sec->aligment = 0;
 	}
 	return cursec = sec;
 }

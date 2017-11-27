@@ -95,6 +95,8 @@ struct section {
 	String name;
 	char *mem;
 	unsigned char flags;
+	unsigned char fill;
+	unsigned char aligment;
 	TUINT base;
 	TUINT max;
 	TUINT curpc;

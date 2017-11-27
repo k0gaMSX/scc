@@ -56,10 +56,10 @@ writesections(FILE *fp)
 	for (sp = seclist; sp; sp = sp->next) {
 		sect.name = sp->name.offset;
 		sect.flags = 0;
-		sect.fill = 0;
-		sect.aligment = 0;
+		sect.fill = sp->fill;
+		sect.aligment = sp->aligment;
 		sect.offset = off;
-		sect.len = 0;
+		sect.len = sp->max - sp->base;
 		off += wrmyrosec(fp, &sect);
 	}
 
