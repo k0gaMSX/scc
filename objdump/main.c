@@ -68,6 +68,33 @@ printstrings(struct myrohdr *hdr)
 	}
 }
 
+static int
+printsections(struct myrohdr *hdr, FILE *fp)
+{
+	size_t n, i;
+	struct myrosect sect;
+
+	puts("sections:");
+	n = hdr->secsize / MYROSECT_SIZ;
+	for (i = 0; i < n; ++i) {
+		if (rdmyrosec(fp, &sect) < 0)
+			return -1;
+		printf("\tname: %lu (\"%s\")\n"
+		       "\tflags: %x\n"
+		       "\tfill: %x\n"
+		       "\taligment: %u\n"
+		       "\toffset: %llu\n"
+		       "\tlength: %llu\n\n",
+		        sect.name, getstring(sect.name),
+		        sect.flags,
+		        sect.fill,
+		        sect.aligment,
+		        sect.offset,
+		        sect.len);
+	}
+	return 0;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -84,8 +111,10 @@ main(int argc, char *argv[])
 			goto wrong_file;
 		if (rdmyrohdr(fp, &hdr) < 0)
 			goto wrong_file;
-		if (hdr.strsize > SIZE_MAX)
+		if (hdr.strsize > SIZE_MAX ||
+		    hdr.secsize > SIZE_MAX / MYROSECT_SIZ) {
 			goto overflow;
+		}
 		strsiz = hdr.strsize;
 
 		if (strsiz > 0) {
@@ -97,6 +126,8 @@ main(int argc, char *argv[])
 
 		printhdr(&hdr);
 		printstrings(&hdr);
+		if (printsections(&hdr, fp) < 0)
+			goto wrong_file;
 
 
 		goto close_file;
