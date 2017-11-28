@@ -53,6 +53,13 @@ enum myrosecflg {
 	MYROSEC_ABS   = 1 << 5,
 };
 
+enum myrosymflg {
+	MYROSYM_DEDUP  = 1 << 0,
+	MYROSYM_COMMON = 1 << 1,
+	MYROSYM_EXTERN = 1 << 2,
+	MYROSYM_UNDEF  = 1 << 3,
+};
+
 extern int wrmyrohdr(FILE *fp, struct myrohdr *hdr);
 extern int wrmyrosec(FILE *fp, struct myrosect *sect);
 extern int wrmyrosym(FILE *fp, struct myrosym *sym);

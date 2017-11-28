@@ -124,29 +124,47 @@ printsections(struct myrohdr *hdr, FILE *fp)
 	return 0;
 }
 
+static char *
+symflags(struct myrosym *sym)
+{
+	static char flags[10];
+	char *s = flags + sizeof(flags);
+
+	if (sym->flags & MYROSYM_DEDUP)
+		*--s = 'D';
+	if (sym->flags & MYROSYM_COMMON)
+		*--s = 'C';
+	if (sym->flags & MYROSYM_EXTERN)
+		*--s = 'G';
+	if (sym->flags & MYROSYM_UNDEF)
+		*s-- = 'U';
+	return s;
+}
+
 static int
 printsymbols(struct myrohdr *hdr, FILE *fp)
 {
 	unsigned long long n, i;
 	struct myrosym sym;
 
-	puts("symbols:");
+	printf("symbols:\n"
+	       "[Nr]\t%s\t%-16s\t%s\t%s\t%s\n",
+	       "Name",
+	       "Value",
+	       "Section",
+	       "Flags",
+	       "Type");
 	n = hdr->symsize / MYROSYM_SIZ;
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(fp, &sym) < 0)
 			return -1;
-		printf("\tname: %lu (\"%s\")\n"
-		       "\ttype: %lu (\"%s\")\n"
-		       "\tsection: %u\n"
-		       "\tflags: %x\n"
-		       "\toffset: %llu\n"
-		       "\tlength: %llu\n\n",
-		       sym.name, getstring(sym.name),
-		       sym.type, getstring(sym.type),
-		       sym.section,
-		       sym.flags,
+		printf("[%2u]\t%s\t%016X\t%u\t%s\t%s\n",
+		       i,
+		       getstring(sym.name),
 		       sym.offset,
-		       sym.len);
+		       sym.section,
+		       symflags(&sym),
+		       getstring(sym.type));
 	}
 	return 0;
 }
