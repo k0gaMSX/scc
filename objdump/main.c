@@ -73,7 +73,7 @@ printstrings(struct myrohdr *hdr)
 static int
 printsections(struct myrohdr *hdr, FILE *fp)
 {
-	size_t n, i;
+	unsigned long long n, i;
 	struct myrosect sect;
 
 	puts("sections:");
@@ -100,7 +100,7 @@ printsections(struct myrohdr *hdr, FILE *fp)
 static int
 printsymbols(struct myrohdr *hdr, FILE *fp)
 {
-	size_t n, i;
+	unsigned long long n, i;
 	struct myrosym sym;
 
 	puts("symbols:");
@@ -127,7 +127,7 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 static int
 printrelocs(struct myrohdr *hdr, FILE *fp)
 {
-	size_t n, i;
+	unsigned long long n, i;
 	struct myrorel rel;
 
 	puts("relocs:");
@@ -192,11 +192,11 @@ main(int argc, char *argv[])
 			goto wrong_file;
 		if (rdmyrohdr(fp, &hdr) < 0)
 			goto wrong_file;
-		if (hdr.strsize > SIZE_MAX ||
-		    hdr.secsize > SIZE_MAX / MYROSECT_SIZ ||
-		    hdr.symsize > SIZE_MAX / MYROSYM_SIZ  ||
-		    hdr.relsize > SIZE_MAX / MYROREL_SIZ) {
-			goto overflow;
+		if (hdr.strsize > SIZE_MAX) {
+			fprintf(stderr,
+				"objdump: %s: overflow in header\n",
+				*argv, strerror(errno));
+				goto close_file;
 		}
 		strsiz = hdr.strsize;
 
@@ -224,13 +224,6 @@ wrong_file:
 		fprintf(stderr,
 			"objdump: %s: %s\n",
 			*argv, strerror(errno));
-		goto close_file;
-
-overflow:
-		fprintf(stderr,
-			"objdump: %s: overflow in header\n",
-			*argv, strerror(errno));
-
 close_file:
 		if (fp)
 			fclose(fp);
