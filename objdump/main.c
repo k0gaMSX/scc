@@ -72,29 +72,54 @@ printstrings(struct myrohdr *hdr)
 	}
 }
 
+static char *
+sectflags(struct myrosect *sec)
+{
+	static char flags[10];
+	char *s = flags + sizeof(flags);
+
+	if (sec->flags & MYROSEC_READ)
+		*--s = 'R';
+	if (sec->flags & MYROSEC_WRITE)
+		*--s = 'W';
+	if (sec->flags & MYROSEC_EXEC)
+		*--s = 'X';
+	if (sec->flags & MYROSEC_LOAD)
+		*--s = 'L';
+	if (sec->flags & MYROSEC_FILE)
+		*--s = 'F';
+	if (sec->flags & MYROSEC_ABS)
+		*--s = 'A';
+	return s;
+}
+
 static int
 printsections(struct myrohdr *hdr, FILE *fp)
 {
 	unsigned long long n, i;
 	struct myrosect sect;
 
-	puts("sections:");
+	printf("sections:\n"
+	       "[Nr]\t%s\t%-16s\t%-16s\t%s\t%s\t%s\n",
+	       "Name",
+	       "Offset",
+	       "Size",
+	       "Fill",
+	       "Align",
+	       "Flags");
+
 	n = hdr->secsize / MYROSECT_SIZ;
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosec(fp, &sect) < 0)
 			return -1;
-		printf("\tname: %lu (\"%s\")\n"
-		       "\tflags: %x\n"
-		       "\tfill: %x\n"
-		       "\taligment: %u\n"
-		       "\toffset: %llu\n"
-		       "\tlength: %llu\n\n",
-		        sect.name, getstring(sect.name),
-		        sect.flags,
-		        sect.fill,
-		        sect.aligment,
-		        sect.offset,
-		        sect.len);
+		printf("[%2d]\t%s\t%016X\t%016X\t%02X\t%u\t%s\n",
+		       i,
+		       getstring(sect.name),
+		       sect.offset,
+		       sect.len,
+		       sect.fill,
+		       sect.aligment,
+		       sectflags(&sect));
 	}
 	return 0;
 }
