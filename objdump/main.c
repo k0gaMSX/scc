@@ -209,7 +209,6 @@ dump(char *fname)
 	FILE *fp;
 	struct myrohdr hdr;
 
-	puts(fname);
 	if ((fp = fopen(fname, "rb")) == NULL)
 		goto wrong_file;
 	if (rdmyrohdr(fp, &hdr) < 0)
@@ -220,6 +219,7 @@ dump(char *fname)
 		        fname);
 		goto close_file;
 	}
+	puts(fname);
 	if (hdr.strsize > SIZE_MAX) {
 		fprintf(stderr,
 			"objdump: %s: overflow in header\n",
