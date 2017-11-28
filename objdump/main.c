@@ -175,23 +175,21 @@ printrelocs(struct myrohdr *hdr, FILE *fp)
 	unsigned long long n, i;
 	struct myrorel rel;
 
-	puts("relocs:");
+	printf("relocs:\n"
+	       " [Nr]\t%-16s\tType\tId\tSize\tNbits\tShift\n",
+	       "Offset");
 	n = hdr->relsize / MYROREL_SIZ;
 	for (i = 0; i < n; ++i) {
 		if (rdmyrorel(fp, &rel) < 0)
 			return -1;
-		printf("\tid: %lu\n"
-		       "\tflags: %x\n"
-		       "\tsize: %u\n"
-		       "\tnbits: %u\n"
-		       "\tshift: %u\n"
-		       "\toffset: %llu\n",
-		       rel.id,
-		       rel.flags,
+		printf(" [%2d]\t%016llX\t%s\t%lu\t%u\t%u\t%u\n",
+		       i,
+		       rel.offset,
+		       (rel.id & 1<<31) ? "section" : "symbol",
+		       rel.id & ~(1<<31),
 		       rel.size,
 		       rel.nbits,
-		       rel.shift,
-		       rel.offset);
+		       rel.shift);
 	}
 	return 0;
 }
