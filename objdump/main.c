@@ -247,7 +247,7 @@ main(int argc, char *argv[])
 		usage();
 	} ARGEND
 
-	if (argc == 1)
+	if (argc == 0)
 		dump("a.out");
 	else while (*++argv) {
 		free(strings);
