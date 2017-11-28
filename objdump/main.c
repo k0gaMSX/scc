@@ -35,7 +35,7 @@ static void
 printhdr(struct myrohdr *hdr)
 {
 	printf("header:\n"
-	       "\tmagic: %02x%02x%02x%02x \"%4.4s\"\n"
+	       "\tmagic: %02x %02x %02x %02x \"%4.4s\"\n"
 	       "\tformat: %lu (\"%s\")\n"
 	       "\tentry: %llu\n"
 	       "\tstring table size: %llu\n"
