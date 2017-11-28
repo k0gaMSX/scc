@@ -51,7 +51,6 @@ enum myrosecflg {
 	MYROSEC_LOAD  = 1 << 3,
 	MYROSEC_FILE  = 1 << 4,
 	MYROSEC_ABS   = 1 << 5,
-	MYROSEC_BLOB  = 1 << 6,
 };
 
 extern int wrmyrohdr(FILE *fp, struct myrohdr *hdr);
