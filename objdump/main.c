@@ -35,13 +35,13 @@ static void
 printhdr(struct myrohdr *hdr)
 {
 	printf("header:\n"
-	       "\tmagic: %02x %02x %02x %02x \"%4.4s\"\n"
-	       "\tformat: %lu (\"%s\")\n"
-	       "\tentry: %llu\n"
-	       "\tstring table size: %llu\n"
-	       "\tsection table size: %llu\n"
-	       "\tsymbol table size: %llu\n"
-	       "\trelocation table size: %llu\n",
+	       " magic: %02x %02x %02x %02x \"%4.4s\"\n"
+	       " format: %lu (\"%s\")\n"
+	       " entry: %llu\n"
+	       " string table size: %llu\n"
+	       " section table size: %llu\n"
+	       " symbol table size: %llu\n"
+	       " relocation table size: %llu\n",
 	       hdr->magic[0], hdr->magic[1],
 	       hdr->magic[2], hdr->magic[3],
 	       hdr->magic,
@@ -66,7 +66,7 @@ printstrings(struct myrohdr *hdr)
 			begin = off;
 		}
 		if (strings[off] == '\0') {
-			printf("\t[%zd] \"%s\"\n", begin, s);
+			printf(" [%zd] \"%s\"\n", begin, s);
 			s = NULL;
 		}
 	}
@@ -100,7 +100,7 @@ printsections(struct myrohdr *hdr, FILE *fp)
 	struct myrosect sect;
 
 	printf("sections:\n"
-	       "[Nr]\t%s\t%-16s\t%-16s\t%s\t%s\t%s\n",
+	       " [Nr]\t%s\t%-16s\t%-16s\t%s\t%s\t%s\n",
 	       "Name",
 	       "Offset",
 	       "Size",
@@ -112,7 +112,7 @@ printsections(struct myrohdr *hdr, FILE *fp)
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosec(fp, &sect) < 0)
 			return -1;
-		printf("[%2d]\t%s\t%016X\t%016X\t%02X\t%u\t%s\n",
+		printf(" [%2d]\t%s\t%016X\t%016X\t%02X\t%u\t%s\n",
 		       i,
 		       getstring(sect.name),
 		       sect.offset,
@@ -148,7 +148,7 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 	struct myrosym sym;
 
 	printf("symbols:\n"
-	       "[Nr]\t%s\t%-16s\t%s\t%s\t%s\n",
+	       " [Nr]\t%s\t%-16s\t%s\t%s\t%s\n",
 	       "Name",
 	       "Value",
 	       "Section",
@@ -158,7 +158,7 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(fp, &sym) < 0)
 			return -1;
-		printf("[%2u]\t%s\t%016X\t%u\t%s\t%s\n",
+		printf(" [%2u]\t%s\t%016X\t%u\t%s\t%s\n",
 		       i,
 		       getstring(sym.name),
 		       sym.offset,
