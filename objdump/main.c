@@ -255,5 +255,8 @@ main(int argc, char *argv[])
 		dump(*argv);
 	}
 
+	if (fclose(stdout) == EOF)
+		die("objdump: stdout: %s", strerror(errno));
+
 	return 0;
 }
