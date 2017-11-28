@@ -189,6 +189,12 @@ dump(char *fname)
 		goto wrong_file;
 	if (rdmyrohdr(fp, &hdr) < 0)
 		goto wrong_file;
+	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ)) {
+		fprintf(stderr,
+		        "objdump: %s: File format not recognized\n",
+		        fname);
+		goto close_file;
+	}
 	if (hdr.strsize > SIZE_MAX) {
 		fprintf(stderr,
 			"objdump: %s: overflow in header\n",
