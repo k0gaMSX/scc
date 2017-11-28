@@ -1,11 +1,12 @@
 #include <ctype.h>
 #include <stdlib.h>
-#undef atoi
+#undef atol
 
-int
-atoi(const char *s)
+long
+atol(const char *s)
 {
-	int n, sign = -1;
+	int sign = -1;
+	long n;
 
 	while (isspace(*s))
 		++s;
@@ -17,7 +18,7 @@ atoi(const char *s)
 		++s;
 	}
 
-	/* Compute n as a negative number to avoid overflow on INT_MIN */
+	/* Compute n as a negative number to avoid overflow on LONG_MIN */
 	for (n = 0; isdigit(*s); ++s)
 		n = 10*n - (*s - '0');
 

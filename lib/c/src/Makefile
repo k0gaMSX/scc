@@ -9,7 +9,7 @@ OBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
       isalnum.o isalpha.o isascii.o isblank.o iscntrl.o isdigit.o \
       isgraph.o islower.o isprint.o ispunct.o isspace.o isupper.o \
       isxdigit.o toupper.o tolower.o ctype.o setlocale.o \
-      localeconv.o atoi.o atexit.o exit.o \
+      localeconv.o atoi.o atol.o atoll.o atexit.o exit.o \
       printf.o fprintf.o vfprintf.o \
       realloc.o calloc.o malloc.o
 
