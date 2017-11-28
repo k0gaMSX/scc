@@ -274,10 +274,10 @@ main(int argc, char *argv[])
 
 	if (argc == 0)
 		dump("a.out");
-	else while (*++argv) {
+	else while (*argv) {
 		free(strings);
 		strings = NULL;
-		dump(*argv);
+		dump(*argv++);
 	}
 
 	if (fclose(stdout) == EOF)
