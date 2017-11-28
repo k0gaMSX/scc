@@ -112,7 +112,7 @@ printsections(struct myrohdr *hdr, FILE *fp)
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosec(fp, &sect) < 0)
 			return -1;
-		printf(" [%2d]\t%s\t%016X\t%016X\t%02X\t%u\t%s\n",
+		printf(" [%2llu]\t%s\t%016llX\t%016llX\t%02X\t%u\t%s\n",
 		       i,
 		       getstring(sect.name),
 		       sect.offset,
@@ -158,7 +158,7 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(fp, &sym) < 0)
 			return -1;
-		printf(" [%2u]\t%s\t%016X\t%u\t%s\t%s\n",
+		printf(" [%2llu]\t%s\t%016llX\t%u\t%s\t%s\n",
 		       i,
 		       getstring(sym.name),
 		       sym.offset,
@@ -182,7 +182,7 @@ printrelocs(struct myrohdr *hdr, FILE *fp)
 	for (i = 0; i < n; ++i) {
 		if (rdmyrorel(fp, &rel) < 0)
 			return -1;
-		printf(" [%2d]\t%016llX\t%s\t%lu\t%u\t%u\t%u\n",
+		printf(" [%2llu]\t%016llX\t%s\t%lu\t%u\t%u\t%u\n",
 		       i,
 		       rel.offset,
 		       (rel.id & 1<<31) ? "section" : "symbol",
@@ -197,12 +197,12 @@ printrelocs(struct myrohdr *hdr, FILE *fp)
 static int
 printdata(struct myrohdr *hdr, FILE *fp)
 {
-	unsigned long off;
+	unsigned long long off;
 	int c, i, j;
 
 	puts("data:");
 	for (off = 0; ; off += 32) {
-		printf("\t%08x:", off);
+		printf(" %016llX:", off);
 		for (i = 0; i < 2; i++) {
 			for (j = 0; j < 16; j++) {
 				if ((c = getc(fp)) == EOF)
@@ -239,7 +239,7 @@ dump(char *fname)
 	if (hdr.strsize > SIZE_MAX) {
 		fprintf(stderr,
 			"objdump: %s: overflow in header\n",
-			fname, strerror(errno));
+			fname);
 			goto close_file;
 	}
 	strsiz = hdr.strsize;
