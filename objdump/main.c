@@ -6,11 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../inc/arg.h"
 #include "../inc/scc.h"
 #include "../inc/myro.h"
 
-char *strings;
-size_t strsiz;
+char *argv0;
+static char *strings;
+static size_t strsiz;
 
 static char *
 getstring(unsigned long off)
@@ -176,57 +178,75 @@ exit_loop:
 	return (ferror(fp)) ? -1 : 0;
 }
 
-int
-main(int argc, char *argv[])
+void
+dump(char *fname)
 {
 	FILE *fp;
 	struct myrohdr hdr;
 
-	while (*++argv) {
+	puts(fname);
+	if ((fp = fopen(fname, "rb")) == NULL)
+		goto wrong_file;
+	if (rdmyrohdr(fp, &hdr) < 0)
+		goto wrong_file;
+	if (hdr.strsize > SIZE_MAX) {
+		fprintf(stderr,
+			"objdump: %s: overflow in header\n",
+			fname, strerror(errno));
+			goto close_file;
+	}
+	strsiz = hdr.strsize;
+
+	if (strsiz > 0) {
+		strings = xmalloc(strsiz);
+		fread(strings, strsiz, 1, fp);
+		if (feof(fp))
+			goto wrong_file;
+	}
+
+	printhdr(&hdr);
+	printstrings(&hdr);
+	if (printsections(&hdr, fp) < 0)
+		goto wrong_file;
+	if (printsymbols(&hdr, fp) < 0)
+		goto wrong_file;
+	if (printrelocs(&hdr, fp) < 0)
+		goto wrong_file;
+	if (printdata(&hdr, fp) < 0)
+		goto wrong_file;
+
+	goto close_file;
+
+wrong_file:
+	fprintf(stderr,
+		"objdump: %s: %s\n",
+		fname, strerror(errno));
+close_file:
+	if (fp)
+		fclose(fp);
+}
+
+void
+usage(void)
+{
+	fputs("usage: objdump file ...\n", stderr);
+	exit(1);
+}
+
+int
+main(int argc, char *argv[])
+{
+	ARGBEGIN {
+	default:
+		usage();
+	} ARGEND
+
+	if (argc == 1)
+		dump("a.out");
+	else while (*++argv) {
 		free(strings);
 		strings = NULL;
-
-		puts(*argv);
-
-		if ((fp = fopen(*argv, "rb")) == NULL)
-			goto wrong_file;
-		if (rdmyrohdr(fp, &hdr) < 0)
-			goto wrong_file;
-		if (hdr.strsize > SIZE_MAX) {
-			fprintf(stderr,
-				"objdump: %s: overflow in header\n",
-				*argv, strerror(errno));
-				goto close_file;
-		}
-		strsiz = hdr.strsize;
-
-		if (strsiz > 0) {
-			strings = xmalloc(strsiz);
-			fread(strings, strsiz, 1, fp);
-			if (feof(fp))
-				goto wrong_file;
-		}
-
-		printhdr(&hdr);
-		printstrings(&hdr);
-		if (printsections(&hdr, fp) < 0)
-			goto wrong_file;
-		if (printsymbols(&hdr, fp) < 0)
-			goto wrong_file;
-		if (printrelocs(&hdr, fp) < 0)
-			goto wrong_file;
-		if (printdata(&hdr, fp) < 0)
-			goto wrong_file;
-
-		goto close_file;
-		
-wrong_file:
-		fprintf(stderr,
-			"objdump: %s: %s\n",
-			*argv, strerror(errno));
-close_file:
-		if (fp)
-			fclose(fp);
+		dump(*argv);
 	}
 
 	return 0;
