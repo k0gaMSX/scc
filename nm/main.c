@@ -218,7 +218,7 @@ doit(char *fname)
 	else if (archive(fname, fp))
 		ar(fname, fp);
 	else
-		fprintf(stderr, "nm: %s: File format not recognized", fname);
+		fprintf(stderr, "nm: %s: File format not recognized\n", fname);
 
 	if (fclose(fp) != EOF)
 		return;
