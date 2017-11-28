@@ -1,7 +1,7 @@
 # scc - Suckless C Compiler
 .POSIX:
 
-DIRS  = inc cc1 cc2 driver lib as ar nm
+DIRS  = inc cc1 cc2 driver lib as ar nm objdump
 
 FORALL = @set -e ;\
 	pwd=$$PWD; \
