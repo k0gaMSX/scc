@@ -14,6 +14,17 @@ char *argv0;
 static char *strings;
 static size_t strsiz;
 
+struct obj_info {
+	char *fname;
+	FILE *fp;
+	struct myrohdr hdr;
+	fpos_t strpos;
+	fpos_t secpos;
+	fpos_t sympos;
+	fpos_t relpos;
+	fpos_t datapos;
+};
+
 static char *
 getstring(unsigned long off)
 {
@@ -31,9 +42,11 @@ getstring(unsigned long off)
 	return "";
 }
 
-static void
-printhdr(struct myrohdr *hdr)
+static int
+printhdr(struct obj_info *obj)
 {
+	struct myrohdr *hdr = &obj->hdr;
+
 	printf("header:\n"
 	       " magic: %02x %02x %02x %02x \"%4.4s\"\n"
 	       " format: %lu (\"%s\")\n"
@@ -51,10 +64,11 @@ printhdr(struct myrohdr *hdr)
 	       hdr->secsize,
 	       hdr->symsize,
 	       hdr->relsize);
+	return 0;
 }
 
-static void
-printstrings(struct myrohdr *hdr)
+static int
+printstrings(struct obj_info *obj)
 {
 	size_t off, begin;;
 	char *s = NULL;
@@ -70,6 +84,7 @@ printstrings(struct myrohdr *hdr)
 			s = NULL;
 		}
 	}
+	return 0;
 }
 
 static char *
@@ -94,10 +109,11 @@ sectflags(struct myrosect *sec)
 }
 
 static int
-printsections(struct myrohdr *hdr, FILE *fp)
+printsections(struct obj_info *obj)
 {
 	unsigned long long n, i;
 	struct myrosect sect;
+	struct myrohdr *hdr = &obj->hdr;
 
 	printf("sections:\n"
 	       " [Nr]\t%s\t%-16s\t%-16s\t%s\t%s\t%s\n",
@@ -110,7 +126,7 @@ printsections(struct myrohdr *hdr, FILE *fp)
 
 	n = hdr->secsize / MYROSECT_SIZ;
 	for (i = 0; i < n; ++i) {
-		if (rdmyrosec(fp, &sect) < 0)
+		if (rdmyrosec(obj->fp, &sect) < 0)
 			return -1;
 		printf(" [%2llu]\t%s\t%016llX\t%016llX\t%02X\t%u\t%s\n",
 		       i,
@@ -142,10 +158,11 @@ symflags(struct myrosym *sym)
 }
 
 static int
-printsymbols(struct myrohdr *hdr, FILE *fp)
+printsymbols(struct obj_info *obj)
 {
 	unsigned long long n, i;
 	struct myrosym sym;
+	struct myrohdr *hdr = &obj->hdr;
 
 	printf("symbols:\n"
 	       " [Nr]\t%s\t%-16s\t%s\t%s\t%s\n",
@@ -156,7 +173,7 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 	       "Type");
 	n = hdr->symsize / MYROSYM_SIZ;
 	for (i = 0; i < n; ++i) {
-		if (rdmyrosym(fp, &sym) < 0)
+		if (rdmyrosym(obj->fp, &sym) < 0)
 			return -1;
 		printf(" [%2llu]\t%s\t%016llX\t%u\t%s\t%s\n",
 		       i,
@@ -170,17 +187,18 @@ printsymbols(struct myrohdr *hdr, FILE *fp)
 }
 
 static int
-printrelocs(struct myrohdr *hdr, FILE *fp)
+printrelocs(struct obj_info *obj)
 {
 	unsigned long long n, i;
 	struct myrorel rel;
+	struct myrohdr *hdr = &obj->hdr;
 
 	printf("relocs:\n"
 	       " [Nr]\t%-16s\tType\tId\tSize\tNbits\tShift\n",
 	       "Offset");
 	n = hdr->relsize / MYROREL_SIZ;
 	for (i = 0; i < n; ++i) {
-		if (rdmyrorel(fp, &rel) < 0)
+		if (rdmyrorel(obj->fp, &rel) < 0)
 			return -1;
 		printf(" [%2llu]\t%016llX\t%s\t%lu\t%u\t%u\t%u\n",
 		       i,
@@ -195,7 +213,7 @@ printrelocs(struct myrohdr *hdr, FILE *fp)
 }
 
 static int
-printdata(struct myrohdr *hdr, FILE *fp)
+printdata(struct obj_info *obj)
 {
 	unsigned long long off;
 	int c, i, j;
@@ -205,7 +223,7 @@ printdata(struct myrohdr *hdr, FILE *fp)
 		printf(" %016llX:", off);
 		for (i = 0; i < 2; i++) {
 			for (j = 0; j < 16; j++) {
-				if ((c = getc(fp)) == EOF)
+				if ((c = getc(obj->fp)) == EOF)
 					goto exit_loop;
 				printf(" %02X", c);
 			}
@@ -216,33 +234,38 @@ printdata(struct myrohdr *hdr, FILE *fp)
 
 exit_loop:
 	putchar('\n');
-	return (ferror(fp)) ? -1 : 0;
+	return (ferror(obj->fp)) ? -1 : 0;
 }
 
 void
 dump(char *fname)
 {
 	FILE *fp;
-	struct myrohdr hdr;
+	struct obj_info obj;
+	struct myrohdr *hdr;
 
+	obj.fname = fname;
 	if ((fp = fopen(fname, "rb")) == NULL)
 		goto wrong_file;
-	if (rdmyrohdr(fp, &hdr) < 0)
+
+	obj.fp = fp;
+	hdr = &obj.hdr;
+	if (rdmyrohdr(obj.fp, hdr) < 0)
 		goto wrong_file;
-	if (strncmp(hdr.magic, MYROMAGIC, MYROMAGIC_SIZ)) {
+	if (strncmp(hdr->magic, MYROMAGIC, MYROMAGIC_SIZ)) {
 		fprintf(stderr,
 		        "objdump: %s: File format not recognized\n",
 		        fname);
 		goto close_file;
 	}
 	puts(fname);
-	if (hdr.strsize > SIZE_MAX) {
+	if (hdr->strsize > SIZE_MAX) {
 		fprintf(stderr,
 			"objdump: %s: overflow in header\n",
 			fname);
 			goto close_file;
 	}
-	strsiz = hdr.strsize;
+	strsiz = hdr->strsize;
 
 	if (strsiz > 0) {
 		strings = xmalloc(strsiz);
@@ -251,15 +274,17 @@ dump(char *fname)
 			goto wrong_file;
 	}
 
-	printhdr(&hdr);
-	printstrings(&hdr);
-	if (printsections(&hdr, fp) < 0)
+	if (printhdr(&obj) < 0)
 		goto wrong_file;
-	if (printsymbols(&hdr, fp) < 0)
+	if (printstrings(&obj) < 0)
 		goto wrong_file;
-	if (printrelocs(&hdr, fp) < 0)
+	if (printsections(&obj) < 0)
 		goto wrong_file;
-	if (printdata(&hdr, fp) < 0)
+	if (printsymbols(&obj) < 0)
+		goto wrong_file;
+	if (printrelocs(&obj) < 0)
+		goto wrong_file;
+	if (printdata(&obj) < 0)
 		goto wrong_file;
 
 	goto close_file;
