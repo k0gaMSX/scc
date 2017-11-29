@@ -238,32 +238,29 @@ exit_loop:
 }
 
 void
-dump(char *fname)
+dump(char *fname, FILE *fp)
 {
-	FILE *fp;
 	struct obj_info obj;
 	struct myrohdr *hdr;
 
 	obj.fname = fname;
-	if ((fp = fopen(fname, "rb")) == NULL)
-		goto wrong_file;
-
 	obj.fp = fp;
 	hdr = &obj.hdr;
+
 	if (rdmyrohdr(obj.fp, hdr) < 0)
 		goto wrong_file;
 	if (strncmp(hdr->magic, MYROMAGIC, MYROMAGIC_SIZ)) {
 		fprintf(stderr,
 		        "objdump: %s: File format not recognized\n",
 		        fname);
-		goto close_file;
+		return;
 	}
 	puts(fname);
 	if (hdr->strsize > SIZE_MAX) {
 		fprintf(stderr,
 			"objdump: %s: overflow in header\n",
 			fname);
-			goto close_file;
+			return;
 	}
 	strsiz = hdr->strsize;
 
@@ -286,16 +283,25 @@ dump(char *fname)
 		goto wrong_file;
 	if (printdata(&obj) < 0)
 		goto wrong_file;
-
-	goto close_file;
+	return;
 
 wrong_file:
 	fprintf(stderr,
 		"objdump: %s: %s\n",
 		fname, strerror(errno));
-close_file:
-	if (fp)
-		fclose(fp);
+}
+
+void
+doit(char *fname)
+{
+	FILE *fp;
+
+	if ((fp = fopen(fname, "rb")) == NULL) {
+		fprintf(stderr, "objdump: %s: %s\n", fname, strerror(errno));
+		return;
+	}
+	dump(fname, fp);
+	fclose(fp);
 }
 
 void
@@ -314,11 +320,11 @@ main(int argc, char *argv[])
 	} ARGEND
 
 	if (argc == 0)
-		dump("a.out");
+		doit("a.out");
 	else while (*argv) {
 		free(strings);
 		strings = NULL;
-		dump(*argv++);
+		doit(*argv++);
 	}
 
 	if (fclose(stdout) == EOF)
