@@ -77,7 +77,7 @@ getnum(va_list va, int flags, int *sign)
 }
 
 static char *
-numtostr(uintptr_t val, int flags, struct conv *conv, char *buf)
+numtostr(uintmax_t val, int flags, struct conv *conv, char *buf)
 {
 	char *buf0 = buf;
 	int len, base = conv->base, prec = conv->prec;
