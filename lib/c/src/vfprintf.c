@@ -189,8 +189,8 @@ vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 	for (cnt = 0; ch = *fmt++; cnt += inc) {
 		if (ch != '%') {
 			putc(ch, fp);
-			++cnt;
-			continue;
+			inc = 1;
+			goto test_inc;
 		}
 
 		fill = ' ';
@@ -338,7 +338,7 @@ flags:
 			setcnt(va, flags, cnt);
 			break;
 		case '\0':
-			goto end_format;
+			--fmt;
 		}
 test_inc:
 		if (inc > INT_MAX - cnt) {
@@ -346,6 +346,6 @@ test_inc:
 			return EOF;
 		}
 	}
-end_format:
+
 	return (ferror(fp)) ? EOF : cnt;
 }
