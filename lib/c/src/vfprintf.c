@@ -7,6 +7,8 @@
  *       even to read this file, fuck you!.
  */ 
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -28,7 +30,7 @@ enum {
 	ALTFORM  = 1 << 10,
 };
 
-#define BUF_SIZ    50
+#define MAXPREC    50
 
 struct conv {
 	int sign;
@@ -40,59 +42,52 @@ struct conv {
 static uintmax_t
 getnum(va_list va, int flags, int *sign)
 {
-	uintmax_t mask, val;
-	int size;
+	uintmax_t mask, uval;
+	intmax_t val;
 
 	if (flags & CHAR) {
-		val = va_arg(va, int);
-		size = sizeof(char);
+		val = uval = va_arg(va, int);
+		uval = (unsigned char) uval;
 	} else if (flags & SHORT) {
-		val = va_arg(va, int);
-		size = sizeof(short);
+		val = uval = va_arg(va, int);
+		uval = (unsigned short) uval;
 	} else if (flags & LONG) {
-		val = va_arg(va, long);
-		size = sizeof(long);
+		val = uval = va_arg(va, long);
+		uval = (unsigned long) uval;
 	} else if (flags & LLONG) {
-		val = va_arg(va, long long);
-		size = sizeof(long long);
+		val = uval = va_arg(va, long long);
+		uval = (unsigned long long) uval;
 	} else if (flags & SIZET) {
-		val = va_arg(va, size_t);
-		size = sizeof(size_t);
+		val = uval = va_arg(va, size_t);
+		uval = (size_t) uval;
 	} else if (flags & INTMAX) {
-		val = va_arg(va, intmax_t);
-		size = sizeof(intmax_t);
+		val = uval = va_arg(va, uintmax_t);
 	} else if (flags & VOIDPTR) {
-		val = (uintmax_t) va_arg(va, void *);
-		size = sizeof(void*);
+		val = uval = (uintmax_t) va_arg(va, void *);
 	} else {
-		val = va_arg(va, int);
-		size = sizeof(int);
+		val = uval = va_arg(va, int);
+		uval = (unsigned) uval;
 	}
 
-	if ((flags & UNSIGNED) == 0 && (intmax_t) val < 0) {
+	if ((flags & UNSIGNED) == 0 && val < 0) {
 		*sign = '-';
-		val = -val;
+		uval = -uval;
 	}
-	mask = (intmax_t) -1;
-	size = sizeof(uintmax_t) - size;
-	while (size--)
-		mask >>= 8;
-	return val &= mask;
+	return uval;
 }
 
 static char *
 numtostr(uintptr_t val, int flags, struct conv *conv, char *buf)
 {
 	char *buf0 = buf;
-	int len, base = conv->base;
+	int len, base = conv->base, prec = conv->prec;
 
-	*buf = '\0';
-	do {
+	if (prec == -1)
+		prec = 1;
+
+	for (*buf = '\0'; val > 0; val /= base)
 		*--buf = conv->digs[val % base];
-		val /= base;
-	} while (val > 0);
-
-	while (buf0 - buf < conv->prec)
+	while (buf0 - buf < prec)
 		*--buf = '0';
 
 	if (flags & ALTFORM) {
@@ -127,17 +122,38 @@ setcnt(va_list va, int flags, int cnt)
 		*va_arg(va, int*) = cnt;
 }
 
-static int
-wstrout(wchar_t *s, int width, int fill, FILE * restrict fp)
+static size_t
+wstrout(wchar_t *ws, int width, int fill, FILE * restrict fp)
 {
-	/* TODO */
-	return 0;
+	int left = 1, adjust;
+	size_t len, cnt = 0;
+	wchar_t wc;
+
+	if (width < 0) {
+		left = -1;
+		width = -width;
+	}
+	len = wcslen(ws);
+	adjust = (len < width) ? width - len : 0;
+	adjust *= left;
+
+	for ( ; adjust < 0; cnt++, adjust++)
+		putc(fill, fp);
+
+	for ( ; wc = *ws++; cnt++)
+		putwc(wc, fp);
+
+	for ( ; adjust > 0; cnt++, adjust--)
+		putc(fill, fp);
+
+	return cnt;
 }
 
-static int
+static size_t
 strout(char *s, int width, int fill, FILE * restrict fp)
 {
-	int left = 1, adjust, ch, len, cnt = 0;
+	int left = 1, adjust, ch;
+	size_t len, cnt = 0;
 
 	if (width < 0) {
 		left = -1;
@@ -159,18 +175,18 @@ strout(char *s, int width, int fill, FILE * restrict fp)
 	return cnt;
 }
 
-/* TODO: control overflow in cnt */
 int
 vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 {
 	int *p, ch, n, flags, width, fill, cnt = 0;
+	size_t inc;
 	char *s;
 	wchar_t *ws;
 	struct conv conv;
-	char buf[BUF_SIZ+1];
+	char buf[MAXPREC+1];
 	wchar_t wbuf[2];
 
-	while ((ch = *fmt++) != '\0') {
+	for (cnt = 0; ch = *fmt++; cnt += inc) {
 		if (ch != '%') {
 			putc(ch, fp);
 			++cnt;
@@ -207,8 +223,8 @@ flags:
 				for (n = 0; isdigit(ch = *fmt); fmt++)
 					n = n * 10 + ch - '0';
 			}
-			if (n > BUF_SIZ)
-				n = BUF_SIZ;
+			if (n > MAXPREC)
+				n = MAXPREC;
 			if (n > 0)
 				conv.prec = n;
 			goto flags;
@@ -291,7 +307,7 @@ flags:
 			s = numtostr(getnum(va, flags, &conv.sign),
 			             flags,
 			             &conv,
-			             &buf[BUF_SIZ]);
+			             &buf[MAXPREC]);
 			goto strout;
 		case 'L':
 		case 'a':
@@ -311,18 +327,23 @@ flags:
 		wstrout:
 			if (flags & LADJUST)
 				width = -width;
-			cnt += wstrout(ws, width, fill, fp);
+			inc = wstrout(ws, width, fill, fp);
 			break;
 		strout:
 			if (flags & LADJUST)
 				width = -width;
-			cnt += strout(s, width, fill, fp);
+			inc = strout(s, width, fill, fp);
 			break;
 		case 'n':
 			setcnt(va, flags, cnt);
 			break;
 		case '\0':
 			goto end_format;
+		}
+test_inc:
+		if (inc > INT_MAX - cnt) {
+			errno = EOVERFLOW;
+			return EOF;
 		}
 	}
 end_format:
