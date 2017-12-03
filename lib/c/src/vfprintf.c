@@ -4,7 +4,7 @@
  * added:
  *     - Christopher M. Graff (<cm0graff@gmail.com>) is forbidden to
  *       use, copy, modify and/or distribute this file. He is forbidden
- *       even to read this file, fuck you!.
+ *       even to read this file.
  */ 
 #include <ctype.h>
 #include <errno.h>
@@ -19,15 +19,14 @@
 enum {
 	LONG     = 1 << 0,
 	LLONG    = 1 << 1,
-	LADJUST  = 1 << 2,
-	SHORT    = 1 << 3,
-	CHAR     = 1 << 4,
-	SIZET    = 1 << 5,
-	PTRDIFF  = 1 << 6,
-	INTMAX   = 1 << 7,
-	VOIDPTR  = 1 << 8,
-	UNSIGNED = 1 << 9,
-	ALTFORM  = 1 << 10,
+	SHORT    = 1 << 2,
+	CHAR     = 1 << 3,
+	SIZET    = 1 << 4,
+	PTRDIFF  = 1 << 5,
+	INTMAX   = 1 << 6,
+	VOIDPTR  = 1 << 7,
+	UNSIGNED = 1 << 8,
+	ALTFORM  = 1 << 9,
 };
 
 #define MAXPREC    50
@@ -42,7 +41,7 @@ struct conv {
 static uintmax_t
 getnum(va_list va, int flags, int *sign)
 {
-	uintmax_t mask, uval;
+	uintmax_t uval;
 	intmax_t val;
 
 	if (flags & CHAR) {
@@ -90,21 +89,26 @@ numtostr(uintmax_t val, int flags, struct conv *conv, char *buf)
 	while (buf0 - buf < prec)
 		*--buf = '0';
 
+	/*
+	 * TODO: It cannot be done here because the combination
+	 * %#04x produces 00x1
+	 */
 	if (flags & ALTFORM) {
 		if (base == 8 && *buf != '0') {
 			*--buf = '0';
-		} else if (base == 16) {
+		} else if (base == 16 && val != 0) {
 			*--buf = conv->digs[16];
 			*--buf = '0';
 		}
 	}
 	if (conv->sign)
 		*--buf = conv->sign;
+
 	return buf;
 }
 
 static void
-setcnt(va_list va, int flags, int cnt)
+savecnt(va_list va, int flags, int cnt)
 {
 	if (flags & CHAR)
 		*va_arg(va, char*) = cnt;
@@ -123,54 +127,63 @@ setcnt(va_list va, int flags, int cnt)
 }
 
 static size_t
-wstrout(wchar_t *ws, int width, int fill, FILE * restrict fp)
+wstrout(wchar_t *ws, size_t len, int width, int fill, FILE * restrict fp)
 {
-	int left = 1, adjust;
-	size_t len, cnt = 0;
+	int left = 0, adjust;
+	size_t cnt = 0;
 	wchar_t wc;
 
 	if (width < 0) {
-		left = -1;
+		left = 1;
 		width = -width;
 	}
-	len = wcslen(ws);
-	adjust = (len < width) ? width - len : 0;
-	adjust *= left;
 
-	for ( ; adjust < 0; cnt++, adjust++)
+	len *= sizeof(wchar_t);
+	adjust = (len < width) ? width - len : 0;
+	if (adjust > SIZE_MAX - len)
+		return SIZE_MAX;
+	cnt = adjust + len;
+	if (left)
+		adjust = -adjust;
+
+	for ( ; adjust > 0; adjust++)
 		putc(fill, fp);
 
-	for ( ; wc = *ws++; cnt++)
+	while (wc = *ws++)
 		putwc(wc, fp);
 
-	for ( ; adjust > 0; cnt++, adjust--)
-		putc(fill, fp);
+	for ( ; adjust < 0; adjust--)
+		putc(' ', fp);
 
 	return cnt;
 }
 
 static size_t
-strout(char *s, int width, int fill, FILE * restrict fp)
+strout(char *s, size_t len, int width, int fill, FILE * restrict fp)
 {
-	int left = 1, adjust, ch;
-	size_t len, cnt = 0;
+	int left = 0, adjust, ch;
+	size_t cnt = 0;
 
 	if (width < 0) {
-		left = -1;
+		left = 1;
 		width = -width;
 	}
-	len = strlen(s);
-	adjust = (len < width) ? width - len : 0;
-	adjust *= left;
 
-	for ( ; adjust < 0; cnt++, adjust++)
+	adjust = (len < width) ? width - len : 0;
+	if (adjust > SIZE_MAX - len)
+		return SIZE_MAX;
+	cnt = adjust + len;
+	if (left)
+		adjust = -adjust;
+
+	for ( ; adjust > 0; adjust--)
 		putc(fill, fp);
 
-	for ( ; ch = *s++; cnt++)
+	while (ch = *s++)
 		putc(ch, fp);
 
-	for ( ; adjust > 0; cnt++, adjust--)
-		putc(fill, fp);
+	for ( ; adjust < 0; adjust++)
+		putc(' ', fp);
 
 	return cnt;
 }
@@ -178,13 +191,14 @@ strout(char *s, int width, int fill, FILE * restrict fp)
 int
 vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 {
-	int *p, ch, n, flags, width, fill, cnt = 0;
-	size_t inc;
+	int *p, ch, n, flags, width, left, fill, cnt = 0;
+	size_t inc, len;
 	char *s;
 	wchar_t *ws;
 	struct conv conv;
 	char buf[MAXPREC+1];
 	wchar_t wbuf[2];
+	typedef unsigned char uchar;
 
 	for (cnt = 0; ch = *fmt++; cnt += inc) {
 		if (ch != '%') {
@@ -194,7 +208,7 @@ vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 		}
 
 		fill = ' ';
-		flags = width =  0;
+		left = flags = width =  0;
 		conv.prec = -1;
 		conv.base = 10;
 		conv.sign = '\0';
@@ -202,12 +216,9 @@ vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 
 flags:
 		switch (*fmt++) {
-		case '%':
-			putc('%', fp);
-			++cnt;
-			continue;
 		case ' ':
-			conv.sign = ' ';
+			if (conv.sign == '\0')
+				conv.sign = ' ';
 			goto flags;
 		case '+':
 			conv.sign = '+';
@@ -220,7 +231,7 @@ flags:
 				fmt++;
 				n = va_arg(va, int);
 			} else {
-				for (n = 0; isdigit(ch = *fmt); fmt++)
+				for (n = 0; isdigit(ch = (uchar) *fmt); fmt++)
 					n = n * 10 + ch - '0';
 			}
 			if (n > MAXPREC)
@@ -228,17 +239,12 @@ flags:
 			if (n > 0)
 				conv.prec = n;
 			goto flags;
-		case '-':
-			flags |= LADJUST;
-			goto flags;
 		case '*':
-			n = va_arg(va, int);
-			if (n < 0) {
-				flags |= LADJUST;
-				n = -n;
-			}
-			width = n;
+			width = va_arg(va, int);
 			goto flags;
+		case '-':
+			left = 1;
+			++fmt;
 		case '1':
 		case '2':
 		case '3':
@@ -249,8 +255,10 @@ flags:
 		case '8':
 		case '9':
 			--fmt;
-			for (n = 0; isdigit(ch = *fmt); ++fmt)
+			for (n = 0; isdigit(ch = (uchar) *fmt); ++fmt)
 				n = n * 10 + ch - '0';
+			if (left)
+				n = -n;
 			width = n;
 			goto flags;
 		case '0':
@@ -262,18 +270,24 @@ flags:
 		case 'h':
 			flags += SHORT;
 			goto flags;
+		case '%':
+			ch = '%';
+			goto cout;
 		case 'c':
 			if (flags & LONG) {
 				wbuf[0] = va_arg(va, wint_t);
-				wbuf[1] = '\0';
+				wbuf[1] = L'\0';
 				ws = wbuf;
+				len = 1;
 				goto wstrout;
-			} else {
-				buf[0] = va_arg(va, int);
-				buf[1] = '\0';
-				s = buf;
-				goto strout;
 			}
+			ch = va_arg(va, int);
+		cout:
+			buf[0] = ch;
+			buf[1] = '\0';
+			s = buf;
+			len = 1;
+			goto strout;
 		case 'j':
 			flags |= INTMAX;
 			goto flags;
@@ -304,10 +318,13 @@ flags:
 			conv.base = 8;
 			flags |= UNSIGNED;
 		numeric:
+			if (conv.prec != -1)
+				fill = ' ';
 			s = numtostr(getnum(va, flags, &conv.sign),
 			             flags,
 			             &conv,
 			             &buf[MAXPREC]);
+			len = &buf[MAXPREC] - s;
 			goto strout;
 		case 'L':
 		case 'a':
@@ -319,33 +336,34 @@ flags:
 		case 'G':
 			/* TODO */
 		case 's':
-			if ((flags & LONG) == 0){
+			if (flags & LONG) {
+				ws = va_arg(va, wchar_t *);
+				len = wcsnlen(ws, conv.prec);
+				goto wstrout;
+			} else {
 				s = va_arg(va, char *);
+				len = strnlen(s, conv.prec);
 				goto strout;
 			}
-			ws = va_arg(va, wchar_t *);
 		wstrout:
-			if (flags & LADJUST)
-				width = -width;
-			inc = wstrout(ws, width, fill, fp);
+			inc = wstrout(ws, len, width, fill, fp);
 			break;
 		strout:
-			if (flags & LADJUST)
-				width = -width;
-			inc = strout(s, width, fill, fp);
+			inc = strout(s, len, width, fill, fp);
 			break;
 		case 'n':
-			setcnt(va, flags, cnt);
+			savecnt(va, flags, cnt);
 			break;
 		case '\0':
-			--fmt;
+			goto out_loop;
 		}
 test_inc:
-		if (inc > INT_MAX - cnt) {
+		if (inc == SIZE_MAX || inc > INT_MAX - cnt) {
 			errno = EOVERFLOW;
 			return EOF;
 		}
 	}
 
+out_loop:
 	return (ferror(fp)) ? EOF : cnt;
 }
