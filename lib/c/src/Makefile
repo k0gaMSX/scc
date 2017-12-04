@@ -12,6 +12,7 @@ OBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
       localeconv.o atoi.o atol.o atoll.o atexit.o exit.o \
       printf.o fprintf.o vfprintf.o \
       fgets.o gets.of fgetc.o fputc.o getchar.o putchar.o \
+      fread.o fwrite.o \
       realloc.o calloc.o malloc.o
 
 all: $(ARCH)-libc.a
