@@ -9,7 +9,7 @@ printf(const char * restrict fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
-	cnt = vfprintf(stdin, fmt, va);
+	cnt = vfprintf(stdout, fmt, va);
 	va_end(va);
 	return cnt;
 }
