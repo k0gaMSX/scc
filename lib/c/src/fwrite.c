@@ -9,14 +9,16 @@ fwrite(const void * restrict ptr, size_t size, size_t nmemb,
 	const unsigned char *bp = ptr;
 	size_t n, i;
 
-	if (nmemb == 0 || size == 0)
+	if (size == 0)
 		return 0;
 
 	for (n = 0; n < nmemb; n++) {
-		for (i = 0; i < size; ++i) {
-			if (putc(*bp++, fp) == EOF)
-				return n;
-		}
+		i = size;
+		do
+			putc(*bp++, fp);
+		while (--i);
+		if (ferror(fp))
+			break;
 	}
 
 	return n;
