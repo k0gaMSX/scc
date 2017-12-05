@@ -3,35 +3,48 @@
 
 #include <arch/stdio.h>
 
+#ifndef FOPEN_MAX
+#define FOPEN_MAX 12
+#endif
+
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
 
 #define EOF            -1
-#define _IOFBF          0
-#define _IOLBF          1
-#define _IONBF          2
 #define SEEK_CUR        0
 #define SEEK_END        1
 #define SEEK_SET        2
 
+#define _IOFBF          0
+#define _IOLBF          1
+#define _IONBF          2
+
+#define _IOWRITE        (1 << 0)
+#define _IOREAD         (1 << 1)
+#define _IORW           (1 << 2)
+#define _IOEOF          (1 << 3)
+#define _IOERR          (1 << 4)
+#define _IOSTRG         (1 << 5)
+#define _IOTXT          (1 << 6)
+
 typedef struct {
-	int fd;        	/* file descriptor */
-	char flags;     /* bits for must free buffer on close, line-buffered */
-	char state;     /* last operation was read, write, position, error, eof */
-	char *buf;      /* pointer to i/o buffer */
-	char *rp;       /* read pointer (or write end-of-buffer) */
-	char *wp;       /* write pointer (or read end-of-buffer) */
-	char *lp;       /* actual write pointer used when line-buffering */
-	size_t len;    /* actual length of buffer */
-	char unbuf[1];  /* tiny buffer for unbuffered io */
+	int fd;        	        /* file descriptor */
+	unsigned char *buf;     /* pointer to i/o buffer */
+	unsigned char *rp;      /* read pointer */
+	unsigned char *wp;      /* write pointer */
+	unsigned char *lp;      /* write pointer used when line-buffering */
+	size_t len;             /* actual length of buffer */
+	unsigned char mode;
+	unsigned char flags;
+	unsigned char unbuf[1];  /* tiny buffer for unbuffered io */
 } FILE;
 
-extern FILE _IO_stream[FOPEN_MAX];
+extern FILE __iob[FOPEN_MAX];
 
-#define	stderr	(&_IO_stream[2])
-#define	stdin	(&_IO_stream[0])
-#define	stdout	(&_IO_stream[1])
+#define	stdin	(&__iob[0])
+#define	stdout	(&__iob[1])
+#define	stderr	(&__iob[2])
 
 extern int remove(const char *filename);
 extern int rename(const char *old, const char *new);
@@ -94,8 +107,20 @@ extern int feof(FILE *fp);
 extern int ferror(FILE *fp);
 extern void perror(const char *s);
 
+extern int __getc(FILE *fp);
+extern int __putc(int, FILE *fp);
+
 #ifdef __USE_MACROS
-#define printf(...) fprintf(stdout, __VA_ARGS__)
+#ifdef __UNIX_FILES
+#define getc(fp)     ((fp)->rp >= (fp)->wp ?  __getc(fp) : *(fp)->rp++)
+#define putc(c, fp)  ((fp)->wp >= (fp)->rp ? __putc(c,fp) : (*(fp)->wp++ = c))
+#endif
+
+#define ferror(fp)   ((fp)->flags & _IOERR)
+#define feof(fp)     ((fp)->flags & _IOEOF)
+#define clearerr(fp) (void) ((fp)->flags &= ~(_IOERR|_IOEOF))
+#define getchar()    getc(stdin)
+#define putchar(c)   putc((c), stdout)
 #endif
 
 #endif
