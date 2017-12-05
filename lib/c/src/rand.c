@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #undef rand
+#undef srand
 
 static int next;
 
