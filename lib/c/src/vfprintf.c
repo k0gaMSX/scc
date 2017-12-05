@@ -80,6 +80,7 @@ numtostr(uintmax_t val, int flags, struct conv *conv, char *buf)
 {
 	char *buf0 = buf;
 	int len, base = conv->base, prec = conv->prec;
+	uintmax_t oval = val;
 
 	if (prec == -1)
 		prec = 1;
@@ -89,14 +90,10 @@ numtostr(uintmax_t val, int flags, struct conv *conv, char *buf)
 	while (buf0 - buf < prec)
 		*--buf = '0';
 
-	/*
-	 * TODO: It cannot be done here because the combination
-	 * %#04x produces 00x1
-	 */
 	if (flags & ALTFORM) {
 		if (base == 8 && *buf != '0') {
 			*--buf = '0';
-		} else if (base == 16 && val != 0) {
+		} else if (base == 16 && oval != 0) {
 			*--buf = conv->digs[16];
 			*--buf = '0';
 		}
@@ -161,7 +158,7 @@ wstrout(wchar_t *ws, size_t len, int width, int fill, FILE * restrict fp)
 static size_t
 strout(char *s, size_t len, int width, int fill, FILE * restrict fp)
 {
-	int left = 0, adjust, ch;
+	int left = 0, adjust, ch, prefix;
 	size_t cnt = 0;
 
 	if (width < 0) {
@@ -175,6 +172,19 @@ strout(char *s, size_t len, int width, int fill, FILE * restrict fp)
 	cnt = adjust + len;
 	if (left)
 		adjust = -adjust;
+
+	if (fill == '0') {
+		if (*s == '-' || *s == '+')
+			prefix = 1;
+		else if (*s == '0' && toupper(s[1]) == 'X')
+			prefix = 2;
+		else
+			prefix = 0;
+		while (prefix--) {
+			putc(*s++, fp);
+			--len;
+		}
+	}
 
 	for ( ; adjust > 0; adjust--)
 		putc(fill, fp);
