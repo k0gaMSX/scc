@@ -137,8 +137,6 @@ wstrout(wchar_t *ws, size_t len, int width, int fill, FILE * restrict fp)
 
 	len *= sizeof(wchar_t);
 	adjust = (len < width) ? width - len : 0;
-	if (adjust > SIZE_MAX - len)
-		return SIZE_MAX;
 	cnt = adjust + len;
 	if (left)
 		adjust = -adjust;
@@ -167,8 +165,6 @@ strout(char *s, size_t len, int width, int fill, FILE * restrict fp)
 	}
 
 	adjust = (len < width) ? width - len : 0;
-	if (adjust > SIZE_MAX - len)
-		return SIZE_MAX;
 	cnt = adjust + len;
 	if (left)
 		adjust = -adjust;
@@ -208,13 +204,12 @@ vfprintf(FILE * restrict fp, const char *fmt, va_list va)
 	struct conv conv;
 	char buf[MAXPREC+1];
 	wchar_t wbuf[2];
-	typedef unsigned char uchar;
 
 	for (cnt = 0; ch = *fmt++; cnt += inc) {
 		if (ch != '%') {
 			putc(ch, fp);
 			inc = 1;
-			goto test_inc;
+			continue;
 		}
 
 		fill = ' ';
@@ -241,7 +236,7 @@ flags:
 				fmt++;
 				n = va_arg(va, int);
 			} else {
-				for (n = 0; isdigit(ch = (uchar) *fmt); fmt++)
+				for (n = 0; isdigit(ch = *fmt); fmt++)
 					n = n * 10 + ch - '0';
 			}
 			if (n > MAXPREC)
@@ -265,7 +260,7 @@ flags:
 		case '8':
 		case '9':
 			--fmt;
-			for (n = 0; isdigit(ch = (uchar) *fmt); ++fmt)
+			for (n = 0; isdigit(ch = *fmt); ++fmt)
 				n = n * 10 + ch - '0';
 			if (left)
 				n = -n;
@@ -366,11 +361,6 @@ flags:
 			break;
 		case '\0':
 			goto out_loop;
-		}
-test_inc:
-		if (inc == SIZE_MAX || inc > INT_MAX - cnt) {
-			errno = EOVERFLOW;
-			return EOF;
 		}
 	}
 
