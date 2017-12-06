@@ -7,3 +7,4 @@ extern int _lseek(int fd, long off, int whence);
 extern void _Exit(int status);
 extern int raise(int sig);
 extern void (*signal(int sig, void (*func)(int)))(int);
+extern getenv(const char *var);
