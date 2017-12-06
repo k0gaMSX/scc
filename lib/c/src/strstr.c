@@ -5,22 +5,22 @@ char *
 strstr(const char *s1, const char *s2)
 {
 	const char *p, *q;
-	int c;
+	int c0, c;
 
-	c = *s2++;
-	if (c == '\0')
+	c0 = *s2;
+	if (c0 == '\0')
 		return (char *) s1;
-
-	while (*s1) {
-		if (*s1 != c) {
-			++s1;
-		} else {
-			p = s1++;
-			for (q = s2; *q && *s1 == *q; ++s1, ++q)
-				;
-			if (*q == '\0')
-				return (char *) p;
+	--s1;
+	while ((s1 = strchr(s1 + 1, c0)) != NULL) {
+		p = s1;
+		q = s2;
+		for (;;) {
+			if ((c = *++p) == '\0')
+				return (char *) s1;
+			if (c != *++q)
+				break;
 		}
 	}
+
 	return NULL;
 }
