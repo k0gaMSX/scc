@@ -4,7 +4,8 @@
 #define EDOM   1
 #define EILSEQ 2
 #define ERANGE 3
-#define ENOMEN 4
+#define ENOMEM 4
+#define EBADF  5
 
 extern int errno;
 
