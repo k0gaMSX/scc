@@ -9,6 +9,7 @@ OBJ = assert.o strcpy.o strcmp.o strlen.o strchr.o \
       isalnum.o isalpha.o isascii.o isblank.o iscntrl.o isdigit.o \
       isgraph.o islower.o isprint.o ispunct.o isspace.o isupper.o \
       isxdigit.o toupper.o tolower.o ctype.o setlocale.o \
+      bsearch.o \
       printf.o fprintf.o vfprintf.o \
       fgets.o gets.of fgetc.o fputc.o getchar.o putchar.o \
       fputs.o puts.o fread.o fwrite.o \
