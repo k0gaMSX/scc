@@ -7,6 +7,6 @@ strlen(const char *s)
 	const char *t;
 
 	for (t = s; *t; ++t)
-		/* nothing */;
+		;
 	return t - s;
 }

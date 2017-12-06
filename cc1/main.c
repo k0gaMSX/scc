@@ -96,7 +96,7 @@ main(int argc, char *argv[])
 		outcpp();
 	} else {
 		for (next(); yytoken != EOFTOK; decl())
-			/* nothing */;
+			;
 	}
 
 	return failure;

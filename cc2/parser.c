@@ -716,7 +716,7 @@ parse(void)
 	endf = 0;
 
 	while (!endf && nextline())
-		/* nothing */;
+		;
 	if (ferror(stdin))
 		error(EFERROR, strerror(errno));
 }

@@ -70,7 +70,7 @@ builtin_va_start(Symbol *sym)
 		 goto error;
 
 	for (p = curfun->u.pars; p && *p != last->sym; ++p)
-		/* nothing */;
+		;
 	if (!p || *p == NULL || p[1] == NULL || p[1]->type != ellipsistype)
 		warn("second parameter of 'va_start' not last named argument");
 

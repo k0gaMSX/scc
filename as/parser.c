@@ -77,7 +77,7 @@ field(char **oldp)
 			break;
 		case '"':
 			while ((c = *++s) && c != '"')
-				/* nothing */;
+				;
 			if (c == '\0')
 				error("unterminated string");
 			break;

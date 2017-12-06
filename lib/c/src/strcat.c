@@ -9,6 +9,6 @@ strcat(char * restrict dst, const char * restrict src)
 	while (*dst)
 		++dst;
 	while (*dst++ = *src++)
-		/* nothing */;
+		;
 	return ret;
 }

@@ -589,7 +589,7 @@ declarator(struct declarators *dp)
 
 	for (n = 0; accept('*'); ++n) {
 		while (accept(TQUALIFIER))
-			/* nothing */;
+			;
 	}
 
 	directdcl(dp);
@@ -928,7 +928,7 @@ dodcl(int rep, Symbol *(*fun)(struct decl *), unsigned ns, Type *parent)
 		declarator(&stack);
 
 		while (pop(&stack, &dcl))
-			/* nothing */;
+			;
 		sym = (*fun)(&dcl);
 		if (funbody(sym, dcl.pars))
 			return sym;

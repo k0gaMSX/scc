@@ -219,7 +219,7 @@ comment(int type)
 
 repeat:
 	while ((c = readchar()) != EOF && c != type)
-		/* nothing */;
+		;
 
 	if (c == EOF) {
 		errorp("unterminated comment");
@@ -567,7 +567,7 @@ iden(void)
 
 	begin = input->p;
 	for (p = begin; isalnum(*p) || *p == '_'; ++p)
-		/* nothing */;
+		;
 	input->p = p;
 	tok2str();
 	if ((sym = lookup(NS_CPP, yytext, NOALLOC)) != NULL) {

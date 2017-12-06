@@ -9,7 +9,7 @@ strpbrk(const char *s1, const char *s2)
 
 	for (; c = *s1; ++s1) {
 		for (p = s2; *p && *p != c; ++p)
-			/* nothing */;
+			;
 		if (*p == c)
 			return s1;
 	}

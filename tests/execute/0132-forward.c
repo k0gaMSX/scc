@@ -16,6 +16,6 @@ main(void)
 	*x = y;
 
 	for (n = 0, p = &y; p; ++n, p = p->next)
-		/* nothing */;
+		;
 	return n;
 }

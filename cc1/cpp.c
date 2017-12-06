@@ -204,7 +204,7 @@ copymacro(char *buffer, char *s, size_t bufsiz, char *arglist[])
 			delim = '"';
 		search_delim:
 			for (p = s; *++s != delim; )
-				/* nothing */;
+				;
 			size = s - p + 1;
 			if (size > bufsiz)
 				goto expansion_too_long;
@@ -726,7 +726,7 @@ cpp(void)
 	char *p;
 
 	for (p = input->p; isspace(*p); ++p)
-		/* nothing */;
+		;
 
 	if (*p != '#')
 		return cppoff;
@@ -740,7 +740,7 @@ cpp(void)
 	namespace = NS_IDEN;
 
 	for (bp = clauses; bp->token && bp->token != yytoken; ++bp)
-		/* nothing */;
+		;
 	if (!bp->token) {
 		errorp("incorrect preprocessor directive '%s'", yytext);
 		goto error;
