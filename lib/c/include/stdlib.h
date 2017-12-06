@@ -66,4 +66,14 @@ extern int wctomb(char *s, wchar_t wchar);
 extern size_t mbstowcs(wchar_t * restrict pwcs, const char * restrict s, size_t n);
 extern size_t wcstombs(char * restrict s, const wchar_t * restrict pwcs, size_t n);
 
+#ifdef __USE_MACROS
+extern int __abs;
+extern long __labs;
+extern long long __llabs;
+
+#define abs(x)   (__abs = (x), (__abs) < 0 ? -__abs :  __abs)
+#define labs(x)  (__labs = (x), (__labs) < 0 ? -__labs :  __labs)
+#define llabs(x) (__llabs = (x), (__llabs) < 0 ? -__llabs :  __llabs)
+#endif
+
 #endif
