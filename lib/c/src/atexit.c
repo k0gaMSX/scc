@@ -9,7 +9,7 @@ int
 atexit(void (*fun)(void))
 {
 	if (_exitn == _ATEXIT_MAX) {
-		errno = ENOMEN;
+		errno = ENOMEM;
 		return -1;
 	}
 	_exitf[_exitn++] = fun;
