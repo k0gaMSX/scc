@@ -16,9 +16,6 @@
 #define SEEK_END        1
 #define SEEK_SET        2
 
-#define _IOFBF          0
-#define _IOLBF          1
-#define _IONBF          2
 
 #define _IOWRITE        (1 << 0)
 #define _IOREAD         (1 << 1)
@@ -27,6 +24,9 @@
 #define _IOERR          (1 << 4)
 #define _IOSTRG         (1 << 5)
 #define _IOTXT          (1 << 6)
+#define _IOFBF          (1 << 7)
+#define _IOLBF          (1 << 8)
+#define _IONBF          (1 << 9)
 
 typedef struct {
 	int fd;        	        /* file descriptor */
@@ -35,7 +35,6 @@ typedef struct {
 	unsigned char *wp;      /* write pointer */
 	unsigned char *lp;      /* write pointer used when line-buffering */
 	size_t len;             /* actual length of buffer */
-	unsigned char mode;
 	unsigned char flags;
 	unsigned char unbuf[1];  /* tiny buffer for unbuffered io */
 } FILE;

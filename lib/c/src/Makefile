@@ -10,6 +10,7 @@ OBJ = bsearch.o qsort.o \
       fputs.o puts.o fread.o fwrite.o \
       getc.o putc.o __putc.o __getc.o \
       rewind.o fseek.o ferror.o feof.o clearerr.o \
+      stdio.o \
       realloc.o calloc.o malloc.o \
       assert.o strcpy.o strcmp.o strlen.o strchr.o \
       strrchr.o strcat.o strncmp.o strncpy.o strncat.o strcoll.o \
