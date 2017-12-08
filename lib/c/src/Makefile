@@ -2,7 +2,7 @@
 
 include ../../../config.mk
 
-OBJ = bsearch.o \
+OBJ = bsearch.o qsort.o \
       abs.o __abs.o labs.o __labs.o llabs.o __labs.o \
       perror.o strerror.o \
       printf.o fprintf.o vfprintf.o \
