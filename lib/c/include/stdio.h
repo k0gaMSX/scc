@@ -27,6 +27,7 @@
 #define _IOFBF          (1 << 7)
 #define _IOLBF          (1 << 8)
 #define _IONBF          (1 << 9)
+#define _IOALLOC        (1 <<10)
 
 typedef struct {
 	int fd;        	        /* file descriptor */
@@ -35,7 +36,7 @@ typedef struct {
 	unsigned char *wp;      /* write pointer */
 	unsigned char *lp;      /* write pointer used when line-buffering */
 	size_t len;             /* actual length of buffer */
-	unsigned char flags;
+	unsigned short flags;
 	unsigned char unbuf[1];  /* tiny buffer for unbuffered io */
 } FILE;
 
