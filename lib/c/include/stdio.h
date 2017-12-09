@@ -116,11 +116,12 @@ extern int __putc(int, FILE *fp);
 #define putc(c, fp)  ((fp)->wp >= (fp)->rp ? __putc(c,fp) : (*(fp)->wp++ = c))
 #endif
 
-#define ferror(fp)   ((fp)->flags & _IOERR)
-#define feof(fp)     ((fp)->flags & _IOEOF)
-#define clearerr(fp) (void) ((fp)->flags &= ~(_IOERR|_IOEOF))
-#define getchar()    getc(stdin)
-#define putchar(c)   putc((c), stdout)
+#define ferror(fp)          ((fp)->flags & _IOERR)
+#define feof(fp)            ((fp)->flags & _IOEOF)
+#define clearerr(fp)        (void) ((fp)->flags &= ~(_IOERR|_IOEOF))
+#define getchar()           getc(stdin)
+#define putchar(c)          putc((c), stdout)
+#define setbuf(fp, b)       (void) setvbuf(fp, b, b ? _IOFBF:_IONBF, BUFSIZ)
 #endif
 
 #endif
