@@ -5,6 +5,7 @@ include ../../../config.mk
 OBJ = bsearch.o qsort.o \
       abs.o __abs.o labs.o __labs.o llabs.o __labs.o \
       perror.o strerror.o \
+      tmpnam.o \
       sprintf.o snprintf.o vsprintf.o vsnprintf.o \
       printf.o fprintf.o vfprintf.o \
       fgets.o gets.of fgetc.o fputc.o getchar.o putchar.o \
