@@ -1,6 +1,3 @@
-.POSIX:
-
-include ../../../config.mk
 
 OBJ = bsearch.o qsort.o \
       abs.o __abs.o labs.o __labs.o llabs.o __llabs.o \
@@ -23,12 +20,3 @@ OBJ = bsearch.o qsort.o \
       isgraph.o islower.o isprint.o ispunct.o isspace.o isupper.o \
       isxdigit.o toupper.o tolower.o ctype.o setlocale.o \
       localeconv.o atoi.o atol.o atoll.o atexit.o abort.o exit.o
-
-all: $(ARCH)-libc.a
-
-clean distclean:
-	rm -f *.o *-libc.a
-
-$(ARCH)-libc.a: $(OBJ)
-	$(AR) $(ARFLAGS) $@ $?
-	ranlib $@

@@ -1,6 +1,4 @@
 .POSIX:
 
-include ../../config.mk
-
 all dep clean distclean:
-	cd src && CC=scc $(MAKE) -e $@
+	cd target && $(MAKE) $@

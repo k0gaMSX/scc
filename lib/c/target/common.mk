@@ -1,4 +1,3 @@
-SRC=$(OBJ:.o=.c)
 
 all: libc.a
 
@@ -7,11 +6,10 @@ libc.a: $(OBJ)
 	ranlib $@
 
 dep:
-	../gendep.sh
+	gendep.sh
 
 clean:
-	rm -f $(OBJ)
+	rm -f *.o
 
 distclean: clean
-	rm -f $(SRC)
 	rm -f makefile
