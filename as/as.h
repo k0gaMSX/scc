@@ -2,17 +2,12 @@
  * First 3 bits of flags in segments and symbols are for the
  * type of segment
  */
-enum symtype {
-	TUNDEF  = 1 << 0,
-	TREG    = 1 << 1,
-	TMASK   = 0x3,
-};
-
 enum symflags {
-	FCOMMON = 1 << 2,
-	FLOCAL  = 1 << 3,
-	FEXTERN = 1 << 6,
-	FUNDEF  = 1 << 7,
+	FREG    = 1 << 0,
+	FCOMMON = 1 << 1,
+	FLOCAL  = 1 << 2,
+	FEXTERN = 1 << 3,
+	FUNDEF  = 1 << 4,
 };
 
 enum secflags {

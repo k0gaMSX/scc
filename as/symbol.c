@@ -83,8 +83,8 @@ lookup(char *name, int type)
 		t = sym->name.buf;
 		if (c != toupper(*t) || casecmp(t, name))
 			continue;
-		symtype = sym->flags & TMASK;
-		if (symtype != TUNDEF && symtype != type)
+		symtype = sym->flags;
+		if (((symtype | type) & FUNDEF) == 0 && symtype != type)
 			continue;
 		return sym;
 	}
@@ -93,6 +93,7 @@ lookup(char *name, int type)
 	sym->name = newstring(name);
 	sym->flags = FLOCAL | FUNDEF | type;
 	sym->value = 0;
+	sym->section = cursec;
 	sym->hash = *list;
 	sym->next = symlist;
 
@@ -124,7 +125,7 @@ deflabel(char *name)
 		name = label;
 	}
 
-	sym = lookup(name, TUNDEF);
+	sym = lookup(name, FUNDEF);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
 	sym->flags &= ~FUNDEF;

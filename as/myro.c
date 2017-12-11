@@ -26,7 +26,7 @@ writestrings(FILE *fp)
 	off = sizeof(FORMAT);
 
 	for (sym = symlist; sym; sym = sym->next) {
-		if ((sym->flags & TMASK) == TREG)
+		if (sym->flags & FREG)
 			continue;
 		str = &sym->name;
 		len = strlen(str->buf) + 1;
@@ -94,7 +94,7 @@ writesymbols(FILE *fp)
 	struct myrosym symbol;
 
 	for (sym = symlist; sym; sym = sym->next) {
-		if ((sym->flags & TMASK) == TREG)
+		if (sym->flags & FREG)
 			continue;
 		symbol.name = sym->name.offset;
 		symbol.type = -1;

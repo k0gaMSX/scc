@@ -200,7 +200,7 @@ iden(void)
 	while (isalnum(c = *endp) || c == '_' || c == '.')
 		++endp;
 	tok2str();
-	yylval.sym = lookup(yytext, TUNDEF);
+	yylval.sym = lookup(yytext, FUNDEF);
 
 	return IDEN;
 }
@@ -267,7 +267,7 @@ reg(void)
 	while (isalnum(c = *endp))
 		++endp;
 	tok2str();
-	yylval.sym = lookup(yytext, TREG);
+	yylval.sym = lookup(yytext, FREG);
 	if (!yylval.sym->argtype)
 		error("incorrect register name");
 	return REG;
