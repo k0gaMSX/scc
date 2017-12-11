@@ -175,4 +175,4 @@ extern int pass;
 extern TUINT maxaddr;
 extern int endian;
 extern Symbol *linesym, *symlist;
-extern char *filename;
+extern char *infile;

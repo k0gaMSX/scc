@@ -12,7 +12,6 @@ static char sccsid[] = "@(#) ./as/parser.c";
 #define NARGS 20
 #define MAXLINE 100
 
-char *filename;
 int nerrors;
 jmp_buf recover;
 
@@ -24,7 +23,7 @@ error(char *msg, ...)
 	va_list va;
 
 	va_start(va, msg);
-	fprintf(stderr, "as:%s:%u: ", filename, lineno);
+	fprintf(stderr, "as:%s:%u: ", infile, lineno);
 	vfprintf(stderr, msg, va);
 	putc('\n', stderr);
 	nerrors++;
