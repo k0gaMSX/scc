@@ -1,16 +1,10 @@
 # scc - Suckless C Compiler
+
+include config.mk.def
+
 .POSIX:
 
 DIRS  = inc cc1 cc2 driver lib as ar nm objdump
-
-FORALL = @set -e ;\
-	pwd=$$PWD; \
-	for i in $(DIRS); \
-	do \
-		cd $$i; \
-		$(MAKE) $@; \
-		cd $$pwd; \
-	done
 
 all:
 	$(FORALL)

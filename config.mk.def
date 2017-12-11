@@ -47,4 +47,14 @@ SCC_LDFLAGS = -L$(LIBDIR)/ $(LDFLAGS)
 .c:
 	$(CC) $(SCC_CFLAGS) $(SCC_LDFLAGS) -o $@ $<
 
+# helper macro to run over all the directories
+FORALL = @set -e ;\
+	pwd=$$PWD; \
+	for i in $(DIRS); \
+	do \
+		cd $$i; \
+		$(MAKE) $@; \
+		cd $$pwd; \
+	done
+
 # system specific flags
