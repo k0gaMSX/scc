@@ -2,7 +2,7 @@
 *.a
 bin/
 cc1/cc1-*
-cc1/tests/test.log
+test.log
 cc2/cc2-*
 cc2/error.h
 as/as-*
