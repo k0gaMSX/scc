@@ -3,27 +3,25 @@
  * type of segment
  */
 enum symtype {
-	TUNDEF  = 0,
-	TABS    = 1,
-	TTEXT   = 2,
-	TBSS    = 3,
-	TDATA   = 4,
-	TREG    = 5,
-	TMASK   = 7,
-};
-
-enum secflags {
-	SRELOC  = 1 << 4,
-	SREAD   = 1 << 5,
-	SWRITE  = 1 << 6,
-	SFILE   = 1 << 7,
+	TUNDEF  = 1 << 0,
+	TREG    = 1 << 1,
+	TMASK   = 0x3,
 };
 
 enum symflags {
-	FCOMMON = 1 << 4,
-	FLOCAL  = 1 << 5,
+	FCOMMON = 1 << 2,
+	FLOCAL  = 1 << 3,
 	FEXTERN = 1 << 6,
 	FUNDEF  = 1 << 7,
+};
+
+enum secflags {
+	SREAD  = 1 << 0,
+	SWRITE = 1 << 1,
+	SEXEC  = 1 << 2,
+	SLOAD  = 1 << 3,
+	SFILE  = 1 << 4,
+	SABS   = 1 << 5,
 };
 
 enum endianess {
@@ -110,6 +108,7 @@ struct symbol {
 	unsigned char pass;
 	unsigned char argtype;
 	TUINT value;
+	Section *section;
 	struct symbol *next;
 	struct symbol *hash;
 };

@@ -13,24 +13,24 @@ static char sccsid[] = "@(#) ./as/symbol.c";
 
 static Section abss = {
 	.name  = (String) {"abs"},
-	.flags = TABS|SREAD|SWRITE,
+	.flags = SABS|SREAD|SWRITE|SFILE|SLOAD,
 };
 
 static Section bss = {
 	.name  = (String) {"bss"},
-	.flags = TBSS|SRELOC|SREAD|SWRITE,
+	.flags = SREAD|SWRITE|SLOAD,
 	.next  = &abss,
 };
 
 static Section data = {
 	.name  = (String) {"data"},
-	.flags = TDATA|SRELOC|SREAD|SWRITE|SFILE,
+	.flags = SREAD|SWRITE|SFILE|SLOAD,
 	.next  = &bss,
 };
 
 static Section text = {
 	.name  = (String) {"text"},
-	.flags = TTEXT|SRELOC|SFILE,
+	.flags = SREAD|SEXEC|SLOAD|SFILE,
 	.next  = &data,
 };
 
@@ -197,7 +197,7 @@ section(char *name)
 		sec->name = newstring(name);
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
-		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
+		sec->flags = 0;
 		sec->fill = 0;
 		sec->aligment = 0;
 	}
@@ -230,7 +230,7 @@ tmpsym(TUINT val)
 		tmpalloc = alloc(sizeof(*sym), NALLOC);
 	sym = new(tmpalloc);
 	sym->value = val;
-	sym->flags = TABS;
+	sym->section = NULL;
 
 	return sym;
 }
