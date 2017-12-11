@@ -3,7 +3,7 @@
 include ../../../config.mk
 
 OBJ = bsearch.o qsort.o \
-      abs.o __abs.o labs.o __labs.o llabs.o __labs.o \
+      abs.o __abs.o labs.o __labs.o llabs.o __llabs.o \
       perror.o strerror.o \
       tmpnam.o \
       sprintf.o snprintf.o vsprintf.o vsnprintf.o \
