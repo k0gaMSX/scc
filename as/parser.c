@@ -112,12 +112,8 @@ extract(char *s, size_t len, struct line *lp)
 	if (lp->args = field(&s, &len))
 		r++;
 
-	if (s) {
-		while (isspace(*s))
-			++s;
-		if (*s != '\0' && *s != '/')
-			error("trailing characters at the end of the line");
-	}
+	if (s && *s && *s != '/')
+		error("trailing characters at the end of the line");
 
 	return r;
 }
