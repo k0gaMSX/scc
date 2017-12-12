@@ -36,7 +36,7 @@ SCC_CFLAGS = $(MOREFLAGS) \
              -g \
              $(CFLAGS)
 
-SCC_LDFLAGS = -L$(LIBDIR)/ $(LDFLAGS)
+SCC_LDFLAGS = -L$(LIBDIR)/ -g $(LDFLAGS)
 
 .s.o:
 	$(AS) $< -o $@
