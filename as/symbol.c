@@ -135,7 +135,8 @@ deflabel(char *name)
 	sym = lookup(name, FUNDEF);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
-	sym->flags &= ~FUNDEF;
+	if (cursec->flags & SABS)
+		sym->flags &= ~FUNDEF;
 	sym->value = cursec->curpc;
 
 	if (*name != '.')
