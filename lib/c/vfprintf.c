@@ -7,7 +7,6 @@
  *       even to read this file.
  */ 
 #include <ctype.h>
-#include <errno.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <stdint.h>
