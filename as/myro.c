@@ -116,7 +116,7 @@ writesymbols(FILE *fp)
 		symbol.type = -1;
 		symbol.section = -1;
 		symbol.flags = getsymflags(sym);
-		symbol.offset = off;
+		symbol.offset = sym->value;
 		symbol.len = 0;
 		off += wrmyrosym(fp, &symbol);
 	}
