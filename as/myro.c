@@ -49,7 +49,7 @@ writestrings(FILE *fp)
 static unsigned
 getsecflags(Section *sp)
 {
-	unsigned flags = MYROSEC_LOAD;
+	unsigned flags = 0;
 
 	if (sp->flags & SREAD)
 		flags |= MYROSEC_READ;
