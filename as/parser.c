@@ -58,7 +58,11 @@ field(char **oldp, size_t *siz)
 
 	if ((begin = *oldp) == NULL)
 		return NULL;
-	if (s = memchr(begin, '\t', *siz)) {
+
+	if (*begin == '/') {
+		*begin = '\0';
+		*oldp = NULL;
+	} if (s = memchr(begin, '\t', *siz)) {
 		*s++ = '\0';
 		*siz -= s - begin;
 		*oldp = s;
@@ -111,7 +115,7 @@ extract(char *s, size_t len, struct line *lp)
 	if (s) {
 		while (isspace(*s))
 			++s;
-		if (*s != '\0' && *s != ';')
+		if (*s != '\0' && *s != '/')
 			error("trailing characters at the end of the line");
 	}
 
@@ -141,10 +145,6 @@ repeat:
 	}
 	buff[n-1] = '\0';
 
-	if (p = memchr(buff, '#', n)) {
-		*p = '\0';
-		n = p - buff;
-	}
 	if (extract(buff, n, lp) == 0)
 		goto repeat;
 	return 1;
