@@ -223,10 +223,12 @@ isections(void)
 }
 
 void
-emit(Section *sec, char *bytes, int n)
+emit(char *bytes, int n)
 {
-	if (sec->mem)
-		memcpy(&sec->mem[sec->pc - sec->base], bytes, n);
+	if (cursec->mem) {
+		size_t len = cursec->pc - cursec->base;
+		memcpy(&cursec->mem[len], bytes, n);
+	}
 	incpc(n);
 }
 
