@@ -91,7 +91,7 @@ lookup(char *name, int type)
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = newstring(name);
-	sym->flags = FLOCAL | FUNDEF | type;
+	sym->flags = FUNDEF | type;
 	sym->value = 0;
 	sym->section = cursec;
 	sym->hash = *list;

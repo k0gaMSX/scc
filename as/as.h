@@ -5,9 +5,9 @@
 enum symflags {
 	FREG    = 1 << 0,
 	FCOMMON = 1 << 1,
-	FLOCAL  = 1 << 2,
-	FEXTERN = 1 << 3,
-	FUNDEF  = 1 << 4,
+	FEXTERN = 1 << 2,
+	FUNDEF  = 1 << 3,
+	FDEDUP  = 1 << 4,
 };
 
 enum secflags {

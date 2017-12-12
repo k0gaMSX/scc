@@ -86,6 +86,22 @@ writesections(FILE *fp)
 	return off;
 }
 
+static unsigned
+getsymflags(Symbol *sym)
+{
+	unsigned flags = 0;
+
+	if (sym->flags & FCOMMON)
+		flags |= MYROSYM_COMMON;
+	if (sym->flags & FEXTERN)
+		flags |= MYROSYM_EXTERN;
+	if (sym->flags & FUNDEF)
+		flags |= MYROSYM_UNDEF;
+	if (sym->flags & FDEDUP)
+		flags |= MYROSYM_DEDUP;
+	return flags;
+}
+
 static size_t
 writesymbols(FILE *fp)
 {
@@ -99,7 +115,7 @@ writesymbols(FILE *fp)
 		symbol.name = sym->name.offset;
 		symbol.type = -1;
 		symbol.section = -1;
-		symbol.flags = 0;
+		symbol.flags = getsymflags(sym);
 		symbol.offset = off;
 		symbol.len = 0;
 		off += wrmyrosym(fp, &symbol);
