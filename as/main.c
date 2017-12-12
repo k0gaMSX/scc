@@ -48,7 +48,7 @@ as(char *text, char *xargs)
 
 	ins = bsearch(text, instab, nr_ins, sizeof(Ins), cmp);
 	if (!ins) {
-		error("invalid instruction");
+		error("invalid instruction '%s'", text);
 		return;
 	}
 
