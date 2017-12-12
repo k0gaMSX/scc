@@ -72,8 +72,12 @@ writesections(FILE *fp)
 	Section *sp;
 	size_t off = 0;
 	struct myrosect sect;
+	unsigned id = 0;;
 
 	for (sp = seclist; sp; sp = sp->next) {
+		if (id == MYROMAXSEC)
+			die("too many sections for a myro file");
+		sp->id = id++;
 		sect.name = sp->name.offset;
 		sect.flags = getsecflags(sp);
 		sect.fill = sp->fill;
@@ -114,7 +118,7 @@ writesymbols(FILE *fp)
 			continue;
 		symbol.name = sym->name.offset;
 		symbol.type = -1;
-		symbol.section = -1;
+		symbol.section = sym->section->id;
 		symbol.flags = getsymflags(sym);
 		symbol.offset = sym->value;
 		symbol.len = 0;

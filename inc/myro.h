@@ -7,6 +7,8 @@
 #define MYROMAGIC_SIZ   4
 #define MYROMAGIC      "uobj"
 
+#define MYROMAXSEC    254
+
 struct myrohdr {
 	char magic[4];
 	unsigned long format;

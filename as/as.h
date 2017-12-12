@@ -90,6 +90,7 @@ struct section {
 	unsigned char flags;
 	unsigned char fill;
 	unsigned char aligment;
+	unsigned id;
 	TUINT base;
 	TUINT max;
 	TUINT curpc;
