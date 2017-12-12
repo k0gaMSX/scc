@@ -88,6 +88,27 @@ out_loop:
 }
 
 static int
+validlabel(char *name)
+{
+	int c;
+
+	while ((c = *name++) != '\0') {
+		if (isalnum(c))
+			continue;
+		switch (c) {
+		case '_':
+		case '-':
+		case '.':
+		case '$':
+			continue;
+		default:
+			return 0;
+		}
+	}
+	return 1;
+}
+
+static int
 extract(char *s, struct line *lp)
 {
 	int r = 0;
@@ -97,6 +118,8 @@ extract(char *s, struct line *lp)
 		len = strlen(lp->label);
 		if (lp->label[len-1] == ':')
 			lp->label[len-1] = '\0';
+		if (!validlabel(lp->label))
+			error("incorrect label name '%s'", lp->label);
 		r++;
 	}
 	if (lp->op = field(&s))

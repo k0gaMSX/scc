@@ -197,8 +197,20 @@ iden(void)
 	int c;
 	char *p;
 
-	while (isalnum(c = *endp) || c == '_' || c == '.')
-		++endp;
+	for ( ; c = *endp; ++endp) {
+		if (isalnum(c))
+			continue;
+		switch (c) {
+		case '_':
+		case '-':
+		case '.':
+		case '$':
+			continue;
+		default:
+			break;
+		}
+	}
+
 	tok2str();
 	yylval.sym = lookup(yytext, FUNDEF);
 
