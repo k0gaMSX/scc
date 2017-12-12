@@ -2,28 +2,21 @@
  * First 3 bits of flags in segments and symbols are for the
  * type of segment
  */
-enum symtype {
-	TUNDEF  = 0,
-	TABS    = 1,
-	TTEXT   = 2,
-	TBSS    = 3,
-	TDATA   = 4,
-	TREG    = 5,
-	TMASK   = 7,
+enum symflags {
+	FREG    = 1 << 0,
+	FCOMMON = 1 << 1,
+	FLOCAL  = 1 << 2,
+	FEXTERN = 1 << 3,
+	FUNDEF  = 1 << 4,
 };
 
 enum secflags {
-	SRELOC  = 1 << 4,
-	SREAD   = 1 << 5,
-	SWRITE  = 1 << 6,
-	SFILE   = 1 << 7,
-};
-
-enum symflags {
-	FCOMMON = 1 << 4,
-	FLOCAL  = 1 << 5,
-	FEXTERN = 1 << 6,
-	FUNDEF  = 1 << 7,
+	SREAD  = 1 << 0,
+	SWRITE = 1 << 1,
+	SEXEC  = 1 << 2,
+	SLOAD  = 1 << 3,
+	SFILE  = 1 << 4,
+	SABS   = 1 << 5,
 };
 
 enum endianess {
@@ -110,6 +103,7 @@ struct symbol {
 	unsigned char pass;
 	unsigned char argtype;
 	TUINT value;
+	Section *section;
 	struct symbol *next;
 	struct symbol *hash;
 };
@@ -175,4 +169,4 @@ extern int pass;
 extern TUINT maxaddr;
 extern int endian;
 extern Symbol *linesym, *symlist;
-extern char *filename;
+extern char *infile;

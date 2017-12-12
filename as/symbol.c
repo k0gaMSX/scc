@@ -13,24 +13,24 @@ static char sccsid[] = "@(#) ./as/symbol.c";
 
 static Section abss = {
 	.name  = (String) {"abs"},
-	.flags = TABS|SREAD|SWRITE,
+	.flags = SABS|SREAD|SWRITE|SFILE|SLOAD,
 };
 
 static Section bss = {
 	.name  = (String) {"bss"},
-	.flags = TBSS|SRELOC|SREAD|SWRITE,
+	.flags = SREAD|SWRITE|SLOAD,
 	.next  = &abss,
 };
 
 static Section data = {
 	.name  = (String) {"data"},
-	.flags = TDATA|SRELOC|SREAD|SWRITE|SFILE,
+	.flags = SREAD|SWRITE|SFILE|SLOAD,
 	.next  = &bss,
 };
 
 static Section text = {
 	.name  = (String) {"text"},
-	.flags = TTEXT|SRELOC|SFILE,
+	.flags = SREAD|SEXEC|SLOAD|SFILE,
 	.next  = &data,
 };
 
@@ -83,8 +83,8 @@ lookup(char *name, int type)
 		t = sym->name.buf;
 		if (c != toupper(*t) || casecmp(t, name))
 			continue;
-		symtype = sym->flags & TMASK;
-		if (symtype != TUNDEF && symtype != type)
+		symtype = sym->flags;
+		if (((symtype | type) & FUNDEF) == 0 && symtype != type)
 			continue;
 		return sym;
 	}
@@ -93,6 +93,7 @@ lookup(char *name, int type)
 	sym->name = newstring(name);
 	sym->flags = FLOCAL | FUNDEF | type;
 	sym->value = 0;
+	sym->section = cursec;
 	sym->hash = *list;
 	sym->next = symlist;
 
@@ -124,7 +125,7 @@ deflabel(char *name)
 		name = label;
 	}
 
-	sym = lookup(name, TUNDEF);
+	sym = lookup(name, FUNDEF);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
 	sym->flags &= ~FUNDEF;
@@ -197,7 +198,7 @@ section(char *name)
 		sec->name = newstring(name);
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
-		sec->flags = SRELOC|SREAD|SWRITE|SFILE;
+		sec->flags = 0;
 		sec->fill = 0;
 		sec->aligment = 0;
 	}
@@ -230,7 +231,7 @@ tmpsym(TUINT val)
 		tmpalloc = alloc(sizeof(*sym), NALLOC);
 	sym = new(tmpalloc);
 	sym->value = val;
-	sym->flags = TABS;
+	sym->section = NULL;
 
 	return sym;
 }

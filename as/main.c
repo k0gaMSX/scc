@@ -7,7 +7,19 @@ static char sccsid[] = "@(#) ./as/main.c";
 #include <string.h>
 
 #include "../inc/scc.h"
+#include "../inc/arg.h"
 #include "as.h"
+
+char *argv0;
+char *outfile, *infile;
+
+
+static void
+cleanup(void)
+{
+	if (outfile)
+		remove(outfile);
+}
 
 static int
 cmp(const void *f1, const void *f2)
@@ -81,7 +93,7 @@ dopass(char *fname)
 	if (fclose(fp))
 		die("as: error reading from input file '%s'", fname);
 	if (pass == 2)
-		writeout("a.out");
+		writeout(outfile);
 	/*
 	 * kill tmp symbols because they are not needed anymore
 	 */
@@ -100,15 +112,27 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	if (argc != 2)
-		usage();
+	outfile = "a.out";
 
+	ARGBEGIN {
+	case 'o':
+		outfile = EARGF(usage());
+		break;
+	default:
+		usage();
+	} ARGEND
+
+	if (argc != 1)
+		usage();
+	infile = *argv;
+
+	atexit(cleanup);
 	iarch();
-	filename = argv[1];
 	for (pass = 1; pass <= 2; pass++) {
-		if (!dopass(filename))
+		if (!dopass(infile))
 			return 1;
 	}
+	outfile = NULL;
 
 	return 0;
 }

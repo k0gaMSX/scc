@@ -26,7 +26,7 @@ writestrings(FILE *fp)
 	off = sizeof(FORMAT);
 
 	for (sym = symlist; sym; sym = sym->next) {
-		if ((sym->flags & TMASK) == TREG)
+		if (sym->flags & FREG)
 			continue;
 		str = &sym->name;
 		len = strlen(str->buf) + 1;
@@ -57,6 +57,12 @@ getsecflags(Section *sp)
 		flags |= MYROSEC_WRITE;
 	if (sp->flags & SFILE)
 		flags |= MYROSEC_FILE;
+	if (sp->flags & SEXEC)
+		flags |= MYROSEC_EXEC;
+	if (sp->flags & SLOAD)
+		flags |= MYROSEC_LOAD;
+	if (sp->flags & SABS)
+		flags |= MYROSEC_ABS;
 	return flags;
 }
 
@@ -88,7 +94,7 @@ writesymbols(FILE *fp)
 	struct myrosym symbol;
 
 	for (sym = symlist; sym; sym = sym->next) {
-		if ((sym->flags & TMASK) == TREG)
+		if (sym->flags & FREG)
 			continue;
 		symbol.name = sym->name.offset;
 		symbol.type = -1;

@@ -92,7 +92,7 @@ iarch(void)
 	}, *bp;
 
 	for (bp = regs; bp->name; ++bp) {
-		Symbol *sym = lookup(bp->name, TREG);
+		Symbol *sym = lookup(bp->name, FREG);
 		sym->argtype = bp->type;
 	}
 }
