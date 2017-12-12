@@ -51,39 +51,21 @@ getargs(char *s)
 }
 
 static char *
-field(char **oldp)
+field(char **oldp, size_t *siz)
 {
 	char *s, *begin;
 	int c;
 
 	if ((begin = *oldp) == NULL)
 		return NULL;
-
-	for (s = begin; ; s++) {
-		switch (*s) {
-		case ';':
-			*s = '\0';
-		case '\0':
-			*oldp = NULL;
-			goto out_loop;
-		case '\t':
-			*s = '\0';
-			*oldp = s+1;
-			goto out_loop;
-		case '\'':
-			if (*++s == '\0' || *++s != '\'')
-				error("invalid character constant");
-			break;
-		case '"':
-			while ((c = *++s) && c != '"')
-				;
-			if (c == '\0')
-				error("unterminated string");
-			break;
-		}
+	if (s = memchr(begin, '\t', *siz)) {
+		*s++ = '\0';
+		*siz -= s - begin;
+		*oldp = s;
+	} else {
+		*oldp = NULL;
 	}
 
-out_loop:
 	return (*begin != '\0') ? begin : NULL;
 }
 
@@ -109,22 +91,21 @@ validlabel(char *name)
 }
 
 static int
-extract(char *s, struct line *lp)
+extract(char *s, size_t len, struct line *lp)
 {
 	int r = 0;
-	size_t len;
 
-	if (lp->label = field(&s)) {
-		len = strlen(lp->label);
-		if (lp->label[len-1] == ':')
-			lp->label[len-1] = '\0';
+	if (lp->label = field(&s, &len)) {
+		size_t n = strlen(lp->label);
+		if (lp->label[n-1] == ':')
+			lp->label[n-1] = '\0';
 		if (!validlabel(lp->label))
 			error("incorrect label name '%s'", lp->label);
 		r++;
 	}
-	if (lp->op = field(&s))
+	if (lp->op = field(&s, &len))
 		r++;
-	if (lp->args = field(&s))
+	if (lp->args = field(&s, &len))
 		r++;
 
 	if (s) {
@@ -141,6 +122,7 @@ int
 nextline(FILE *fp, struct line *lp)
 {
 	size_t n;
+	char *p;
 	static char buff[MAXLINE];
 
 repeat:
@@ -158,7 +140,12 @@ repeat:
 		goto repeat;
 	}
 	buff[n-1] = '\0';
-	if (extract(buff, lp) == 0)
+
+	if (p = memchr(buff, '#', n)) {
+		*p = '\0';
+		n = p - buff;
+	}
+	if (extract(buff, n, lp) == 0)
 		goto repeat;
 	return 1;
 }
