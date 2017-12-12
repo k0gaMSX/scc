@@ -41,7 +41,7 @@ int pass;
 static Symbol *hashtbl[HASHSIZ];
 static Alloc *tmpalloc;
 
-Symbol *linesym, *symlist;
+Symbol *linesym, *symlist, *symlast;
 
 #ifndef NDEBUG
 void
@@ -95,9 +95,16 @@ lookup(char *name, int type)
 	sym->value = 0;
 	sym->section = cursec;
 	sym->hash = *list;
-	sym->next = symlist;
+	sym->next = NULL;
 
-	return symlist = *list = sym;
+	*list = sym;
+	if (symlast)
+		symlast->next = sym;
+	symlast = sym;
+	if (!symlist)
+		symlist = sym;
+
+	return sym;
 }
 
 Symbol *
