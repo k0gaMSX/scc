@@ -67,6 +67,8 @@ LD	reg_q,reg_q	2	0xfd,0x40	r8_r8	Z80,R800
 LD	indir_HL,reg_r	1	0x70	xx_r8_2	Z80,R800,GB80
 LD	reg_r,indir_HL	1	0x46	r8_xx_1	Z80,R800,GB80
 
+LD	HL,imm16	3	0x21	r_imm16	Z80,R800,GB80
+
 ADD	regA,reg_r	1	0x80	xx_r8_2	Z80,R800,GB80
 ADD	regA,reg_p	2	0xdd,0x80	xx_r8_2	Z80,R800
 ADD	regA,reg_q	2	0xfd,0x80	xx_r8_2	Z80,R800
