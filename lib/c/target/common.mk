@@ -6,7 +6,7 @@ libc.a: $(OBJ)
 	ranlib $@
 
 dep:
-	gendep.sh
+	gendep.sh $(OBJ)
 
 clean:
 	rm -f *.o
