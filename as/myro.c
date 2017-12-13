@@ -190,6 +190,9 @@ reloc(Symbol *sym,
 	size_t tmp;
 	Reloc *p;
 
+	if (pass == 1)
+		return;
+
 	if (relcap == relsiz) {
 		tmp = ((relcap + 1) * 3) / 2;
 		if ((p = realloc(relocs, tmp * sizeof(Reloc))) == NULL) {
