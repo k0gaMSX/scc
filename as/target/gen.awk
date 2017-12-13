@@ -85,8 +85,10 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_A"
 		} else if (match(a, /^indir_HL/)) {
 			out = out "AINDER_HL"
+		} else if (match(a, /^HL/)) {
+			out = out "AREG_HL"
 		} else {
-			print "wrong arg", a
+			print "wrong arg", a > "/dev/stderr"
 			exit 1
 		}
 		a = substr(a, RLENGTH+1)

@@ -24,7 +24,7 @@ tobytes(TUINT v, int nbytes, int inc)
 void
 noargs(Op *op, Node **args)
 {
-	emit(cursec, op->bytes, op->size);
+	emit(op->bytes, op->size);
 }
 
 void
@@ -37,7 +37,7 @@ def(Node **args, int siz)
 
 		if (sym->flags & FUNDEF)
 			reloc(sym, 0, siz, siz * 8, 0);
-		emit(cursec, tobytes(sym->value, siz, endian), siz);
+		emit(tobytes(sym->value, siz, endian), siz);
 	}
 }
 

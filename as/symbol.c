@@ -135,7 +135,8 @@ deflabel(char *name)
 	sym = lookup(name, FUNDEF);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
-	sym->flags &= ~FUNDEF;
+	if (cursec->flags & SABS)
+		sym->flags &= ~FUNDEF;
 	sym->value = cursec->curpc;
 
 	if (*name != '.')
@@ -222,10 +223,12 @@ isections(void)
 }
 
 void
-emit(Section *sec, char *bytes, int n)
+emit(char *bytes, int n)
 {
-	if (sec->mem)
-		memcpy(&sec->mem[sec->pc - sec->base], bytes, n);
+	if (cursec->mem) {
+		size_t len = cursec->pc - cursec->base;
+		memcpy(&cursec->mem[len], bytes, n);
+	}
 	incpc(n);
 }
 
