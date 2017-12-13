@@ -2,7 +2,7 @@
 #define MYROHDR_SIZ    48
 #define MYROSECT_SIZ   24
 #define MYROSYM_SIZ    26
-#define MYROREL_SIZ    20
+#define MYROREL_SIZ    16
 
 #define MYROMAGIC_SIZ   4
 #define MYROMAGIC      "uobj"
