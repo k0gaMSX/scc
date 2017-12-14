@@ -87,6 +87,8 @@ function str2args(s, args, i, out, n)
 			out = out "AINDER_HL"
 		} else if (match(a, /^HL/)) {
 			out = out "AREG_HL"
+		} else if (match(a, /^sym/)) {
+			out = out "ASYM"
 		} else {
 			print "wrong arg", a > "/dev/stderr"
 			exit 1

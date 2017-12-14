@@ -37,6 +37,7 @@ enum common_args {
 	AINDEX,
 	ADIRECT,
 	AREG_OFF,
+	ASYM,
 	AMAX,
 	AREP = 128
 };

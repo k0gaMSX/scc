@@ -66,35 +66,37 @@ match(Op *op, Node **args)
 		np = *args++;
 		switch (arg & ~AREP) {
 		case AINDER_HL:
-			if (np->op != AINDIR)
+			if (np->addr != AINDIR)
 				return 0;
 			if (np->left->sym->argtype != AREG_HL)
 				return 0;
 			break;
 		case AREG_A:
-			if (np->op != AREG || np->sym->argtype != AREG_A)
+			if (np->addr != AREG || np->sym->argtype != AREG_A)
 				return 0;
 			break;
 		case AREG_RCLASS:
-			if (np->op != AREG)
+			if (np->addr != AREG)
 				return 0;
 			if (!rclass(np->sym->argtype))
 				return 0;
 			break;
 		case AREG_PCLASS:
-			if (np->op != AREG)
+			if (np->addr != AREG)
 				return 0;
 			if (!pclass(np->sym->argtype))
 				return 0;
 			break;
 		case AREG_QCLASS:
-			if (np->op != AREG)
+			if (np->addr != AREG)
 				return 0;
 			if (!qclass(np->sym->argtype))
 				return 0;
 			break;
 		case AREG_HL:
-			if (np->op != AREG && np->sym->argtype != AREG_HL)
+			if (np->addr != AREG)
+				return 0;
+			if (np->sym->argtype != AREG_HL)
 				return 0;
 			break;
 		case AIMM8:
@@ -105,6 +107,10 @@ match(Op *op, Node **args)
 				return 0;
 			if (toobig(np, arg))
 				error("overflow in immediate operand");
+			break;
+		case ASYM:
+			if (np->op != ASYM)
+				return 0;
 			break;
 		default:
 			abort();

@@ -356,7 +356,11 @@ content(Node *np)
 	case AIMM:
 		op = ADIRECT;
 	new_node:
-		return node(op, np, NULL);
+		np = node(op, np, NULL);
+		np->addr = op;
+		break;
+	default:
+		abort();
 	}
 	return np;
 }
