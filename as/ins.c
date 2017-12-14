@@ -35,7 +35,7 @@ def(Node **args, int siz)
 	for ( ; np = *args; ++args) {
 		Symbol *sym = np->sym;
 
-		if (sym->flags & FUNDEF)
+		if (sym->flags & FRELOC)
 			reloc(sym, 0, siz, siz * 8, 0);
 		emit(tobytes(sym->value, siz, endian), siz);
 	}

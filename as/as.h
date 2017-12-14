@@ -8,6 +8,7 @@ enum symflags {
 	FEXTERN = 1 << 2,
 	FUNDEF  = 1 << 3,
 	FDEDUP  = 1 << 4,
+	FRELOC  = 1 << 5,
 };
 
 enum secflags {
