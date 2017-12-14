@@ -14,6 +14,7 @@
 .DQ	imm64+	0	none	defq	Z80,R800,GB80
 .DEFQ	imm64+	0	none	defq	Z80,R800,GB80
 .EQU	imm16	0	none	equ	Z80,R800,GB80
+=	imm16	0	none	equ	Z80,R800,GB80
 NOP	none	1	0x00	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80
 DI	none	1	0xf3	noargs	Z80,R800,GB80
