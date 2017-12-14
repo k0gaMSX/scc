@@ -96,7 +96,7 @@ match(Op *op, Node **args)
 		case AREG_HL:
 			if (np->op != AREG && np->sym->argtype != AREG_HL)
 				return 0;
-			return 1;
+			break;
 		case AIMM8:
 		case AIMM16:
 		case AIMM32:
