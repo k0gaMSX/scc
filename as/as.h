@@ -42,6 +42,18 @@ enum common_args {
 	AREP = 128
 };
 
+enum tokens {
+	EOS = -1,
+	IDEN = 1,
+	NUMBER,
+	REG,
+	STRING,
+	SHL,
+	SHR,
+	GE,
+	LE,
+};
+
 #define MAXSYM 63
 
 typedef struct reloc Reloc;

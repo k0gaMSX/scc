@@ -10,18 +10,6 @@ static char sccsid[] = "@(#) ./as/node.c";
 
 #define NNODES   10
 
-enum tokens {
-	EOS = -1,
-	IDEN = 1,
-	NUMBER,
-	REG,
-	STRING,
-	SHL,
-	SHR,
-	GE,
-	LE,
-};
-
 union yylval {
 	TUINT val;
 	Symbol *sym;
