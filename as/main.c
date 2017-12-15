@@ -59,7 +59,7 @@ as(char *text, char *xargs)
 			break;
 	}
 	if (op == lim) {
-		error("invalid operands");
+		error("invalid operands for '%s'", text);
 		return;
 	}
 	(*op->format)(op, args);
