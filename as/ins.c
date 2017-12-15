@@ -3,6 +3,8 @@ static char sccsid[] = "@(#) ./as/ins.c";
 #include "../inc/scc.h"
 #include "as.h"
 
+extern Section *sabs, *sbss, *sdata, *stext;
+
 char *
 tobytes(TUINT v, int nbytes, int inc)
 {
@@ -79,23 +81,23 @@ section(Op *op, Node **args)
 {
 	Symbol *sym = args[0]->sym;
 
-	setsection(sym->name.buf);
+	setsec(sym->name.buf, NULL);
 }
 
 void
 text(Op *op, Node **args)
 {
-	setsection("text");
+	cursec = stext;
 }
 
 void
 data(Op *op, Node **args)
 {
-	setsection("data");
+	cursec = sdata;
 }
 
 void
 bss(Op *op, Node **args)
 {
-	setsection("bss");
+	cursec = sbss;
 }

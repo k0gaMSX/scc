@@ -9,6 +9,8 @@ enum symflags {
 	FUNDEF  = 1 << 3,
 	FDEDUP  = 1 << 4,
 	FRELOC  = 1 << 5,
+	FSECT   = 1 << 6,
+	FNTYPE  = 1 << 7, 
 };
 
 enum secflags {
@@ -99,7 +101,7 @@ struct op {
 };
 
 struct section {
-	String name;
+	Symbol *sym;
 	char *mem;
 	unsigned char flags;
 	unsigned char fill;
@@ -132,9 +134,10 @@ struct node {
 };
 
 /* symbol.c */
-extern void isections(void);
+extern void cleansecs(void);
+extern void isecs(void);
 extern void emit(char *bytes, int nbytes);
-extern Section *setsection(char *name);
+extern Section *setsec(char *name, char *attr);
 extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
 extern int toobig(Node *np, int type);
@@ -142,7 +145,7 @@ extern void dumpstab(char *msg);
 extern String newstring(char *s);
 
 /* main.c */
-extern Symbol *lookup(char *name, int type);
+extern Symbol *lookup(char *name);
 extern Symbol *deflabel(char *name);
 
 /* parser.c */

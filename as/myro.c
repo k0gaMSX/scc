@@ -35,14 +35,6 @@ writestrings(FILE *fp)
 		off += len;
 	}
 
-	for (sp = seclist; sp; sp = sp->next) {
-		str = &sp->name;
-		len = strlen(str->buf) + 1;
-		fwrite(str->buf, len, 1, fp);
-		str->offset = off;
-		off += len;
-	}
-
 	return off;
 }
 
@@ -78,7 +70,7 @@ writesections(FILE *fp)
 		if (id == MYROMAXSEC)
 			die("too many sections for a myro file");
 		sp->id = id++;
-		sect.name = sp->name.offset;
+		sect.name = sp->sym->name.offset;
 		sect.flags = getsecflags(sp);
 		sect.fill = sp->fill;
 		sect.aligment = sp->aligment;
@@ -114,7 +106,7 @@ writesymbols(FILE *fp)
 	struct myrosym symbol;
 
 	for (sym = symlist; sym; sym = sym->next) {
-		if (sym->flags & FREG)
+		if (sym->flags & (FREG|FSECT))
 			continue;
 		symbol.name = sym->name.offset;
 		symbol.type = -1;

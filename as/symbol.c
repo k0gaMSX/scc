@@ -11,37 +11,14 @@ static char sccsid[] = "@(#) ./as/symbol.c";
 #define HASHSIZ 64
 #define NALLOC  10
 
-static Section abss = {
-	.name  = (String) {"abs"},
-	.flags = SABS|SREAD|SWRITE|SFILE|SLOAD,
-};
-
-static Section bss = {
-	.name  = (String) {"bss"},
-	.flags = SREAD|SWRITE|SLOAD,
-	.next  = &abss,
-};
-
-static Section data = {
-	.name  = (String) {"data"},
-	.flags = SREAD|SWRITE|SFILE|SLOAD,
-	.next  = &bss,
-};
-
-static Section text = {
-	.name  = (String) {"text"},
-	.flags = SREAD|SEXEC|SLOAD|SFILE,
-	.next  = &data,
-};
-
-Section *cursec = &text, *seclist = &text;
-
+Section *cursec, *seclist;
+Section *sabs, *sbss, *sdata, *stext;
+Symbol *linesym, *symlist;
 int pass;
 
-static Symbol *hashtbl[HASHSIZ];
+static Symbol *hashtbl[HASHSIZ], *symlast;
 static Alloc *tmpalloc;
 
-Symbol *linesym, *symlist, *symlast;
 
 #ifndef NDEBUG
 void
@@ -65,7 +42,7 @@ dumpstab(char *msg)
 #endif
 
 Symbol *
-lookup(char *name, int type)
+lookup(char *name)
 {
 	unsigned h;
 	Symbol *sym, **list;
@@ -81,17 +58,13 @@ lookup(char *name, int type)
 	list = &hashtbl[h];
 	for (sym = *list; sym; sym = sym->hash) {
 		t = sym->name.buf;
-		if (c != toupper(*t) || casecmp(t, name))
-			continue;
-		symtype = sym->flags;
-		if (((symtype | type) & FUNDEF) == 0 && symtype != type)
-			continue;
-		return sym;
+		if (c == toupper(*t) && !casecmp(t, name))
+			return sym;
 	}
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = newstring(name);
-	sym->flags = FRELOC | FUNDEF | type;
+	sym->flags = FRELOC | FUNDEF | FNTYPE;
 	sym->value = 0;
 	sym->section = cursec;
 	sym->hash = *list;
@@ -132,13 +105,14 @@ deflabel(char *name)
 		name = label;
 	}
 
-	sym = lookup(name, FUNDEF);
+	sym = lookup(name);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
 	if (cursec->flags & SABS)
 		sym->flags &= ~FRELOC;
 	sym->flags &= ~FUNDEF;
 	sym->value = cursec->curpc;
+	sym->section = cursec;
 
 	if (*name != '.')
 		cursym = sym;
@@ -177,50 +151,97 @@ incpc(int siz)
 	}
 }
 
-
-static void
-isect(Section *sec)
+static int
+secflags(char *attr)
 {
-	TUINT siz;
+	int c, flags;
 
-	sec->curpc = sec->pc = sec->base;
-	if (pass == 1 || !(sec->flags & SFILE))
-		return;
+	if (!attr)
+		return 0;
 
-	siz = sec->max - sec->base;
-	if (siz > SIZE_MAX)
-		die("out of memory");
-	sec->mem = xmalloc(sec->max - sec->base);
+	for (flags = 0; c = *attr++; ) {
+		switch (c) {
+		case 'w':
+			flags |= SWRITE;
+			break;
+		case 'r':
+			flags |= SREAD;
+			break;
+		case 'x':
+			flags |= SEXEC;
+			break;
+		case 'f':
+			flags |= SFILE;
+			break;
+		case 'l':
+			flags |= SLOAD;
+			break;
+		case 'a':
+			flags |= SABS;
+			break;
+		}
+	}
+
+	return flags;
 }
 
 Section *
-setsection(char *name)
+setsec(char *name, char *attr)
 {
 	Section *sec;
+	Symbol *sym;
+	int flags;
 
-	for (sec = seclist; sec; sec = sec->next) {
-		if (!strcmp(sec->name.buf, name))
-			break;
-	}
-	if (!sec) {
+	cursec = NULL;
+	sym = lookup(name);
+	if ((sym->flags & (FNTYPE | FSECT)) == 0)
+		error("invalid section name '%s'", name);
+
+	if ((sec = sym->section) == NULL) {
 		sec = xmalloc(sizeof(*sec));
-		sec->name = newstring(name);
+		sec->sym = sym;
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
 		sec->flags = 0;
 		sec->fill = 0;
 		sec->aligment = 0;
+		sec->next = seclist;
+		seclist = sec;
+
+		sym->section = sec;
+		sym->flags = FSECT;
 	}
+	sec->flags |= secflags(attr);
+
 	return cursec = sec;
 }
 
 void
-isections(void)
+isecs(void)
+{
+	sabs = setsec(".abs", "rwxafl");
+	sbss = setsec(".bss", "rwl");
+	sdata = setsec(".data", "rwfl");
+	stext = setsec(".text", "rxfl");
+}
+
+void
+cleansecs(void)
 {
 	Section *sec;
+	TUINT siz;
 
-	for (sec = seclist; sec; sec = sec->next)
-		isect(sec);
+	for (sec = seclist; sec; sec = sec->next) {
+		sec->curpc = sec->pc = sec->base;
+		if (pass == 1 || !(sec->flags & SFILE))
+			continue;
+
+		siz = sec->max - sec->base;
+		if (siz > SIZE_MAX)
+			die("out of memory");
+		sec->mem = xmalloc(sec->max - sec->base);
+	}
+	cursec = stext;
 }
 
 void

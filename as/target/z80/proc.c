@@ -45,7 +45,8 @@ iarch(void)
 	}, *bp;
 
 	for (bp = regs; bp->name; ++bp) {
-		Symbol *sym = lookup(bp->name, FREG);
+		Symbol *sym = lookup(bp->name);
+		sym->flags = FREG;
 		sym->argtype = bp->type;
 	}
 }

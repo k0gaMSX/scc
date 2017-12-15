@@ -200,7 +200,7 @@ iden(void)
 	}
 
 	tok2str();
-	yylval.sym = lookup(yytext, FUNDEF);
+	yylval.sym = lookup(yytext);
 
 	return IDEN;
 }
@@ -267,9 +267,9 @@ reg(void)
 	while (isalnum(c = *endp))
 		++endp;
 	tok2str();
-	yylval.sym = lookup(yytext, FREG);
-	if (!yylval.sym->argtype)
-		error("incorrect register name");
+	yylval.sym = lookup(yytext);
+	if ((yylval.sym->flags & FREG) == 0)
+		error("incorrect register name '%s'", yytext);
 	return REG;
 }
 

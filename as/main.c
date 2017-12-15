@@ -75,7 +75,7 @@ dopass(char *fname)
 
 	if ((fp = fopen(fname, "r")) == NULL)
 		die("as: error opening '%s'", fname);
-	isections();
+	cleansecs();
 
 	setjmp(recover);
 	while (nextline(fp, &line)) {
@@ -128,6 +128,7 @@ main(int argc, char *argv[])
 
 	atexit(cleanup);
 	iarch();
+	isecs();
 	for (pass = 1; pass <= 2; pass++) {
 		if (!dopass(infile))
 			return 1;
