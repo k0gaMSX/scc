@@ -73,3 +73,29 @@ equ(Op *op, Node **args)
 	else
 		linesym->value = (*args)->sym->value;
 }
+
+void
+section(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+
+	setsection(sym->name.buf);
+}
+
+void
+text(Op *op, Node **args)
+{
+	setsection("text");
+}
+
+void
+data(Op *op, Node **args)
+{
+	setsection("data");
+}
+
+void
+bss(Op *op, Node **args)
+{
+	setsection("bss");
+}

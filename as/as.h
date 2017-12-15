@@ -122,7 +122,7 @@ struct node {
 /* symbol.c */
 extern void isections(void);
 extern void emit(char *bytes, int nbytes);
-extern Section *section(char *name);
+extern Section *setsection(char *name);
 extern Symbol *tmpsym(TUINT val);
 extern void killtmp(void);
 extern int toobig(Node *np, int type);

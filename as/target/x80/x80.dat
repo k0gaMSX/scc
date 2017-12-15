@@ -1,5 +1,9 @@
 # Tab 16, tabs 16, :set ts=16
 # op	args	size	bytes	format	cpu
+.SECTION	sym	0	none	section	Z80,R800,GB80
+.TEXT	none	0	none	text	Z80,R800,GB80
+.DATA	none	0	none	data	Z80,R800,GB80
+.BSS	none	0	none	bss	Z80,R800,GB80
 .DB	imm8+	0	none	defb	Z80,R800,GB80
 .DEFB	imm8+	0	none	defb	Z80,R800,GB80
 .BYTE	imm8+	0	none	defb	Z80,R800,GB80

@@ -194,7 +194,7 @@ isect(Section *sec)
 }
 
 Section *
-section(char *name)
+setsection(char *name)
 {
 	Section *sec;
 
