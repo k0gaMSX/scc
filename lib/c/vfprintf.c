@@ -44,26 +44,26 @@ getnum(va_list va, int flags, int *sign)
 	intmax_t val;
 
 	if (flags & CHAR) {
-		val = uval = va_arg(va, int);
+		val = va_arg(va, int);
 		uval = (unsigned char) uval;
 	} else if (flags & SHORT) {
-		val = uval = va_arg(va, int);
-		uval = (unsigned short) uval;
+		val = va_arg(va, int);
+		uval = (unsigned short) val;
 	} else if (flags & LONG) {
-		val = uval = va_arg(va, long);
-		uval = (unsigned long) uval;
+		val = va_arg(va, long);
+		uval = (unsigned long) val;
 	} else if (flags & LLONG) {
 		val = uval = va_arg(va, long long);
 		uval = (unsigned long long) uval;
 	} else if (flags & SIZET) {
-		val = uval = va_arg(va, size_t);
-		uval = (size_t) uval;
+		uval = va_arg(va, size_t);
 	} else if (flags & INTMAX) {
-		val = uval = va_arg(va, uintmax_t);
+		val = va_arg(va, intmax_t);
+		uval = (uintmax_t) val;
 	} else if (flags & VOIDPTR) {
-		val = uval = (uintmax_t) va_arg(va, void *);
+		uval = (uintmax_t) va_arg(va, void *);
 	} else {
-		val = uval = va_arg(va, int);
+		val = va_arg(va, int);
 		uval = (unsigned) uval;
 	}
 
