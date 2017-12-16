@@ -80,8 +80,12 @@ void
 section(Op *op, Node **args)
 {
 	Symbol *sym = args[0]->sym;
+	char *attr = NULL;
 
-	setsec(sym->name.buf, NULL);
+	if (args[1])
+		attr = args[1]->sym->name.buf;
+
+	setsec(sym->name.buf, attr);
 }
 
 void

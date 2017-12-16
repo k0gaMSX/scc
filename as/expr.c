@@ -237,9 +237,13 @@ string(void)
 	int c;
 	char *p;
 
-	for (++endp; *endp++ != '"'; )
+	for (++endp; *endp != '"'; ++endp)
 		;
+	++endp;
 	tok2str();
+	yylval.sym = tmpsym(0);
+	/* FIXME: this memory is not freed ever */
+	yylval.sym->name.buf = xstrdup(yytext);
 
 	return STRING;
 }
