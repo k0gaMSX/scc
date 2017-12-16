@@ -13,6 +13,7 @@ enum {
 	SIZE,
 	XSTRING,
 	ASCII,
+	TYPE,
 };
 
 char *
@@ -140,6 +141,9 @@ symexp(int which, Op *op, Node **args)
 	case SIZE:
 		sym->size = exp->value;
 		break;
+	case TYPE:
+		sym->type.buf = xstrdup(exp->name.buf);
+		break;
 	}
 }
 
@@ -159,6 +163,12 @@ void
 size(Op *op, Node **args)
 {
 	symexp(SIZE, op, args);
+}
+
+void
+type(Op *op, Node **args)
+{
+	symexp(TYPE, op, args);
 }
 
 void

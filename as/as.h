@@ -121,6 +121,7 @@ struct section {
 
 struct symbol {
 	String name;
+	String type;
 	unsigned char flags;
 	unsigned char pass;
 	unsigned char argtype;
