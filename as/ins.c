@@ -206,3 +206,22 @@ global(Op *op, Node **args)
 
 	sym->flags |= FGLOBAL;
 }
+
+void
+align(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+	TUINT curpc, pc, al;
+
+	if ((sym->flags & FABS) == 0)
+		error("align expression is not an absolute expression");
+	if ((al = sym->value) == 0)
+		return;
+
+	al--;
+	curpc = cursec->curpc;
+	pc = curpc+al & ~al;
+
+	for (al = pc - curpc; al > 0; --al)
+		emit((char []) {0}, 1);
+}

@@ -28,6 +28,7 @@
 .EXTERN	sym+	0	none	extrn	Z80,R800,GB80
 .STRING	string+	0	none	string	Z80,R800,GB80
 .ASCII	string+	0	none	ascii	Z80,R800,GB80
+.ALIGN	imm16+	0	none	align	Z80,R800,GB80
 
 NOP	none	1	0x00	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80
