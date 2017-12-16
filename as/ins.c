@@ -235,3 +235,9 @@ align(Op *op, Node **args)
 	for (al = pc - curpc; al > 0; --al)
 		emit((char []) {0}, 1);
 }
+
+void
+end(Op *op, Node **args)
+{
+	endpass = 1;
+}

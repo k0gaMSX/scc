@@ -12,6 +12,7 @@ static char sccsid[] = "@(#) ./as/main.c";
 
 char *argv0;
 char *outfile, *infile;
+int endpass;
 
 
 static void
@@ -77,8 +78,9 @@ dopass(char *fname)
 		die("as: error opening '%s'", fname);
 	cleansecs();
 
+	endpass = 0;
 	setjmp(recover);
-	while (nextline(fp, &line)) {
+	while (!endpass && nextline(fp, &line)) {
 		linesym = NULL;
 
 		if (line.label)
