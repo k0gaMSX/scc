@@ -81,12 +81,18 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_QCLASS"
 		} else if (match(a, /^reg_r/)) {
 			out = out "AREG_RCLASS"
+		} else if (match(a, /^reg_dd/)) {
+			out = out "AREG_DDCLASS"
 		} else if (match(a, /^regA/)) {
 			out = out "AREG_A"
 		} else if (match(a, /^indir_HL/)) {
 			out = out "AINDER_HL"
-		} else if (match(a, /^HL/)) {
+		} else if (match(a, /^regHL/)) {
 			out = out "AREG_HL"
+		} else if (match(a, /^regIX/)) {
+			out = out "AREG_IX"
+		} else if (match(a, /^regIY/)) {
+			out = out "AREG_IY"
 		} else if (match(a, /^sym/)) {
 			out = out "ASYM"
 		} else if (match(a, /^string/)) {

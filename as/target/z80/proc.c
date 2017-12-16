@@ -67,7 +67,8 @@ match(Op *op, Node **args)
 		if ((np = *args++) == NULL)
 			return (arg & (AREP|AOPT)) != 0;
 
-		switch (arg & ~(AREP|AOPT)) {
+		arg &= ~(AREP|AOPT);
+		switch (arg) {
 		case AINDER_HL:
 			if (np->addr != AINDIR)
 				return 0;
@@ -75,7 +76,10 @@ match(Op *op, Node **args)
 				return 0;
 			break;
 		case AREG_A:
-			if (np->addr != AREG || np->sym->argtype != AREG_A)
+		case AREG_HL:
+		case AREG_IY:
+		case AREG_IX:
+			if (np->addr != AREG || np->sym->argtype != arg)
 				return 0;
 			break;
 		case AREG_RCLASS:
@@ -96,10 +100,10 @@ match(Op *op, Node **args)
 			if (!qclass(np->sym->argtype))
 				return 0;
 			break;
-		case AREG_HL:
+		case AREG_DDCLASS:
 			if (np->addr != AREG)
 				return 0;
-			if (np->sym->argtype != AREG_HL)
+			if (!ddclass(np->sym->argtype))
 				return 0;
 			break;
 		case AIMM8:

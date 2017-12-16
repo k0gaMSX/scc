@@ -58,6 +58,20 @@ qclass(int reg)
 	}
 }
 
+int
+ddclass(int reg)
+{
+	switch (reg) {
+	case AREG_BC:
+	case AREG_DE:
+	case AREG_HL:
+	case AREG_SP:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 static int
 reg2int(int reg)
 {
@@ -73,6 +87,13 @@ reg2int(int reg)
 	case AREG_IYL:
 	case AREG_L:   return 5;
 	case AREG_A:   return 7;
+	case AREG_BC:  return 0;
+	case AREG_DE:  return 1;
+	case AREG_HL:
+	case AREG_IX:
+	case AREG_IY:  return 2;
+	case AREG_AF:
+	case AREG_SP:  return 3;
 	default:       abort();
 	}
 }
@@ -108,7 +129,7 @@ imm8(Op *op, Node **args)
 }
 
 void
-r_imm16(Op *op, Node **args)
+imm16(Op *op, Node **args)
 {
 	Node *par1, *par2;
 	unsigned char buf[3];
@@ -166,5 +187,24 @@ r8_xx(Op *op, Node **args)
 
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= reg2int(par1->sym->argtype) << 3;
+	emit(buf, n);
+}
+
+void
+r16_imm16(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[4];
+	int n = op->size;
+	unsigned val;
+
+	par1 = args[0];
+	par2 = args[1];
+
+	memcpy(buf, op->bytes, n-1);
+	val = par2->sym->value;
+	buf[n-1] = val >> 8;
+	buf[n-2] = val;
+	buf[n-3] |= reg2int(par1->sym->argtype) << 3;
 	emit(buf, n);
 }
