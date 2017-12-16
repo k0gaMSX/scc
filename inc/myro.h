@@ -56,10 +56,11 @@ enum myrosecflg {
 };
 
 enum myrosymflg {
-	MYROSYM_DEDUP  = 1 << 0,
-	MYROSYM_COMMON = 1 << 1,
-	MYROSYM_EXTERN = 1 << 2,
+	MYROSYM_COMMON = 1 << 0,
+	MYROSYM_EXTERN = 1 << 1,
+	MYROSYM_GLOBAL = 1 << 2,
 	MYROSYM_UNDEF  = 1 << 3,
+	MYROSYM_ABS    = 1 << 4,
 };
 
 extern int wrmyrohdr(FILE *fp, struct myrohdr *hdr);

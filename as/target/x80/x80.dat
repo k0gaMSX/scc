@@ -24,6 +24,8 @@
 .SIZE	imm16	0	none	size	Z80,R800,GB80
 .COMM	sym,imm16	0	none	common	Z80,R800,GB80
 .COMM	imm16	0	none	common	Z80,R800,GB80
+.GLOBL	sym+	0	none	global	Z80,R800,GB80
+.EXTERN	sym+	0	none	extrn	Z80,R800,GB80
 
 NOP	none	1	0x00	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80

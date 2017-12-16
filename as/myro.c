@@ -94,8 +94,6 @@ getsymflags(Symbol *sym)
 		flags |= MYROSYM_EXTERN;
 	if (sym->flags & FUNDEF)
 		flags |= MYROSYM_UNDEF;
-	if (sym->flags & FDEDUP)
-		flags |= MYROSYM_DEDUP;
 	return flags;
 }
 

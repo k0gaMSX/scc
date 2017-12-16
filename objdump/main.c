@@ -146,8 +146,6 @@ symflags(struct myrosym *sym)
 	static char flags[10];
 	char *s = flags + sizeof(flags);
 
-	if (sym->flags & MYROSYM_DEDUP)
-		*--s = 'D';
 	if (sym->flags & MYROSYM_COMMON)
 		*--s = 'C';
 	if (sym->flags & MYROSYM_EXTERN)

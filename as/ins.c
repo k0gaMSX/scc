@@ -159,3 +159,19 @@ bss(Op *op, Node **args)
 {
 	cursec = sbss;
 }
+
+void
+extrn(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+
+	sym->flags |= FEXTERN;
+}
+
+void
+global(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+
+	sym->flags |= FGLOBAL;
+}
