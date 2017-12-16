@@ -5,6 +5,12 @@ static char sccsid[] = "@(#) ./as/ins.c";
 
 extern Section *sabs, *sbss, *sdata, *stext;
 
+enum {
+	EQU,
+	COMMON,
+	SIZE,
+};
+
 char *
 tobytes(TUINT v, int nbytes, int inc)
 {
@@ -67,13 +73,61 @@ defq(Op *op, Node **args)
 	def(args, 8);
 }
 
+static void
+symexp(int which, Op *op, Node **args)
+{
+	Symbol *sym, *exp;
+	static char *cmds[] = {
+		[EQU] = "equ",
+		[COMMON] = "common",
+		[SIZE] = "size",
+	};
+	char *cmd = cmds[which];
+
+	if (args[1]) {
+		sym = args[0]->sym;
+		exp = args[1]->sym;
+	} else if (linesym) {
+		sym = linesym;
+		exp = args[0];
+	} else {
+		error("%s pseudo instruction lacks a label", cmd);
+	}
+
+	if ((exp->flags & FABS) == 0)
+		error("%s expression is not an absolute expression", cmd);
+
+	switch (which) {
+	case EQU:
+		if (pass == 1 && (sym->flags & FUNDEF) == 0)
+			error("redefinition of symbol '%s'", sym->name.buf);
+		sym->value = exp->value;
+		sym->flags &= ~FUNDEF;
+		break;
+	case COMMON:
+		sym->flags |= FCOMMON;
+	case SIZE:
+		sym->size = exp->value;
+		break;
+	}
+}
+
 void
 equ(Op *op, Node **args)
 {
-	if (!linesym)
-		error("label definition lacks a label");
-	else
-		linesym->value = (*args)->sym->value;
+	symexp(EQU, op, args);
+}
+
+void
+common(Op *op, Node **args)
+{
+	symexp(COMMON, op, args);
+}
+
+void
+size(Op *op, Node **args)
+{
+	symexp(SIZE, op, args);
 }
 
 void

@@ -93,18 +93,18 @@ sectflags(struct myrosect *sec)
 	static char flags[10];
 	char *s = flags + sizeof(flags);
 
-	if (sec->flags & MYROSEC_READ)
-		*--s = 'R';
-	if (sec->flags & MYROSEC_WRITE)
-		*--s = 'W';
-	if (sec->flags & MYROSEC_EXEC)
-		*--s = 'X';
 	if (sec->flags & MYROSEC_LOAD)
 		*--s = 'L';
 	if (sec->flags & MYROSEC_FILE)
 		*--s = 'F';
 	if (sec->flags & MYROSEC_ABS)
 		*--s = 'A';
+	if (sec->flags & MYROSEC_EXEC)
+		*--s = 'X';
+	if (sec->flags & MYROSEC_WRITE)
+		*--s = 'W';
+	if (sec->flags & MYROSEC_READ)
+		*--s = 'R';
 	return s;
 }
 
@@ -165,22 +165,24 @@ printsymbols(struct obj_info *obj)
 	struct myrohdr *hdr = &obj->hdr;
 
 	printf("symbols:\n"
-	       " [Nr]\t%s\t%-16s\t%s\t%s\t%s\n",
+	       " [Nr]\t%s\t%-16s\t%s\t%s\t%s\t%s\n",
 	       "Name",
 	       "Value",
 	       "Section",
 	       "Flags",
+	       "Size",
 	       "Type");
 	n = hdr->symsize / MYROSYM_SIZ;
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(obj->fp, &sym) < 0)
 			return -1;
-		printf(" [%2llu]\t%s\t%016llX\t%u\t%s\t%s\n",
+		printf(" [%2llu]\t%s\t%016llX\t%u\t%s\t%llu\t%s\n",
 		       i,
 		       getstring(sym.name),
 		       sym.offset,
 		       sym.section,
 		       symflags(&sym),
+		       sym.len,
 		       getstring(sym.type));
 	}
 	return 0;

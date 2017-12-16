@@ -3,14 +3,18 @@
  * type of segment
  */
 enum symflags {
-	FREG    = 1 << 0,
-	FCOMMON = 1 << 1,
-	FEXTERN = 1 << 2,
-	FUNDEF  = 1 << 3,
-	FDEDUP  = 1 << 4,
-	FRELOC  = 1 << 5,
-	FSECT   = 1 << 6,
-	FNTYPE  = 1 << 7, 
+	FTMASK   = 0x3,
+	FNTYPE  = 0,
+	FREG    = 1,
+	FSECT   = 2,
+	FSYM    = 3,
+
+	FCOMMON = 1 << 2,
+	FEXTERN = 1 << 3,
+	FUNDEF  = 1 << 4,
+	FDEDUP  = 1 << 5,
+	FRELOC  = 1 << 6,
+	FABS    = 1 << 7,
 };
 
 enum secflags {
@@ -95,7 +99,7 @@ struct reloc {
 
 struct op {
 	unsigned char flags;
-	char size;
+	unsigned char size;
 	void (*format)(Op *, Node **);
 	unsigned char *bytes;
 	unsigned char *args;
@@ -121,6 +125,7 @@ struct symbol {
 	unsigned char pass;
 	unsigned char argtype;
 	TUINT value;
+	TUINT size;
 	Section *section;
 	struct symbol *next;
 	struct symbol *hash;

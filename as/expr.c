@@ -275,7 +275,7 @@ reg(void)
 		++endp;
 	tok2str();
 	yylval.sym = lookup(yytext);
-	if ((yylval.sym->flags & FREG) == 0)
+	if ((yylval.sym->flags & FTMASK) != FREG)
 		error("incorrect register name '%s'", yytext);
 	return REG;
 }

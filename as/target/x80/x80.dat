@@ -17,8 +17,14 @@
 .INT	imm16+	0	none	defd	Z80,R800,GB80
 .DQ	imm64+	0	none	defq	Z80,R800,GB80
 .DEFQ	imm64+	0	none	defq	Z80,R800,GB80
+.EQU	sym,imm16	0	none	equ	Z80,R800,GB80
 .EQU	imm16	0	none	equ	Z80,R800,GB80
 =	imm16	0	none	equ	Z80,R800,GB80
+.SIZE	sym,imm16	0	none	size	Z80,R800,GB80
+.SIZE	imm16	0	none	size	Z80,R800,GB80
+.COMM	sym,imm16	0	none	common	Z80,R800,GB80
+.COMM	imm16	0	none	common	Z80,R800,GB80
+
 NOP	none	1	0x00	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80
 DI	none	1	0xf3	noargs	Z80,R800,GB80
