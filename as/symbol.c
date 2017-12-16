@@ -219,10 +219,10 @@ setsec(char *name, char *attr)
 void
 isecs(void)
 {
-	sabs = setsec(".abs", "rwxafl");
-	sbss = setsec(".bss", "rwl");
-	sdata = setsec(".data", "rwfl");
-	stext = setsec(".text", "rxfl");
+	sabs = setsec(".abs", "rwx");
+	sbss = setsec(".bss", "rwf");
+	sdata = setsec(".data", "rw");
+	stext = setsec(".text", "rx");
 }
 
 void
