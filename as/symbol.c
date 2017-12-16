@@ -108,8 +108,10 @@ deflabel(char *name)
 	sym = lookup(name);
 	if (pass == 1 && (sym->flags & FUNDEF) == 0)
 		error("redefinition of label '%s'", name);
-	if (cursec->flags & SABS)
+	if (cursec->flags & SABS) {
 		sym->flags &= ~FRELOC;
+		sym->flags |= FABS;
+	}
 	sym->flags &= ~FUNDEF;
 	sym->value = cursec->curpc;
 	sym->section = cursec;
