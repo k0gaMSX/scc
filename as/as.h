@@ -41,7 +41,8 @@ enum common_args {
 	AREG_OFF,
 	ASYM,
 	AMAX,
-	AREP = 128
+	AOPT = 64,
+	AREP = 128,
 };
 
 enum tokens {

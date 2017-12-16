@@ -61,11 +61,13 @@ match(Op *op, Node **args)
 	if (!op->args)
 		return args == NULL;
 
-	for (p = op->args; (arg = *p) && *args; ++p) {
+	for (p = op->args; arg = *p; ++p) {
 		if (arg & AREP)
 			--p;
-		np = *args++;
-		switch (arg & ~AREP) {
+		if ((np = *args++) == NULL)
+			return (arg & (AREP|AOPT)) != 0;
+
+		switch (arg & ~(AREP|AOPT)) {
 		case AINDER_HL:
 			if (np->addr != AINDIR)
 				return 0;
@@ -113,10 +115,14 @@ match(Op *op, Node **args)
 			if (np->addr != AIMM || np->op != IDEN)
 				return 0;
 			break;
+		case ASTR:
+			if (np->addr != ASTR)
+				return 0;
+			break;
 		default:
 			abort();
 		}
 	}
 
-	return (!arg || arg & AREP) && !*args;
+	return *args == NULL;
 }

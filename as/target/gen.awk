@@ -89,6 +89,8 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_HL"
 		} else if (match(a, /^sym/)) {
 			out = out "ASYM"
+		} else if (match(a, /^string/)) {
+			out = out "ASTR"
 		} else {
 			print "wrong arg", a > "/dev/stderr"
 			exit 1
@@ -96,6 +98,8 @@ function str2args(s, args, i, out, n)
 		a = substr(a, RLENGTH+1)
 		if (a ~ /^\+$/) {
 			return out "|AREP"
+		} else if (a ~ /^\?$/) {
+			return out "|AOPT"
 		} else if (a != "") {
 			print "wrong arg", a > "/dev/stderr"
 			exit 1
