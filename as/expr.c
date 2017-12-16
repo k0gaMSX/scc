@@ -195,10 +195,11 @@ iden(void)
 		case '$':
 			continue;
 		default:
-			break;
+			goto out_loop;
 		}
 	}
 
+out_loop:
 	tok2str();
 	yylval.sym = lookup(yytext);
 
@@ -236,8 +237,10 @@ string(void)
 	int c;
 	char *p;
 
-	while (*endp != '"')
-		++endp;
+	for (++endp; *endp++ != '"'; )
+		;
+	tok2str();
+
 	return STRING;
 }
 
