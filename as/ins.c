@@ -1,5 +1,7 @@
 static char sccsid[] = "@(#) ./as/ins.c";
 
+#include <string.h>
+
 #include "../inc/scc.h"
 #include "as.h"
 
@@ -9,6 +11,8 @@ enum {
 	EQU,
 	COMMON,
 	SIZE,
+	XSTRING,
+	ASCII,
 };
 
 char *
@@ -35,12 +39,39 @@ noargs(Op *op, Node **args)
 	emit(op->bytes, op->size);
 }
 
+static void
+xstring(int which, Node **args)
+{
+	Node *np;
+	char *s;
+	size_t len;
+
+	while (np = *args++) {
+		s = np->sym->name.buf;
+		len = strlen(s);
+		len += which == XSTRING;
+		emit(s, len);
+	}
+}
+
+void
+string(Op *op, Node **args)
+{
+	xstring(STRING, args);
+}
+
+void
+ascii(Op *op, Node **args)
+{
+	xstring(STRING, args);
+}
+
 void
 def(Node **args, int siz)
 {
 	Node *np;
 
-	for ( ; np = *args; ++args) {
+	while (np = *args++) {
 		Symbol *sym = np->sym;
 
 		if (sym->flags & FRELOC)
