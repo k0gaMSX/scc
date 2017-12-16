@@ -89,7 +89,7 @@ symexp(int which, Op *op, Node **args)
 		exp = args[1]->sym;
 	} else if (linesym) {
 		sym = linesym;
-		exp = args[0];
+		exp = args[0]->sym;
 	} else {
 		error("%s pseudo instruction lacks a label", cmd);
 	}
