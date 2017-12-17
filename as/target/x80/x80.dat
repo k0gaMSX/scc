@@ -106,6 +106,10 @@ LD	indir_BC,regA	1	0x2	noargs	Z80,R800,GB80
 LD	indir_DE,regA	1	0x12	noargs	Z80,R800,GB80
 LD	dir,regA	3	0x32	dir	Z80,R800,GB80
 
+LD	regA,regI	2	0xed,0x57	noargs	Z80,R800
+LD	regA,regR	2	0xed,0x57	noargs	Z80,R800
+LD	regI,regA	2	0xed,0x47	noargs	Z80,R800
+LD	regR,regA	2	0xed,0x4f	noargs	Z80,R800
 
 # 16 bit load group
 LD	reg_dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
