@@ -289,3 +289,17 @@ r16_dir(Op *op, Node **args)
 	args[1] = args[1]->left;
 	r16_imm16(op, args);
 }
+
+void
+r8(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+idx(Op *op)
+{
+	/* TODO */
+	abort();
+}

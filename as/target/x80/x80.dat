@@ -137,9 +137,81 @@ POP	qq	1	0xc1	r16	Z80,R800,GB80
 POP	IX	2	0xdd,0xe1	noargs	Z80,R800
 POP	IY	2	0xfd,0xe1	noargs	Z80,R800
 
+# 8 bit ALU group
 ADD	A,r	1	0x80	xx_r8	Z80,R800,GB80
 ADD	A,p	2	0xdd,0x80	xx_r8	Z80,R800
 ADD	A,q	2	0xfd,0x80	xx_r8	Z80,R800
 ADD	A,imm8	2	0xc6	imm8	Z80,R800,GB80
-
 ADD	A,(HL)	1	0x86	noargs	Z80,R800,GB80
+ADD	A,(IX+n)	3	0xdd,0x86	idx	Z80,R800
+ADD	A,(IY+n)	3	0xfd,0x86	idx	Z80,R800
+
+ADC	A,r	1	0x88	xx_r8	Z80,R800,GB80
+ADC	A,p	2	0xdd,0x88	xx_r8	Z80,R800
+ADC	A,q	2	0xfd,0x88	xx_r8	Z80,R800
+ADC	A,imm8	2	0xce	imm8	Z80,R800,GB80
+ADC	A,(HL)	1	0x8e	noargs	Z80,R800,GB80
+ADC	A,(IX+n)	3	0xdd,0x8e	idx	Z80,R800
+ADC	A,(IY+n)	3	0xfd,0x8e	idx	Z80,R800
+
+SUB	A,r	1	0x90	xx_r8	Z80,R800,GB80
+SUB	A,p	2	0xdd,0x90	xx_r8	Z80,R800
+SUB	A,q	2	0xfd,0x90	xx_r8	Z80,R800
+SUB	A,imm8	2	0xd6	imm8	Z80,R800,GB80
+SUB	A,(HL)	1	0x96	noargs	Z80,R800,GB80
+SUB	A,(IX+n)	3	0xdd,0x96	idx	Z80,R800
+SUB	A,(IY+n)	3	0xfd,0x96	idx	Z80,R800
+
+SBC	A,r	1	0x98	xx_r8	Z80,R800,GB80
+SBC	A,p	2	0xdd,0x98	xx_r8	Z80,R800
+SBC	A,q	2	0xfd,0x98	xx_r8	Z80,R800
+SBC	A,imm8	2	0xde	imm8	Z80,R800,GB80
+SBC	A,(HL)	1	0x9e	noargs	Z80,R800,GB80
+SBC	A,(IX+n)	3	0xdd,0x9e	idx	Z80,R800
+SBC	A,(IY+n)	3	0xfd,0x9e	idx	Z80,R800
+
+AND	A,r	1	0xa0	xx_r8	Z80,R800,GB80
+AND	A,p	2	0xdd,0xa0	xx_r8	Z80,R800
+AND	A,q	2	0xfd,0xa0	xx_r8	Z80,R800
+AND	A,imm8	2	0xe5	imm8	Z80,R800,GB80
+AND	A,(HL)	1	0xa6	noargs	Z80,R800,GB80
+AND	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
+AND	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
+
+OR	A,r	1	0xb0	xx_r8	Z80,R800,GB80
+OR	A,p	2	0xdd,0xb0	xx_r8	Z80,R800
+OR	A,q	2	0xfd,0xb0	xx_r8	Z80,R800
+OR	A,imm8	2	0xf6	imm8	Z80,R800,GB80
+OR	A,(HL)	1	0xb6	noargs	Z80,R800,GB80
+OR	A,(IX+n)	3	0xdd,0xb6	idx	Z80,R800
+OR	A,(IY+n)	3	0xfd,0xb6	idx	Z80,R800
+
+XOR	A,r	1	0xa8	xx_r8	Z80,R800,GB80
+XOR	A,p	2	0xdd,0xa8	xx_r8	Z80,R800
+XOR	A,q	2	0xfd,0xa8	xx_r8	Z80,R800
+XOR	A,imm8	2	0xe6	imm8	Z80,R800,GB80
+XOR	A,(HL)	1	0xa6	noargs	Z80,R800,GB80
+XOR	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
+XOR	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
+
+CP	A,r	1	0xb8	xx_r8	Z80,R800,GB80
+CP	A,p	2	0xdd,0xb8	xx_r8	Z80,R800
+CP	A,q	2	0xfd,0xb8	xx_r8	Z80,R800
+CP	A,imm8	2	0xfe	imm8	Z80,R800,GB80
+CP	A,(HL)	1	0xbe	noargs	Z80,R800,GB80
+CP	A,(IX+n)	3	0xdd,0xbe	idx	Z80,R800
+CP	A,(IY+n)	3	0xfd,0xbe	idx	Z80,R800
+
+INC	r	1	0x40	r8	Z80,R800,GB80
+INC	p	2	0xdd,0x40	r8	Z80,R800
+INC	q	2	0xfd,0x40	r8	Z80,R800
+INC	(HL)	1	0x34	noargs	Z80,R800,GB80
+INC	(IX+n)	3	0xdd,0x34	idx	Z80,R800
+INC	(IY+n)	3	0xfd,0x34	idx	Z80,R800
+
+DEC	r	1	0x05	r8	Z80,R800,GB80
+DEC	p	2	0xdd,0x05	r8	Z80,R800
+DEC	q	2	0xfd,0x05	r8	Z80,R800
+DEC	(HL)	1	0x35	noargs	Z80,R800,GB80
+DEC	(IX+n)	3	0xdd,0x35	idx	Z80,R800
+DEC	(IY+n)	3	0xfd,0x35	idx	Z80,R800
