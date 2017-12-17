@@ -93,6 +93,8 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_IX"
 		} else if (match(a, /^regIY/)) {
 			out = out "AREG_IY"
+		} else if (match(a, /^dir/)) {
+			out = out "ADIRECT"
 		} else if (match(a, /^sym/)) {
 			out = out "ASYM"
 		} else if (match(a, /^string/)) {

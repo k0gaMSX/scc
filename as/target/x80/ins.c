@@ -146,6 +146,13 @@ imm16(Op *op, Node **args)
 }
 
 void
+dir(Op *op, Node **args)
+{
+	args[1] = args[1]->left;
+	imm16(op, args);
+}
+
+void
 r8_r8(Op *op, Node **args)
 {
 	Node *par1, *par2;
@@ -207,4 +214,11 @@ r16_imm16(Op *op, Node **args)
 	buf[n-2] = val;
 	buf[n-3] |= reg2int(par1->sym->argtype) << 3;
 	emit(buf, n);
+}
+
+void
+r16_dir(Op *op, Node **args)
+{
+	args[1] = args[1]->left;
+	r16_imm16(op, args);
 }
