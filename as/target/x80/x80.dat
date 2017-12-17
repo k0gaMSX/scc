@@ -33,19 +33,6 @@
 .ALIGN	imm16+	0	none	align	Z80,R800,GB80
 .END	none	0	none	end	Z80,R800,GB80
 
-NOP	none	1	0x00	noargs	Z80,R800,GB80
-EI	none	1	0xfb	noargs	Z80,R800,GB80
-DI	none	1	0xf3	noargs	Z80,R800,GB80
-HALT	none	1	0x76	noargs	Z80,R800,GB80
-SCF	none	1	0x37	noargs	Z80,R800,GB80
-CCF	none	1	0x3f	noargs	Z80,R800,GB80
-NEG	none	2	0xed,0x44	noargs	Z80,R800
-CPL	none	1	0x2f	noargs	Z80,R800,GB80
-DAA	none	1	0x27	noargs	Z80,R800,GB80
-EI	none	1	0xfb	noargs	Z80,R800,GB80
-DI	none	1	0xf3	noargs	Z80,R800,GB80
-HALT	none	1	0x76	noargs	Z80,R800,GB80
-SCF	none	1	0x37	noargs	Z80,R800,GB80
 RET	none	1	0xc9	noargs	Z80,R800,GB80
 EXX	none	1	0xd9	noargs	Z80,R800
 LDI	none	2	0xed,0xa0	noargs	Z80,R800
@@ -232,3 +219,15 @@ INC	IY	2	0xfd,0x23	noargs	Z80,R800
 DEC	dd	1	0x0b	r16	Z80,R800,GB80
 DEC	IX	2	0xdd,0x2b	noargs	Z80,R800
 DEC	IY	2	0xfd,0x2b	noargs	Z80,R800
+
+# General purpose arithmetic and CPU control group
+DAA	none	1	0x27	noargs	Z80,R800,GB80
+CPL	none	1	0x2f	noargs	Z80,R800,GB80
+NEG	none	2	0xed,0x44	noargs	Z80,R800
+CCF	none	1	0x3f	noargs	Z80,R800,GB80
+SCF	none	1	0x37	noargs	Z80,R800,GB80
+NOP	none	1	0x00	noargs	Z80,R800,GB80
+HALT	none	1	0x76	noargs	Z80,R800,GB80
+DI	none	1	0xf3	noargs	Z80,R800,GB80
+EI	none	1	0xfb	noargs	Z80,R800,GB80
+IM	imm8	2	0xed	im	Z80,R800

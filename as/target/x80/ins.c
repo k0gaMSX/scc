@@ -326,7 +326,14 @@ r8(Op *op, Node **args)
 }
 
 void
-idx(Op *op)
+idx(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+im(Op *op, Node **args)
 {
 	/* TODO */
 	abort();
