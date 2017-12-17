@@ -57,6 +57,7 @@ match(Op *op, Node **args)
 	unsigned char *p;
 	int arg;
 	Node *np;
+	int (*class)(int);
 
 	if (!op->args)
 		return args == NULL;
@@ -83,27 +84,20 @@ match(Op *op, Node **args)
 				return 0;
 			break;
 		case AREG_RCLASS:
-			if (np->addr != AREG)
-				return 0;
-			if (!rclass(np->sym->argtype))
-				return 0;
-			break;
+			class = rclass;
+			goto register_class;
 		case AREG_PCLASS:
-			if (np->addr != AREG)
-				return 0;
-			if (!pclass(np->sym->argtype))
-				return 0;
-			break;
+			class = pclass;
+			goto register_class;
 		case AREG_QCLASS:
-			if (np->addr != AREG)
-				return 0;
-			if (!qclass(np->sym->argtype))
-				return 0;
-			break;
+			class = qclass;
+			goto register_class;
 		case AREG_DDCLASS:
+			class = ddclass;
+		register_class:
 			if (np->addr != AREG)
 				return 0;
-			if (!ddclass(np->sym->argtype))
+			if (!(*class)(np->sym->argtype))
 				return 0;
 			break;
 		case AIMM8:
