@@ -98,6 +98,15 @@ LD	indir_HL,imm8	2	0x36	imm8	Z80,R800,GB80
 LD	idx_IX,imm8	3	0xdd,0x36	idx_imm8	Z80,R800
 LD	idx_IY,imm8	3	0xfd,0x36	idx_imm8	Z80,R800
 
+LD	regA,indir_BC	1	0x0a	noargs	Z80,R800,GB80
+LD	regA,indir_DE	1	0x1a	noargs	Z80,R800,GB80
+LD	regA,dir	3	0x3a	dir	Z80,R800,GB80
+
+LD	indir_BC,regA	1	0x2	noargs	Z80,R800,GB80
+LD	indir_DE,regA	1	0x12	noargs	Z80,R800,GB80
+LD	dir,regA	3	0x32	dir	Z80,R800,GB80
+
+
 # 16 bit load group
 LD	reg_dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
 LD	regIX,imm16	4	0xdd,0x21	imm16	Z80,R800

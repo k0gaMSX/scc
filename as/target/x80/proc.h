@@ -35,10 +35,12 @@ enum args {
 	AREG_DDCLASS, /* register class for BC, DE, HL and SP */
 	AREG_QQCLASS, /* register class for BC, DE, HL and AF */
 
-	AINDEX_IX,
-	AINDEX_IY,
+	AINDEX_IX,    /* (IX+d) */
+	AINDEX_IY,    /* (IX+d) */
 
 	AINDER_HL,    /* (HL) */
+	AINDER_DE,    /* (DE) */
+	AINDER_BC,    /* (BC) */
 };
 
 extern int rclass(int reg);
