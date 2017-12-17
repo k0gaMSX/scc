@@ -86,6 +86,34 @@ qqclass(int reg)
 	}
 }
 
+int
+ppclass(int reg)
+{
+	switch (reg) {
+	case AREG_BC:
+	case AREG_DE:
+	case AREG_IX:
+	case AREG_SP:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
+int
+rrclass(int reg)
+{
+	switch (reg) {
+	case AREG_BC:
+	case AREG_DE:
+	case AREG_IY:
+	case AREG_SP:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 static int
 reg2int(int reg)
 {

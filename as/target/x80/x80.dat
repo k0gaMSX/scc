@@ -76,6 +76,8 @@ OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 # r is any register from B, C, D, E, L, H, A
 # dd is any register from BC, DE, HL, SP
 # qq is any register from BC, DE, HL, AF
+# pp is any register from BC, DE, IX, SP
+# rr is any register from BC, DE, IY, SP
 
 # 8 bit load group
 LD	r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
@@ -215,3 +217,18 @@ DEC	q	2	0xfd,0x05	r8	Z80,R800
 DEC	(HL)	1	0x35	noargs	Z80,R800,GB80
 DEC	(IX+n)	3	0xdd,0x35	idx	Z80,R800
 DEC	(IY+n)	3	0xfd,0x35	idx	Z80,R800
+
+# 16 bit ALU group
+ADD	HL,dd	1	0x09	r16	Z80,R800,GB80
+ADC	HL,dd	2	0xed,0x4a	r16	Z80,R800
+SBC	HL,dd	2	0xed,0x42	r16	Z80,R800
+ADD	IX,pp	2	0xdd,0x09	r16	Z80,R800
+ADD	IY,rr	2	0xfd,0x09	r16	Z80,R800
+
+INC	dd	1	0x03	r16	Z80,R800,GB80
+INC	IX	2	0xdd,0x23	noargs	Z80,R800
+INC	IY	2	0xfd,0x23	noargs	Z80,R800
+
+DEC	dd	1	0x0b	r16	Z80,R800,GB80
+DEC	IX	2	0xdd,0x2b	noargs	Z80,R800
+DEC	IY	2	0xfd,0x2b	noargs	Z80,R800

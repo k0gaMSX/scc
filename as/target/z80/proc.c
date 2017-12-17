@@ -96,6 +96,12 @@ match(Op *op, Node **args)
 		case AREG_QQCLASS:
 			class = qqclass;
 			goto register_class;
+		case AREG_PPCLASS:
+			class = ppclass;
+			goto register_class;
+		case AREG_RRCLASS:
+			class = rrclass;
+			goto register_class;
 		case AREG_DDCLASS:
 			class = ddclass;
 		register_class:

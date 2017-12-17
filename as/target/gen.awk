@@ -83,6 +83,10 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_DDCLASS"
 		} else if (match(a, /^qq/)) {
 			out = out "AREG_QQCLASS"
+		} else if (match(a, /^rr/)) {
+			out = out "AREG_RRCLASS"
+		} else if (match(a, /^pp/)) {
+			out = out "AREG_PPCLASS"
 		} else if (match(a, /^p/)) {
 			out = out "AREG_PCLASS"
 		} else if (match(a, /^q/)) {
