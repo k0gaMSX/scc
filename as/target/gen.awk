@@ -75,48 +75,48 @@ function str2args(s, args, i, out, n)
 			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
 			out = out "AIMM64"
-		} else if (match(a, /^idx_IY/)) {
+		} else if (match(a, /^\(IY\+n\)/)) {
 			out = out "AINDEX_IY"
-		} else if (match(a, /^idx_IX/)) {
+		} else if (match(a, /^\(IX\+n\)/)) {
 			out = out "AINDEX_IX"
-		} else if (match(a, /^reg_dd/)) {
+		} else if (match(a, /^dd/)) {
 			out = out "AREG_DDCLASS"
-		} else if (match(a, /^reg_qq/)) {
+		} else if (match(a, /^qq/)) {
 			out = out "AREG_QQCLASS"
-		} else if (match(a, /^reg_p/)) {
+		} else if (match(a, /^p/)) {
 			out = out "AREG_PCLASS"
-		} else if (match(a, /^reg_q/)) {
+		} else if (match(a, /^q/)) {
 			out = out "AREG_QCLASS"
-		} else if (match(a, /^reg_r/)) {
+		} else if (match(a, /^r/)) {
 			out = out "AREG_RCLASS"
-		} else if (match(a, /^regR/)) {
+		} else if (match(a, /^R/)) {
 			out = out "AREG_R"
-		} else if (match(a, /^regA/)) {
+		} else if (match(a, /^A/)) {
 			out = out "AREG_A"
-		} else if (match(a, /^indir_DE/)) {
+		} else if (match(a, /^\(DE\)/)) {
 			out = out "AINDER_DE"
-		} else if (match(a, /^indir_BC/)) {
+		} else if (match(a, /^\(BC\)/)) {
 			out = out "AINDER_BC"
-		} else if (match(a, /^indir_HL/)) {
+		} else if (match(a, /^\(HL\)/)) {
 			out = out "AINDER_HL"
-		} else if (match(a, /^regSP/)) {
+		} else if (match(a, /^SP/)) {
 			out = out "AREG_SP"
-		} else if (match(a, /^regHL/)) {
+		} else if (match(a, /^HL/)) {
 			out = out "AREG_HL"
-		} else if (match(a, /^regIX/)) {
+		} else if (match(a, /^IX/)) {
 			out = out "AREG_IX"
-		} else if (match(a, /^regIY/)) {
+		} else if (match(a, /^IY/)) {
 			out = out "AREG_IY"
-		} else if (match(a, /^dir/)) {
+		} else if (match(a, /^\(n\)/)) {
 			out = out "ADIRECT"
-		} else if (match(a, /^regI/)) {
+		} else if (match(a, /^I/)) {
 			out = out "AREG_I"
 		} else if (match(a, /^sym/)) {
 			out = out "ASYM"
 		} else if (match(a, /^string/)) {
 			out = out "ASTR"
 		} else {
-			print "wrong arg", a > "/dev/stderr"
+			print FILENAME ":" NR ":" $0 ":wrong arg", a > "/dev/stderr"
 			exit 1
 		}
 		a = substr(a, RLENGTH+1)

@@ -78,68 +78,68 @@ OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 # qq is any register from BC, DE, HL, AF
 
 # 8 bit load group
-LD	reg_r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
-LD	reg_p,imm8	3	0xdd,0x06	r8_imm8	Z80,R800
-LD	reg_q,imm8	3	0xfd,0x06	r8_imm8	Z80,R800
-LD	indir_HL,imm8	2	0x36	imm8	Z80,R800,GB80
+LD	r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
+LD	p,imm8	3	0xdd,0x06	r8_imm8	Z80,R800
+LD	q,imm8	3	0xfd,0x06	r8_imm8	Z80,R800
+LD	(HL),imm8	2	0x36	imm8	Z80,R800,GB80
 
-LD	reg_r,reg_r	1	0x40	r8_r8	Z80,R800,GB80
-LD	reg_p,reg_p	2	0xdd,0x40	r8_r8	Z80,R800
-LD	reg_q,reg_q	2	0xfd,0x40	r8_r8	Z80,R800
-LD	indir_HL,reg_r	1	0x70	xx_r8	Z80,R800,GB80
-LD	reg_r,indir_HL	1	0x46	r8_xx	Z80,R800,GB80
+LD	r,r	1	0x40	r8_r8	Z80,R800,GB80
+LD	p,p	2	0xdd,0x40	r8_r8	Z80,R800
+LD	q,q	2	0xfd,0x40	r8_r8	Z80,R800
+LD	(HL),r	1	0x70	xx_r8	Z80,R800,GB80
+LD	r,(HL)	1	0x46	r8_xx	Z80,R800,GB80
 
-LD	reg_r,idx_IX	3	0xdd,0x46	r8_idx	Z80,R800
-LD	reg_r,idx_IY	3	0xfd,0x46	r8_idx	Z80,R800
-LD	idx_IX,reg_r	3	0xdd,0x70	idx_r8	Z80,R800
-LD	idx_IY,reg_r	3	0xfd,0x70	idx_r8	Z80,R800
+LD	r,(IX+n)	3	0xdd,0x46	r8_idx	Z80,R800
+LD	r,(IY+n)	3	0xfd,0x46	r8_idx	Z80,R800
+LD	(IX+n),r	3	0xdd,0x70	idx_r8	Z80,R800
+LD	(IY+n),r	3	0xfd,0x70	idx_r8	Z80,R800
 
-LD	indir_HL,imm8	2	0x36	imm8	Z80,R800,GB80
-LD	idx_IX,imm8	3	0xdd,0x36	idx_imm8	Z80,R800
-LD	idx_IY,imm8	3	0xfd,0x36	idx_imm8	Z80,R800
+LD	(HL),imm8	2	0x36	imm8	Z80,R800,GB80
+LD	(IX+n),imm8	3	0xdd,0x36	idx_imm8	Z80,R800
+LD	(IY+n),imm8	3	0xfd,0x36	idx_imm8	Z80,R800
 
-LD	regA,indir_BC	1	0x0a	noargs	Z80,R800,GB80
-LD	regA,indir_DE	1	0x1a	noargs	Z80,R800,GB80
-LD	regA,dir	3	0x3a	dir	Z80,R800,GB80
+LD	A,(BC)	1	0x0a	noargs	Z80,R800,GB80
+LD	A,(DE)	1	0x1a	noargs	Z80,R800,GB80
+LD	A,(n)	3	0x3a	dir	Z80,R800,GB80
 
-LD	indir_BC,regA	1	0x2	noargs	Z80,R800,GB80
-LD	indir_DE,regA	1	0x12	noargs	Z80,R800,GB80
-LD	dir,regA	3	0x32	dir	Z80,R800,GB80
+LD	(BC),A	1	0x2	noargs	Z80,R800,GB80
+LD	(DE),A	1	0x12	noargs	Z80,R800,GB80
+LD	(n),A	3	0x32	dir	Z80,R800,GB80
 
-LD	regA,regI	2	0xed,0x57	noargs	Z80,R800
-LD	regA,regR	2	0xed,0x57	noargs	Z80,R800
-LD	regI,regA	2	0xed,0x47	noargs	Z80,R800
-LD	regR,regA	2	0xed,0x4f	noargs	Z80,R800
+LD	A,I	2	0xed,0x57	noargs	Z80,R800
+LD	A,R	2	0xed,0x57	noargs	Z80,R800
+LD	I,A	2	0xed,0x47	noargs	Z80,R800
+LD	R,A	2	0xed,0x4f	noargs	Z80,R800
 
 # 16 bit load group
-LD	reg_dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
-LD	regIX,imm16	4	0xdd,0x21	imm16	Z80,R800
-LD	regIY,imm16	4	0xfd,0x21	imm16	Z80,R800
+LD	dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
+LD	IX,imm16	4	0xdd,0x21	imm16	Z80,R800
+LD	IY,imm16	4	0xfd,0x21	imm16	Z80,R800
 
-LD	regHL,dir	3	0x2a	dir	Z80,R800,GB80
-LD	reg_dd,dir	4	0xed,0x4b	r16_dir	Z80,R800
-LD	regIX,dir	4	0xdd,0x2a	dir	Z80,R800
-LD	regIY,dir	4	0xfd,0x2a	dir	Z80,R800
+LD	HL,(n)	3	0x2a	dir	Z80,R800,GB80
+LD	dd,(n)	4	0xed,0x4b	r16_dir	Z80,R800
+LD	IX,(n)	4	0xdd,0x2a	dir	Z80,R800
+LD	IY,(n)	4	0xfd,0x2a	dir	Z80,R800
 
-LD	dir,regHL	3	0x22	dir	Z80,R800,GB80
-LD	dir,reg_dd	4	0xdd,0x42	r16_dir	Z80,R800
-LD	dir,regIX	4	0xdd,0x22	dir	Z80,R800
-LD	dir,regIY	4	0xfd,0x22	dir	Z80,R800
+LD	(n),HL	3	0x22	dir	Z80,R800,GB80
+LD	(n),dd	4	0xdd,0x42	r16_dir	Z80,R800
+LD	(n),IX	4	0xdd,0x22	dir	Z80,R800
+LD	(n),IY	4	0xfd,0x22	dir	Z80,R800
 
-LD	regSP,regHL	1	0xf9	noargs	Z80,R800,GB80
-LD	regSP,regIX	2	0xdd,0xf9	noargs	Z80,R800
-LD	regSP,regIY	2	0xfd,0xf9	noargs	Z80,R800
+LD	SP,HL	1	0xf9	noargs	Z80,R800,GB80
+LD	SP,IX	2	0xdd,0xf9	noargs	Z80,R800
+LD	SP,IY	2	0xfd,0xf9	noargs	Z80,R800
 
-PUSH	reg_qq	1	0xc5	r16	Z80,R800,GB80
-PUSH	regIX	2	0xdd,0xe5	noargs	Z80,R800
-PUSH	regIY	2	0xdd,0xe5	noargs	Z80,R800
-POP	reg_qq	1	0xc1	r16	Z80,R800,GB80
-POP	regIX	2	0xdd,0xe1	noargs	Z80,R800
-POP	regIY	2	0xfd,0xe1	noargs	Z80,R800
+PUSH	qq	1	0xc5	r16	Z80,R800,GB80
+PUSH	IX	2	0xdd,0xe5	noargs	Z80,R800
+PUSH	IY	2	0xdd,0xe5	noargs	Z80,R800
+POP	qq	1	0xc1	r16	Z80,R800,GB80
+POP	IX	2	0xdd,0xe1	noargs	Z80,R800
+POP	IY	2	0xfd,0xe1	noargs	Z80,R800
 
-ADD	regA,reg_r	1	0x80	xx_r8	Z80,R800,GB80
-ADD	regA,reg_p	2	0xdd,0x80	xx_r8	Z80,R800
-ADD	regA,reg_q	2	0xfd,0x80	xx_r8	Z80,R800
-ADD	regA,imm8	2	0xc6	imm8	Z80,R800,GB80
+ADD	A,r	1	0x80	xx_r8	Z80,R800,GB80
+ADD	A,p	2	0xdd,0x80	xx_r8	Z80,R800
+ADD	A,q	2	0xfd,0x80	xx_r8	Z80,R800
+ADD	A,imm8	2	0xc6	imm8	Z80,R800,GB80
 
-ADD	regA,indir_HL	1	0x86	noargs	Z80,R800,GB80
+ADD	A,(HL)	1	0x86	noargs	Z80,R800,GB80
