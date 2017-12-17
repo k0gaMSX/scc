@@ -152,6 +152,22 @@ idx_r8(Op *op, Node **args)
 }
 
 void
+idx_imm8(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[3];
+	int n = op->size;
+
+	par1 = args[0]->left;
+	par2 = args[1];
+
+	memcpy(buf, op->bytes, n-1);
+	buf[n-1] = par1->sym->value;
+	buf[n-2] = par2->sym->value;
+	emit(buf, n);
+}
+
+void
 imm8(Op *op, Node **args)
 {
 	Node *par1, *par2;

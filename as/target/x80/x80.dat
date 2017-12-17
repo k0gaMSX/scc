@@ -94,6 +94,10 @@ LD	reg_r,idx_IY	3	0xfd,0x46	r8_idx	Z80,R800
 LD	idx_IX,reg_r	3	0xdd,0x70	idx_r8	Z80,R800
 LD	idx_IY,reg_r	3	0xfd,0x70	idx_r8	Z80,R800
 
+LD	indir_HL,imm8	2	0x36	imm8	Z80,R800,GB80
+LD	idx_IX,imm8	3	0xdd,0x36	idx_imm8	Z80,R800
+LD	idx_IY,imm8	3	0xfd,0x36	idx_imm8	Z80,R800
+
 # 16 bit load group
 LD	reg_dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
 LD	regIX,imm16	4	0xdd,0x21	imm16	Z80,R800
