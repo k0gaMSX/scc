@@ -75,6 +75,7 @@ OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 # q is any register from B, C, D, E, IYL, IYH, A
 # r is any register from B, C, D, E, L, H, A
 # dd is any register from BC, DE, HL, SP
+# qq is any register from BC, DE, HL, AF
 
 LD	reg_r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
 LD	reg_p,imm8	3	0xdd,0x06	r8_imm8	Z80,R800
@@ -105,6 +106,13 @@ LD	dir,regIY	4	0xfd,0x22	dir	Z80,R800
 LD	regSP,regHL	1	0xf9	noargs	Z80,R800,GB80
 LD	regSP,regIX	2	0xdd,0xf9	noargs	Z80,R800
 LD	regSP,regIY	2	0xfd,0xf9	noargs	Z80,R800
+
+PUSH	reg_qq	1	0xc5	r16	Z80,R800,GB80
+PUSH	regIX	2	0xdd,0xe5	noargs	Z80,R800
+PUSH	regIY	2	0xdd,0xe5	noargs	Z80,R800
+POP	reg_qq	1	0xc1	r16	Z80,R800,GB80
+POP	regIX	2	0xdd,0xe1	noargs	Z80,R800
+POP	regIY	2	0xfd,0xe1	noargs	Z80,R800
 
 ADD	regA,reg_r	1	0x80	xx_r8	Z80,R800,GB80
 ADD	regA,reg_p	2	0xdd,0x80	xx_r8	Z80,R800

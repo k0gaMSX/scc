@@ -75,14 +75,16 @@ function str2args(s, args, i, out, n)
 			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
 			out = "AIMM64"
+		} else if (match(a, /^reg_dd/)) {
+			out = out "AREG_DDCLASS"
+		} else if (match(a, /^reg_qq/)) {
+			out = out "AREG_QQCLASS"
 		} else if (match(a, /^reg_p/)) {
 			out = out "AREG_PCLASS"
 		} else if (match(a, /^reg_q/)) {
 			out = out "AREG_QCLASS"
 		} else if (match(a, /^reg_r/)) {
 			out = out "AREG_RCLASS"
-		} else if (match(a, /^reg_dd/)) {
-			out = out "AREG_DDCLASS"
 		} else if (match(a, /^regA/)) {
 			out = out "AREG_A"
 		} else if (match(a, /^indir_HL/)) {

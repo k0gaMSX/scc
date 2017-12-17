@@ -72,6 +72,20 @@ ddclass(int reg)
 	}
 }
 
+int
+qqclass(int reg)
+{
+	switch (reg) {
+	case AREG_BC:
+	case AREG_DE:
+	case AREG_HL:
+	case AREG_AF:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 static int
 reg2int(int reg)
 {
@@ -194,6 +208,20 @@ r8_xx(Op *op, Node **args)
 
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= reg2int(par1->sym->argtype) << 3;
+	emit(buf, n);
+}
+
+void
+r16(Op *op, Node **args)
+{
+	Node *par1, *par2;
+	unsigned char buf[4];
+	int n = op->size;
+
+	par1 = args[0];
+
+	memcpy(buf, op->bytes, n-1);
+	buf[n-1] |= reg2int(par1->sym->argtype) << 4;
 	emit(buf, n);
 }
 
