@@ -104,6 +104,17 @@ match(Op *op, Node **args)
 			if (!(*class)(np->sym->argtype))
 				return 0;
 			break;
+		case AINDEX_IY:
+			arg = AREG_IY;
+			goto index_address;
+		case AINDEX_IX:
+			arg = AREG_IX;
+		index_address:
+			if (np->addr != AINDEX)
+				return 0;
+			if (np->left->left->sym->argtype != arg)
+				return 0;
+			break;
 		case AIMM8:
 		case AIMM16:
 		case AIMM32:

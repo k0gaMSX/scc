@@ -35,6 +35,9 @@ enum args {
 	AREG_DDCLASS, /* register class for BC, DE, HL and SP */
 	AREG_QQCLASS, /* register class for BC, DE, HL and AF */
 
+	AINDEX_IX,
+	AINDEX_IY,
+
 	AINDER_HL,    /* (HL) */
 };
 

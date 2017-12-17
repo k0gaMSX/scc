@@ -74,7 +74,11 @@ function str2args(s, args, i, out, n)
 		} else if (match(a, /^imm32/)) {
 			out = out "AIMM32"
 		} else if (match(a, /^imm64/)) {
-			out = "AIMM64"
+			out = out "AIMM64"
+		} else if (match(a, /^idx_IY/)) {
+			out = out "AINDEX_IY"
+		} else if (match(a, /^idx_IX/)) {
+			out = out "AINDEX_IX"
 		} else if (match(a, /^reg_dd/)) {
 			out = out "AREG_DDCLASS"
 		} else if (match(a, /^reg_qq/)) {
