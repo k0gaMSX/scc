@@ -80,6 +80,7 @@ match(Op *op, Node **args)
 		case AREG_HL:
 		case AREG_IY:
 		case AREG_IX:
+		case AREG_SP:
 			if (np->addr != AREG || np->sym->argtype != arg)
 				return 0;
 			break;

@@ -87,6 +87,8 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_A"
 		} else if (match(a, /^indir_HL/)) {
 			out = out "AINDER_HL"
+		} else if (match(a, /^regSP/)) {
+			out = out "AREG_SP"
 		} else if (match(a, /^regHL/)) {
 			out = out "AREG_HL"
 		} else if (match(a, /^regIX/)) {

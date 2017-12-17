@@ -212,7 +212,7 @@ r16_imm16(Op *op, Node **args)
 	val = par2->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
-	buf[n-3] |= reg2int(par1->sym->argtype) << 3;
+	buf[n-3] |= reg2int(par1->sym->argtype) << 4;
 	emit(buf, n);
 }
 
