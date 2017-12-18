@@ -3,7 +3,7 @@ Z80_LST = target/z80/instbl.o target/z80/ins.o target/z80/proc.o target/x80/ins.
 
 $(Z80_LST): target/x80/proc.h
 
-target/z80/instbl.c: target/gen.awk target/x80/x80.dat
+target/z80/instbl.c: target/gen.awk target/x80/x80.dat target/x80/rules.dat
 	set -e ;\
 	rm -f $@;\
 	trap "rm -f $$$$.c" 0 2 3; \
