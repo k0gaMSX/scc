@@ -1,7 +1,7 @@
 	NOP		/ 00
-/01 n n	LD BC, nn
-/02	LD (BC), A
-/03	INC BC
+	LD	%BC,64	/ 01 40 00
+	LD	(%BC),%A	/ 02
+	INC	%BC	/ 03
 /04	INC B
 /05	DEC B
 /06 n	LD B, n
