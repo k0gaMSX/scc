@@ -89,8 +89,11 @@ match(Op *op, Node **args)
 				return 0;
 			np = np->left;
 		case AREG_A:
+		case AREG_I:
+		case AREG_R:
 		case AREG_F:
 		case AREG_HL:
+		case AREG_BC:
 		case AREG_DE:
 		case AREG_IY:
 		case AREG_IX:
@@ -152,8 +155,9 @@ match(Op *op, Node **args)
 			if (np->addr != AIMM || np->op != IDEN)
 				return 0;
 			break;
+		case ADIRECT:
 		case ASTR:
-			if (np->addr != ASTR)
+			if (np->addr != arg)
 				return 0;
 			break;
 		default:
