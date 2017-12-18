@@ -1,4 +1,4 @@
-/00	NOP
+	NOP		/ 00
 /01 n n	LD BC, nn
 /02	LD (BC), A
 /03	INC BC
