@@ -94,26 +94,21 @@ dopass(char *fname)
 
 	if (fclose(fp))
 		die("as: error reading from input file '%s'", fname);
-	if (pass == 2)
-		writeout(outfile);
-	/*
-	 * kill tmp symbols because they are not needed anymore
-	 */
-	killtmp();
-
 	return nerrors == 0;
 }
 
 static void
 usage(void)
 {
-	fputs("usage: as filename\n", stderr);
+	fputs("usage: as [-o outfile] filename ...\n", stderr);
 	exit(1);
 }
 
 int
 main(int argc, char *argv[])
 {
+	char **p;
+
 	outfile = "a.out";
 
 	ARGBEGIN {
@@ -124,17 +119,22 @@ main(int argc, char *argv[])
 		usage();
 	} ARGEND
 
-	if (argc != 1)
+	if (argc == 0)
 		usage();
-	infile = *argv;
 
 	atexit(cleanup);
 	iarch();
 	isecs();
+
 	for (pass = 1; pass <= 2; pass++) {
-		if (!dopass(infile))
-			return 1;
+		for (p = argv; infile = *p; ++p) {
+			if (!dopass(infile))
+				return 1;
+		}
+		if (pass == 1)
+			killtmp();
 	}
+	writeout(outfile);
 	outfile = NULL;
 
 	return 0;
