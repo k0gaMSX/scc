@@ -151,7 +151,7 @@ function str2args(s, args, i, out, n)
 		} else if (a ~ /^\?$/) {
 			return out "|AOPT"
 		} else if (a != "") {
-			print "wrong arg", a > "/dev/stderr"
+			print FILENAME ":" NR ":" $0 ":wrong arg", a > "/dev/stderr"
 			exit 1
 		}
 		out = out ","
