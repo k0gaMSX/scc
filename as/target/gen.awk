@@ -77,6 +77,8 @@ function str2args(s, args, i, out, n)
 			out = out "AIMM64"
 		} else if (match(a, /^imm3/)) {
 			out = out "AIMM3"
+		} else if (match(a, /^rst/)) {
+			out = out "ARST"
 		} else if (match(a, /^\(IY\+n\)/)) {
 			out = out "AINDEX_IY"
 		} else if (match(a, /^\(IX\+n\)/)) {

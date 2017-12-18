@@ -375,7 +375,21 @@ cc_imm16(Op *op, Node **args)
 }
 
 void
+cc(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
 jr(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+rst(Op *op, Node **args)
 {
 	/* TODO */
 	abort();

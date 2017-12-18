@@ -58,6 +58,7 @@ enum args {
 
 	AIMM3,         /* 3 bit immediate */
 	AZERO,         /* a literal 0 */
+	ARST,          /* 0h, 08h, 10h, 18h, 20h, 28h, 30h, 38h */
 };
 
 extern int rclass(int reg);
