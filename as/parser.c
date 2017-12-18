@@ -54,7 +54,6 @@ static char *
 field(char **oldp, size_t *siz)
 {
 	char *s, *begin;
-	int c;
 
 	if ((begin = *oldp) == NULL)
 		return NULL;
@@ -62,7 +61,7 @@ field(char **oldp, size_t *siz)
 	if (*begin == '/') {
 		*begin = '\0';
 		*oldp = NULL;
-	} if (s = memchr(begin, '\t', *siz)) {
+	} else if (s = memchr(begin, '\t', *siz)) {
 		*s++ = '\0';
 		*siz -= s - begin;
 		*oldp = s;
