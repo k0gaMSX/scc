@@ -34,15 +34,6 @@
 .END	none	0	none	end	Z80,R800,GB80
 
 RET	none	1	0xc9	noargs	Z80,R800,GB80
-EXX	none	1	0xd9	noargs	Z80,R800
-LDI	none	2	0xed,0xa0	noargs	Z80,R800
-LDIR	none	2	0xed,0xb0	noargs	Z80,R800
-LDD	none	2	0xed,0xa8	noargs	Z80,R800
-LDDR	none	2	0xed,0xb8	noargs	Z80,R800
-CPI	none	2	0xed,0xa1	noargs	Z80,R800
-CPIR	none	2	0xed,0xb1	noargs	Z80,R800
-CPD	none	2	0xed,0xa9	noargs	Z80,R800
-CPDR	none	2	0xed,0xb9	noargs	Z80,R800
 RLCA	none	1	0x07	noargs	Z80,R800,GB80
 RLA	none	1	0x17	noargs	Z80,R800,GB80
 RRCA	none	1	0x0f	noargs	Z80,R800,GB80
@@ -231,3 +222,14 @@ HALT	none	1	0x76	noargs	Z80,R800,GB80
 DI	none	1	0xf3	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80
 IM	imm8	2	0xed	im	Z80,R800
+
+# Exchange, block transfer and search groups
+EXX	none	1	0xd9	noargs	Z80,R800
+LDI	none	2	0xed,0xa0	noargs	Z80,R800
+LDIR	none	2	0xed,0xb0	noargs	Z80,R800
+LDD	none	2	0xed,0xa8	noargs	Z80,R800
+LDDR	none	2	0xed,0xb8	noargs	Z80,R800
+CPI	none	2	0xed,0xa1	noargs	Z80,R800
+CPIR	none	2	0xed,0xb1	noargs	Z80,R800
+CPD	none	2	0xed,0xa9	noargs	Z80,R800
+CPDR	none	2	0xed,0xb9	noargs	Z80,R800
