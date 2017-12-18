@@ -236,7 +236,7 @@ cleansecs(void)
 
 	for (sec = seclist; sec; sec = sec->next) {
 		sec->curpc = sec->pc = sec->base;
-		if (pass == 1 || !(sec->flags & SFILE))
+		if (pass == 1 || sec->flags & SFILE)
 			continue;
 
 		siz = sec->max - sec->base;
