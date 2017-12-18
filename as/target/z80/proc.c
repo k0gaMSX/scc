@@ -71,16 +71,28 @@ match(Op *op, Node **args)
 		arg &= ~(AREP|AOPT);
 		switch (arg) {
 		case AINDER_HL:
+			arg = AREG_HL;
+			goto indirect;
+		case AINDER_DE:
+			arg = AREG_DE;
+			goto indirect;
+		case AINDER_BC:
+			arg = AREG_BC;
+			goto indirect;
+		case AINDER_SP:
+			arg = AREG_SP;
+		indirect:
 			if (np->addr != AINDIR)
 				return 0;
-			if (np->left->sym->argtype != AREG_HL)
-				return 0;
-			break;
+			np = np->left;
 		case AREG_A:
 		case AREG_HL:
+		case AREG_DE:
 		case AREG_IY:
 		case AREG_IX:
 		case AREG_SP:
+		case AREG_AF:
+		case AREG_AF_:
 			if (np->addr != AREG || np->sym->argtype != arg)
 				return 0;
 			break;

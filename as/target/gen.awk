@@ -95,22 +95,30 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_RCLASS"
 		} else if (match(a, /^R/)) {
 			out = out "AREG_R"
-		} else if (match(a, /^A/)) {
-			out = out "AREG_A"
 		} else if (match(a, /^\(DE\)/)) {
 			out = out "AINDER_DE"
 		} else if (match(a, /^\(BC\)/)) {
 			out = out "AINDER_BC"
 		} else if (match(a, /^\(HL\)/)) {
 			out = out "AINDER_HL"
+		} else if (match(a, /^\(SP\)/)) {
+			out = out "AINDER_SP"
 		} else if (match(a, /^SP/)) {
 			out = out "AREG_SP"
 		} else if (match(a, /^HL/)) {
 			out = out "AREG_HL"
+		} else if (match(a, /^DE/)) {
+			out = out "AREG_DE"
 		} else if (match(a, /^IX/)) {
 			out = out "AREG_IX"
 		} else if (match(a, /^IY/)) {
 			out = out "AREG_IY"
+		} else if (match(a, /^AF'/)) {
+			out = out "AREG_AF_"
+		} else if (match(a, /^AF/)) {
+			out = out "AREG_AF"
+		} else if (match(a, /^A/)) {
+			out = out "AREG_A"
 		} else if (match(a, /^\(n\)/)) {
 			out = out "ADIRECT"
 		} else if (match(a, /^I/)) {

@@ -43,6 +43,7 @@ enum args {
 	AINDER_HL,    /* (HL) */
 	AINDER_DE,    /* (DE) */
 	AINDER_BC,    /* (BC) */
+	AINDER_SP,    /* (SP) */
 };
 
 extern int rclass(int reg);
