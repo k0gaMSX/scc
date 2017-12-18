@@ -101,7 +101,7 @@ iarch(void)
 int
 match(Op *op, Node **args)
 {
-	char *p;
+	unsigned char *p;
 	int a, olda;
 
 	if (!op->args)
