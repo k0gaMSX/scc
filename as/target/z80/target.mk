@@ -7,8 +7,8 @@ target/z80/instbl.c: target/gen.awk target/x80/x80.dat target/x80/rules.dat
 	set -e ;\
 	rm -f $@;\
 	trap "rm -f $$$$.c" 0 2 3; \
+	sort -k1 target/x80/x80.dat | \
 	awk -v cpu=Z80 -v family=x80 \
-		-f target/gen.awk  \
-		< target/x80/x80.dat > $$$$.c && mv $$$$.c $@
-
+		-f target/gen.awk  > $$$$.c && mv $$$$.c $@
+ 
 OBJ-z80 = $(OBJ) $(Z80_LST)
