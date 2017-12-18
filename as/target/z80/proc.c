@@ -70,6 +70,9 @@ match(Op *op, Node **args)
 
 		arg &= ~(AREP|AOPT);
 		switch (arg) {
+		case AINDER_C:
+			arg = AREG_C;
+			goto indirect;
 		case AINDER_HL:
 			arg = AREG_HL;
 			goto indirect;
@@ -86,6 +89,7 @@ match(Op *op, Node **args)
 				return 0;
 			np = np->left;
 		case AREG_A:
+		case AREG_F:
 		case AREG_HL:
 		case AREG_DE:
 		case AREG_IY:
@@ -133,6 +137,7 @@ match(Op *op, Node **args)
 			if (np->left->left->sym->argtype != arg)
 				return 0;
 			break;
+		case AZERO:
 		case AIMM3:
 		case AIMM8:
 		case AIMM16:

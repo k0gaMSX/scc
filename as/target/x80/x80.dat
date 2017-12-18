@@ -35,14 +35,6 @@
 
 RET	none	1	0xc9	noargs	Z80,R800,GB80
 
-INI 	none	2	0xed,0xa2	noargs	Z80,R800
-INIR	none	2	0xed,0xb2	noargs	Z80,R800
-IND	none	2	0xed,0xaa	noargs	Z80,R800
-INDR	none	2	0xed,0xba	noargs	Z80,R800
-OUTI	none	2	0xed,0xa3	noargs	Z80,R800
-OTIR	none	2	0xed,0xb3	noargs	Z80,R800
-OUTD	none	2	0xed,0xab	noargs	Z80,R800
-OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 
 # p is any register from B, C, D, E, IXL, IXH, A
 # q is any register from B, C, D, E, IYL, IYH, A
@@ -320,3 +312,20 @@ RES	imm3,(IX+n)	4	0xdd,0xcb,0,0x86	idx_bit	Z80,R800
 RES	imm3,(IY+n)	4	0xfd,0xcb,0,0x86	idx_bit	Z80,R800
 RES	imm3,(IX+n),r	4	0xdd,0xcb,0,0x80	r_idx_bit	Z80,R800
 RES	imm3,(IY+n),r	4	0xfd,0xcb,0,0x80	r_idx_bit	Z80,R800
+
+# Input and output group
+IN	A,(n)	2	0xdb	imm8	Z80,R800
+IN	r,(C)	2	0xed,0x40	r8_xx	Z80,R800
+IN	F,(C)	2	0xed,0x70	noargs	Z80,R800
+INI 	none	2	0xed,0xa2	noargs	Z80,R800
+INIR	none	2	0xed,0xb2	noargs	Z80,R800
+IND	none	2	0xed,0xaa	noargs	Z80,R800
+INDR	none	2	0xed,0xba	noargs	Z80,R800
+
+OUT	(n),A	2	0xd3	imm8	Z80,R800
+OUT	(C),r	2	0xed,0x41	r8_xx	Z80,R800
+OUT	(C),0	2	0xed,0x71	noargs	Z80,R800
+OUTI	none	2	0xed,0xa3	noargs	Z80,R800
+OTIR	none	2	0xed,0xb3	noargs	Z80,R800
+OUTD	none	2	0xed,0xab	noargs	Z80,R800
+OTDR	none	2	0xed,0xbb	noargs	Z80,R800

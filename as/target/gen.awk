@@ -105,6 +105,8 @@ function str2args(s, args, i, out, n)
 			out = out "AINDER_HL"
 		} else if (match(a, /^\(SP\)/)) {
 			out = out "AINDER_SP"
+		} else if (match(a, /^\(C\)/)) {
+			out = out "AINDER_C"
 		} else if (match(a, /^SP/)) {
 			out = out "AREG_SP"
 		} else if (match(a, /^HL/)) {
@@ -121,10 +123,14 @@ function str2args(s, args, i, out, n)
 			out = out "AREG_AF"
 		} else if (match(a, /^A/)) {
 			out = out "AREG_A"
+		} else if (match(a, /^F/)) {
+			out = out "AREG_F"
 		} else if (match(a, /^\(n\)/)) {
 			out = out "ADIRECT"
 		} else if (match(a, /^I/)) {
 			out = out "AREG_I"
+		} else if (match(a, /^0/)) {
+			out = out "AZERO"
 		} else if (match(a, /^sym/)) {
 			out = out "ASYM"
 		} else if (match(a, /^string/)) {

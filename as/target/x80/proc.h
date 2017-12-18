@@ -44,8 +44,10 @@ enum args {
 	AINDER_DE,    /* (DE) */
 	AINDER_BC,    /* (BC) */
 	AINDER_SP,    /* (SP) */
+	AINDER_C,     /* (C) */
 
 	AIMM3,         /* 3 bit immediate */
+	AZERO,         /* a literal 0 */
 };
 
 extern int rclass(int reg);
