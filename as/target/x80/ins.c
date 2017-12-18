@@ -338,3 +338,31 @@ im(Op *op, Node **args)
 	/* TODO */
 	abort();
 }
+
+void
+r_bit(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+r_idx_bit(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+bit(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+idx_bit(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}

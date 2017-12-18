@@ -133,6 +133,7 @@ match(Op *op, Node **args)
 			if (np->left->left->sym->argtype != arg)
 				return 0;
 			break;
+		case AIMM3:
 		case AIMM8:
 		case AIMM16:
 		case AIMM32:
