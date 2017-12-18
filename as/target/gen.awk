@@ -50,6 +50,7 @@ END		{
 
 		print "struct op optab[] = {"
 		for (i = 0; i < nvar; i++) {
+			printf "\t/* %d */\n", i
 			printf "\t{\n" \
 			       "\t\t.size = %d,\n"\
 			       "\t\t.format = %s,\n",
