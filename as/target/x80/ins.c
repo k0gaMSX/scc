@@ -366,3 +366,17 @@ idx_bit(Op *op, Node **args)
 	/* TODO */
 	abort();
 }
+
+void
+cc_imm16(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}
+
+void
+jr(Op *op, Node **args)
+{
+	/* TODO */
+	abort();
+}

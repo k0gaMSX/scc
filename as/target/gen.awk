@@ -81,6 +81,10 @@ function str2args(s, args, i, out, n)
 			out = out "AINDEX_IY"
 		} else if (match(a, /^\(IX\+n\)/)) {
 			out = out "AINDEX_IX"
+		} else if (match(a, /^ss/)) {
+			out = out "AREG_SSCLASS"
+		} else if (match(a, /^cc/)) {
+			out = out "AREG_CCCLASS"
 		} else if (match(a, /^dd/)) {
 			out = out "AREG_DDCLASS"
 		} else if (match(a, /^qq/)) {

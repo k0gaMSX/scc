@@ -29,6 +29,14 @@ enum args {
 	AREG_AF_,
 	AREG_SP,
 
+	AREG_NZ,
+	AREG_Z,
+	AREG_NC,
+	AREG_PO,
+	AREG_PE,
+	AREG_P,
+	AREG_M,
+
 	AREG_RCLASS,  /* register class for B, C, D, E, H, L and A */
 	AREG_PCLASS,  /* register class for B, C, D, E, IXH, IXL and A */
 	AREG_QCLASS,  /* register class for B, C, D, E, IYH, IYL and A */
@@ -36,6 +44,8 @@ enum args {
 	AREG_QQCLASS, /* register class for BC, DE, HL and AF */
 	AREG_PPCLASS, /* register class for BC, DE, IX and SP */
 	AREG_RRCLASS, /* register class for BC, DE, IY and SP */
+	AREG_SSCLASS, /* flag class for NZ, Z, NC, C, PO, PE, P, M */
+	AREG_CCCLASS, /* flag class for C, NC, Z, NZ */
 
 	AINDEX_IX,    /* (IX+d) */
 	AINDEX_IY,    /* (IX+d) */
