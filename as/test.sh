@@ -13,7 +13,7 @@ trap "rm -f a.out $tmp1 $tmp2" 0 2 3
 
 sed -n '/^\// ! {
 	s%.*/ %%
-	s%  *%\
+	s%[ 	][ 	]*%\
 %g
 	p
 }' target/$cpu/test.s |
@@ -24,7 +24,7 @@ nl -b a > $tmp1
 sed -n '/^data:/,$ {
 	/^data:/ ! {
 		s%.*: %%
-		s%  *%\
+		s%[ 	][ 	]*%\
 %g
 		p
 	}
