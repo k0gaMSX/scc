@@ -150,7 +150,7 @@ r8_imm8(Op *op, Node **args)
 	par1 = args[0];
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	buf[n-1] = par2->sym->value;
 	buf[n-2] |= reg2int(par1->sym->argtype) << 3;
 	emit(buf, n);
@@ -173,7 +173,7 @@ idx_r8(Op *op, Node **args)
 	par1 = args[0]->left;
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	buf[n-1] = par1->sym->value;
 	buf[n-2] |= reg2int(par2->sym->argtype);
 	emit(buf, n);
@@ -189,7 +189,7 @@ idx_imm8(Op *op, Node **args)
 	par1 = args[0]->left;
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	buf[n-1] = par1->sym->value;
 	buf[n-2] = par2->sym->value;
 	emit(buf, n);
@@ -204,7 +204,7 @@ imm8(Op *op, Node **args)
 
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	buf[n-1] = par2->sym->value;
 	emit(buf, n);
 }
@@ -219,7 +219,7 @@ imm16(Op *op, Node **args)
 
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-2);
+	memcpy(buf, op->bytes, n);
 	val = par2->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
@@ -287,7 +287,7 @@ r16(Op *op, Node **args)
 
 	par1 = args[0];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	buf[n-1] |= reg2int(par1->sym->argtype) << 4;
 	emit(buf, n);
 }
@@ -303,7 +303,7 @@ r16_imm16(Op *op, Node **args)
 	par1 = args[0];
 	par2 = args[1];
 
-	memcpy(buf, op->bytes, n-1);
+	memcpy(buf, op->bytes, n);
 	val = par2->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
