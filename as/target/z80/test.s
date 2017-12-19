@@ -5,9 +5,9 @@
 	INC	%B	/ 04
 	DEC	%B	/ 05
 	LD	%B,32	/ 06 20
-/07	RLCA
-/08	EX AF, AF’
-/09	ADD HL, BC
+	RLCA		/ 07
+	EX	%AF,%AF'	/ 08
+	ADD	%HL,%BC	/ 09
 /0A	LD A, (BC)
 /0B	DEC BC
 /0C	INC C
