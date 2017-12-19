@@ -7,7 +7,8 @@ target/z80/instbl.c: target/gen.awk target/x80/x80.dat target/x80/rules.dat
 	set -e ;\
 	rm -f $@;\
 	trap "rm -f $$$$.c" 0 2 3; \
-	sort -k1 target/x80/x80.dat | \
+	awk '!/^$$/ {print $$1,NR,$$2,$$3,$$4,$$5,$$6}' target/x80/x80.dat | \
+	sort -k1 -k2n | \
 	awk -v cpu=Z80 -v family=x80 \
 		-f target/gen.awk  > $$$$.c && mv $$$$.c $@
  

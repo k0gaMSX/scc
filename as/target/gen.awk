@@ -1,6 +1,5 @@
 
 BEGIN		{
-		FS = "\t"
 		printf "#include \"../../../inc/scc.h\"\n"\
 		       "#include \"../../as.h\"\n"\
 		       "#include \"../" family "/proc.h\"\n"
@@ -11,11 +10,11 @@ BEGIN		{
 			regex[++nregs] = $1
 			value[nregs] = $2
 		}
-		close "target/rules.awk"
+		close("target/rules.awk")
 }
 		{sub(/#.*/,"")}
 
-$6 !~ cpu	{next}
+$7 !~ cpu	{next}
 
 /^$/		{next}
 
@@ -25,11 +24,11 @@ $6 !~ cpu	{next}
 			opnames[nop++] = $1
 		}
 		opcount[$1]++
-		opargs[nvar] = $2
-		opsize[nvar] = $3
-		opbytes[nvar] = ($4 == "none") ? "" : $4
-		opformat[nvar++] = $5
-		formats[$5] = 1
+		opargs[nvar] = $3
+		opsize[nvar] = $4
+		opbytes[nvar] = ($5 == "none") ? "" : $5
+		opformat[nvar++] = $6
+		formats[$6] = 1
 }
 
 END		{
