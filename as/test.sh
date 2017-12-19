@@ -10,9 +10,9 @@ trap "rm -f a.out $tmp1 $tmp2" 0 2 3
 ./as-$cpu target/$cpu/test.s
 
 sed -n '/^\// ! {
-	s/.*\/ //
-	s/  */\
-/g
+	s%.*/ %%
+	s%  *%\
+/%
 	w '$tmp1'
 }' target/$cpu/test.s
 
@@ -20,9 +20,9 @@ sed -n '/^\// ! {
 ../objdump/objdump |
 sed -n '/^data:/,$ {
 	/^data:/ ! {
-		s/.*: //
-		s/  */\
-/g
+		s%.*: %%
+		s%  *%\
+%g
 		w '$tmp2'
 	}
 }' 
