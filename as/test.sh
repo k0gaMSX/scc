@@ -1,6 +1,8 @@
 #!/bin/sh
 
 set -e
+exec >test.log
+exec 2>&1
 
 tmp1=`mktemp`
 tmp2=`mktemp`
@@ -12,9 +14,10 @@ trap "rm -f a.out $tmp1 $tmp2" 0 2 3
 sed -n '/^\// ! {
 	s%.*/ %%
 	s%  *%\
-/%
-	w '$tmp1'
-}' target/$cpu/test.s
+%g
+	p
+}' target/$cpu/test.s |
+nl -b a > $tmp1
 
 
 ../objdump/objdump |
@@ -23,8 +26,14 @@ sed -n '/^data:/,$ {
 		s%.*: %%
 		s%  *%\
 %g
-		w '$tmp2'
+		p
 	}
-}' 
+}' |
+nl -b a > $tmp2
 
+printf "test.s\n"
+nl -b a $tmp1
+printf "\nobjdump\n"
+nl -b a $tmp2
+printf "\ndiff\n"
 diff $tmp1 $tmp2
