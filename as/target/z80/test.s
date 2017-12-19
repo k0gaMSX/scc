@@ -8,178 +8,178 @@
 	RLCA		/ 07
 	EX	%AF,%AF'	/ 08
 	ADD	%HL,%BC	/ 09
-/0A	LD A, (BC)
-/0B	DEC BC
-/0C	INC C
-/0D	DEC C
-/0E n	LD C, n
-/0F	RRCA
+	LD	%A,(%BC)	/ 0A
+	DEC	%BC	/ 0B
+	INC	%C	/ 0C
+	DEC	%C	/ 0D
+	LD	%C,64	/ 0E 40
+	RRCA		/ 0F
 /10 n	DJNZ PC + n
-/11 n n	LD DE, nn
-/12	LD (DE), A
-/13	INC DE
-/14	INC D
-/15	DEC D
-/16 n	LD D, n
-/17	RLA
+	LD	%DE,32	/ 11 20 00
+	LD	(%DE),%A	/ 12
+	INC	%DE	/ 13
+	INC	%D	/ 14
+	DEC	%D	/ 15
+	LD	%D,64	/ 16 40
+	RLA		/ 17
 /18 n	JR PC + n
-/19	ADD HL, DE
-/1A	LD A, (DE)
-/1B	DEC DE
-/1C	INC E
-/1D	DEC E
-/1E n	LD E, n
-/1F	RRA
+	ADD	%HL,%DE	/ 19
+	LD	%A,(%DE)	/ 1A
+	DEC	%DE	/ 1B
+	INC	%E	/ 1C
+	DEC	%E	/ 1D
+	LD	%E,64	/ 1E 40
+	RRA		/ 1F
 /20 n	JR NZ, PC + n
-/21 n n	LD HL, nn
-/22 n n	LD (nn), HL
-/23	INC HL
-/24	INC H
-/25	DEC H
-/26 n	LD H, n
-/27	DAA
+	LD	%HL,32	/ 21 20 00
+/22 n n	LD (nn),HL
+	INC	%HL	/ 23
+	INC	%H	/ 24
+	DEC	%H	/ 25
+	LD	%H,64	/ 26 40
+	DAA		/ 27
 /28 n	JR Z, PC + n
-/29	ADD HL, HL
+	ADD	%HL,%HL	/ 29
 /2A n n	LD HL, (nn)
-/2B	DEC HL
-/2C	INC L
-/2D	DEC L
-/2E n	LD L, n
-/2F	CPL
+	DEC	%HL	/ 2B
+	INC	%L	/ 2C
+	DEC	%L	/ 2D
+	LD	%L,32	/ 2E 20
+	CPL		/ 2F
 /30 n	JR NC, PC + n
-/31 n n	LD SP, nn
+	LD	%SP,64	/ 31 40 00
 /32 n n	LD (nn), A
-/33	INC SP
-/34	INC (HL)
-/35	DEC (HL)
+	INC	%SP	/ 33
+	INC	(%HL)	/ 34
+	DEC	(%HL)	/ 35
 /36 n	LD (HL), n
-/37	SCF
+	SCF		/ 37
 /38 n	JR C, PC + n
-/39	ADD HL, SP
+	ADD	%HL,%SP	/ 39
 /3A n n	LD A, (nn)
-/3B	DEC SP
-/3C	INC A
-/3D	DEC A
-/3E n	LD A, n
-/3F	CCF
-/40	LD B, B
-/41	LD B, C
-/42	LD B, D
-/43	LD B, E
-/44	LD B, H
-/45	LD B, L
+	DEC	%SP	/ 3B
+	INC	%A	/ 3C
+	DEC	%A	/ 3D
+	LD	%A,32	/ 3E 20
+	CCF		/ 3F
+	LD	%B,%B	/ 40
+	LD	%B,%C	/ 41
+	LD	%B,%D	/ 42
+	LD	%B,%E	/ 43
+	LD	%B,%H	/ 44
+	LD	%B,%L	/ 45
 /46	LD B, (HL)
-/47	LD B, A
-/48	LD C, B
-/49	LD C, C
-/4A	LD C, D
-/4B	LD C, E
-/4C	LD C, H
-/4D	LD C, L
+	LD	%B,%A	/ 47
+	LD	%C,%B	/ 48
+	LD	%C,%C	/ 49
+	LD	%C,%D	/ 4A
+	LD	%C,%E	/ 4B
+	LD	%C,%H	/ 4C
+	LD	%C,%L	/ 4D
 /4E	LD C, (HL)
-/4F	LD C, A
-/50	LD D, B
-/51	LD D, C
-/52	LD D, D
-/53	LD D, E
-/54	LD D, H
-/55	LD D, L
+	LD	%C,%A	/ 4F
+	LD	%D,%B	/ 50
+	LD	%D,%C	/ 51
+	LD	%D,%D	/ 52
+	LD	%D,%E	/ 53
+	LD	%D,%H	/ 54
+	LD	%D,%L	/ 55
 /56	LD D, (HL)
-/57	LD D, A
-/58	LD E, B
-/59	LD E, C
-/5A	LD E, D
-/5B	LD E, E
-/5C	LD E, H
-/5D	LD E, L
+	LD	%D,%A	/ 57
+	LD	%E,%B	/ 58
+	LD	%E,%C	/ 59
+	LD	%E,%D	/ 5A
+	LD	%E,%E	/ 5B
+	LD	%E,%H	/ 5C
+	LD	%E,%L	/ 5D
 /5E	LD E, (HL)
-/5F	LD E, A
-/60	LD H, B
-/61	LD H, C
-/62	LD H, D
-/63	LD H, E
-/64	LD H, H
-/65	LD H, L
+	LD	%E,%A	/ 5F
+	LD	%H,%B	/ 60
+	LD	%H,%C	/ 61
+	LD	%H,%D	/ 62
+	LD	%H,%E	/ 63
+	LD	%H,%H	/ 64
+	LD	%H,%L	/ 65
 /66	LD H, (HL)
-/67	LD H, A
-/68	LD L, B
-/69	LD L, C
-/6A	LD L, D
-/6B	LD L, E
-/6C	LD L, H
-/6D	LD L, L
+	LD	%H,%A	/ 67
+	LD	%L,%B	/ 68
+	LD	%L,%C	/ 69
+	LD	%L,%D	/ 6A
+	LD	%L,%E	/ 6B
+	LD	%L,%H	/ 6C
+	LD	%L,%L	/ 6D
 /6E	LD L, (HL)
-/6F	LD L, A
+	LD	%L,%A	/ 6F
 /70	LD (HL), B
 /71	LD (HL), C
 /72	LD (HL), D
 /73	LD (HL), E
 /74	LD (HL), H
 /75	LD (HL), L
-/76	HALT
+	HALT		/ 76
 /77	LD (HL), A
-/78	LD A, B
-/79	LD A, C
-/7A	LD A, D
-/7B	LD A, E
-/7C	LD A, H
-/7D	LD A, L
+	LD	%A,%B	/ 78
+	LD	%A,%C	/ 79
+	LD	%A,%D	/ 7A
+	LD	%A,%E	/ 7B
+	LD	%A,%H	/ 7C
+	LD	%A,%L	/ 7D
 /7E	LD A, (HL)
-/7F	LD A, A
-/80	ADD A, B
-/81	ADD A, C
-/82	ADD A, D
-/83	ADD A, E
-/84	ADD A, H
-/85	ADD A, L
+	LD	%A,%A	/ 7F
+	ADD	%A,%B	/ 80
+	ADD	%A,%C	/ 81
+	ADD	%A,%D	/ 82
+	ADD	%A,%E	/ 83
+	ADD	%A,%H	/ 84
+	ADD	%A,%L	/ 85
 /86	ADD A, (HL)
-/87	ADD A, A
-/88	ADC A, B
-/89	ADC A, C
-/8A	ADC A, D
-/8B	ADC A, E
-/8C	ADC A, H
-/8D	ADC A, L
+	ADD	%A,%A	/ 87
+	ADC	%A,%B	/ 88
+	ADC	%A,%C	/ 89
+	ADC	%A,%D	/ 8A
+	ADC	%A,%E	/ 8B
+	ADC	%A,%H	/ 8C
+	ADC	%A,%L	/ 8D
 /8E	ADC A, (HL)
-/8F	ADC A, A
-/90	SUB B
-/91	SUB C
-/92	SUB D
-/93	SUB E
-/94	SUB H
-/95	SUB L
-/96	SUB (HL)
-/97	SUB A
-/98	SBC A, B
-/99	SBC A, C
-/9A	SBC A, D
-/9B	SBC A, E
-/9C	SBC A, H
-/9D	SBC A, L
+	ADC	%A,%A	/ 8F
+	SUB	%A,%B	/ 90
+	SUB	%A,%C	/ 91
+	SUB	%A,%D	/ 92
+	SUB	%A,%E	/ 93
+	SUB	%A,%H	/ 94
+	SUB	%A,%L	/ 95
+/96	SUB A,(HL)
+	SUB	%A,%A	/ 97
+	SBC	%A,%B	/ 98
+	SBC	%A,%C	/ 99
+	SBC	%A,%D	/ 9A
+	SBC	%A,%E	/ 9B
+	SBC	%A,%H	/ 9C
+	SBC	%A,%L	/ 9D
 /9E	SBC A, (HL)
-/9F	SBC A, A
-/A0	AND B
-/A1	AND C
-/A2	AND D
-/A3	AND E
-/A4	AND H
-/A5	AND L
+	SBC	%A,%A	/ 9F
+	AND	%A,%B	/ A0
+	AND	%A,%C	/ A1
+	AND	%A,%D	/ A2
+	AND	%A,%E	/ A3
+	AND	%A,%H	/ A4
+	AND	%A,%L	/ A5
 /A6	AND (HL)
-/A7	AND A
-/A8	XOR B
-/A9	XOR C
-/AA	XOR D
-/AB	XOR E
-/AC	XOR H
-/AD	XOR L
+	AND	%A,%A	/ A7
+	XOR	%A,%B	/ A8
+	XOR	%A,%C	/ A9
+	XOR	%A,%D	/ AA
+	XOR	%A,%E	/ AB
+	XOR	%A,%H	/ AC
+	XOR	%A,%L	/ AD
 /AE	XOR (HL)
-/AF	XOR A
-/B0	OR B
-/B1	OR C
-/B2	OR D
-/B3	OR E
-/B4	OR H
-/B5	OR L
+	XOR	%A,%A	/ AF
+	OR	%A,%B	/ B0
+	OR	%A,%C	/ B1
+	OR	%A,%D	/ B2
+	OR	%A,%E	/ B3
+	OR	%A,%H	/ B4
+	OR	%A,%L	/ B5
 /B6	OR (HL)
 /B7	OR A
 /B8	CP B
