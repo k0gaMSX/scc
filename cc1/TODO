@@ -10,3 +10,5 @@
 * Merge all the definitions of the same string
 * Do not assign identifierss until symbols are emitted. This change will
   avoid identifiers that are not emitted.
+* Fix assignation abbreviations. They fail whe lhs type is smaller than
+  the type in rhs
