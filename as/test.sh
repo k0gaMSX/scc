@@ -12,7 +12,10 @@ trap "rm -f a.out $tmp1 $tmp2" 0 2 3
 ./as-$cpu target/$cpu/test.s
 
 sed -n '/^\// ! {
-	s%.*/ %%
+	s%.*/%%
+	s%^[ 	]*%%
+	s%[ 	]*$%%
+	/^$/d
 	s%[ 	][ 	]*%\
 %g
 	p
@@ -23,7 +26,10 @@ nl -b a > $tmp1
 ../objdump/objdump |
 sed -n '/^data:/,$ {
 	/^data:/ ! {
-		s%.*: %%
+		s%.*:%%
+		s%^[ 	]*%%
+		s%[ 	]*$%%
+		/^$/d
 		s%[ 	][ 	]*%\
 %g
 		p
