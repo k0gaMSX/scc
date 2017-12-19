@@ -98,10 +98,10 @@ LD	SP,HL	1	0xf9	noargs	Z80,R800,GB80
 LD	SP,IX	2	0xdd,0xf9	noargs	Z80,R800
 LD	SP,IY	2	0xfd,0xf9	noargs	Z80,R800
 
-PUSH	qq	1	0xc5	r16	Z80,R800,GB80
+PUSH	qq	1	0xc5	r16_xx	Z80,R800,GB80
 PUSH	IX	2	0xdd,0xe5	noargs	Z80,R800
 PUSH	IY	2	0xdd,0xe5	noargs	Z80,R800
-POP	qq	1	0xc1	r16	Z80,R800,GB80
+POP	qq	1	0xc1	r16_xx	Z80,R800,GB80
 POP	IX	2	0xdd,0xe1	noargs	Z80,R800
 POP	IY	2	0xfd,0xe1	noargs	Z80,R800
 
@@ -185,17 +185,17 @@ DEC	(IX+n)	3	0xdd,0x35	idx	Z80,R800
 DEC	(IY+n)	3	0xfd,0x35	idx	Z80,R800
 
 # 16 bit ALU group
-ADD	HL,dd	1	0x09	r16	Z80,R800,GB80
-ADC	HL,dd	2	0xed,0x4a	r16	Z80,R800
-SBC	HL,dd	2	0xed,0x42	r16	Z80,R800
-ADD	IX,pp	2	0xdd,0x09	r16	Z80,R800
-ADD	IY,rr	2	0xfd,0x09	r16	Z80,R800
+ADD	HL,dd	1	0x09	xx_r16	Z80,R800,GB80
+ADC	HL,dd	2	0xed,0x4a	xx_r16	Z80,R800
+SBC	HL,dd	2	0xed,0x42	xx_r16	Z80,R800
+ADD	IX,pp	2	0xdd,0x09	xx_r16	Z80,R800
+ADD	IY,rr	2	0xfd,0x09	xx_r16	Z80,R800
 
-INC	dd	1	0x03	r16	Z80,R800,GB80
+INC	dd	1	0x03	r16_xx	Z80,R800,GB80
 INC	IX	2	0xdd,0x23	noargs	Z80,R800
 INC	IY	2	0xfd,0x23	noargs	Z80,R800
 
-DEC	dd	1	0x0b	r16	Z80,R800,GB80
+DEC	dd	1	0x0b	r16_xx	Z80,R800,GB80
 DEC	IX	2	0xdd,0x2b	noargs	Z80,R800
 DEC	IY	2	0xfd,0x2b	noargs	Z80,R800
 
