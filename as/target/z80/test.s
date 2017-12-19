@@ -2,9 +2,9 @@
 	LD	%BC,64	/ 01 40 00
 	LD	(%BC),%A	/ 02
 	INC	%BC	/ 03
-/04	INC B
-/05	DEC B
-/06 n	LD B, n
+	INC	%B	/ 04
+	DEC	%B	/ 05
+	LD	%B,32	/ 06 20
 /07	RLCA
 /08	EX AF, AF’
 /09	ADD HL, BC

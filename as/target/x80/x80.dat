@@ -170,9 +170,9 @@ CP	A,(HL)	1	0xbe	noargs	Z80,R800,GB80
 CP	A,(IX+n)	3	0xdd,0xbe	idx	Z80,R800
 CP	A,(IY+n)	3	0xfd,0xbe	idx	Z80,R800
 
-INC	r	1	0x40	r8_xx	Z80,R800,GB80
-INC	p	2	0xdd,0x40	r8_xx	Z80,R800
-INC	q	2	0xfd,0x40	r8_xx	Z80,R800
+INC	r	1	0x04	r8_xx	Z80,R800,GB80
+INC	p	2	0xdd,0x04	r8_xx	Z80,R800
+INC	q	2	0xfd,0x04	r8_xx	Z80,R800
 INC	(HL)	1	0x34	noargs	Z80,R800,GB80
 INC	(IX+n)	3	0xdd,0x34	idx	Z80,R800
 INC	(IY+n)	3	0xfd,0x34	idx	Z80,R800
