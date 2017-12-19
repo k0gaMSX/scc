@@ -68,7 +68,7 @@
 	LD	%B,%E	/ 43
 	LD	%B,%H	/ 44
 	LD	%B,%L	/ 45
-/46	LD B, (HL)
+	LD	%B,(%HL)	/ 46
 	LD	%B,%A	/ 47
 	LD	%C,%B	/ 48
 	LD	%C,%C	/ 49
@@ -76,7 +76,7 @@
 	LD	%C,%E	/ 4B
 	LD	%C,%H	/ 4C
 	LD	%C,%L	/ 4D
-/4E	LD C, (HL)
+	LD	%C,(%HL)	/ 4E
 	LD	%C,%A	/ 4F
 	LD	%D,%B	/ 50
 	LD	%D,%C	/ 51
@@ -84,7 +84,7 @@
 	LD	%D,%E	/ 53
 	LD	%D,%H	/ 54
 	LD	%D,%L	/ 55
-/56	LD D, (HL)
+	LD	%D,(%HL)	/ 56
 	LD	%D,%A	/ 57
 	LD	%E,%B	/ 58
 	LD	%E,%C	/ 59
@@ -92,7 +92,7 @@
 	LD	%E,%E	/ 5B
 	LD	%E,%H	/ 5C
 	LD	%E,%L	/ 5D
-/5E	LD E, (HL)
+	LD	%E,(%HL)	/ 5E
 	LD	%E,%A	/ 5F
 	LD	%H,%B	/ 60
 	LD	%H,%C	/ 61
@@ -100,7 +100,7 @@
 	LD	%H,%E	/ 63
 	LD	%H,%H	/ 64
 	LD	%H,%L	/ 65
-/66	LD H, (HL)
+	LD	%H,(%HL)	/ 66
 	LD	%H,%A	/ 67
 	LD	%L,%B	/ 68
 	LD	%L,%C	/ 69
@@ -108,23 +108,23 @@
 	LD	%L,%E	/ 6B
 	LD	%L,%H	/ 6C
 	LD	%L,%L	/ 6D
-/6E	LD L, (HL)
+	LD	%L,(%HL)	/ 6E
 	LD	%L,%A	/ 6F
-/70	LD (HL), B
-/71	LD (HL), C
-/72	LD (HL), D
-/73	LD (HL), E
-/74	LD (HL), H
-/75	LD (HL), L
+	LD	(%HL),%B	/ 70
+	LD	(%HL),%C	/ 71
+	LD	(%HL),%D	/ 72
+	LD	(%HL),%E	/ 73
+	LD	(%HL),%H	/ 74
+	LD	(%HL),%L	/ 75
 	HALT		/ 76
-/77	LD (HL), A
+	LD	(%HL),%A	/ 77
 	LD	%A,%B	/ 78
 	LD	%A,%C	/ 79
 	LD	%A,%D	/ 7A
 	LD	%A,%E	/ 7B
 	LD	%A,%H	/ 7C
 	LD	%A,%L	/ 7D
-/7E	LD A, (HL)
+	LD	%A,(%HL)	/ 7E
 	LD	%A,%A	/ 7F
 	ADD	%A,%B	/ 80
 	ADD	%A,%C	/ 81
@@ -132,7 +132,7 @@
 	ADD	%A,%E	/ 83
 	ADD	%A,%H	/ 84
 	ADD	%A,%L	/ 85
-/86	ADD A, (HL)
+	ADD	%A,(%HL)	/ 86
 	ADD	%A,%A	/ 87
 	ADC	%A,%B	/ 88
 	ADC	%A,%C	/ 89
@@ -140,7 +140,7 @@
 	ADC	%A,%E	/ 8B
 	ADC	%A,%H	/ 8C
 	ADC	%A,%L	/ 8D
-/8E	ADC A, (HL)
+	ADC	%A,(%HL)	/ 8E
 	ADC	%A,%A	/ 8F
 	SUB	%A,%B	/ 90
 	SUB	%A,%C	/ 91
@@ -148,7 +148,7 @@
 	SUB	%A,%E	/ 93
 	SUB	%A,%H	/ 94
 	SUB	%A,%L	/ 95
-/96	SUB A,(HL)
+	SUB	%A,(%HL)	/ 96
 	SUB	%A,%A	/ 97
 	SBC	%A,%B	/ 98
 	SBC	%A,%C	/ 99
@@ -156,7 +156,7 @@
 	SBC	%A,%E	/ 9B
 	SBC	%A,%H	/ 9C
 	SBC	%A,%L	/ 9D
-/9E	SBC A, (HL)
+	SBC	%A,(%HL)	/ 9E
 	SBC	%A,%A	/ 9F
 	AND	%A,%B	/ A0
 	AND	%A,%C	/ A1
@@ -164,7 +164,7 @@
 	AND	%A,%E	/ A3
 	AND	%A,%H	/ A4
 	AND	%A,%L	/ A5
-/A6	AND (HL)
+	AND	%A,(%HL)	/ A6
 	AND	%A,%A	/ A7
 	XOR	%A,%B	/ A8
 	XOR	%A,%C	/ A9
@@ -172,7 +172,7 @@
 	XOR	%A,%E	/ AB
 	XOR	%A,%H	/ AC
 	XOR	%A,%L	/ AD
-/AE	XOR (HL)
+	XOR	%A,(%HL)	/ AE
 	XOR	%A,%A	/ AF
 	OR	%A,%B	/ B0
 	OR	%A,%C	/ B1
@@ -180,91 +180,91 @@
 	OR	%A,%E	/ B3
 	OR	%A,%H	/ B4
 	OR	%A,%L	/ B5
-/B6	OR (HL)
-/B7	OR A
-/B8	CP B
-/B9	CP C
-/BA	CP D
-/BB	CP E
-/BC	CP H
-/BD	CP L
-/BE	CP (HL)
-/BF	CP A
+	OR	%A,(%HL)	/ B6
+	OR	%A,%A	/ B7
+	CP	%A,%B	/ B8
+	CP	%A,%C	/ B9
+	CP	%A,%D	/ BA
+	CP	%A,%E	/ BB
+	CP	%A,%H	/ BC
+	CP	%A,%L	/ BD
+	CP	%A,(%HL)	/ BE
+	CP	%A,%A	/ BF
 /C0	RET NZ
-/C1	POP BC
+	POP	%BC	/ C1
 /C2 n n	JP NZ, nn
 /C3 n n	JP nn
 /C4 n n	CALL NZ, nn
-/C5	PUSH BC
+	PUSH	%BC	/ C5
 /C6 n	ADD A, n
 /C7	RST 0h
 /C8	RET Z
-/C9	RET
+	RET		/ C9
 /CA n n	JP Z, nn
-/CB00	RLC B
-/CB01	RLC C
-/CB02	RLC D
-/CB03	RLC E
-/CB04	RLC H
-/CB05	RLC L
-/CB06	RLC (HL)
-/CB07	RLC A
-/CB08	RRC B
-/CB09	RRC C
-/CB0A	RRC D
-/CB0B	RRC E
-/CB0C	RRC H
-/CB0D	RRC L
-/CB0E	RRC (HL)
-/CB0F	RRC A
-/CB10	RL B
-/CB11	RL C
-/CB12	RL D
-/CB13	RL E
-/CB14	RL H
-/CB15	RL L
-/CB16	RL (HL)
-/CB17	RL A
-/CB18	RR B
-/CB19	RR C
-/CB1A	RR D
-/CB1B	RR E
-/CB1C	RR H
-/CB1D	RR L
-/CB1E	RR (HL)
-/CB1F	RR A
-/CB20	SLA B
-/CB21	SLA C
-/CB22	SLA D
-/CB23	SLA E
-/CB24	SLA H
-/CB25	SLA L
-/CB26	SLA (HL)
-/CB27	SLA A
-/CB28	SRA B
-/CB29	SRA C
-/CB2A	SRA D
-/CB2B	SRA E
-/CB2C	SRA H
-/CB2D	SRA L
-/CB2E	SRA (HL)
-/CB2F	SRA A
-/CB30	SLL B*
-/CB31	SLL C*
-/CB32	SLL D*
-/CB33	SLL E*
-/CB34	SLL H*
-/CB35	SLL L*
-/CB36	SLL (HL)*
-/CB37	SLL A*
-/CB38	SRL B
-/CB39	SRL C
-/CB3A	SRL D
-/CB3B	SRL E
-/CB3C	SRL H
-/CB3D	SRL L
-/CB3E	SRL (HL)
-/CB3F	SRL A
+	RLC	%B	/ CB 00
+	RLC	%C	/ CB 01
+	RLC	%D	/ CB 02
+	RLC	%E	/ CB 03
+	RLC	%H	/ CB 04
+	RLC	%L	/ CB 05
+	RLC	(%HL)	/ CB 06
+	RLC	%A	/ CB 07
+	RRC	%B	/ CB 08
+	RRC	%C	/ CB 09
+	RRC	%D	/ CB 0A
+	RRC	%E	/ CB 0B
+	RRC	%H	/ CB 0C
+	RRC	%L	/ CB 0D
+	RRC	(%HL)	/ CB 0E
+	RRC	%A	/ CB 0F
+	RL	%B	/ CB 10
+	RL	%C	/ CB 11
+	RL	%D	/ CB 12
+	RL	%E	/ CB 13
+	RL	%H	/ CB 14
+	RL	%L	/ CB 15
+	RL	(%HL)	/ CB 16
+	RL	%A	/ CB 17
+	RR	%B	/ CB 18
+	RR	%C	/ CB 19
+	RR	%D	/ CB 1A
+	RR	%E	/ CB 1B
+	RR	%H	/ CB 1C
+	RR	%L	/ CB 1D
+	RR	(%HL)	/ CB 1E
+	RR	%A	/ CB 1F
+	SLA	%B	/ CB 20
+	SLA	%C	/ CB 21
+	SLA	%D	/ CB 22
+	SLA	%E	/ CB 23
+	SLA	%H	/ CB 24
+	SLA	%L	/ CB 25
+	SLA	(%HL)	/ CB 26
+	SLA	%A	/ CB 27
+	SRA	%B	/ CB 28
+	SRA	%C	/ CB 29
+	SRA	%D	/ CB 2A
+	SRA	%E	/ CB 2B
+	SRA	%H	/ CB 2C
+	SRA	%L	/ CB 2D
+	SRA	(%HL)	/ CB 2E
+	SRA	%A	/ CB 2F
+	SLL	%B	/ CB 30
+	SLL	%C	/ CB 31
+	SLL	%D	/ CB 32
+	SLL	%E	/ CB 33
+	SLL	%H	/ CB 34
+	SLL	%L	/ CB 35
+	SLL	(%HL)	/ CB 36
+	SLL	%A	/ CB 37
+	SRL	%B	/ CB 38
+	SRL	%C	/ CB 39
+	SRL	%D	/ CB 3A
+	SRL	%E	/ CB 3B
+	SRL	%H	/ CB 3C
+	SRL	%L	/ CB 3D
+	SRL	(%HL)	/ CB 3E
+	SRL	%A	/ CB 3F
 /CB40	BIT 0, B
 /CB41	BIT 0, C
 /CB42	BIT 0, D
@@ -462,11 +462,11 @@
 /CE n	ADC A, n
 /CF	RST 8h
 /D0	RET NC
-/D1	POP DE
+	POP	%DE	/ D1
 /D2 n n	JP NC, nn
 /D3 n	OUT (n), A
 /D4 n n	CALL NC, nn
-/D5	PUSH DE
+	PUSH	%DE	/ D5
 /D6 n	SUB n
 /D7	RST 10h
 /D8	RETC
