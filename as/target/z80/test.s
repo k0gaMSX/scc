@@ -618,70 +618,14 @@
 /DDCB d 3D	LD L, SRL (IX + d)*
 /DDCB d 3E	SRL (IX + d)
 /DDCB d 3F	LD A, SRL (IX + d)*
-/DDCB d 40	BIT 0, (IX + d)*
-/DDCB d 41	BIT 0, (IX + d)*
-/DDCB d 42	BIT 0, (IX + d)*
-/DDCB d 43	BIT 0, (IX + d)*
-/DDCB d 44	BIT 0, (IX + d)*
-/DDCB d 45	BIT 0, (IX + d)*
 /DDCB d 46	BIT 0, (IX + d)
-/DDCB d 47	BIT 0, (IX + d)*
-/DDCB d 48	BIT 1, (IX + d)*
-/DDCB d 49	BIT 1, (IX + d)*
-/DDCB d 4A	BIT 1, (IX + d)*
-/DDCB d 4B	BIT 1, (IX + d)*
-/DDCB d 4C	BIT 1, (IX + d)*
-/DDCB d 4D	BIT 1, (IX + d)*
 /DDCB d 4E	BIT 1, (IX + d)
-/DDCB d 4F	BIT 1, (IX + d)*
-/DDCB d 50	BIT 2, (IX + d)*
-/DDCB d 51	BIT 2, (IX + d)*
-/DDCB d 52	BIT 2, (IX + d)*
-/DDCB d 53	BIT 2, (IX + d)*
-/DDCB d 54	BIT 2, (IX + d)*
-/DDCB d 55	BIT 2, (IX + d)*
 /DDCB d 56	BIT 2, (IX + d)
-/DDCB d 57	BIT 2, (IX + d)*
-/DDCB d 58	BIT 3, (IX + d)*
-/DDCB d 59	BIT 3, (IX + d)*
-/DDCB d 5A	BIT 3, (IX + d)*
-/DDCB d 5B	BIT 3, (IX + d)*
-/DDCB d 5C	BIT 3, (IX + d)*
-/DDCB d 5D	BIT 3, (IX + d)*
 /DDCB d 5E	BIT 3, (IX + d)
-/DDCB d 5F	BIT 3, (IX + d)*
-/DDCB d 60	BIT 4, (IX + d)*
-/DDCB d 61	BIT 4, (IX + d)*
-/DDCB d 62	BIT 4, (IX + d)*
-/DDCB d 63	BIT 4, (IX + d)*
-/DDCB d 64	BIT 4, (IX + d)*
-/DDCB d 65	BIT 4, (IX + d)*
 /DDCB d 66	BIT 4, (IX + d)
-/DDCB d 67	BIT 4, (IX + d)*
-/DDCB d 68	BIT 5, (IX + d)*
-/DDCB d 69	BIT 5, (IX + d)*
-/DDCB d 6A	BIT 5, (IX + d)*
-/DDCB d 6B	BIT 5, (IX + d)*
-/DDCB d 6C	BIT 5, (IX + d)*
-/DDCB d 6D	BIT 5, (IX + d)*
 /DDCB d 6E	BIT 5, (IX + d)
-/DDCB d 6F	BIT 5, (IX + d)*
-/DDCB d 70	BIT 6, (IX + d)*
-/DDCB d 71	BIT 6, (IX + d)*
-/DDCB d 72	BIT 6, (IX + d)*
-/DDCB d 73	BIT 6, (IX + d)*
-/DDCB d 74	BIT 6, (IX + d)*
-/DDCB d 75	BIT 6, (IX + d)*
 /DDCB d 76	BIT 6, (IX + d)
-/DDCB d 77	BIT 6, (IX + d)*
-/DDCB d 78	BIT 7, (IX + d)*
-/DDCB d 79	BIT 7, (IX + d)*
-/DDCB d 7A	BIT 7, (IX + d)*
-/DDCB d 7B	BIT 7, (IX + d)*
-/DDCB d 7C	BIT 7, (IX + d)*
-/DDCB d 7D	BIT 7, (IX + d)*
 /DDCB d 7E	BIT 7, (IX + d)
-/DDCB d 7F	BIT 7, (IX + d)*
 /DDCB d 80	LD B, RES 0, (IX + d)*
 /DDCB d 81	LD C, RES 0, (IX + d)*
 /DDCB d 82	LD D, RES 0, (IX + d)*
