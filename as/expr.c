@@ -189,6 +189,7 @@ iden(void)
 		if (isalnum(c))
 			continue;
 		switch (c) {
+		case '\'':
 		case '_':
 		case '-':
 		case '.':
@@ -271,7 +272,7 @@ reg(void)
 
 	if (*textp == '%')
 		++textp, ++endp;
-	while (isalnum(c = *endp))
+	while (isalnum(c = *endp) || c == '\'')
 		++endp;
 	tok2str();
 	yylval.sym = lookup(yytext);

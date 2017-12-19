@@ -39,7 +39,7 @@ iarch(void)
 
 		"R", AREG_R,
 		"I", AREG_I,
-		"AF_", AREG_AF_,
+		"AF'", AREG_AF_,
 
 		NULL,
 	}, *bp;
