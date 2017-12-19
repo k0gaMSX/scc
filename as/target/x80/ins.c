@@ -251,30 +251,26 @@ r8_r8(Op *op, Node **args)
 void
 xx_r8(Op *op, Node **args)
 {
-	Node *par1, *par2;
+	Node *par;
 	unsigned char buf[3];
 	int n = op->size;
 
-	par1 = args[0];
-	par2 = args[1];
-
+	par = args[1];
 	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par2->sym->argtype);
+	buf[n-1] |= reg2int(par->sym->argtype);
 	emit(buf, n);
 }
 
 void
 r8_xx(Op *op, Node **args)
 {
-	Node *par1, *par2;
+	Node *par;
 	unsigned char buf[3];
 	int n = op->size;
 
-	par1 = args[0];
-	par2 = args[1];
-
+	par = args[0];
 	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par1->sym->argtype) << 3;
+	buf[n-1] |= reg2int(par->sym->argtype) << 3;
 	emit(buf, n);
 }
 
@@ -316,13 +312,6 @@ r16_dir(Op *op, Node **args)
 {
 	args[1] = args[1]->left;
 	r16_imm16(op, args);
-}
-
-void
-r8(Op *op, Node **args)
-{
-	/* TODO */
-	abort();
 }
 
 void
