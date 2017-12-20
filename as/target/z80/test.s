@@ -527,32 +527,32 @@
 /DD74 d	LD (IX + d), H
 /DD75 d	LD (IX + d), L
 /DD77 d	LD (IX + d), A
-/DD7C	LD A, IXH*
-/DD7D	LD A, IXL*
+	LD	%A,%IXH	/ DD 7C
+	LD	%A,%IXL	/ DD 7D
 /DD7E d	LD A, (IX + d)
-/DD84	ADD A, IXH*
-/DD85	ADD A, IXL*
+	ADD	%A,%IXH	/ DD 84
+	ADD	%A,%IXL	/ DD 85
 /DD86 d	ADD A, (IX + d)
-/DD8C	ADC A, IXH*
-/DD8D	ADC A, IXL*
+	ADC	%A,%IXH	/ DD 8C
+	ADC	%A,%IXL	/ DD 8D
 /DD8E d	ADC A, (IX + d)
-/DD94	SUB IXH*
-/DD95	SUB IXL*
+	SUB	%A,%IXH	/ DD 94
+	SUB	%A,%IXL	/ DD 95
 /DD96 d	SUB (IX + d)
-/DD9C	SBC A, IXH*
-/DD9D	SBC A, IXL*
+	SBC	%A,%IXH	/ DD 9C
+	SBC	%A,%IXL	/ DD 9D
 /DD9E d	SBC A, (IX + d)
-/DDA4	AND IXH*
-/DDA5	AND IXL*
+	AND	%A,%IXH	/ DD A4
+	AND	%A,%IXL	/ DD A5
 /DDA6 d	AND (IX + d)
-/DDAC	XOR IXH*
-/DDAD	XOR IXL*
+	XOR	%A,%IXH	/ DD AC
+	XOR	%A,%IXL	/ DD AD
 /DDAE d	XOR (IX + d)
-/DDB4	OR IXH*
-/DDB5	OR IXL*
+	OR	%A,%IXH	/ DD B4
+	OR	%A,%IXL	/ DD B5
 /DDB6 d	OR (IX + d)
-/DDBC	CP IXH*
-/DDBD	CP IXL*
+	CP	%A,%IXH	/ DD BC
+	CP	%A,%IXL	/ DD BD
 /DDBE d	CP (IX + d)
 /DDCB d 00	LD B, RLC (IX + d)*
 /DDCB d 01	LD C, RLC (IX + d)*
