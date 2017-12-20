@@ -196,7 +196,7 @@
 /C3 n n	JP nn
 /C4 n n	CALL NZ, nn
 	PUSH	%BC	/ C5
-/C6 n	ADD A, n
+	ADD	%A,32	/ C6 20
 /C7	RST 0h
 /C8	RET Z
 	RET		/ C9
@@ -459,7 +459,7 @@
 /CBFF 	SET 7, A
 /CC n n	CALL Z, nn
 /CD n n	CALL nn
-/CE n	ADC A, n
+	ADC	%A,64	/ CE 40
 /CF	RST 8h
 /D0	RET NC
 	POP	%DE	/ D1
@@ -467,59 +467,59 @@
 /D3 n	OUT (n), A
 /D4 n n	CALL NC, nn
 	PUSH	%DE	/ D5
-/D6 n	SUB n
+	SUB	%A,32	/ D6 20
 /D7	RST 10h
 /D8	RETC
-/D9	EXX
+	EXX		/ D9
 /DA n n	JP C, nn
 /DB n	IN A, (n)
 /DC n n	CALL C, nn
-/DD09	ADD IX, BC
-/DD19	ADD IX, DE
-/DD21 n n	LD IX, nn
+	ADD	%IX,%BC	/ DD 09
+	ADD	%IX,%DE	/ DD 19
+	LD	%IX,64	/ DD 21 40 00
 /DD22 n n	LD (nn), IX
-/DD23	INC IX
-/DD24	INC IXH*
-/DD25	DEC IXH*
-/DD26 n 	LD IXH, n*
-/DD29	ADD IX, IX
+	INC	%IX	/ DD 23
+	INC	%IXH	/ DD 24
+	DEC	%IXH	/ DD 25
+	LD	%IXH,32	/ DD 26 20
+	ADD	%IX,%IX	/ DD 29
 /DD2A n n	LD IX, (nn)
-/DD2B	DEC IX
-/DD2C	INC IXL*
-/DD2D	DEC IXL*
-/DD2E n	LD IXL, n*
+	DEC	%IX	/ DD 2B
+	INC	%IXL	/ DD 2C
+	DEC	%IXL	/ DD 2D
+	LD	%IXL,64	/ DD 2E 40
 /DD34 d	INC (IX + d)
 /DD35 d	DEC (IX + d)
 /DD36 d n	LD (IX + d), n
-/DD39	ADD IX, SP
-/DD44	LD B, IXH*
-/DD45	LD B, IXL*
+	ADD	%IX,%SP	/ DD 39
+	LD	%B,%IXH	/ DD 44
+	LD	%B,%IXL	/ DD 45
 /DD46 d	LD B, (IX + d)
-/DD4C	LD C, IXH*
-/DD4D	LD C, IXL*
+	LD	%C,%IXH	/ DD 4C
+	LD	%C,%IXL	/ DD 4D
 /DD4E d	LD C, (IX + d)
-/DD54	LD D, IXH*
-/DD55	LD D, IXL*
+	LD	%D,%IXH	/ DD 54
+	LD	%D,%IXL	/ DD 55
 /DD56 d	LD D, (IX + d)
-/DD5C	LD E, IXH*
-/DD5D	LD E, IXL*
+	LD	%E,%IXH	/ DD 5C
+	LD	%E,%IXL	/ DD 5D
 /DD5E d	LD E, (IX + d)
-/DD60	LD IXH, B*
-/DD61	LD IXH, C*
-/DD62	LD IXH, D*
-/DD63	LD IXH, E*
-/DD64	LD IXH, IXH*
-/DD65	LD IXH, IXL*
+	LD	%IXH,%B	/ DD 60
+	LD	%IXH,%C	/ DD 61
+	LD	%IXH,%D	/ DD 62
+	LD	%IXH,%E	/ DD 63
+	LD	%IXH,%IXH	/ DD 64
+	LD	%IXH,%IXL	/ DD 65
 /DD66 d	LD H, (IX + d)
-/DD67	LD IXH, A*
-/DD68	LD IXL, B*
-/DD69	LD IXL, C*
-/DD6A	LD IXL, D*
-/DD6B	LD IXL, E*
-/DD6C	LD IXL, IXH*
-/DD6D	LD IXL, IXL*
+	LD	%IXH,%A	/ DD 67
+	LD	%IXL,%B	/ DD 68
+	LD	%IXL,%C	/ DD 69
+	LD	%IXL,%D	/ DD 6A
+	LD	%IXL,%E	/ DD 6B
+	LD	%IXL,%IXH	/ DD 6C
+	LD	%IXL,%IXL	/ DD 6D
 /DD6E d	LD L, (IX + d)
-/DD6F	LD IXL, A*
+	LD	%IXL,%A	/ DD 6F
 /DD70 d	LD (IX + d), B
 /DD71 d	LD (IX + d), C
 /DD72 d	LD (IX + d), D
@@ -754,165 +754,152 @@
 /DDCB d FD	LD L, SET 7, (IX + d)*
 /DDCB d FE	SET 7, (IX + d)
 /DDCB d FF	LD A, SET 7, (IX + d)*
-/DDE1	POP IX
-/DDE3	EX (SP), IX
-/DDE5	PUSH IX
-/DDE9	JP (IX)
-/DDF9	LD SP, IX
+	POP	%IX	/ DD E1
+	EX	(%SP),%IX	/ DD E3
+	PUSH	%IX	/ DD E5
+/	JP	(%IX)	/ DD E9
+	LD	%SP,%IX	/ DD F9
 /DE n	SBC A, n
 /DF	RST 18h
 /E0	RET PO
-/E1	POP HL
+	POP	%HL	/ E1
 /E2 n n	JP PO, nn
-/E3	EX (SP), HL
+	EX	(%SP),%HL	/ E3
 /E4 n n	CALL PO, nn
-/E5	PUSH HL
+	PUSH	%HL	/ E5
 /E6 n	AND n
 /E7	RST 20h
 /E8	RET PE
 /E9	JP (HL)
 /EA n n	JP PE, (nn)
-/EB	EX DE, HL
+	EX	%DE,%HL	/ EB
 /EC n n	CALL PE, nn
 /ED40	IN B, (C)
 /ED41	OUT (C), B
 /ED42	SBC HL, BC
 /ED43 n n	LD (nn), BC
-/ED44	NEG
-/ED45	RETN
+	NEG		/ ED 44
+	RETN		/ ED 45
 /ED46	IM 0
-/ED47	LD I, A
+	LD	%I,%A	/ ED 47
 /ED48	IN C, (C)
 /ED49	OUT (C), C
 /ED4A	ADC HL, BC
 /ED4B n n	LD BC, (nn)
-/ED4C	NEG*
-/ED4D	RETI
+	RETI		/ ED 4D
 /ED4E	IM 0/1*
 /ED4F	LD R, A
 /ED50	IN D, (C)
 /ED51	OUT (C), D
-/ED52	SBC HL, DE
+/ED52	SBC	%HL,%DE	/ ED 52
 /ED53 n n	LD (nn), DE
-/ED54	NEG*
-/ED55	RETN*
 /ED56	IM 1
-/ED57	LD A, I
+	LD	%A,%I	/ ED 57
 /ED58	IN E, (C)
 /ED59	OUT (C), E
-/ED5A	ADC HL, DE
+	ADC	%HL,%DE	/ ED 5A
 /ED5B n n	LD DE, (nn)
-/ED5C	NEG*
-/ED5D	RETN*
 /ED5E	IM 2
 /ED5F	LD A, R
 /ED60	IN H, (C)
 /ED61	OUT (C), H
-/ED62	SBC HL, HL
+/ED62	SBC	%HL,%HL	/ ED 62
 /ED63 n n	LD (nn), HL
-/ED64	NEG*
-/ED65	RETN*
 /ED66	IM 0*
-/ED67	RRD
+	RRD		/ ED 67
 /ED68	IN L, (C)
 /ED69	OUT (C), L
-/ED6A	ADC HL, HL
+	ADC	%HL,%HL	/ ED 6A
 /ED6B n n	LD HL, (nn)
-/ED6C	NEG*
-/ED6D	RETN*
 /ED6E	IM 0/1*
-/ED6F	RLD
+	RLD		/ ED 6F
 /ED70	IN (C)* / IN F, (C)*
 /ED71	OUT (C), 0*
-/ED72	SBC HL, SP
+	SBC	%HL,%SP	/ ED 72
 /ED73 n n	LD (nn), SP	
-/ED74	NEG*
-/ED75	RETN*
 /ED76	IM 1*
 /ED78	IN A, (C)
 /ED79	OUT (C), A
-/ED7A	ADC HL, SP
+	ADC	%HL,%SP	/ ED 7A
 /ED7B n n	LD SP, (nn)
-/ED7C	NEG*
-/ED7D	RETN*
 /ED7E	IM 2*
-/EDA0	LDI
-/EDA1	CPI
-/EDA2	INI
-/EDA3	OUTI
-/EDA8	LDD
-/EDA9	CPD
-/EDAA	IND
-/EDAB	OUTD
-/EDB0	LDIR
-/EDB1	CPIR
-/EDB2	INIR
-/EDB3	OTIR
-/EDB8	LDDR
-/EDB9	CPDR
-/EDBA	INDR
-/EDBB	OTDR
+	LDI		/ ED A0
+	CPI		/ ED A1
+	INI		/ ED A2
+	OUTI		/ ED A3
+	LDD		/ ED A8
+	CPD		/ ED A9
+	IND		/ ED AA
+	OUTD		/ ED AB
+	LDIR		/ ED B0
+	CPIR		/ ED B1
+	INIR		/ ED B2
+	OTIR		/ ED B3
+	LDDR		/ ED B8
+	CPDR		/ ED B9
+	INDR		/ ED BA
+	OTDR		/ ED BB
 /EE n	XOR n
 /EF	RST 28h
 /F0	RET P
-/F1	POP AF
+	POP	%AF	/ F1
 /F2 n n	JP P, nn
-/F3	DI
+	DI		/ F3
 /F4 n n	CALL P, nn
-/F5	PUSH AF
+	PUSH	%AF	/ F5
 /F6 n	OR n
 /F7	RST 30h
 /F8	RET M
-/F9	LD SP, HL
+	LD	%SP,%HL	/ F9
 /FA n n	JP M, nn
-/FB	EI
+	EI		/ FB
 /FC n n	CALL M, nn
-/FD09	ADD IY, BC
-/FD19	ADD IY, DE
+	ADD	%IY,%BC	/ FD 09
+	ADD	%IY,%DE	/ FD 19
 /FD21 n n	LD IY, nn
 /FD22 n n	LD (nn), IY
-/FD23	INC IY
-/FD24	INC IYH*
-/FD25	DEC IYH*
+	INC	%IY	/ FD 23
+	INC	%IYH	/ FD 24
+	DEC	%IYH	/ FD 25
 /FD26 n 	LD IYH, n*
-/FD29	ADD IY, IY
+	ADD	%IY,%IY	/ FD 29
 /FD2A n n	LD IY, (nn)
-/FD2B	DEC IY
-/FD2C	INC IYL*
-/FD2D	DEC IYL*
+	DEC	%IY	/ FD 2B
+	INC	%IYL	/ FD 2C
+	DEC	%IYL	/ FD 2D
 /FD2E n	LD IYL, n*
 /FD34 d	INC (IY + d)
 /FD35 d	DEC (IY + d)
 /FD36 d n	LD (IY + d), n
-/FD39	ADD IY, SP
-/FD44	LD B, IYH*
-/FD45	LD B, IYL*
+	ADD	%IY,%SP	/ FD 39
+	LD	%B,%IYH	/ FD 44
+	LD	%B,%IYL	/ FD 45
 /FD46 d	LD B, (IY + d)
-/FD4C	LD C, IYH*
-/FD4D	LD C, IYL*
+	LD	%C,%IYH	/ FD 4C
+	LD	%C,%IYL	/ FD 4D
 /FD4E d	LD C, (IY + d)
-/FD54	LD D, IYH*
-/FD55	LD D, IYL*
+	LD	%D,%IYH	/ FD 54
+	LD	%D,%IYL	/ FD 55
 /FD56 d	LD D, (IY + d)
-/FD5C	LD E, IYH*
-/FD5D	LD E, IYL*
+	LD	%E,%IYH	/ FD 5C
+	LD	%E,%IYL	/ FD 5D
 /FD5E d	LD E, (IY + d)
-/FD60	LD IYH, B*
-/FD61	LD IYH, C*
-/FD62	LD IYH, D*
-/FD63	LD IYH, E*
-/FD64	LD IYH, IYH*
-/FD65	LD IYH, IYL*
+	LD	%IYH,%B	/ FD 60
+	LD	%IYH,%C	/ FD 61
+	LD	%IYH,%D	/ FD 62
+	LD	%IYH,%E	/ FD 63
+	LD	%IYH,%IYH	/ FD 64
+	LD	%IYH,%IYL	/ FD 65
 /FD66 d	LD H, (IY + d)
-/FD67	LD IYH, A*
-/FD68	LD IYL, B*
-/FD69	LD IYL, C*
-/FD6A	LD IYL, D*
-/FD6B	LD IYL, E*
-/FD6C	LD IYL, IYH*
-/FD6D	LD IYL, IYL*
+	LD	%IYH,%A	/ FD 67
+	LD	%IYL,%B	/ FD 68
+	LD	%IYL,%C	/ FD 69
+	LD	%IYL,%D	/ FD 6A
+	LD	%IYL,%E	/ FD 6B
+	LD	%IYL,%IYH	/ FD 6C
+	LD	%IYL,%IYL	/ FD 6D
 /FD6E d	LD L, (IY + d)
-/FD6F	LD IYL, A*
+	LD	%IYL,%A	/ FD 6F
 /FD70 d	LD (IY + d), B
 /FD71 d	LD (IY + d), C
 /FD72 d	LD (IY + d), D
@@ -920,32 +907,32 @@
 /FD74 d	LD (IY + d), H
 /FD75 d	LD (IY + d), L
 /FD77 d	LD (IY + d), A
-/FD7C	LD A, IYH*
-/FD7D	LD A, IYL*
+	LD	%A,%IYH	/ FD 7C
+	LD	%A,%IYL	/ FD 7D
 /FD7E d	LD A, (IY + d)
-/FD84	ADD A, IYH*
-/FD85	ADD A, IYL*
+	ADD	%A,%IYH	/ FD 84
+	ADD	%A,%IYL	/ FD 85
 /FD86 d	ADD A, (IY + d)
-/FD8C	ADC A, IYH*
-/FD8D	ADC A, IYL*
+	ADC	%A,%IYH	/ FD 8C
+	ADC	%A,%IYL	/ FD 8D
 /FD8E d	ADC A, (IY + d)
-/FD94	SUB IYH*
-/FD95	SUB IYL*
+	SUB	%A,%IYH	/ FD 94
+	SUB	%A,%IYL	/ FD 95
 /FD96 d	SUB (IY + d)
-/FD9C	SBC A, IYH*
-/FD9D	SBC A, IYL*
+	SBC	%A,%IYH	/ FD 9C
+	SBC	%A,%IYL	/ FD 9D
 /FD9E d	SBC A, (IY + d)
-/FDA4	AND IYH*
-/FDA5	AND IYL*
+	AND	%A,%IYH	/ FD A4
+	AND	%A,%IYL	/ FD A5
 /FDA6 d	AND (IY + d)
-/FDAC	XOR IYH*
-/FDAD	XOR IYL*
+	XOR	%A,%IYH	/ FD AC
+	XOR	%A,%IYL	/ FD AD
 /FDAE d	XOR (IY + d)
-/FDB4	OR IYH*
-/FDB5	OR IYL*
+	OR	%A,%IYH	/ FD B4
+	OR	%A,%IYL	/ FD B5
 /FDB6 d	OR (IY + d)
-/FDBC	CP IYH*
-/FDBD	CP IYL*
+	CP	%A,%IYH	/ FD BC
+	CP	%A,%IYL	/ FD BD
 /FDBE d	CP (IY + d)
 /FDCB d 00	LD B, RLC (IY + d)*
 /FDCB d 01	LD C, RLC (IY + d)*
@@ -1203,10 +1190,10 @@
 /FDCB d FD	LD L, SET 7, (IY + d)*
 /FDCB d FE	SET 7, (IY + d)
 /FDCB d FF	LD A, SET 7, (IY + d)*
-/FDE1	POP IY
-/FDE3	EX (SP), IY
-/FDE5	PUSH IY
+	POP	%IY	/ FD E1
+	EX	(%SP),%IY	/ FD E3
+	PUSH	%IY	/ FD E5
 /FDE9	JP (IY)
-/FDF9	LD SP, IY
+	LD	%SP,%IY	/ FD F9
 /FE n	CP n
 /FF	RST 38h
