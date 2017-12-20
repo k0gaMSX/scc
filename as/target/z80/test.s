@@ -265,198 +265,198 @@
 	SRL	%L	/ CB 3D
 	SRL	(%HL)	/ CB 3E
 	SRL	%A	/ CB 3F
-/CB40	BIT 0, B
-/CB41	BIT 0, C
-/CB42	BIT 0, D
-/CB43	BIT 0, E
-/CB44 	BIT 0, H
-/CB45 	BIT 0, L
-/CB46 	BIT 0, (HL)
-/CB47 	BIT 0, A
-/CB48	BIT 1, B
-/CB49 	BIT 1, C
-/CB4A 	BIT 1, D
-/CB4B 	BIT 1, E
-/CB4C 	BIT 1, H
-/CB4D 	BIT 1, L
-/CB4E 	BIT 1, (HL)
-/CB4F 	BIT 1, A
-/CB50	BIT 2, B
-/CB51 	BIT 2, C
-/CB52 	BIT 2, D
-/CB53 	BIT 2, E
-/CB54 	BIT 2, H
-/CB55 	BIT 2, L
-/CB56 	BIT 2, (HL)
-/CB57 	BIT 2, A
-/CB58	BIT 3, B
-/CB59 	BIT 3, C
-/CB5A 	BIT 3, D
-/CB5B 	BIT 3, E
-/CB5C 	BIT 3, H
-/CB5D 	BIT 3, L
-/CB5E 	BIT 3, (HL)
-/CB5F 	BIT 3, A
-/CB60	BIT 4, B
-/CB61 	BIT 4, C
-/CB62 	BIT 4, D
-/CB63 	BIT 4, E
-/CB64 	BIT 4, H
-/CB65 	BIT 4, L
-/CB66 	BIT 4, (HL)
-/CB67 	BIT 4, A
-/CB68	BIT 5, B
-/CB69 	BIT 5, C
-/CB6A 	BIT 5, D
-/CB6B 	BIT 5, E
-/CB6C 	BIT 5, H
-/CB6D 	BIT 5, L
-/CB6E 	BIT 5, (HL)
-/CB6F 	BIT 5, A
-/CB70	BIT 6, B
-/CB71 	BIT 6, C
-/CB72 	BIT 6, D
-/CB73 	BIT 6, E
-/CB74 	BIT 6, H
-/CB75 	BIT 6, L
-/CB76 	BIT 6, (HL)
-/CB77 	BIT 6, A
-/CB78	BIT 7, B
-/CB79 	BIT 7, C
-/CB7A 	BIT 7, D
-/CB7B 	BIT 7, E
-/CB7C 	BIT 7, H
-/CB7D 	BIT 7, L
-/CB7E 	BIT 7, (HL)
-/CB7F 	BIT 7, A
-/CB80	RES 0, B
-/CB81	RES 0, C
-/CB82	RES 0, D
-/CB83	RES 0, E
-/CB84 	RES 0, H
-/CB85 	RES 0, L
-/CB86 	RES 0, (HL)
-/CB87 	RES 0, A
-/CB88	RES 1, B
-/CB89 	RES 1, C
-/CB8A 	RES 1, D
-/CB8B 	RES 1, E
-/CB8C 	RES 1, H
-/CB8D 	RES 1, L
-/CB8E 	RES 1, (HL)
-/CB8F 	RES 1, A
-/CB90	RES 2, B
-/CB91 	RES 2, C
-/CB92 	RES 2, D
-/CB93 	RES 2, E
-/CB94 	RES 2, H
-/CB95 	RES 2, L
-/CB96 	RES 2, (HL)
-/CB97 	RES 2, A
-/CB98	RES 3, B
-/CB99 	RES 3, C
-/CB9A 	RES 3, D
-/CB9B 	RES 3, E
-/CB9C 	RES 3, H
-/CB9D 	RES 3, L
-/CB9E 	RES 3, (HL)
-/CB9F 	RES 3, A
-/CBA0	RES 4, B
-/CBA1 	RES 4, C
-/CBA2 	RES 4, D
-/CBA3 	RES 4, E
-/CBA4 	RES 4, H
-/CBA5 	RES 4, L
-/CBA6 	RES 4, (HL)
-/CBA7 	RES 4, A
-/CBA8	RES 5, B
-/CBA9 	RES 5, C
-/CBAA 	RES 5, D
-/CBAB 	RES 5, E
-/CBAC 	RES 5, H
-/CBAD 	RES 5, L
-/CBAE 	RES 5, (HL)
-/CBAF 	RES 5, A
-/CBB0	RES 6, B
-/CBB1 	RES 6, C
-/CBB2 	RES 6, D
-/CBB3 	RES 6, E
-/CBB4 	RES 6, H
-/CBB5 	RES 6, L
-/CBB6 	RES 6, (HL)
-/CBB7 	RES 6, A
-/CBB8	RES 7, B
-/CBB9 	RES 7, C
-/CBBA 	RES 7, D
-/CBBB 	RES 7, E
-/CBBC 	RES 7, H
-/CBBD 	RES 7, L
-/CBBE 	RES 7, (HL)
-/CBBF 	RES 7, A
-/CBC0	SET 0, B
-/CBC1	SET 0, C
-/CBC2	SET 0, D
-/CBC3	SET 0, E
-/CBC4 	SET 0, H
-/CBC5 	SET 0, L
-/CBC6 	SET 0, (HL)
-/CBC7 	SET 0, A
-/CBC8	SET 1, B
-/CBC9 	SET 1, C
-/CBCA 	SET 1, D
-/CBCB 	SET 1, E
-/CBCC 	SET 1, H
-/CBCD 	SET 1, L
-/CBCE 	SET 1, (HL)
-/CBCF 	SET 1, A
-/CBD0	SET 2, B
-/CBD1 	SET 2, C
-/CBD2 	SET 2, D
-/CBD3 	SET 2, E
-/CBD4 	SET 2, H
-/CBD5 	SET 2, L
-/CBD6 	SET 2, (HL)
-/CBD7 	SET 2, A
-/CBD8	SET 3, B
-/CBD9 	SET 3, C
-/CBDA 	SET 3, D
-/CBDB 	SET 3, E
-/CBDC 	SET 3, H
-/CBDD 	SET 3, L
-/CBDE 	SET 3, (HL)
-/CBDF 	SET 3, A
-/CBE0	SET 4, B
-/CBE1 	SET 4, C
-/CBE2 	SET 4, D
-/CBE3 	SET 4, E
-/CBE4 	SET 4, H
-/CBE5 	SET 4, L
-/CBE6 	SET 4, (HL)
-/CBE7 	SET 4, A
-/CBE8	SET 5, B
-/CBE9 	SET 5, C
-/CBEA 	SET 5, D
-/CBEB 	SET 5, E
-/CBEC 	SET 5, H
-/CBED 	SET 5, L
-/CBEE 	SET 5, (HL)
-/CBEF 	SET 5, A
-/CBF0	SET 6, B
-/CBF1 	SET 6, C
-/CBF2 	SET 6, D
-/CBF3 	SET 6, E
-/CBF4 	SET 6, H
-/CBF5 	SET 6, L
-/CBF6 	SET 6, (HL)
-/CBF7 	SET 6, A
-/CBF8	SET 7, B
-/CBF9 	SET 7, C
-/CBFA 	SET 7, D
-/CBFB 	SET 7, E
-/CBFC 	SET 7, H
-/CBFD 	SET 7, L
-/CBFE 	SET 7, (HL)
-/CBFF 	SET 7, A
+	BIT	0,%B	/ CB 40
+	BIT	0,%C	/ CB 41
+	BIT	0,%D	/ CB 42
+	BIT	0,%E	/ CB 43
+	BIT	0,%H	/ CB 44
+	BIT	0,%L	/ CB 45
+	BIT	0,(%HL)	/ CB 46
+	BIT	0,%A	/ CB 47
+	BIT	1,%B	/ CB 48
+	BIT	1,%C	/ CB 49
+	BIT	1,%D	/ CB 4A
+	BIT	1,%E	/ CB 4B
+	BIT	1,%H	/ CB 4C
+	BIT	1,%L	/ CB 4D
+	BIT	1,(%HL)	/ CB 4E
+	BIT	1,%A	/ CB 4F
+	BIT	2,%B	/ CB 50
+	BIT	2,%C	/ CB 51
+	BIT	2,%D	/ CB 52
+	BIT	2,%E	/ CB 53
+	BIT	2,%H	/ CB 54
+	BIT	2,%L	/ CB 55
+	BIT	2,(%HL)	/ CB 56
+	BIT	2,%A	/ CB 57
+	BIT	3,%B	/ CB 58
+	BIT	3,%C	/ CB 59
+	BIT	3,%D	/ CB 5A
+	BIT	3,%E	/ CB 5B
+	BIT	3,%H	/ CB 5C
+	BIT	3,%L	/ CB 5D
+	BIT	3,(%HL)	/ CB 5E
+	BIT	3,%A	/ CB 5F
+	BIT	4,%B	/ CB 60
+	BIT	4,%C	/ CB 61
+	BIT	4,%D	/ CB 62
+	BIT	4,%E	/ CB 63
+	BIT	4,%H	/ CB 64
+	BIT	4,%L	/ CB 65
+	BIT	4,(%HL)	/ CB 66
+	BIT	4,%A	/ CB 67
+	BIT	5,%B	/ CB 68
+	BIT	5,%C	/ CB 69
+	BIT	5,%D	/ CB 6A
+	BIT	5,%E	/ CB 6B
+	BIT	5,%H	/ CB 6C
+	BIT	5,%L	/ CB 6D
+	BIT	5,(%HL)	/ CB 6E
+	BIT	5,%A	/ CB 6F
+	BIT	6,%B	/ CB 70
+	BIT	6,%C	/ CB 71
+	BIT	6,%D	/ CB 72
+	BIT	6,%E	/ CB 73
+	BIT	6,%H	/ CB 74
+	BIT	6,%L	/ CB 75
+	BIT	6,(%HL)	/ CB 76
+	BIT	6,%A	/ CB 77
+	BIT	7,%B	/ CB 78
+	BIT	7,%C	/ CB 79
+	BIT	7,%D	/ CB 7A
+	BIT	7,%E	/ CB 7B
+	BIT	7,%H	/ CB 7C
+	BIT	7,%L	/ CB 7D
+	BIT	7,(%HL)	/ CB 7E
+	BIT	7,%A	/ CB 7F
+	RES	0,%B	/ CB 80
+	RES	0,%C	/ CB 81
+	RES	0,%D	/ CB 82
+	RES	0,%E	/ CB 83
+	RES	0,%H	/ CB 84
+	RES	0,%L	/ CB 85
+	RES	0,(%HL)	/ CB 86
+	RES	0,%A	/ CB 87
+	RES	1,%B	/ CB 88
+	RES	1,%C	/ CB 89
+	RES	1,%D	/ CB 8A
+	RES	1,%E	/ CB 8B
+	RES	1,%H	/ CB 8C
+	RES	1,%L	/ CB 8D
+	RES	1,(%HL)	/ CB 8E
+	RES	1,%A	/ CB 8F
+	RES	2,%B	/ CB 90
+	RES	2,%C	/ CB 91
+	RES	2,%D	/ CB 92
+	RES	2,%E	/ CB 93
+	RES	2,%H	/ CB 94
+	RES	2,%L	/ CB 95
+	RES	2,(%HL)	/ CB 96
+	RES	2,%A	/ CB 97
+	RES	3,%B	/ CB 98
+	RES	3,%C	/ CB 99
+	RES	3,%D	/ CB 9A
+	RES	3,%E	/ CB 9B
+	RES	3,%H	/ CB 9C
+	RES	3,%L	/ CB 9D
+	RES	3,(%HL)	/ CB 9E
+	RES	3,%A	/ CB 9F
+	RES	4,%B	/ CB A0
+	RES	4,%C	/ CB A1
+	RES	4,%D	/ CB A2
+	RES	4,%E	/ CB A3
+	RES	4,%H	/ CB A4
+	RES	4,%L	/ CB A5
+	RES	4,(%HL)	/ CB A6
+	RES	4,%A	/ CB A7
+	RES	5,%B	/ CB A8
+	RES	5,%C	/ CB A9
+	RES	5,%D	/ CB AA
+	RES	5,%E	/ CB AB
+	RES	5,%H	/ CB AC
+	RES	5,%L	/ CB AD
+	RES	5,(%HL)	/ CB AE
+	RES	5,%A	/ CB AF
+	RES	6,%B	/ CB B0
+	RES	6,%C	/ CB B1
+	RES	6,%D	/ CB B2
+	RES	6,%E	/ CB B3
+	RES	6,%H	/ CB B4
+	RES	6,%L	/ CB B5
+	RES	6,(%HL)	/ CB B6
+	RES	6,%A	/ CB B7
+	RES	7,%B	/ CB B8
+	RES	7,%C	/ CB B9
+	RES	7,%D	/ CB BA
+	RES	7,%E	/ CB BB
+	RES	7,%H	/ CB BC
+	RES	7,%L	/ CB BD
+	RES	7,(%HL)	/ CB BE
+	RES	7,%A	/ CB BF
+	SET	0,%B	/ CB C0
+	SET	0,%C	/ CB C1
+	SET	0,%D	/ CB C2
+	SET	0,%E	/ CB C3
+	SET	0,%H	/ CB C4
+	SET	0,%L	/ CB C5
+	SET	0,(%HL)	/ CB C6
+	SET	0,%A	/ CB C7
+	SET	1,%B	/ CB C8
+	SET	1,%C	/ CB C9
+	SET	1,%D	/ CB CA
+	SET	1,%E	/ CB CB
+	SET	1,%H	/ CB CC
+	SET	1,%L	/ CB CD
+	SET	1,(%HL)	/ CB CE
+	SET	1,%A	/ CB CF
+	SET	2,%B	/ CB D0
+	SET	2,%C	/ CB D1
+	SET	2,%D	/ CB D2
+	SET	2,%E	/ CB D3
+	SET	2,%H	/ CB D4
+	SET	2,%L	/ CB D5
+	SET	2,(%HL)	/ CB D6
+	SET	2,%A	/ CB D7
+	SET	3,%B	/ CB D8
+	SET	3,%C	/ CB D9
+	SET	3,%D	/ CB DA
+	SET	3,%E	/ CB DB
+	SET	3,%H	/ CB DC
+	SET	3,%L	/ CB DD
+	SET	3,(%HL)	/ CB DE
+	SET	3,%A	/ CB DF
+	SET	4,%B	/ CB E0
+	SET	4,%C	/ CB E1
+	SET	4,%D	/ CB E2
+	SET	4,%E	/ CB E3
+	SET	4,%H	/ CB E4
+	SET	4,%L	/ CB E5
+	SET	4,(%HL)	/ CB E6
+	SET	4,%A	/ CB E7
+	SET	5,%B	/ CB E8
+	SET	5,%C	/ CB E9
+	SET	5,%D	/ CB EA
+	SET	5,%E	/ CB EB
+	SET	5,%H	/ CB EC
+	SET	5,%L	/ CB ED
+	SET	5,(%HL)	/ CB EE
+	SET	5,%A	/ CB EF
+	SET	6,%B	/ CB F0
+	SET	6,%C	/ CB F1
+	SET	6,%D	/ CB F2
+	SET	6,%E	/ CB F3
+	SET	6,%H	/ CB F4
+	SET	6,%L	/ CB F5
+	SET	6,(%HL)	/ CB F6
+	SET	6,%A	/ CB F7
+	SET	7,%B	/ CB F8
+	SET	7,%C	/ CB F9
+	SET	7,%D	/ CB FA
+	SET	7,%E	/ CB FB
+	SET	7,%H	/ CB FC
+	SET	7,%L	/ CB FD
+	SET	7,(%HL)	/ CB FE
+	SET	7,%A	/ CB FF
 /CC n n	CALL Z, nn
 /CD n n	CALL nn
 	ADC	%A,64	/ CE 40

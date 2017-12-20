@@ -344,8 +344,16 @@ im(Op *op, Node **args)
 void
 r_bit(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	Node *par1, *par2;
+	unsigned char buf[4];
+	int n = op->size;
+
+	par1 = args[0];
+	par2 = args[1];
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= reg2int(par2->sym->argtype) |
+	            par1->sym->value << 3;
+	emit(buf, n);
 }
 
 void
@@ -358,8 +366,15 @@ r_idx_bit(Op *op, Node **args)
 void
 bit(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	Node *par;
+	unsigned char buf[2];
+	unsigned val;
+	int n = op->size;
+
+	val = args[0]->sym->value;
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= val << 3;
+	emit(buf, n);
 }
 
 void
