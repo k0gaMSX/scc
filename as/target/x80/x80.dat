@@ -100,7 +100,7 @@ LD	SP,IY	2	0xfd,0xf9	noargs	Z80,R800
 
 PUSH	qq	1	0xc5	r16_xx	Z80,R800,GB80
 PUSH	IX	2	0xdd,0xe5	noargs	Z80,R800
-PUSH	IY	2	0xdd,0xe5	noargs	Z80,R800
+PUSH	IY	2	0xfd,0xe5	noargs	Z80,R800
 POP	qq	1	0xc1	r16_xx	Z80,R800,GB80
 POP	IX	2	0xdd,0xe1	noargs	Z80,R800
 POP	IY	2	0xfd,0xe1	noargs	Z80,R800
