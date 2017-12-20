@@ -998,70 +998,14 @@
 /FDCB d 3D	LD L, SRL (IY + d)*
 /FDCB d 3E	SRL (IY + d)
 /FDCB d 3F	LD A, SRL (IY + d)*
-/FDCB d 40	BIT 0, (IY + d)*
-/FDCB d 41	BIT 0, (IY + d)*
-/FDCB d 42	BIT 0, (IY + d)*
-/FDCB d 43	BIT 0, (IY + d)*
-/FDCB d 44	BIT 0, (IY + d)*
-/FDCB d 45	BIT 0, (IY + d)*
 /FDCB d 46	BIT 0, (IY + d)
-/FDCB d 47	BIT 0, (IY + d)*
-/FDCB d 48	BIT 1, (IY + d)*
-/FDCB d 49	BIT 1, (IY + d)*
-/FDCB d 4A	BIT 1, (IY + d)*
-/FDCB d 4B	BIT 1, (IY + d)*
-/FDCB d 4C	BIT 1, (IY + d)*
-/FDCB d 4D	BIT 1, (IY + d)*
 /FDCB d 4E	BIT 1, (IY + d)
-/FDCB d 4F	BIT 1, (IY + d)*
-/FDCB d 50	BIT 2, (IY + d)*
-/FDCB d 51	BIT 2, (IY + d)*
-/FDCB d 52	BIT 2, (IY + d)*
-/FDCB d 53	BIT 2, (IY + d)*
-/FDCB d 54	BIT 2, (IY + d)*
-/FDCB d 55	BIT 2, (IY + d)*
 /FDCB d 56	BIT 2, (IY + d)
-/FDCB d 57	BIT 2, (IY + d)*
-/FDCB d 58	BIT 3, (IY + d)*
-/FDCB d 59	BIT 3, (IY + d)*
-/FDCB d 5A	BIT 3, (IY + d)*
-/FDCB d 5B	BIT 3, (IY + d)*
-/FDCB d 5C	BIT 3, (IY + d)*
-/FDCB d 5D	BIT 3, (IY + d)*
 /FDCB d 5E	BIT 3, (IY + d)
-/FDCB d 5F	BIT 3, (IY + d)*
-/FDCB d 60	BIT 4, (IY + d)*
-/FDCB d 61	BIT 4, (IY + d)*
-/FDCB d 62	BIT 4, (IY + d)*
-/FDCB d 63	BIT 4, (IY + d)*
-/FDCB d 64	BIT 4, (IY + d)*
-/FDCB d 65	BIT 4, (IY + d)*
 /FDCB d 66	BIT 4, (IY + d)
-/FDCB d 67	BIT 4, (IY + d)*
-/FDCB d 68	BIT 5, (IY + d)*
-/FDCB d 69	BIT 5, (IY + d)*
-/FDCB d 6A	BIT 5, (IY + d)*
-/FDCB d 6B	BIT 5, (IY + d)*
-/FDCB d 6C	BIT 5, (IY + d)*
-/FDCB d 6D	BIT 5, (IY + d)*
 /FDCB d 6E	BIT 5, (IY + d)
-/FDCB d 6F	BIT 5, (IY + d)*
-/FDCB d 70	BIT 6, (IY + d)*
-/FDCB d 71	BIT 6, (IY + d)*
-/FDCB d 72	BIT 6, (IY + d)*
-/FDCB d 73	BIT 6, (IY + d)*
-/FDCB d 74	BIT 6, (IY + d)*
-/FDCB d 75	BIT 6, (IY + d)*
 /FDCB d 76	BIT 6, (IY + d)
-/FDCB d 77	BIT 6, (IY + d)*
-/FDCB d 78	BIT 7, (IY + d)*
-/FDCB d 79	BIT 7, (IY + d)*
-/FDCB d 7A	BIT 7, (IY + d)*
-/FDCB d 7B	BIT 7, (IY + d)*
-/FDCB d 7C	BIT 7, (IY + d)*
-/FDCB d 7D	BIT 7, (IY + d)*
 /FDCB d 7E	BIT 7, (IY + d)
-/FDCB d 7F	BIT 7, (IY + d)*
 /FDCB d 80	LD B, RES 0, (IY + d)*
 /FDCB d 81	LD C, RES 0, (IY + d)*
 /FDCB d 82	LD D, RES 0, (IY + d)*
