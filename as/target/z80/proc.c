@@ -151,6 +151,8 @@ match(Op *op, Node **args)
 				return 0;
 			if (np->left->left->sym->argtype != arg)
 				return 0;
+			if (toobig(np, arg))
+				error("overflow in index");
 			break;
 		case ARST:
 			if (np->addr != AIMM)

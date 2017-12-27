@@ -374,8 +374,14 @@ r16_dir(Op *op, Node **args)
 void
 idx(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	Node *imm;
+	unsigned char buf[4];
+	int n = op->size;
+
+	imm = args[0]->left->right;
+	memcpy(buf, op->bytes, n);
+	buf[n-1] = imm->sym->value;
+	emit(buf, n);
 }
 
 void
