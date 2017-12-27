@@ -114,6 +114,24 @@ rrclass(int reg)
 	}
 }
 
+int
+ccclass(int reg)
+{
+	switch (reg) {
+	case AREG_NZ:
+	case AREG_Z:
+	case AREG_NC:
+	case AREG_C:
+	case AREG_PO:
+	case AREG_PE:
+	case AREG_P:
+	case AREG_M:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 static int
 reg2int(int reg)
 {
@@ -136,6 +154,22 @@ reg2int(int reg)
 	case AREG_IY:  return 2;
 	case AREG_AF:
 	case AREG_SP:  return 3;
+	default:       abort();
+	}
+}
+
+static int
+flag2int(int flag)
+{
+	switch (flag) {
+	case AREG_NZ:  return 0;
+	case AREG_Z:   return 1;
+	case AREG_NC:  return 2;
+	case AREG_C:   return 3;
+	case AREG_PO:  return 4;
+	case AREG_PE:  return 5;
+	case AREG_P:   return 6;
+	case AREG_M:   return 7;
 	default:       abort();
 	}
 }
@@ -396,17 +430,25 @@ idx_bit(Op *op, Node **args)
 }
 
 void
-cc_imm16(Op *op, Node **args)
-{
-	/* TODO */
-	abort();
-}
-
-void
 cc(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	unsigned char buf[4];
+	Node *flag, *imm;
+	int n = op->size, i = n;
+	unsigned val;
+
+	flag = args[0];
+	imm = args[1];
+	memcpy(buf, op->bytes, n);
+
+	if (imm) {
+		val = imm->sym->value;
+		buf[--i] = val >> 8;
+		buf[--i] = val;
+	}
+	buf[--i] |= flag2int(flag->sym->argtype) << 3;
+
+	emit(buf, n);
 }
 
 void

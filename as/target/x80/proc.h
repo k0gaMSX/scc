@@ -68,3 +68,4 @@ extern int ddclass(int reg);
 extern int qqclass(int reg);
 extern int ppclass(int reg);
 extern int rrclass(int reg);
+extern int ccclass(int reg);

@@ -190,17 +190,17 @@
 	CP	%A,%L	/ BD
 	CP	%A,(%HL)	/ BE
 	CP	%A,%A	/ BF
-/C0	RET NZ
+	RET	%NZ	/ C0
 	POP	%BC	/ C1
-/C2 n n	JP NZ, nn
+	JP	%NZ,16384	/ C2 00 40
 /C3 n n	JP nn
-/C4 n n	CALL NZ, nn
+	CALL	%NZ,32768	/ C4 00 80
 	PUSH	%BC	/ C5
 	ADD	%A,32	/ C6 20
 /C7	RST 0h
-/C8	RET Z
+	RET	%Z	/ C8
 	RET		/ C9
-/CA n n	JP Z, nn
+	JP	%Z,32768	/ CA 00 80
 	RLC	%B	/ CB 00
 	RLC	%C	/ CB 01
 	RLC	%D	/ CB 02
@@ -457,23 +457,23 @@
 	SET	7,%L	/ CB FD
 	SET	7,(%HL)	/ CB FE
 	SET	7,%A	/ CB FF
-/CC n n	CALL Z, nn
+	CALL	%Z,16384	/ CC 00 40
 /CD n n	CALL nn
 	ADC	%A,64	/ CE 40
 /CF	RST 8h
-/D0	RET NC
+	RET	%NC	/ D0
 	POP	%DE	/ D1
-/D2 n n	JP NC, nn
+	JP	%NC,16384	/ D2 00 40
 /D3 n	OUT (n), A
-/D4 n n	CALL NC, nn
+	CALL	%NC,32768	/ D4 00 80
 	PUSH	%DE	/ D5
 	SUB	%A,32	/ D6 20
 /D7	RST 10h
-/D8	RETC
+	RET	%C	/ D8
 	EXX		/ D9
-/DA n n	JP C, nn
+	JP	%C,16384	/ DA 00 40
 /DB n	IN A, (n)
-/DC n n	CALL C, nn
+	CALL	%C,32768	/ DC 00 80
 	ADD	%IX,%BC	/ DD 09
 	ADD	%IX,%DE	/ DD 19
 	LD	%IX,64	/ DD 21 40 00
@@ -761,19 +761,19 @@
 	LD	%SP,%IX	/ DD F9
 /DE n	SBC A, n
 /DF	RST 18h
-/E0	RET PO
+	RET	%PO	/ E0
 	POP	%HL	/ E1
-/E2 n n	JP PO, nn
+	JP	%PO,32768	/ E2 00 80
 	EX	(%SP),%HL	/ E3
-/E4 n n	CALL PO, nn
+	CALL	%PO,16384	/ E4 00 40
 	PUSH	%HL	/ E5
 /E6 n	AND n
 /E7	RST 20h
-/E8	RET PE
+	RET	%PE	/ E8
 /E9	JP (HL)
-/EA n n	JP PE, (nn)
+	JP	%PE,16384	/ EA 00 40
 	EX	%DE,%HL	/ EB
-/EC n n	CALL PE, nn
+	CALL	%PE,16384	/ EC 00 40
 /ED40	IN B, (C)
 /ED41	OUT (C), B
 /ED42	SBC HL, BC
@@ -839,19 +839,19 @@
 	OTDR		/ ED BB
 /EE n	XOR n
 /EF	RST 28h
-/F0	RET P
+	RET	%P	/ F0
 	POP	%AF	/ F1
-/F2 n n	JP P, nn
+	JP	%P,32768	/ F2 00 80
 	DI		/ F3
-/F4 n n	CALL P, nn
+	CALL	%P,16384	/ F4 00 40
 	PUSH	%AF	/ F5
 /F6 n	OR n
 /F7	RST 30h
-/F8	RET M
+	RET	%M	/ F8
 	LD	%SP,%HL	/ F9
-/FA n n	JP M, nn
+	JP	%M,32768	/ FA 00 80
 	EI		/ FB
-/FC n n	CALL M, nn
+	CALL	%M,16384	/ FC 00 40
 	ADD	%IY,%BC	/ FD 09
 	ADD	%IY,%DE	/ FD 19
 /FD21 n n	LD IY, nn

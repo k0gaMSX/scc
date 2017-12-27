@@ -42,6 +42,14 @@ iarch(void)
 		"AF'", AREG_AF_,
 		"SP", AREG_SP,
 
+		"NZ", AREG_NZ,
+		"Z", AREG_Z,
+		"NC", AREG_NC,
+		"PO", AREG_PO,
+		"PE", AREG_PE,
+		"P", AREG_P,
+		"M", AREG_M,
+
 		NULL,
 	}, *bp;
 
@@ -121,6 +129,9 @@ match(Op *op, Node **args)
 			goto register_class;
 		case AREG_RRCLASS:
 			class = rrclass;
+			goto register_class;
+		case AREG_CCCLASS:
+			class = ccclass;
 			goto register_class;
 		case AREG_DDCLASS:
 			class = ddclass;

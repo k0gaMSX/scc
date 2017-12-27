@@ -333,7 +333,7 @@ OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 
 # Jump group
 JP	imm16	3	0xc3	imm16	Z80,R800,GB80
-JP	cc,imm16	3	0xc2	cc_imm16	Z80,R800,GB80
+JP	cc,imm16	3	0xc2	cc	Z80,R800,GB80
 JR	imm8	2	0x18	jr	Z80,R800,GB80
 JR	ss,imm8	2	0x00	jr	Z80,R800,GB80
 JP	IY	2	0xfd,0xe9	noargs	Z80,R800
@@ -341,7 +341,7 @@ DJNZ	imm8	2	0x10	jr	Z80,R800,GB80
 
 # Call and return group
 CALL	imm16	3	0xcd	imm16	Z80,R800,GB80
-CALL	cc,imm16	3	0xc6	cc_imm16	Z80,R800
+CALL	cc,imm16	3	0xc4	cc	Z80,R800
 RET	none	1	0xc9	noargs	Z80,R800,GB80
 RET	cc	1	0xc0	cc	Z80,R800
 RETI	none	2	0xed,0x4d	noargs	Z80,R800
