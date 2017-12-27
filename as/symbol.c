@@ -202,6 +202,7 @@ setsec(char *name, char *attr)
 
 	if ((sec = sym->section) == NULL) {
 		sec = xmalloc(sizeof(*sec));
+		sec->mem = NULL;
 		sec->sym = sym;
 		sec->base = sec->max = sec->pc = sec->curpc = 0;
 		sec->next = seclist;
