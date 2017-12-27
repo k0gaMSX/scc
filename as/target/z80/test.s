@@ -780,47 +780,42 @@
 	LD	(32768),%BC	/ ED 43 00 80
 	NEG		/ ED 44
 	RETN		/ ED 45
-/ED46	IM 0
+	IM	0	/ ED 46
 	LD	%I,%A	/ ED 47
 /ED48	IN C, (C)
 /ED49	OUT (C), C
 	ADC	%HL,%BC	/ ED 4A
 	LD	%BC,(16384)	/ ED 4B 00 40
 	RETI		/ ED 4D
-/ED4E	IM 0/1*
 	LD	%R,%A	/ ED 4F
 /ED50	IN D, (C)
 /ED51	OUT (C), D
 	SBC	%HL,%DE	/ ED 52
 	LD	(32768),%DE	/ ED 53 00 80
-/ED56	IM 1
+	IM	1	/ ED 56
 	LD	%A,%I	/ ED 57
 /ED58	IN E, (C)
 /ED59	OUT (C), E
 	ADC	%HL,%DE	/ ED 5A
 	LD	%DE,(16384)	/ ED 5B 00 40
-/ED5E	IM 2
+	IM	2	/ ED 5E
 	LD	%A,%R	/ ED 5F
 /ED60	IN H, (C)
 /ED61	OUT (C), H
 	SBC	%HL,%HL	/ ED 62
-/ED66	IM 0*
 	RRD		/ ED 67
 /ED68	IN L, (C)
 /ED69	OUT (C), L
 	ADC	%HL,%HL	/ ED 6A
-/ED6E	IM 0/1*
 	RLD		/ ED 6F
 /ED70	IN (C)* / IN F, (C)*
 /ED71	OUT (C), 0*
 	SBC	%HL,%SP	/ ED 72
 	LD	(16384),%SP	/ ED 73 00 40
-/ED76	IM 1*
 /ED78	IN A, (C)
 /ED79	OUT (C), A
 	ADC	%HL,%SP	/ ED 7A
 	LD	%SP,(32768)	/ ED 7B 00 80
-/ED7E	IM 2*
 	LDI		/ ED A0
 	CPI		/ ED A1
 	INI		/ ED A2

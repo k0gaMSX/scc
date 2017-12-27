@@ -209,7 +209,7 @@ NOP	none	1	0x00	noargs	Z80,R800,GB80
 HALT	none	1	0x76	noargs	Z80,R800,GB80
 DI	none	1	0xf3	noargs	Z80,R800,GB80
 EI	none	1	0xfb	noargs	Z80,R800,GB80
-IM	imm8	2	0xed	im	Z80,R800
+IM	imm8	2	0xed,0x46	im	Z80,R800
 
 # Exchange, block transfer and search groups
 EX	DE,HL	1	0xeb	noargs	Z80,R800

@@ -381,8 +381,16 @@ idx(Op *op, Node **args)
 void
 im(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	unsigned val = args[0]->sym->value;
+	unsigned char buf[4];
+	int n = op->size;
+
+	if (val > 0)
+		++val;
+
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= val << 3;
+	emit(buf, n);
 }
 
 void
