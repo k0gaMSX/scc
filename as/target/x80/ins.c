@@ -246,15 +246,14 @@ imm8(Op *op, Node **args)
 void
 imm16(Op *op, Node **args)
 {
-	Node *par1, *par2;
+	Node *imm;
 	unsigned char buf[4];
 	unsigned val;
 	int n = op->size;
 
-	par2 = args[1];
-
+	imm = (args[1]) ? args[1] : args[0];
 	memcpy(buf, op->bytes, n);
-	val = par2->sym->value;
+	val = imm->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
 	emit(buf, n);

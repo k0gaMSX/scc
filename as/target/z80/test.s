@@ -193,7 +193,7 @@
 	RET	%NZ	/ C0
 	POP	%BC	/ C1
 	JP	%NZ,16384	/ C2 00 40
-/C3 n n	JP nn
+	JP	32768	/ C3 00 80
 	CALL	%NZ,32768	/ C4 00 80
 	PUSH	%BC	/ C5
 	ADD	%A,32	/ C6 20
@@ -458,7 +458,7 @@
 	SET	7,(%HL)	/ CB FE
 	SET	7,%A	/ CB FF
 	CALL	%Z,16384	/ CC 00 40
-/CD n n	CALL nn
+	CALL	16384	/ CD 00 40
 	ADC	%A,64	/ CE 40
 	RST	8	/ CF
 	RET	%NC	/ D0
