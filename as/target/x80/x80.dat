@@ -75,7 +75,7 @@ LD	(DE),A	1	0x12	noargs	Z80,R800,GB80
 LD	(n),A	3	0x32	dir	Z80,R800,GB80
 
 LD	A,I	2	0xed,0x57	noargs	Z80,R800
-LD	A,R	2	0xed,0x57	noargs	Z80,R800
+LD	A,R	2	0xed,0x5f	noargs	Z80,R800
 LD	I,A	2	0xed,0x47	noargs	Z80,R800
 LD	R,A	2	0xed,0x4f	noargs	Z80,R800
 
