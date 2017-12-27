@@ -52,7 +52,7 @@
 	INC	%SP	/ 33
 	INC	(%HL)	/ 34
 	DEC	(%HL)	/ 35
-/36 n	LD (HL), n
+	LD	(%HL),32	/ 36 20
 	SCF		/ 37
 /38 n	JR C, PC + n
 	ADD	%HL,%SP	/ 39
@@ -767,7 +767,7 @@
 	EX	(%SP),%HL	/ E3
 	CALL	%PO,16384	/ E4 00 40
 	PUSH	%HL	/ E5
-/E6 n	AND n
+	AND	%A,16	/ E6 10
 	RST	32	/ E7
 	RET	%PE	/ E8
 /E9	JP (HL)
@@ -837,7 +837,7 @@
 	CPDR		/ ED B9
 	INDR		/ ED BA
 	OTDR		/ ED BB
-/EE n	XOR n
+	XOR	%A,32	/ EE 20
 	RST	40	/ EF
 	RET	%P	/ F0
 	POP	%AF	/ F1
@@ -845,7 +845,7 @@
 	DI		/ F3
 	CALL	%P,16384	/ F4 00 40
 	PUSH	%AF	/ F5
-/F6 n	OR n
+	OR	%A,32	/ F6 20
 	RST	48	/ F7
 	RET	%M	/ F8
 	LD	%SP,%HL	/ F9
@@ -854,18 +854,18 @@
 	CALL	%M,16384	/ FC 00 40
 	ADD	%IY,%BC	/ FD 09
 	ADD	%IY,%DE	/ FD 19
-/FD21 n n	LD IY, nn
+	LD	%IY,32768	/ FD 21 00 80
 	LD	(16384),%IY	/ FD 22 00 40
 	INC	%IY	/ FD 23
 	INC	%IYH	/ FD 24
 	DEC	%IYH	/ FD 25
-/FD26 n 	LD IYH, n*
+	LD	%IYH,32	/ FD 26 20
 	ADD	%IY,%IY	/ FD 29
 	LD	%IY,(32768)	/ FD 2A 00 80
 	DEC	%IY	/ FD 2B
 	INC	%IYL	/ FD 2C
 	DEC	%IYL	/ FD 2D
-/FD2E n	LD IYL, n*
+	LD	%IYL,16	/ FD 2E 10
 /FD34 d	INC (IY + d)
 /FD35 d	DEC (IY + d)
 /FD36 d n	LD (IY + d), n
@@ -1137,5 +1137,5 @@
 	PUSH	%IY	/ FD E5
 /FDE9	JP (IY)
 	LD	%SP,%IY	/ FD F9
-/FE n	CP n
+	CP	%A,32	/ FE 20
 	RST	56	/ FF

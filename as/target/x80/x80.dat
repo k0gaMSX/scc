@@ -141,7 +141,7 @@ SBC	A,(IY+n)	3	0xfd,0x9e	idx	Z80,R800
 AND	A,r	1	0xa0	xx_r8	Z80,R800,GB80
 AND	A,p	2	0xdd,0xa0	xx_r8	Z80,R800
 AND	A,q	2	0xfd,0xa0	xx_r8	Z80,R800
-AND	A,imm8	2	0xe5	imm8	Z80,R800,GB80
+AND	A,imm8	2	0xe6	imm8	Z80,R800,GB80
 AND	A,(HL)	1	0xa6	noargs	Z80,R800,GB80
 AND	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
 AND	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
@@ -157,7 +157,7 @@ OR	A,(IY+n)	3	0xfd,0xb6	idx	Z80,R800
 XOR	A,r	1	0xa8	xx_r8	Z80,R800,GB80
 XOR	A,p	2	0xdd,0xa8	xx_r8	Z80,R800
 XOR	A,q	2	0xfd,0xa8	xx_r8	Z80,R800
-XOR	A,imm8	2	0xe6	imm8	Z80,R800,GB80
+XOR	A,imm8	2	0xee	imm8	Z80,R800,GB80
 XOR	A,(HL)	1	0xae	noargs	Z80,R800,GB80
 XOR	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
 XOR	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
