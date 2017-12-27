@@ -56,7 +56,8 @@ END		{
 			       opsize[i], opformat[i]
 
 			if (opbytes[i] != "")
-				printf "\t\t.bytes = (unsigned char []) {%s},\n",
+				printf "\t\t.bytes = (unsigned char [%d]) {%s},\n",
+				        opsize[i],
 				        opbytes[i]
 
 			a = str2args(opargs[i])
