@@ -213,7 +213,7 @@ void
 imm16(Op *op, Node **args)
 {
 	Node *par1, *par2;
-	unsigned char buf[3];
+	unsigned char buf[4];
 	unsigned val;
 	int n = op->size;
 
