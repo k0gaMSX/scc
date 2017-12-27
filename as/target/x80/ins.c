@@ -229,7 +229,10 @@ imm16(Op *op, Node **args)
 void
 dir(Op *op, Node **args)
 {
-	args[1] = args[1]->left;
+	Node *dir;
+
+	dir = (args[1]->addr == ADIRECT) ? args[1] : args[0];
+	args[1] = dir->left;
 	imm16(op, args);
 }
 
@@ -323,7 +326,15 @@ r16_imm16(Op *op, Node **args)
 void
 r16_dir(Op *op, Node **args)
 {
-	args[1] = args[1]->left;
+	Node *dir, *reg;
+
+	if (args[1]->addr == ADIRECT)
+		dir = args[1], reg = args[0];
+	else
+		dir = args[0], reg = args[1];
+
+	args[0] = reg;
+	args[1] = dir->left;
 	r16_imm16(op, args);
 }
 

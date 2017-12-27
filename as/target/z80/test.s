@@ -32,7 +32,7 @@
 	RRA		/ 1F
 /20 n	JR NZ, PC + n
 	LD	%HL,32	/ 21 20 00
-/22 n n	LD (nn),HL
+	LD	(32768),%HL	/ 22 00 80
 	INC	%HL	/ 23
 	INC	%H	/ 24
 	DEC	%H	/ 25
@@ -40,7 +40,7 @@
 	DAA		/ 27
 /28 n	JR Z, PC + n
 	ADD	%HL,%HL	/ 29
-/2A n n	LD HL, (nn)
+	LD	%HL, (16384)	/ 2A 00 40
 	DEC	%HL	/ 2B
 	INC	%L	/ 2C
 	DEC	%L	/ 2D
@@ -48,7 +48,7 @@
 	CPL		/ 2F
 /30 n	JR NC, PC + n
 	LD	%SP,64	/ 31 40 00
-/32 n n	LD (nn), A
+	LD	(32768),%A	/ 32 00 80
 	INC	%SP	/ 33
 	INC	(%HL)	/ 34
 	DEC	(%HL)	/ 35
@@ -56,7 +56,7 @@
 	SCF		/ 37
 /38 n	JR C, PC + n
 	ADD	%HL,%SP	/ 39
-/3A n n	LD A, (nn)
+	LD	%A, (16384)	/ 3A 00 40
 	DEC	%SP	/ 3B
 	INC	%A	/ 3C
 	DEC	%A	/ 3D
@@ -477,13 +477,13 @@
 	ADD	%IX,%BC	/ DD 09
 	ADD	%IX,%DE	/ DD 19
 	LD	%IX,64	/ DD 21 40 00
-/DD22 n n	LD (nn), IX
+	LD	(32768),%IX	/ DD 22 00 80
 	INC	%IX	/ DD 23
 	INC	%IXH	/ DD 24
 	DEC	%IXH	/ DD 25
 	LD	%IXH,32	/ DD 26 20
 	ADD	%IX,%IX	/ DD 29
-/DD2A n n	LD IX, (nn)
+	LD	%IX,(16384)	/ DD 2A 00 40
 	DEC	%IX	/ DD 2B
 	INC	%IXL	/ DD 2C
 	DEC	%IXL	/ DD 2D
@@ -777,7 +777,7 @@
 /ED40	IN B, (C)
 /ED41	OUT (C), B
 /ED42	SBC HL, BC
-/ED43 n n	LD (nn), BC
+	LD	(32768),%BC	/ ED 43 00 80
 	NEG		/ ED 44
 	RETN		/ ED 45
 /ED46	IM 0
@@ -785,43 +785,41 @@
 /ED48	IN C, (C)
 /ED49	OUT (C), C
 /ED4A	ADC HL, BC
-/ED4B n n	LD BC, (nn)
+	LD	%BC,(16384)	/ ED 4B 00 40
 	RETI		/ ED 4D
 /ED4E	IM 0/1*
 /ED4F	LD R, A
 /ED50	IN D, (C)
 /ED51	OUT (C), D
 /ED52	SBC	%HL,%DE	/ ED 52
-/ED53 n n	LD (nn), DE
+	LD	(32768),%DE	/ ED 53 00 80
 /ED56	IM 1
 	LD	%A,%I	/ ED 57
 /ED58	IN E, (C)
 /ED59	OUT (C), E
 	ADC	%HL,%DE	/ ED 5A
-/ED5B n n	LD DE, (nn)
+	LD	%DE,(16384)	/ ED 5B 00 40
 /ED5E	IM 2
 /ED5F	LD A, R
 /ED60	IN H, (C)
 /ED61	OUT (C), H
 /ED62	SBC	%HL,%HL	/ ED 62
-/ED63 n n	LD (nn), HL
 /ED66	IM 0*
 	RRD		/ ED 67
 /ED68	IN L, (C)
 /ED69	OUT (C), L
 	ADC	%HL,%HL	/ ED 6A
-/ED6B n n	LD HL, (nn)
 /ED6E	IM 0/1*
 	RLD		/ ED 6F
 /ED70	IN (C)* / IN F, (C)*
 /ED71	OUT (C), 0*
 	SBC	%HL,%SP	/ ED 72
-/ED73 n n	LD (nn), SP	
+	LD	(16384),%SP	/ ED 73 00 40
 /ED76	IM 1*
 /ED78	IN A, (C)
 /ED79	OUT (C), A
 	ADC	%HL,%SP	/ ED 7A
-/ED7B n n	LD SP, (nn)
+	LD	%SP,(32768)	/ ED 7B 00 80
 /ED7E	IM 2*
 	LDI		/ ED A0
 	CPI		/ ED A1
@@ -857,13 +855,13 @@
 	ADD	%IY,%BC	/ FD 09
 	ADD	%IY,%DE	/ FD 19
 /FD21 n n	LD IY, nn
-/FD22 n n	LD (nn), IY
+	LD	(16384),%IY	/ FD 22 00 40
 	INC	%IY	/ FD 23
 	INC	%IYH	/ FD 24
 	DEC	%IYH	/ FD 25
 /FD26 n 	LD IYH, n*
 	ADD	%IY,%IY	/ FD 29
-/FD2A n n	LD IY, (nn)
+	LD	%IY,(32768)	/ FD 2A 00 80
 	DEC	%IY	/ FD 2B
 	INC	%IYL	/ FD 2C
 	DEC	%IYL	/ FD 2D

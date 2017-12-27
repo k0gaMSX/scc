@@ -90,7 +90,7 @@ LD	IX,(n)	4	0xdd,0x2a	dir	Z80,R800
 LD	IY,(n)	4	0xfd,0x2a	dir	Z80,R800
 
 LD	(n),HL	3	0x22	dir	Z80,R800,GB80
-LD	(n),dd	4	0xdd,0x42	r16_dir	Z80,R800
+LD	(n),dd	4	0xed,0x43	r16_dir	Z80,R800
 LD	(n),IX	4	0xdd,0x22	dir	Z80,R800
 LD	(n),IY	4	0xfd,0x22	dir	Z80,R800
 
