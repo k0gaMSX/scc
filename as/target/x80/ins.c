@@ -461,6 +461,9 @@ jr(Op *op, Node **args)
 void
 rst(Op *op, Node **args)
 {
-	/* TODO */
-	abort();
+	unsigned char buf[1];
+
+	buf[0] = op->bytes[0];
+	buf[0] |= args[0]->sym->value;
+	emit(buf, 1);
 }

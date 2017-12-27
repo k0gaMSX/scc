@@ -197,7 +197,7 @@
 	CALL	%NZ,32768	/ C4 00 80
 	PUSH	%BC	/ C5
 	ADD	%A,32	/ C6 20
-/C7	RST 0h
+	RST	0	/ C7
 	RET	%Z	/ C8
 	RET		/ C9
 	JP	%Z,32768	/ CA 00 80
@@ -460,7 +460,7 @@
 	CALL	%Z,16384	/ CC 00 40
 /CD n n	CALL nn
 	ADC	%A,64	/ CE 40
-/CF	RST 8h
+	RST	8	/ CF
 	RET	%NC	/ D0
 	POP	%DE	/ D1
 	JP	%NC,16384	/ D2 00 40
@@ -468,7 +468,7 @@
 	CALL	%NC,32768	/ D4 00 80
 	PUSH	%DE	/ D5
 	SUB	%A,32	/ D6 20
-/D7	RST 10h
+	RST	16	/ D7
 	RET	%C	/ D8
 	EXX		/ D9
 	JP	%C,16384	/ DA 00 40
@@ -760,7 +760,7 @@
 /	JP	(%IX)	/ DD E9
 	LD	%SP,%IX	/ DD F9
 /DE n	SBC A, n
-/DF	RST 18h
+	RST	24	/ DF
 	RET	%PO	/ E0
 	POP	%HL	/ E1
 	JP	%PO,32768	/ E2 00 80
@@ -768,7 +768,7 @@
 	CALL	%PO,16384	/ E4 00 40
 	PUSH	%HL	/ E5
 /E6 n	AND n
-/E7	RST 20h
+	RST	32	/ E7
 	RET	%PE	/ E8
 /E9	JP (HL)
 	JP	%PE,16384	/ EA 00 40
@@ -838,7 +838,7 @@
 	INDR		/ ED BA
 	OTDR		/ ED BB
 /EE n	XOR n
-/EF	RST 28h
+	RST	40	/ EF
 	RET	%P	/ F0
 	POP	%AF	/ F1
 	JP	%P,32768	/ F2 00 80
@@ -846,7 +846,7 @@
 	CALL	%P,16384	/ F4 00 40
 	PUSH	%AF	/ F5
 /F6 n	OR n
-/F7	RST 30h
+	RST	48	/ F7
 	RET	%M	/ F8
 	LD	%SP,%HL	/ F9
 	JP	%M,32768	/ FA 00 80
@@ -1138,4 +1138,4 @@
 /FDE9	JP (IY)
 	LD	%SP,%IY	/ FD F9
 /FE n	CP n
-/FF	RST 38h
+	RST	56	/ FF

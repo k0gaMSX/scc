@@ -152,6 +152,12 @@ match(Op *op, Node **args)
 			if (np->left->left->sym->argtype != arg)
 				return 0;
 			break;
+		case ARST:
+			if (np->addr != AIMM)
+				return 0;
+			if ((np->sym->value & ~0x38) != 0)
+				return 0;
+			break;
 		case AZERO:
 		case AIMM3:
 		case AIMM8:
