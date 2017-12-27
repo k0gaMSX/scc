@@ -129,7 +129,7 @@ binary(int op, Node *l, Node *r)
 	int addr;
 	Node *np;
 
-	if (l->op == NUMBER || r->op == NUMBER)
+	if (l->op == NUMBER && r->op == NUMBER)
 		return fold(op, l, r);
 	if (l->addr == AIMM && r->addr == AIMM)
 		addr = AIMM;
