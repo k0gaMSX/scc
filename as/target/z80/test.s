@@ -56,7 +56,7 @@
 	SCF		/ 37
 /38 n	JR C, PC + n
 	ADD	%HL,%SP	/ 39
-	LD	%A, (16384)	/ 3A 00 40
+	LD	%A,(16384)	/ 3A 00 40
 	DEC	%SP	/ 3B
 	INC	%A	/ 3C
 	DEC	%A	/ 3D
