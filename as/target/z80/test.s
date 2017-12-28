@@ -759,7 +759,7 @@
 	PUSH	%IX	/ DD E5
 /	JP	(%IX)	/ DD E9
 	LD	%SP,%IX	/ DD F9
-/DE n	SBC A, n
+	SBC	%A,64	/ DE 40
 	RST	24	/ DF
 	RET	%PO	/ E0
 	POP	%HL	/ E1
