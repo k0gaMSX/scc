@@ -336,8 +336,9 @@ void
 alu(Op *op, Node **args)
 {
 	Node *par = args[1];
-	unsigned char buf[4], val;
+	unsigned char buf[4];
 	int n = op->size, shift;
+	unsigned val;
 
 	if (args[1]) {
 		shift = 0;
