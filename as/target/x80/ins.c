@@ -191,45 +191,6 @@ r8_imm8(Op *op, Node **args)
 }
 
 void
-r8_idx(Op *op, Node **args)
-{
-	args[1] = args[1]->left;
-	r8_imm8(op, args);
-}
-
-void
-idx_r8(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par1 = args[0]->left;
-	par2 = args[1];
-
-	memcpy(buf, op->bytes, n);
-	buf[n-1] = par1->sym->value;
-	buf[n-2] |= reg2int(par2->sym->argtype);
-	emit(buf, n);
-}
-
-void
-idx_imm8(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par1 = args[0]->left;
-	par2 = args[1];
-
-	memcpy(buf, op->bytes, n);
-	buf[n-1] = par1->sym->value;
-	buf[n-2] = par2->sym->value;
-	emit(buf, n);
-}
-
-void
 imm8(Op *op, Node **args)
 {
 	Node *par1, *par2;
@@ -372,15 +333,72 @@ r16_dir(Op *op, Node **args)
 }
 
 void
+alu(Op *op, Node **args)
+{
+	Node *par = args[1];
+	unsigned char buf[4], val;
+	int n = op->size, shift;
+
+	if (args[1]) {
+		shift = 0;
+		par = args[1];
+	} else {
+		shift = 3;
+		par = args[0];
+	}
+
+	switch (par->addr) {
+	case AIMM:
+		val = par->sym->value;
+		break;
+	case AREG:
+		val = reg2int(par->sym->argtype) << shift;
+		break;
+	case AINDEX:
+		val = par->left->right->sym->value;
+		break;
+	case AINDIR:
+		val = 0;
+		break;
+	default:
+		abort();
+	}
+
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= val;
+	emit(buf, n);
+}
+
+void
 idx(Op *op, Node **args)
 {
-	Node *imm;
+	Node *tmp, *idx, *imm, *reg;
 	unsigned char buf[4];
-	int n = op->size;
+	int n = op->size, i = n, shift = 0;
 
-	imm = args[0]->left->right;
+	imm = reg = NULL;
+	if (args[0]->addr != AINDEX) {
+		shift = 3;
+		tmp = args[0];
+		args[0] = args[1];
+		args[1] = tmp;
+	}
+	idx = args[0]->left->right;
+
+	if (args[1]) {
+		if (args[1]->addr == AREG)
+			reg = args[1];
+		else
+			imm = args[1];
+	}
 	memcpy(buf, op->bytes, n);
-	buf[n-1] = imm->sym->value;
+
+	if (imm)
+		buf[--i] = imm->sym->value;
+	buf[--i] = idx->sym->value;
+	if (reg)
+		buf[--i] |= reg2int(reg->sym->argtype) << shift;
+
 	emit(buf, n);
 }
 

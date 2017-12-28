@@ -57,14 +57,14 @@ LD	q,q	2	0xfd,0x40	r8_r8	Z80,R800
 LD	(HL),r	1	0x70	xx_r8	Z80,R800,GB80
 LD	r,(HL)	1	0x46	r8_xx	Z80,R800,GB80
 
-LD	r,(IX+n)	3	0xdd,0x46	r8_idx	Z80,R800
-LD	r,(IY+n)	3	0xfd,0x46	r8_idx	Z80,R800
-LD	(IX+n),r	3	0xdd,0x70	idx_r8	Z80,R800
-LD	(IY+n),r	3	0xfd,0x70	idx_r8	Z80,R800
+LD	r,(IX+n)	3	0xdd,0x46	idx	Z80,R800
+LD	r,(IY+n)	3	0xfd,0x46	idx	Z80,R800
+LD	(IX+n),r	3	0xdd,0x70	idx	Z80,R800
+LD	(IY+n),r	3	0xfd,0x70	idx	Z80,R800
 
 LD	(HL),imm8	2	0x36	imm8	Z80,R800,GB80
-LD	(IX+n),imm8	3	0xdd,0x36	idx_imm8	Z80,R800
-LD	(IY+n),imm8	3	0xfd,0x36	idx_imm8	Z80,R800
+LD	(IX+n),imm8	4	0xdd,0x36	idx	Z80,R800
+LD	(IY+n),imm8	4	0xfd,0x36	idx	Z80,R800
 
 LD	A,(BC)	1	0x0a	noargs	Z80,R800,GB80
 LD	A,(DE)	1	0x1a	noargs	Z80,R800,GB80
@@ -106,83 +106,83 @@ POP	IX	2	0xdd,0xe1	noargs	Z80,R800
 POP	IY	2	0xfd,0xe1	noargs	Z80,R800
 
 # 8 bit ALU group
-ADD	A,r	1	0x80	xx_r8	Z80,R800,GB80
-ADD	A,p	2	0xdd,0x80	xx_r8	Z80,R800
-ADD	A,q	2	0xfd,0x80	xx_r8	Z80,R800
-ADD	A,imm8	2	0xc6	imm8	Z80,R800,GB80
-ADD	A,(HL)	1	0x86	noargs	Z80,R800,GB80
-ADD	A,(IX+n)	3	0xdd,0x86	idx	Z80,R800
-ADD	A,(IY+n)	3	0xfd,0x86	idx	Z80,R800
+ADD	A,r	1	0x80	alu	Z80,R800,GB80
+ADD	A,p	2	0xdd,0x80	alu	Z80,R800
+ADD	A,q	2	0xfd,0x80	alu	Z80,R800
+ADD	A,imm8	2	0xc6	alu	Z80,R800,GB80
+ADD	A,(HL)	1	0x86	alu	Z80,R800,GB80
+ADD	A,(IX+n)	3	0xdd,0x86	alu	Z80,R800
+ADD	A,(IY+n)	3	0xfd,0x86	alu	Z80,R800
 
-ADC	A,r	1	0x88	xx_r8	Z80,R800,GB80
-ADC	A,p	2	0xdd,0x88	xx_r8	Z80,R800
-ADC	A,q	2	0xfd,0x88	xx_r8	Z80,R800
-ADC	A,imm8	2	0xce	imm8	Z80,R800,GB80
-ADC	A,(HL)	1	0x8e	noargs	Z80,R800,GB80
-ADC	A,(IX+n)	3	0xdd,0x8e	idx	Z80,R800
-ADC	A,(IY+n)	3	0xfd,0x8e	idx	Z80,R800
+ADC	A,r	1	0x88	alu	Z80,R800,GB80
+ADC	A,p	2	0xdd,0x88	alu	Z80,R800
+ADC	A,q	2	0xfd,0x88	alu	Z80,R800
+ADC	A,imm8	2	0xce	alu	Z80,R800,GB80
+ADC	A,(HL)	1	0x8e	alu	Z80,R800,GB80
+ADC	A,(IX+n)	3	0xdd,0x8e	alu	Z80,R800
+ADC	A,(IY+n)	3	0xfd,0x8e	alu	Z80,R800
 
-SUB	A,r	1	0x90	xx_r8	Z80,R800,GB80
-SUB	A,p	2	0xdd,0x90	xx_r8	Z80,R800
-SUB	A,q	2	0xfd,0x90	xx_r8	Z80,R800
-SUB	A,imm8	2	0xd6	imm8	Z80,R800,GB80
-SUB	A,(HL)	1	0x96	noargs	Z80,R800,GB80
-SUB	A,(IX+n)	3	0xdd,0x96	idx	Z80,R800
-SUB	A,(IY+n)	3	0xfd,0x96	idx	Z80,R800
+SUB	A,r	1	0x90	alu	Z80,R800,GB80
+SUB	A,p	2	0xdd,0x90	alu	Z80,R800
+SUB	A,q	2	0xfd,0x90	alu	Z80,R800
+SUB	A,imm8	2	0xd6	alu	Z80,R800,GB80
+SUB	A,(HL)	1	0x96	alu	Z80,R800,GB80
+SUB	A,(IX+n)	3	0xdd,0x96	alu	Z80,R800
+SUB	A,(IY+n)	3	0xfd,0x96	alu	Z80,R800
 
-SBC	A,r	1	0x98	xx_r8	Z80,R800,GB80
-SBC	A,p	2	0xdd,0x98	xx_r8	Z80,R800
-SBC	A,q	2	0xfd,0x98	xx_r8	Z80,R800
-SBC	A,imm8	2	0xde	imm8	Z80,R800,GB80
-SBC	A,(HL)	1	0x9e	noargs	Z80,R800,GB80
-SBC	A,(IX+n)	3	0xdd,0x9e	idx	Z80,R800
-SBC	A,(IY+n)	3	0xfd,0x9e	idx	Z80,R800
+SBC	A,r	1	0x98	alu	Z80,R800,GB80
+SBC	A,p	2	0xdd,0x98	alu	Z80,R800
+SBC	A,q	2	0xfd,0x98	alu	Z80,R800
+SBC	A,imm8	2	0xde	alu	Z80,R800,GB80
+SBC	A,(HL)	1	0x9e	alu	Z80,R800,GB80
+SBC	A,(IX+n)	3	0xdd,0x9e	alu	Z80,R800
+SBC	A,(IY+n)	3	0xfd,0x9e	alu	Z80,R800
 
-AND	A,r	1	0xa0	xx_r8	Z80,R800,GB80
-AND	A,p	2	0xdd,0xa0	xx_r8	Z80,R800
-AND	A,q	2	0xfd,0xa0	xx_r8	Z80,R800
-AND	A,imm8	2	0xe6	imm8	Z80,R800,GB80
-AND	A,(HL)	1	0xa6	noargs	Z80,R800,GB80
-AND	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
-AND	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
+AND	A,r	1	0xa0	alu	Z80,R800,GB80
+AND	A,p	2	0xdd,0xa0	alu	Z80,R800
+AND	A,q	2	0xfd,0xa0	alu	Z80,R800
+AND	A,imm8	2	0xe6	alu	Z80,R800,GB80
+AND	A,(HL)	1	0xa6	alu	Z80,R800,GB80
+AND	A,(IX+n)	3	0xdd,0xa6	alu	Z80,R800
+AND	A,(IY+n)	3	0xfd,0xa6	alu	Z80,R800
 
-OR	A,r	1	0xb0	xx_r8	Z80,R800,GB80
-OR	A,p	2	0xdd,0xb0	xx_r8	Z80,R800
-OR	A,q	2	0xfd,0xb0	xx_r8	Z80,R800
-OR	A,imm8	2	0xf6	imm8	Z80,R800,GB80
-OR	A,(HL)	1	0xb6	noargs	Z80,R800,GB80
-OR	A,(IX+n)	3	0xdd,0xb6	idx	Z80,R800
-OR	A,(IY+n)	3	0xfd,0xb6	idx	Z80,R800
+OR	A,r	1	0xb0	alu	Z80,R800,GB80
+OR	A,p	2	0xdd,0xb0	alu	Z80,R800
+OR	A,q	2	0xfd,0xb0	alu	Z80,R800
+OR	A,imm8	2	0xf6	alu	Z80,R800,GB80
+OR	A,(HL)	1	0xb6	alu	Z80,R800,GB80
+OR	A,(IX+n)	3	0xdd,0xb6	alu	Z80,R800
+OR	A,(IY+n)	3	0xfd,0xb6	alu	Z80,R800
 
-XOR	A,r	1	0xa8	xx_r8	Z80,R800,GB80
-XOR	A,p	2	0xdd,0xa8	xx_r8	Z80,R800
-XOR	A,q	2	0xfd,0xa8	xx_r8	Z80,R800
-XOR	A,imm8	2	0xee	imm8	Z80,R800,GB80
-XOR	A,(HL)	1	0xae	noargs	Z80,R800,GB80
-XOR	A,(IX+n)	3	0xdd,0xa6	idx	Z80,R800
-XOR	A,(IY+n)	3	0xfd,0xa6	idx	Z80,R800
+XOR	A,r	1	0xa8	alu	Z80,R800,GB80
+XOR	A,p	2	0xdd,0xa8	alu	Z80,R800
+XOR	A,q	2	0xfd,0xa8	alu	Z80,R800
+XOR	A,imm8	2	0xee	alu	Z80,R800,GB80
+XOR	A,(HL)	1	0xae	alu	Z80,R800,GB80
+XOR	A,(IX+n)	3	0xdd,0xae	alu	Z80,R800
+XOR	A,(IY+n)	3	0xfd,0xae	alu	Z80,R800
 
-CP	A,r	1	0xb8	xx_r8	Z80,R800,GB80
-CP	A,p	2	0xdd,0xb8	xx_r8	Z80,R800
-CP	A,q	2	0xfd,0xb8	xx_r8	Z80,R800
-CP	A,imm8	2	0xfe	imm8	Z80,R800,GB80
-CP	A,(HL)	1	0xbe	noargs	Z80,R800,GB80
-CP	A,(IX+n)	3	0xdd,0xbe	idx	Z80,R800
-CP	A,(IY+n)	3	0xfd,0xbe	idx	Z80,R800
+CP	A,r	1	0xb8	alu	Z80,R800,GB80
+CP	A,p	2	0xdd,0xb8	alu	Z80,R800
+CP	A,q	2	0xfd,0xb8	alu	Z80,R800
+CP	A,imm8	2	0xfe	alu	Z80,R800,GB80
+CP	A,(HL)	1	0xbe	alu	Z80,R800,GB80
+CP	A,(IX+n)	3	0xdd,0xbe	alu	Z80,R800
+CP	A,(IY+n)	3	0xfd,0xbe	alu	Z80,R800
 
-INC	r	1	0x04	r8_xx	Z80,R800,GB80
-INC	p	2	0xdd,0x04	r8_xx	Z80,R800
-INC	q	2	0xfd,0x04	r8_xx	Z80,R800
-INC	(HL)	1	0x34	noargs	Z80,R800,GB80
-INC	(IX+n)	3	0xdd,0x34	idx	Z80,R800
-INC	(IY+n)	3	0xfd,0x34	idx	Z80,R800
+INC	r	1	0x04	alu	Z80,R800,GB80
+INC	p	2	0xdd,0x04	alu	Z80,R800
+INC	q	2	0xfd,0x04	alu	Z80,R800
+INC	(HL)	1	0x34	alu	Z80,R800,GB80
+INC	(IX+n)	3	0xdd,0x34	alu	Z80,R800
+INC	(IY+n)	3	0xfd,0x34	alu	Z80,R800
 
-DEC	r	1	0x05	r8_xx	Z80,R800,GB80
-DEC	p	2	0xdd,0x05	r8_xx	Z80,R800
-DEC	q	2	0xfd,0x05	r8_xx	Z80,R800
-DEC	(HL)	1	0x35	noargs	Z80,R800,GB80
-DEC	(IX+n)	3	0xdd,0x35	idx	Z80,R800
-DEC	(IY+n)	3	0xfd,0x35	idx	Z80,R800
+DEC	r	1	0x05	alu	Z80,R800,GB80
+DEC	p	2	0xdd,0x05	alu	Z80,R800
+DEC	q	2	0xfd,0x05	alu	Z80,R800
+DEC	(HL)	1	0x35	alu	Z80,R800,GB80
+DEC	(IX+n)	3	0xdd,0x35	alu	Z80,R800
+DEC	(IY+n)	3	0xfd,0x35	alu	Z80,R800
 
 # 16 bit ALU group
 ADD	HL,dd	1	0x09	xx_r16	Z80,R800,GB80
@@ -242,57 +242,57 @@ RLC	r	2	0xcb,0x00	r8	Z80,R800
 RLC	(HL)	2	0xcb,0x06	noargs	Z80,R800
 RLC	(IX+n)	4	0xdd,0xcb,0x06	idx	Z80,R800
 RLC	(IY+n)	4	0xfd,0xcb,0x06	idx	Z80,R800
-RLC	(IX+n),r	4	0xdd,0xcb,0,0x00	idx_r8	Z80,R800
-RLC	(IY+n),r	4	0xfd,0xcb,0,0x00	idx_r8	Z80,R800
+RLC	(IX+n),r	4	0xdd,0xcb,0,0x00	idx	Z80,R800
+RLC	(IY+n),r	4	0xfd,0xcb,0,0x00	idx	Z80,R800
 
 RL	r	2	0xcb,0x10	r8	Z80,R800
 RL	(HL)	2	0xcb,0x16	noargs	Z80,R800
 RL	(IX+n)	4	0xdd,0xcb,0x16	idx	Z80,R800
 RL	(IY+n)	4	0xfd,0xcb,0x16	idx	Z80,R800
-RL	(IX+n),r	4	0xdd,0xcb,0,0x10	idx_r8	Z80,R800
-RL	(IY+n),r	4	0xfd,0xcb,0,0x10	idx_r8	Z80,R800
+RL	(IX+n),r	4	0xdd,0xcb,0,0x10	idx	Z80,R800
+RL	(IY+n),r	4	0xfd,0xcb,0,0x10	idx	Z80,R800
 
 RRC	r	2	0xcb,0x08	r8	Z80,R800
 RRC	(HL)	2	0xcb,0x0e	noargs	Z80,R800
 RRC	(IX+n)	4	0xdd,0xcb,0x06	idx	Z80,R800
 RRC	(IY+n)	4	0xfd,0xcb,0x06	idx	Z80,R800
-RRC	(IX+n),r	4	0xdd,0xcb,0,0x08	idx_r8	Z80,R800
-RRC	(IY+n),r	4	0xfd,0xcb,0,0x08	idx_r8	Z80,R800
+RRC	(IX+n),r	4	0xdd,0xcb,0,0x08	idx	Z80,R800
+RRC	(IY+n),r	4	0xfd,0xcb,0,0x08	idx	Z80,R800
 
 RR	r	2	0xcb,0x18	r8	Z80,R800
 RR	(HL)	2	0xcb,0x1e	noargs	Z80,R800
 RR	(IX+n)	4	0xdd,0xcb,0x1e	idx	Z80,R800
 RR	(IY+n)	4	0xfd,0xcb,0x1e	idx	Z80,R800
-RR	(IX+n),r	4	0xdd,0xcb,0,0x18	idx_r8	Z80,R800
-RR	(IY+n),r	4	0xfd,0xcb,0,0x18	idx_r8	Z80,R800
+RR	(IX+n),r	4	0xdd,0xcb,0,0x18	idx	Z80,R800
+RR	(IY+n),r	4	0xfd,0xcb,0,0x18	idx	Z80,R800
 
 SLA	r	2	0xcb,0x20	r8	Z80,R800
 SLA	(HL)	2	0xcb,0x26	noargs	Z80,R800
 SLA	(IX+n)	4	0xdd,0xcb,0x26	idx	Z80,R800
 SLA	(IY+n)	4	0xfd,0xcb,0x26	idx	Z80,R800
-SLA	(IX+n),r	4	0xdd,0xcb,0,0x20	idx_r8	Z80,R800
-SLA	(IY+n),r	4	0xfd,0xcb,0,0x20	idx_r8	Z80,R800
+SLA	(IX+n),r	4	0xdd,0xcb,0,0x20	idx	Z80,R800
+SLA	(IY+n),r	4	0xfd,0xcb,0,0x20	idx	Z80,R800
 
 SLL	r	2	0xcb,0x30	r8	Z80
 SLL	(HL)	2	0xcb,0x36	noargs	Z80
 SLL	(IX+n)	4	0xdd,0xcb,0x36	idx	Z80
 SLL	(IY+n)	4	0xfd,0xcb,0x36	idx	Z80
-SLL	(IX+n),r	4	0xdd,0xcb,0,0x30	idx_r8	Z80
-SLL	(IY+n),r	4	0xfd,0xcb,0,0x30	idx_r8	Z80
+SLL	(IX+n),r	4	0xdd,0xcb,0,0x30	idx	Z80
+SLL	(IY+n),r	4	0xfd,0xcb,0,0x30	idx	Z80
 
 SRA	r	2	0xcb,0x28	r8	Z80,R800
 SRA	(HL)	2	0xcb,0x2e	noargs	Z80,R800
 SRA	(IX+n)	4	0xdd,0xcb,0x2e	idx	Z80,R800
 SRA	(IY+n)	4	0xfd,0xcb,0x2e	idx	Z80,R800
-SRA	(IX+n),r	4	0xdd,0xcb,0,0x28	idx_r8	Z80,R800
-SRA	(IY+n),r	4	0xfd,0xcb,0,0x28	idx_r8	Z80,R800
+SRA	(IX+n),r	4	0xdd,0xcb,0,0x28	idx	Z80,R800
+SRA	(IY+n),r	4	0xfd,0xcb,0,0x28	idx	Z80,R800
 
 SRL	r	2	0xcb,0x38	r8	Z80,R800
 SRL	(HL)	2	0xcb,0x3e	noargs	Z80,R800
 SRL	(IX+n)	4	0xdd,0xcb,0x3e	idx	Z80,R800
 SRL	(IY+n)	4	0xfd,0xcb,0x3e	idx	Z80,R800
-SRL	(IX+n),r	4	0xdd,0xcb,0,0x38	idx_r8	Z80,R800
-SRL	(IY+n),r	4	0xfd,0xcb,0,0x38	idx_r8	Z80,R800
+SRL	(IX+n),r	4	0xdd,0xcb,0,0x38	idx	Z80,R800
+SRL	(IY+n),r	4	0xfd,0xcb,0,0x38	idx	Z80,R800
 
 # Bit manipulation group
 BIT	imm3,r	2	0xcb,0x40	r_bit	Z80,R800
