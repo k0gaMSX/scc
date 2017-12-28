@@ -136,6 +136,7 @@ static int
 reg2int(int reg)
 {
 	switch (reg) {
+	case AREG_F:
 	case AREG_B:   return 0;
 	case AREG_C:   return 1;
 	case AREG_D:   return 2;
@@ -400,6 +401,33 @@ idx(Op *op, Node **args)
 	if (reg)
 		buf[--i] |= reg2int(reg->sym->argtype) << shift;
 
+	emit(buf, n);
+}
+
+void
+inout(Op *op, Node **args)
+{
+	Node *port, *value;
+	unsigned val;
+	int n = op->size;
+	unsigned char buf[5];
+
+	port = args[0];
+	value = args[1];
+	if (port->addr != ADIRECT && port->addr != AINDIR) {
+		value = port;
+		port = args[1];
+	}
+
+	if (port->addr == ADIRECT)
+		val = port->left->sym->value;
+	else if (value->addr == AREG)
+		val = reg2int(value->sym->argtype) << 3;
+	else
+		val = 0;
+
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= val;
 	emit(buf, n);
 }
 
