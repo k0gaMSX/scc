@@ -618,142 +618,142 @@
 	SRL	(%IX + 48),%L	/ DD CB 30 3D
 	SRL	(%IX + 48)	/ DD CB 30 3E
 	SRL	(%IX + 64),%A	/ DD CB 40 3F
-/DDCB d 46	BIT 0, (IX + d)
-/DDCB d 4E	BIT 1, (IX + d)
-/DDCB d 56	BIT 2, (IX + d)
-/DDCB d 5E	BIT 3, (IX + d)
-/DDCB d 66	BIT 4, (IX + d)
-/DDCB d 6E	BIT 5, (IX + d)
-/DDCB d 76	BIT 6, (IX + d)
-/DDCB d 7E	BIT 7, (IX + d)
-/DDCB d 80	LD B, RES 0, (IX + d)*
-/DDCB d 81	LD C, RES 0, (IX + d)*
-/DDCB d 82	LD D, RES 0, (IX + d)*
-/DDCB d 83	LD E, RES 0, (IX + d)*
-/DDCB d 84	LD H, RES 0, (IX + d)*
-/DDCB d 85	LD L, RES 0, (IX + d)*
-/DDCB d 86	RES 0, (IX + d)
-/DDCB d 87	LD A, RES 0, (IX + d)*
-/DDCB d 88	LD B, RES 1, (IX + d)*
-/DDCB d 89	LD C, RES 1, (IX + d)*
-/DDCB d 8A	LD D, RES 1, (IX + d)*
-/DDCB d 8B	LD E, RES 1, (IX + d)*
-/DDCB d 8C	LD H, RES 1, (IX + d)*
-/DDCB d 8D	LD L, RES 1, (IX + d)*
-/DDCB d 8E	RES 1, (IX + d)
-/DDCB d 8F	LD A, RES 1, (IX + d)*
-/DDCB d 90	LD B, RES 2, (IX + d)*
-/DDCB d 91	LD C, RES 2, (IX + d)*
-/DDCB d 92	LD D, RES 2, (IX + d)*
-/DDCB d 93	LD E, RES 2, (IX + d)*
-/DDCB d 94	LD H, RES 2, (IX + d)*
-/DDCB d 95	LD L, RES 2, (IX + d)*
-/DDCB d 96	RES 2, (IX + d)
-/DDCB d 97	LD A, RES 2, (IX + d)*
-/DDCB d 98	LD B, RES 3, (IX + d)*
-/DDCB d 99	LD C, RES 3, (IX + d)*
-/DDCB d 9A	LD D, RES 3, (IX + d)*
-/DDCB d 9B	LD E, RES 3, (IX + d)*
-/DDCB d 9C	LD H, RES 3, (IX + d)*
-/DDCB d 9D	LD L, RES 3, (IX + d)*
-/DDCB d 9E	RES 3, (IX + d)
-/DDCB d 9F	LD A, RES 3, (IX + d)*
-/DDCB d A0	LD B, RES 4, (IX + d)*
-/DCB d A1	LD C, RES 4, (IX + d)*
-/DDCB d A2	LD D, RES 4, (IX + d)*
-/DDCB d A3	LD E, RES 4, (IX + d)*
-/DDCB d A4	LD H, RES 4, (IX + d)*
-/DDCB d A5	LD L, RES 4, (IX + d)*
-/DDCB d A6	RES 4, (IX + d)
-/DDCB d A7	LD A, RES 4, (IX + d)*
-/DDCB d A8	LD B, RES 5, (IX + d)*
-/DDCB d A9	LD C, RES 5, (IX + d)*
-/DDCB d AA	LD D, RES 5, (IX + d)*
-/DDCB d AB	LD E, RES 5, (IX + d)*
-/DDCB d AC	LD H, RES 5, (IX + d)*
-/DDCB d AD	LD L, RES 5, (IX + d)*
-/DDCB d AE	RES 5, (IX + d)
-/DDCB d AF	LD A, RES 5, (IX + d)*
-/DDCB d B0	LD B, RES 6, (IX + d)*
-/DDCB d B1	LD C, RES 6, (IX + d)*
-/DDCB d B2	LD D, RES 6, (IX + d)*
-/DDCB d B3	LD E, RES 6, (IX + d)*
-/DDCB d B4	LD H, RES 6, (IX + d)*
-/DDCB d B5	LD L, RES 6, (IX + d)*
-/DDCB d B6	RES 6, (IX + d)
-/DDCB d B7	LD A, RES 6, (IX + d)*
-/DDCB d B8	LD B, RES 7, (IX + d)*
-/DDCB d B9	LD C, RES 7, (IX + d)*
-/DDCB d BA	LD D, RES 7, (IX + d)*
-/DDCB d BB	LD E, RES 7, (IX + d)*
-/DDCB d BC	LD H, RES 7, (IX + d)*
-/DDCB d BD	LD L, RES 7, (IX + d)*
-/DDCB d BE	RES 7, (IX + d)
-/DDCB d BF	LD A, RES 7, (IX + d)*
-/DDCB d C0	LD B, SET 0, (IX + d)*
-/DDCB d C1	LD C, SET 0, (IX + d)*
-/DDCB d C2	LD D, SET 0, (IX + d)*
-/DDCB d C3	LD E, SET 0, (IX + d)*
-/DDCB d C4	LD H, SET 0, (IX + d)*
-/DDCB d C5	LD L, SET 0, (IX + d)*
-/DDCB d C6	SET 0, (IX + d)
-/DDCB d C7	LD A, SET 0, (IX + d)*
-/DDCB d C8	LD B, SET 1, (IX + d)*
-/DDCB d C9	LD C, SET 1, (IX + d)*
-/DDCB d CA	LD D, SET 1, (IX + d)*
-/DDCB d CB	LD E, SET 1, (IX + d)*
-/DDCB d CC	LD H, SET 1, (IX + d)*
-/DDCB d CD	LD L, SET 1, (IX + d)*
-/DDCB d CE	SET 1, (IX + d)
-/DDCB d CF	LD A, SET 1, (IX + d)*
-/DDCB d D0	LD B, SET 2, (IX + d)*
-/DDCB d D1	LD C, SET 2, (IX + d)*
-/DDCB d D2	LD D, SET 2, (IX + d)*
-/DDCB d D3	LD E, SET 2, (IX + d)*
-/DDCB d D4	LD H, SET 2, (IX + d)*
-/DDCB d D5	LD L, SET 2, (IX + d)*
-/DDCB d D6	SET 2, (IX + d)
-/DDCB d D7	LD A, SET 2, (IX + d)*
-/DDCB d D8	LD B, SET 3, (IX + d)*
-/DDCB d D9	LD C, SET 3, (IX + d)*
-/DDCB d DA	LD D, SET 3, (IX + d)*
-/DDCB d DB	LD E, SET 3, (IX + d)*
-/DDCB d DC	LD H, SET 3, (IX + d)*
-/DDCB d DD	LD L, SET 3, (IX + d)*
-/DDCB d DE	SET 3, (IX + d)
-/DDCB d DF	LD A, SET 3, (IX + d)*
-/DDCB d E0	LD B, SET 4, (IX + d)*
-/DDCB d E1	LD C, SET 4, (IX + d)*
-/DDCB d E2	LD D, SET 4, (IX + d)*
-/DDCB d E3	LD E, SET 4, (IX + d)*
-/DDCB d E4	LD H, SET 4, (IX + d)*
-/DDCB d E5	LD L, SET 4, (IX + d)*
-/DDCB d E6	SET 4, (IX + d)
-/DDCB d E7	LD A, SET 4, (IX + d)*
-/DDCB d E8	LD B, SET 5, (IX + d)*
-/DDCB d E9	LD C, SET 5, (IX + d)*
-/DDCB d EA	LD D, SET 5, (IX + d)*
-/DDCB d EB	LD E, SET 5, (IX + d)*
-/DDCB d EC	LD H, SET 5, (IX + d)*
-/DDCB d ED	LD L, SET 5, (IX + d)*
-/DDCB d EE	SET 5, (IX + d)
-/DDCB d EF	LD A, SET 5, (IX + d)*
-/DDCB d F0	LD B, SET 6, (IX + d)*
-/DDCB d F1	LD C, SET 6, (IX + d)*
-/DDCB d F2	LD D, SET 6, (IX + d)*
-/DDCB d F3	LD E, SET 6, (IX + d)*
-/DDCB d F4	LD H, SET 6, (IX + d)*
-/DDCB d F5	LD L, SET 6, (IX + d)*
-/DDCB d F6	SET 6, (IX + d)
-/DDCB d F7	LD A, SET 6, (IX + d)*
-/DDCB d F8	LD B, SET 7, (IX + d)*
-/DDCB d F9	LD C, SET 7, (IX + d)*
-/DDCB d FA	LD D, SET 7, (IX + d)*
-/DDCB d FB	LD E, SET 7, (IX + d)*
-/DDCB d FC	LD H, SET 7, (IX + d)*
-/DDCB d FD	LD L, SET 7, (IX + d)*
-/DDCB d FE	SET 7, (IX + d)
-/DDCB d FF	LD A, SET 7, (IX + d)*
+	BIT	0,(%IX + 16)	/ DD CB 10 46
+	BIT	1,(%IX + 32)	/ DD CB 20 4E
+	BIT	2,(%IX + 48)	/ DD CB 30 56
+	BIT	3,(%IX + 64)	/ DD CB 40 5E
+	BIT	4,(%IX + 16)	/ DD CB 10 66
+	BIT	5,(%IX + 32)	/ DD CB 20 6E
+	BIT	6,(%IX + 48)	/ DD CB 30 76
+	BIT	7,(%IX + 64)	/ DD CB 40 7E
+	RES	0,(%IX + 16),%B	/ DD CB 10 80
+	RES	0,(%IX + 32),%C	/ DD CB 20 81
+	RES	0,(%IX + 48),%D	/ DD CB 30 82
+	RES	0,(%IX + 64),%E	/ DD CB 40 83
+	RES	0,(%IX + 16),%H	/ DD CB 10 84
+	RES	0,(%IX + 32),%L	/ DD CB 20 85
+	RES	0,(%IX + 48)	/ DD CB 30 86
+	RES	0,(%IX + 64),%A	/ DD CB 40 87
+	RES	1,(%IX + 16),%B	/ DD CB 10 88
+	RES	1,(%IX + 32),%C	/ DD CB 20 89
+	RES	1,(%IX + 48),%D	/ DD CB 30 8A
+	RES	1,(%IX + 64),%E	/ DD CB 40 8B
+	RES	1,(%IX + 16),%H	/ DD CB 10 8C
+	RES	1,(%IX + 32),%L	/ DD CB 20 8D
+	RES	1,(%IX + 48)	/ DD CB 30 8E
+	RES	1,(%IX + 64),%A	/ DD CB 40 8F
+	RES	2,(%IX + 16),%B	/ DD CB 10 90
+	RES	2,(%IX + 32),%C	/ DD CB 20 91
+	RES	2,(%IX + 48),%D	/ DD CB 30 92
+	RES	2,(%IX + 64),%E	/ DD CB 40 93
+	RES	2,(%IX + 16),%H	/ DD CB 10 94
+	RES	2,(%IX + 32),%L	/ DD CB 20 95
+	RES	2,(%IX + 48)	/ DD CB 30 96
+	RES	2,(%IX + 64),%A	/ DD CB 40 97
+	RES	3,(%IX + 16),%B	/ DD CB 10 98
+	RES	3,(%IX + 32),%C	/ DD CB 20 99
+	RES	3,(%IX + 48),%D	/ DD CB 30 9A
+	RES	3,(%IX + 64),%E	/ DD CB 40 9B
+	RES	3,(%IX + 16),%H	/ DD CB 10 9C
+	RES	3,(%IX + 32),%L	/ DD CB 20 9D
+	RES	3,(%IX + 48)	/ DD CB 30 9E
+	RES	3,(%IX + 64),%A	/ DD CB 40 9F
+	RES	4,(%IX + 16),%B	/ DD CB 10 A0
+	RES	4,(%IX + 32),%C	/ DD CB 20 A1
+	RES	4,(%IX + 48),%D	/ DD CB 30 A2
+	RES	4,(%IX + 64),%E	/ DD CB 40 A3
+	RES	4,(%IX + 16),%H	/ DD CB 10 A4
+	RES	4,(%IX + 32),%L	/ DD CB 20 A5
+	RES	4,(%IX + 48)	/ DD CB 30 A6
+	RES	4,(%IX + 64),%A	/ DD CB 40 A7
+	RES	5,(%IX + 16),%B	/ DD CB 10 A8
+	RES	5,(%IX + 32),%C	/ DD CB 20 A9
+	RES	5,(%IX + 48),%D	/ DD CB 30 AA
+	RES	5,(%IX + 64),%E	/ DD CB 40 AB
+	RES	5,(%IX + 16),%H	/ DD CB 10 AC
+	RES	5,(%IX + 32),%L	/ DD CB 20 AD
+	RES	5,(%IX + 48)	/ DD CB 30 AE
+	RES	5,(%IX + 64),%A	/ DD CB 40 AF
+	RES	6,(%IX + 16),%B	/ DD CB 10 B0
+	RES	6,(%IX + 32),%C	/ DD CB 20 B1
+	RES	6,(%IX + 48),%D	/ DD CB 30 B2
+	RES	6,(%IX + 64),%E	/ DD CB 40 B3
+	RES	6,(%IX + 16),%H	/ DD CB 10 B4
+	RES	6,(%IX + 32),%L	/ DD CB 20 B5
+	RES	6,(%IX + 48)	/ DD CB 30 B6
+	RES	6,(%IX + 64),%A	/ DD CB 40 B7
+	RES	7,(%IX + 16),%B	/ DD CB 10 B8
+	RES	7,(%IX + 32),%C	/ DD CB 20 B9
+	RES	7,(%IX + 48),%D	/ DD CB 30 BA
+	RES	7,(%IX + 64),%E	/ DD CB 40 BB
+	RES	7,(%IX + 16),%H	/ DD CB 10 BC
+	RES	7,(%IX + 32),%L	/ DD CB 20 BD
+	RES	7,(%IX + 48)	/ DD CB 30 BE
+	RES	7,(%IX + 64),%A	/ DD CB 40 BF
+	SET	0,(%IX + 16),%B	/ DD CB 10 C0
+	SET	0,(%IX + 32),%C	/ DD CB 20 C1
+	SET	0,(%IX + 48),%D	/ DD CB 30 C2
+	SET	0,(%IX + 64),%E	/ DD CB 40 C3
+	SET	0,(%IX + 16),%H	/ DD CB 10 C4
+	SET	0,(%IX + 32),%L	/ DD CB 20 C5
+	SET	0,(%IX + 48)	/ DD CB 30 C6
+	SET	0,(%IX + 64),%A	/ DD CB 40 C7
+	SET	1,(%IX + 16),%B	/ DD CB 10 C8
+	SET	1,(%IX + 32),%C	/ DD CB 20 C9
+	SET	1,(%IX + 48),%D	/ DD CB 30 CA
+	SET	1,(%IX + 64),%E	/ DD CB 40 CB
+	SET	1,(%IX + 16),%H	/ DD CB 10 CC
+	SET	1,(%IX + 32),%L	/ DD CB 20 CD
+	SET	1,(%IX + 48)	/ DD CB 30 CE
+	SET	1,(%IX + 64),%A	/ DD CB 40 CF
+	SET	2,(%IX + 16),%B	/ DD CB 10 D0
+	SET	2,(%IX + 32),%C	/ DD CB 20 D1
+	SET	2,(%IX + 48),%D	/ DD CB 30 D2
+	SET	2,(%IX + 64),%E	/ DD CB 40 D3
+	SET	2,(%IX + 16),%H	/ DD CB 10 D4
+	SET	2,(%IX + 32),%L	/ DD CB 20 D5
+	SET	2,(%IX + 48)	/ DD CB 30 D6
+	SET	2,(%IX + 64),%A	/ DD CB 40 D7
+	SET	3,(%IX + 16),%B	/ DD CB 10 D8
+	SET	3,(%IX + 32),%C	/ DD CB 20 D9
+	SET	3,(%IX + 48),%D	/ DD CB 30 DA
+	SET	3,(%IX + 64),%E	/ DD CB 40 DB
+	SET	3,(%IX + 16),%H	/ DD CB 10 DC
+	SET	3,(%IX + 32),%L	/ DD CB 20 DD
+	SET	3,(%IX + 48)	/ DD CB 30 DE
+	SET	3,(%IX + 64),%A	/ DD CB 40 DF
+	SET	4,(%IX + 16),%B	/ DD CB 10 E0
+	SET	4,(%IX + 32),%C	/ DD CB 20 E1
+	SET	4,(%IX + 48),%D	/ DD CB 30 E2
+	SET	4,(%IX + 64),%E	/ DD CB 40 E3
+	SET	4,(%IX + 16),%H	/ DD CB 10 E4
+	SET	4,(%IX + 32),%L	/ DD CB 20 E5
+	SET	4,(%IX + 48)	/ DD CB 30 E6
+	SET	4,(%IX + 64),%A	/ DD CB 40 E7
+	SET	5,(%IX + 16),%B	/ DD CB 10 E8
+	SET	5,(%IX + 32),%C	/ DD CB 20 E9
+	SET	5,(%IX + 48),%D	/ DD CB 30 EA
+	SET	5,(%IX + 64),%E	/ DD CB 40 EB
+	SET	5,(%IX + 16),%H	/ DD CB 10 EC
+	SET	5,(%IX + 32),%L	/ DD CB 20 ED
+	SET	5,(%IX + 48)	/ DD CB 30 EE
+	SET	5,(%IX + 64),%A	/ DD CB 40 EF
+	SET	6,(%IX + 16),%B	/ DD CB 10 F0
+	SET	6,(%IX + 32),%C	/ DD CB 20 F1
+	SET	6,(%IX + 48),%D	/ DD CB 30 F2
+	SET	6,(%IX + 64),%E	/ DD CB 40 F3
+	SET	6,(%IX + 16),%H	/ DD CB 10 F4
+	SET	6,(%IX + 32),%L	/ DD CB 20 F5
+	SET	6,(%IX + 48)	/ DD CB 30 F6
+	SET	6,(%IX + 64),%A	/ DD CB 40 F7
+	SET	7,(%IX + 16),%B	/ DD CB 10 F8
+	SET	7,(%IX + 32),%C	/ DD CB 20 F9
+	SET	7,(%IX + 48),%D	/ DD CB 30 FA
+	SET	7,(%IX + 64),%E	/ DD CB 40 FB
+	SET	7,(%IX + 16),%H	/ DD CB 10 FC
+	SET	7,(%IX + 32),%L	/ DD CB 20 FD
+	SET	7,(%IX + 48)	/ DD CB 30 FE
+	SET	7,(%IX + 64),%A	/ DD CB 40 FF
 	POP	%IX	/ DD E1
 	EX	(%SP),%IX	/ DD E3
 	PUSH	%IX	/ DD E5
@@ -991,142 +991,142 @@
 	SRL	(%IY + 48),%L	/ FD CB 30 3D
 	SRL	(%IY + 64)	/ FD CB 40 3E
 	SRL	(%IY + 16),%A	/ FD CB 10 3F
-/FDCB d 46	BIT 0, (IY + d)
-/FDCB d 4E	BIT 1, (IY + d)
-/FDCB d 56	BIT 2, (IY + d)
-/FDCB d 5E	BIT 3, (IY + d)
-/FDCB d 66	BIT 4, (IY + d)
-/FDCB d 6E	BIT 5, (IY + d)
-/FDCB d 76	BIT 6, (IY + d)
-/FDCB d 7E	BIT 7, (IY + d)
-/FDCB d 80	LD B, RES 0, (IY + d)*
-/FDCB d 81	LD C, RES 0, (IY + d)*
-/FDCB d 82	LD D, RES 0, (IY + d)*
-/FDCB d 83	LD E, RES 0, (IY + d)*
-/DCB d 84	LD H, RES 0, (IY + d)*
-/FDCB d 85	LD L, RES 0, (IY + d)*
-/FDCB d 86	RES 0, (IY + d)
-/FDCB d 87	LD A, RES 0, (IY + d)*
-/FDCB d 88	LD B, RES 1, (IY + d)*
-/FDCB d 89	LD C, RES 1, (IY + d)*
-/FDCB d 8A	LD D, RES 1, (IY + d)*
-/FDCB d 8B	LD E, RES 1, (IY + d)*
-/FDCB d 8C	LD H, RES 1, (IY + d)*
-/FDCB d 8D	LD L, RES 1, (IY + d)*
-/FDCB d 8E	RES 1, (IY + d)
-/FDCB d 8F	LD A, RES 1, (IY + d)*
-/FDCB d 90	LD B, RES 2, (IY + d)*
-/FDCB d 91	LD C, RES 2, (IY + d)*
-/FDCB d 92	LD D, RES 2, (IY + d)*
-/FDCB d 93	LD E, RES 2, (IY + d)*
-/FDCB d 94	LD H, RES 2, (IY + d)*
-/FDCB d 95	LD L, RES 2, (IY + d)*
-/FDCB d 96	RES 2, (IY + d)
-/FDCB d 97	LD A, RES 2, (IY + d)*
-/FDCB d 98	LD B, RES 3, (IY + d)*
-/FDCB d 99	LD C, RES 3, (IY + d)*
-/FDCB d 9A	LD D, RES 3, (IY + d)*
-/FDCB d 9B	LD E, RES 3, (IY + d)*
-/FDCB d 9C	LD H, RES 3, (IY + d)*
-/FDCB d 9D	LD L, RES 3, (IY + d)*
-/FDCB d 9E	RES 3, (IY + d)
-/FDCB d 9F	LD A, RES 3, (IY + d)*
-/FDCB d A0	LD B, RES 4, (IY + d)*
-/FDCB d A1	LD C, RES 4, (IY + d)*
-/FDCB d A2	LD D, RES 4, (IY + d)*
-/FDCB d A3	LD E, RES 4, (IY + d)*
-/FDCB d A4	LD H, RES 4, (IY + d)*
-/FDCB d A5	LD L, RES 4, (IY + d)*
-/FDCB d A6	RES 4, (IY + d)
-/FDCB d A7	LD A, RES 4, (IY + d)*
-/FDCB d A8	LD B, RES 5, (IY + d)*
-/FDCB d A9	LD C, RES 5, (IY + d)*
-/FDCB d AA	LD D, RES 5, (IY + d)*
-/FDCB d AB	LD E, RES 5, (IY + d)*
-/FDCB d AC	LD H, RES 5, (IY + d)*
-/FDCB d AD	LD L, RES 5, (IY + d)*
-/FDCB d AE	RES 5, (IY + d)
-/FDCB d AF	LD A, RES 5, (IY + d)*
-/FDCB d B0	LD B, RES 6, (IY + d)*
-/FDCB d B1	LD C, RES 6, (IY + d)*
-/FDCB d B2	LD D, RES 6, (IY + d)*
-/FDCB d B3	LD E, RES 6, (IY + d)*
-/FDCB d B4	LD H, RES 6, (IY + d)*
-/FDCB d B5	LD L, RES 6, (IY + d)*
-/FDCB d B6	RES 6, (IY + d)
-/FDCB d B7	LD A, RES 6, (IY + d)*
-/FDCB d B8	LD B, RES 7, (IY + d)*
-/FDCB d B9	LD C, RES 7, (IY + d)*
-/FDCB d BA	LD D, RES 7, (IY + d)*
-/FDCB d BB	LD E, RES 7, (IY + d)*
-/FDCB d BC	LD H, RES 7, (IY + d)*
-/FDCB d BD	LD L, RES 7, (IY + d)*
-/FDCB d BE	RES 7, (IY + d)
-/FDCB d BF	LD A, RES 7, (IY + d)*
-/FDCB d C0	LD B, SET 0, (IY + d)*
-/FDCB d C1	LD C, SET 0, (IY + d)*
-/FDCB d C2	LD D, SET 0, (IY + d)*
-/FDCB d C3	LD E, SET 0, (IY + d)*
-/FDCB d C4	LD H, SET 0, (IY + d)*
-/FDCB d C5	LD L, SET 0, (IY + d)*
-/FDCB d C6	SET 0, (IY + d)
-/FDCB d C7	LD A, SET 0, (IY + d)*
-/FDCB d C8	LD B, SET 1, (IY + d)*
-/FDCB d C9	LD C, SET 1, (IY + d)*
-/FDCB d CA	LD D, SET 1, (IY + d)*
-/FDCB d CB	LD E, SET 1, (IY + d)*
-/FDCB d CC	LD H, SET 1, (IY + d)*
-/FDCB d CD	LD L, SET 1, (IY + d)*
-/FDCB d CE	SET 1, (IY + d)
-/FDCB d CF	LD A, SET 1, (IY + d)*
-/FDCB d D0	LD B, SET 2, (IY + d)*
-/FDCB d D1	LD C, SET 2, (IY + d)*
-/FDCB d D2	LD D, SET 2, (IY + d)*
-/FDCB d D3	LD E, SET 2, (IY + d)*
-/FDCB d D4	LD H, SET 2, (IY + d)*
-/FDCB d D5	LD L, SET 2, (IY + d)*
-/FDCB d D6	SET 2, (IY + d)
-/FDCB d D7	LD A, SET 2, (IY + d)*
-/FDCB d D8	LD B, SET 3, (IY + d)*
-/FDCB d D9	LD C, SET 3, (IY + d)*
-/FDCB d DA	LD D, SET 3, (IY + d)*
-/FDCB d DB	LD E, SET 3, (IY + d)*
-/FDCB d DC	LD H, SET 3, (IY + d)*
-/FDCB d DD	LD L, SET 3, (IY + d)*
-/FDCB d DE	SET 3, (IY + d)
-/FDCB d DF	LD A, SET 3, (IY + d)*
-/FDCB d E0	LD B, SET 4, (IY + d)*
-/FDCB d E1	LD C, SET 4, (IY + d)*
-/FDCB d E2	LD D, SET 4, (IY + d)*
-/FDCB d E3	LD E, SET 4, (IY + d)*
-/FDCB d E4	LD H, SET 4, (IY + d)*
-/FDCB d E5	LD L, SET 4, (IY + d)*
-/FDCB d E6	SET 4, (IY + d)
-/FDCB d E7	LD A, SET 4, (IY + d)*
-/FDCB d E8	LD B, SET 5, (IY + d)*
-/FDCB d E9	LD C, SET 5, (IY + d)*
-/FDCB d EA	LD D, SET 5, (IY + d)*
-/FDCB d EB	LD E, SET 5, (IY + d)*
-/FDCB d EC	LD H, SET 5, (IY + d)*
-/FDCB d ED	LD L, SET 5, (IY + d)*
-/FDCB d EE	SET 5, (IY + d)
-/FDCB d EF	LD A, SET 5, (IY + d)*
-/FDCB d F0	LD B, SET 6, (IY + d)*
-/FDCB d F1	LD C, SET 6, (IY + d)*
-/FDCB d F2	LD D, SET 6, (IY + d)*
-/FDCB d F3	LD E, SET 6, (IY + d)*
-/FDCB d F4	LD H, SET 6, (IY + d)*
-/FDCB d F5	LD L, SET 6, (IY + d)*
-/FDCB d F6	SET 6, (IY + d)
-/FDCB d F7	LD A, SET 6, (IY + d)*
-/FDCB d F8	LD B, SET 7, (IY + d)*
-/FDCB d F9	LD C, SET 7, (IY + d)*
-/FDCB d FA	LD D, SET 7, (IY + d)*
-/FDCB d FB	LD E, SET 7, (IY + d)*
-/FDCB d FC	LD H, SET 7, (IY + d)*
-/FDCB d FD	LD L, SET 7, (IY + d)*
-/FDCB d FE	SET 7, (IY + d)
-/FDCB d FF	LD A, SET 7, (IY + d)*
+	BIT	0,(%IY + 16)	/ FD CB 10 46
+	BIT	1,(%IY + 32)	/ FD CB 20 4E
+	BIT	2,(%IY + 48)	/ FD CB 30 56
+	BIT	3,(%IY + 64)	/ FD CB 40 5E
+	BIT	4,(%IY + 16)	/ FD CB 10 66
+	BIT	5,(%IY + 32)	/ FD CB 20 6E
+	BIT	6,(%IY + 48)	/ FD CB 30 76
+	BIT	7,(%IY + 64)	/ FD CB 40 7E
+	RES	0,(%IY + 16),%B	/ FD CB 10 80
+	RES	0,(%IY + 32),%C	/ FD CB 20 81
+	RES	0,(%IY + 48),%D	/ FD CB 30 82
+	RES	0,(%IY + 64),%E	/ FD CB 40 83
+	RES	0,(%IY + 16),%H	/ FD CB 10 84
+	RES	0,(%IY + 32),%L	/ FD CB 20 85
+	RES	0,(%IY + 48)	/ FD CB 30 86
+	RES	0,(%IY + 64),%A	/ FD CB 40 87
+	RES	1,(%IY + 16),%B	/ FD CB 10 88
+	RES	1,(%IY + 32),%C	/ FD CB 20 89
+	RES	1,(%IY + 48),%D	/ FD CB 30 8A
+	RES	1,(%IY + 64),%E	/ FD CB 40 8B
+	RES	1,(%IY + 16),%H	/ FD CB 10 8C
+	RES	1,(%IY + 32),%L	/ FD CB 20 8D
+	RES	1,(%IY + 48)	/ FD CB 30 8E
+	RES	1,(%IY + 64),%A	/ FD CB 40 8F
+	RES	2,(%IY + 16),%B	/ FD CB 10 90
+	RES	2,(%IY + 32),%C	/ FD CB 20 91
+	RES	2,(%IY + 48),%D	/ FD CB 30 92
+	RES	2,(%IY + 64),%E	/ FD CB 40 93
+	RES	2,(%IY + 16),%H	/ FD CB 10 94
+	RES	2,(%IY + 32),%L	/ FD CB 20 95
+	RES	2,(%IY + 48)	/ FD CB 30 96
+	RES	2,(%IY + 64),%A	/ FD CB 40 97
+	RES	3,(%IY + 16),%B	/ FD CB 10 98
+	RES	3,(%IY + 32),%C	/ FD CB 20 99
+	RES	3,(%IY + 48),%D	/ FD CB 30 9A
+	RES	3,(%IY + 64),%E	/ FD CB 40 9B
+	RES	3,(%IY + 16),%H	/ FD CB 10 9C
+	RES	3,(%IY + 32),%L	/ FD CB 20 9D
+	RES	3,(%IY + 48)	/ FD CB 30 9E
+	RES	3,(%IY + 64),%A	/ FD CB 40 9F
+	RES	4,(%IY + 16),%B	/ FD CB 10 A0
+	RES	4,(%IY + 32),%C	/ FD CB 20 A1
+	RES	4,(%IY + 48),%D	/ FD CB 30 A2
+	RES	4,(%IY + 64),%E	/ FD CB 40 A3
+	RES	4,(%IY + 16),%H	/ FD CB 10 A4
+	RES	4,(%IY + 32),%L	/ FD CB 20 A5
+	RES	4,(%IY + 48)	/ FD CB 30 A6
+	RES	4,(%IY + 64),%A	/ FD CB 40 A7
+	RES	5,(%IY + 16),%B	/ FD CB 10 A8
+	RES	5,(%IY + 32),%C	/ FD CB 20 A9
+	RES	5,(%IY + 48),%D	/ FD CB 30 AA
+	RES	5,(%IY + 64),%E	/ FD CB 40 AB
+	RES	5,(%IY + 16),%H	/ FD CB 10 AC
+	RES	5,(%IY + 32),%L	/ FD CB 20 AD
+	RES	5,(%IY + 48)	/ FD CB 30 AE
+	RES	5,(%IY + 64),%A	/ FD CB 40 AF
+	RES	6,(%IY + 16),%B	/ FD CB 10 B0
+	RES	6,(%IY + 32),%C	/ FD CB 20 B1
+	RES	6,(%IY + 48),%D	/ FD CB 30 B2
+	RES	6,(%IY + 64),%E	/ FD CB 40 B3
+	RES	6,(%IY + 16),%H	/ FD CB 10 B4
+	RES	6,(%IY + 32),%L	/ FD CB 20 B5
+	RES	6,(%IY + 48)	/ FD CB 30 B6
+	RES	6,(%IY + 64),%A	/ FD CB 40 B7
+	RES	7,(%IY + 16),%B	/ FD CB 10 B8
+	RES	7,(%IY + 32),%C	/ FD CB 20 B9
+	RES	7,(%IY + 48),%D	/ FD CB 30 BA
+	RES	7,(%IY + 64),%E	/ FD CB 40 BB
+	RES	7,(%IY + 16),%H	/ FD CB 10 BC
+	RES	7,(%IY + 32),%L	/ FD CB 20 BD
+	RES	7,(%IY + 48)	/ FD CB 30 BE
+	RES	7,(%IY + 64),%A	/ FD CB 40 BF
+	SET	0,(%IY + 16),%B	/ FD CB 10 C0
+	SET	0,(%IY + 32),%C	/ FD CB 20 C1
+	SET	0,(%IY + 48),%D	/ FD CB 30 C2
+	SET	0,(%IY + 64),%E	/ FD CB 40 C3
+	SET	0,(%IY + 16),%H	/ FD CB 10 C4
+	SET	0,(%IY + 32),%L	/ FD CB 20 C5
+	SET	0,(%IY + 48)	/ FD CB 30 C6
+	SET	0,(%IY + 64),%A	/ FD CB 40 C7
+	SET	1,(%IY + 16),%B	/ FD CB 10 C8
+	SET	1,(%IY + 32),%C	/ FD CB 20 C9
+	SET	1,(%IY + 48),%D	/ FD CB 30 CA
+	SET	1,(%IY + 64),%E	/ FD CB 40 CB
+	SET	1,(%IY + 16),%H	/ FD CB 10 CC
+	SET	1,(%IY + 32),%L	/ FD CB 20 CD
+	SET	1,(%IY + 48)	/ FD CB 30 CE
+	SET	1,(%IY + 64),%A	/ FD CB 40 CF
+	SET	2,(%IY + 16),%B	/ FD CB 10 D0
+	SET	2,(%IY + 32),%C	/ FD CB 20 D1
+	SET	2,(%IY + 48),%D	/ FD CB 30 D2
+	SET	2,(%IY + 64),%E	/ FD CB 40 D3
+	SET	2,(%IY + 16),%H	/ FD CB 10 D4
+	SET	2,(%IY + 32),%L	/ FD CB 20 D5
+	SET	2,(%IY + 48)	/ FD CB 30 D6
+	SET	2,(%IY + 64),%A	/ FD CB 40 D7
+	SET	3,(%IY + 16),%B	/ FD CB 10 D8
+	SET	3,(%IY + 32),%C	/ FD CB 20 D9
+	SET	3,(%IY + 48),%D	/ FD CB 30 DA
+	SET	3,(%IY + 64),%E	/ FD CB 40 DB
+	SET	3,(%IY + 16),%H	/ FD CB 10 DC
+	SET	3,(%IY + 32),%L	/ FD CB 20 DD
+	SET	3,(%IY + 48)	/ FD CB 30 DE
+	SET	3,(%IY + 64),%A	/ FD CB 40 DF
+	SET	4,(%IY + 16),%B	/ FD CB 10 E0
+	SET	4,(%IY + 32),%C	/ FD CB 20 E1
+	SET	4,(%IY + 48),%D	/ FD CB 30 E2
+	SET	4,(%IY + 64),%E	/ FD CB 40 E3
+	SET	4,(%IY + 16),%H	/ FD CB 10 E4
+	SET	4,(%IY + 32),%L	/ FD CB 20 E5
+	SET	4,(%IY + 48)	/ FD CB 30 E6
+	SET	4,(%IY + 64),%A	/ FD CB 40 E7
+	SET	5,(%IY + 16),%B	/ FD CB 10 E8
+	SET	5,(%IY + 32),%C	/ FD CB 20 E9
+	SET	5,(%IY + 48),%D	/ FD CB 30 EA
+	SET	5,(%IY + 64),%E	/ FD CB 40 EB
+	SET	5,(%IY + 16),%H	/ FD CB 10 EC
+	SET	5,(%IY + 32),%L	/ FD CB 20 ED
+	SET	5,(%IY + 48)	/ FD CB 30 EE
+	SET	5,(%IY + 64),%A	/ FD CB 40 EF
+	SET	6,(%IY + 16),%B	/ FD CB 10 F0
+	SET	6,(%IY + 32),%C	/ FD CB 20 F1
+	SET	6,(%IY + 48),%D	/ FD CB 30 F2
+	SET	6,(%IY + 64),%E	/ FD CB 40 F3
+	SET	6,(%IY + 16),%H	/ FD CB 10 F4
+	SET	6,(%IY + 32),%L	/ FD CB 20 F5
+	SET	6,(%IY + 48)	/ FD CB 30 F6
+	SET	6,(%IY + 64),%A	/ FD CB 40 F7
+	SET	7,(%IY + 16),%B	/ FD CB 10 F8
+	SET	7,(%IY + 32),%C	/ FD CB 20 F9
+	SET	7,(%IY + 48),%D	/ FD CB 30 FA
+	SET	7,(%IY + 64),%E	/ FD CB 40 FB
+	SET	7,(%IY + 16),%H	/ FD CB 10 FC
+	SET	7,(%IY + 32),%L	/ FD CB 20 FD
+	SET	7,(%IY + 48)	/ FD CB 30 FE
+	SET	7,(%IY + 64),%A	/ FD CB 40 FF
 	POP	%IY	/ FD E1
 	EX	(%SP),%IY	/ FD E3
 	PUSH	%IY	/ FD E5

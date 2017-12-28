@@ -404,21 +404,28 @@ idx(Op *op, Node **args)
 }
 
 void
-rot(Op *op, Node **args)
+rot_bit(Op *op, Node **args)
 {
 	Node *par = args[0];
 	unsigned char buf[5];
 	int n = op->size;
-	unsigned val;
+	unsigned val, npar = 0;
 
 	memcpy(buf, op->bytes, n);
+
+	par = args[0];
+	if (par->addr == AIMM) {
+		buf[n-1] |= par->sym->value << 3;
+		par = args[npar = 1];
+	}
+
 	switch (par->addr) {
 	case AINDEX:
 		val = par->left->right->sym->value;
 		buf[n-2] = val;
-		if (!args[1])
+		par = args[npar+1];
+		if (!par)
 			break;
-		par = args[1];
 	case AREG:
 		val = reg2int(par->sym->argtype);
 		buf[n-1] |= val;
@@ -428,6 +435,7 @@ rot(Op *op, Node **args)
 	default:
 		abort();
 	}
+
 	emit(buf, n);
 }
 
@@ -444,49 +452,6 @@ im(Op *op, Node **args)
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= val << 3;
 	emit(buf, n);
-}
-
-void
-r_bit(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[4];
-	int n = op->size;
-
-	par1 = args[0];
-	par2 = args[1];
-	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par2->sym->argtype) |
-	            par1->sym->value << 3;
-	emit(buf, n);
-}
-
-void
-r_idx_bit(Op *op, Node **args)
-{
-	/* TODO */
-	abort();
-}
-
-void
-bit(Op *op, Node **args)
-{
-	Node *par;
-	unsigned char buf[2];
-	unsigned val;
-	int n = op->size;
-
-	val = args[0]->sym->value;
-	memcpy(buf, op->bytes, n);
-	buf[n-1] |= val << 3;
-	emit(buf, n);
-}
-
-void
-idx_bit(Op *op, Node **args)
-{
-	/* TODO */
-	abort();
 }
 
 void
