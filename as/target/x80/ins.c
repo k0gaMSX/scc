@@ -280,26 +280,6 @@ r8_xx(Op *op, Node **args)
 }
 
 void
-r16_xx(Op *op, Node **args)
-{
-	Node *par;
-	unsigned char buf[4];
-	int n = op->size;
-
-	par = args[0];
-	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par->sym->argtype) << 4;
-	emit(buf, n);
-}
-
-void
-xx_r16(Op *op, Node **args)
-{
-	args[0] = args[1];
-	r16_xx(op, args);
-}
-
-void
 r16_imm16(Op *op, Node **args)
 {
 	Node *par1, *par2;
@@ -334,7 +314,29 @@ r16_dir(Op *op, Node **args)
 }
 
 void
-alu(Op *op, Node **args)
+alu16(Op *op, Node **args)
+{
+	Node *par;
+	int n = op->size;
+	unsigned val;
+	unsigned char buf[4];
+
+	par = (args[1]) ? args[1] : args[0];
+	val = reg2int(par->sym->argtype);
+	memcpy(buf, op->bytes, n);
+	buf[n-1] |= val << 4;
+	emit(buf, n);
+}
+
+void
+ld16(Op *op, Node **args)
+{
+	if (!args[1])
+		alu16(op, args);
+}
+
+void
+alu8(Op *op, Node **args)
 {
 	Node *par = args[1];
 	unsigned char buf[4];
