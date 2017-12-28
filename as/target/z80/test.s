@@ -554,70 +554,70 @@
 	CP	%A,%IXH	/ DD BC
 	CP	%A,%IXL	/ DD BD
 	CP	%A,(%IX + 48)	/ DD BE 30
-/DDCB d 00	LD B, RLC (IX + d)*
-/DDCB d 01	LD C, RLC (IX + d)*
-/DDCB d 02	LD D, RLC (IX + d)*
-/DDCB d 03	LD E, RLC (IX + d)*
-/DDCB d 04	LD H, RLC (IX + d)*
-/DDCB d 05	LD L, RLC (IX + d)*
-/DDCB d 06	RLC (IX + d)
-/DDCB d 07	LD A, RLC (IX + d)*
-/DDCB d 08	LD B, RRC (IX + d)*
-/DDCB d 09	LD C, RRC (IX + d)*
-/DDCB d 0A	LD D, RRC (IX + d)*
-/DDCB d 0B	LD E, RRC (IX + d)*
-/DDCB d 0C	LD H, RRC (IX + d)*
-/DDCB d 0D	LD L, RRC (IX + d)*
-/DDCB d 0E	RRC (IX + d)
-/DDCB d 0F	LD A, RRC (IX + d)*
-/DDCB d 10	LD B, RL (IX + d)*
-/DDCB d 11	LD C, RL (IX + d)*
-/DDCB d 12	LD D, RL (IX + d)*
-/DDCB d 13	LD E, RL (IX + d)*
-/DDCB d 14	LD H, RL (IX + d)*
-/DDCB d 15	LD L, RL (IX + d)*
-/DDCB d 16	RL (IX + d)
-/DDCB d 17	LD A, RL (IX + d)*
-/DDCB d 18	LD B, RR (IX + d)*
-/DDCB d 19	LD C, RR (IX + d)*
-/DDCB d 1A	LD D, RR (IX + d)*
-/DDCB d 1B	LD E, RR (IX + d)*
-/DDCB d 1C	LD H, RR (IX + d)*
-/DDCB d 1D	LD L, RR (IX + d)*
-/DDCB d 1E	RR (IX + d)
-/DDCB d 1F	LD A, RR (IX + d)*
-/DDCB d 20	LD B, SLA (IX + d)*
-/DDCB d 21	LD C, SLA (IX + d)*
-/DDCB d 22	LD D, SLA (IX + d)*
-/DDCB d 23	LD E, SLA (IX + d)*
-/DDCB d 24	LD H, SLA (IX + d)*
-/DDCB d 25	LD L, SLA (IX + d)*
-/DDCB d 26	SLA (IX + d)
-/DDCB d 27	LD A, SLA (IX + d)*
-/DDCB d 28	LD B, SRA (IX + d)*
-/DDCB d 29	LD C, SRA (IX + d)*
-/DDCB d 2A	LD D, SRA (IX + d)*
-/DDCB d 2B	LD E, SRA (IX + d)*
-/DDCB d 2C	LD H, SRA (IX + d)*
-/DDCB d 2D	LD L, SRA (IX + d)*
-/DDCB d 2E	SRA (IX + d)
-/DDCB d 2F	LD A, SRA (IX + d)*
-/DDCB d 30	LD B, SLL (IX + d)*
-/DDCB d 31	LD C, SLL (IX + d)*
-/DDCB d 32	LD D, SLL (IX + d)*
-/DDCB d 33	LD E, SLL (IX + d)*
-/DDCB d 34	LD H, SLL (IX + d)*
-/DDCB d 35	LD L, SLL (IX + d)*
-/DDCB d 36	SLL (IX + d)*
-/DDCB d 37	LD A, SLL (IX + d)*
-/DDCB d 38	LD B, SRL (IX + d)*
-/DDCB d 39	LD C, SRL (IX + d)*
-/DDCB d 3A	LD D, SRL (IX + d)*
-/DDCB d 3B	LD E, SRL (IX + d)*
-/DDCB d 3C	LD H, SRL (IX + d)*
-/DDCB d 3D	LD L, SRL (IX + d)*
-/DDCB d 3E	SRL (IX + d)
-/DDCB d 3F	LD A, SRL (IX + d)*
+	RLC	(%IX + 16),%B	/ DD CB 10 00
+	RLC	(%IX + 32),%C	/ DD CB 20 01
+	RLC	(%IX + 48),%D	/ DD CB 30 02
+	RLC	(%IX + 64),%E	/ DD CB 40 03
+	RLC	(%IX + 16),%H	/ DD CB 10 04
+	RLC	(%IX + 32),%L	/ DD CB 20 05
+	RLC	(%IX + 64)	/ DD CB 40 06
+	RLC	(%IX + 16),%A	/ DD CB 10 07
+	RRC	(%IX + 32),%B 	/ DD CB 20 08
+	RRC	(%IX + 48),%C	/ DD CB 30 09
+	RRC	(%IX + 64),%D	/ DD CB 40 0A
+	RRC	(%IX + 16),%E	/ DD CB 10 0B
+	RRC	(%IX + 32),%H	/ DD CB 20 0C
+	RRC	(%IX + 48),%L	/ DD CB 30 0D
+	RRC	(%IX + 16)	/ DD CB 10 0E
+	RRC	(%IX + 16),%A	/ DD CB 10 0F
+	RL	(%IX + 32),%B	/ DD CB 20 10
+	RL	(%IX + 48),%C	/ DD CB 30 11
+	RL	(%IX + 64),%D	/ DD CB 40 12
+	RL	(%IX + 16),%E	/ DD CB 10 13
+	RL	(%IX + 32),%H	/ DD CB 20 14
+	RL	(%IX + 48),%L	/ DD CB 30 15
+	RL	(%IX + 32)	/ DD CB 20 16
+	RL	(%IX + 16),%A	/ DD CB 10 17
+	RR	(%IX + 32),%B	/ DD CB 20 18
+	RR	(%IX + 48),%C	/ DD CB 30 19
+	RR	(%IX + 64),%D	/ DD CB 40 1A
+	RR	(%IX + 16),%E	/ DD CB 10 1B
+	RR	(%IX + 32),%H	/ DD CB 20 1C
+	RR	(%IX + 48),%L	/ DD CB 30 1D
+	RR	(%IX + 48)	/ DD CB 30 1E
+	RR	(%IX + 16),%A	/ DD CB 10 1F
+	SLA	(%IX + 32),%B	/ DD CB 20 20
+	SLA	(%IX + 48),%C	/ DD CB 30 21
+	SLA	(%IX + 64),%D	/ DD CB 40 22
+	SLA	(%IX + 16),%E	/ DD CB 10 23
+	SLA	(%IX + 32),%H	/ DD CB 20 24
+	SLA	(%IX + 48),%L	/ DD CB 30 25
+	SLA	(%IX + 64)	/ DD CB 40 26
+	SLA	(%IX + 16),%A	/ DD CB 10 27
+	SRA	(%IX + 32),%B	/ DD CB 20 28
+	SRA	(%IX + 48),%C	/ DD CB 30 29
+	SRA	(%IX + 64),%D	/ DD CB 40 2A
+	SRA	(%IX + 16),%E	/ DD CB 10 2B
+	SRA	(%IX + 32),%H	/ DD CB 20 2C
+	SRA	(%IX + 48),%L	/ DD CB 30 2D
+	SRA	(%IX + 16)	/ DD CB 10 2E
+	SRA	(%IX + 16),%A	/ DD CB 10 2F
+	SLL	(%IX + 32),%B	/ DD CB 20 30
+	SLL	(%IX + 48),%C	/ DD CB 30 31
+	SLL	(%IX + 64),%D	/ DD CB 40 32
+	SLL	(%IX + 16),%E	/ DD CB 10 33
+	SLL	(%IX + 32),%H	/ DD CB 20 34
+	SLL	(%IX + 48),%L	/ DD CB 30 35
+	SLL	(%IX + 32)	/ DD CB 20 36
+	SLL	(%IX + 16),%A	/ DD CB 10 37
+	SRL	(%IX + 32),%B	/ DD CB 20 38
+	SRL	(%IX + 48),%C	/ DD CB 30 39
+	SRL	(%IX + 64),%D	/ DD CB 40 3A
+	SRL	(%IX + 16),%E	/ DD CB 10 3B
+	SRL	(%IX + 32),%H	/ DD CB 20 3C
+	SRL	(%IX + 48),%L	/ DD CB 30 3D
+	SRL	(%IX + 48)	/ DD CB 30 3E
+	SRL	(%IX + 64),%A	/ DD CB 40 3F
 /DDCB d 46	BIT 0, (IX + d)
 /DDCB d 4E	BIT 1, (IX + d)
 /DDCB d 56	BIT 2, (IX + d)
@@ -927,70 +927,70 @@
 	CP	%A,%IYH	/ FD BC
 	CP	%A,%IYL	/ FD BD
 	CP	%A,(%IY + 48)	/ FD BE 30
-/FDCB d 00	LD B, RLC (IY + d)*
-/FDCB d 01	LD C, RLC (IY + d)*
-/FDCB d 02	LD D, RLC (IY + d)*
-/FDCB d 03	LD E, RLC (IY + d)*
-/FDCB d 04	LD H, RLC (IY + d)*
-/FDCB d 05	LD L, RLC (IY + d)*
-/FDCB d 06	RLC (IY + d)
-/FDCB d 07	LD A, RLC (IY + d)*
-/FDCB d 08	LD B, RRC (IY + d)*
-/FDCB d 09	LD C, RRC (IY + d)*
-/FDCB d 0A	LD D, RRC (IY + d)*
-/FDCB d 0B	LD E, RRC (IY + d)*
-/FDCB d 0C	LD H, RRC (IY + d)*
-/FDCB d 0D	LD L, RRC (IY + d)*
-/FDCB d 0E	RRC (IY + d)
-/FDCB d 0F	LD A, RRC (IY + d)*
-/FDCB d 10	LD B, RL (IY + d)*
-/FDCB d 11	LD C, RL (IY + d)*
-/FDCB d 12	LD D, RL (IY + d)*
-/FDCB d 13	LD E, RL (IY + d)*
-/FDCB d 14	LD H, RL (IY + d)*
-/FDCB d 15	LD L, RL (IY + d)*
-/FDCB d 16	RL (IY + d)
-/FDCB d 17	LD A, RL (IY + d)*
-/FDCB d 18	LD B, RR (IY + d)*
-/FDCB d 19	LD C, RR (IY + d)*
-/FDCB d 1A	LD D, RR (IY + d)*
-/FDCB d 1B	LD E, RR (IY + d)*
-/FDCB d 1C	LD H, RR (IY + d)*
-/FDCB d 1D	LD L, RR (IY + d)*
-/FDCB d 1E	RR (IY + d)
-/FDCB d 1F	LD A, RR (IY + d)*
-/FDCB d 20	LD B, SLA (IY + d)*
-/FDCB d 21	LD C, SLA (IY + d)*
-/FDCB d 22	LD D, SLA (IY + d)*
-/FDCB d 23	LD E, SLA (IY + d)*
-/FDCB d 24	LD H, SLA (IY + d)*
-/FDCB d 25	LD L, SLA (IY + d)*
-/FDCB d 26	SLA (IY + d)
-/FDCB d 27	LD A, SLA (IY + d)*
-/FDCB d 28	LD B, SRA (IY + d)*
-/FDCB d 29	LD C, SRA (IY + d)*
-/FDCB d 2A	LD D, SRA (IY + d)*
-/FDCB d 2B	LD E, SRA (IY + d)*
-/FDCB d 2C	LD H, SRA (IY + d)*
-/FDCB d 2D	LD L, SRA (IY + d)*
-/FDCB d 2E	SRA (IY + d)
-/FDCB d 2F	LD A, SRA (IY + d)
-/*FDCB d 30	LD B, SLL (IY + d)*
-/FDCB d 31	LD C, SLL (IY + d)*
-/FDCB d 32	LD D, SLL (IY + d)*
-/FDCB d 33	LD E, SLL (IY + d)*
-/FDCB d 34	LD H, SLL (IY + d)*
-/FDCB d 35	LD L, SLL (IY + d)*
-/FDCB d 36	SLL (IY + d)*
-/FDCB d 37	LD A, SLL (IY + d)*
-/FDCB d 38	LD B, SRL (IY + d)*
-/FDCB d 39	LD C, SRL (IY + d)*
-/FDCB d 3A	LD D, SRL (IY + d)*
-/FDCB d 3B	LD E, SRL (IY + d)*
-/FDCB d 3C	LD H, SRL (IY + d)*
-/FDCB d 3D	LD L, SRL (IY + d)*
-/FDCB d 3E	SRL (IY + d)
-/FDCB d 3F	LD A, SRL (IY + d)*
+	RLC	(%IY + 16),%B	/ FD CB 10 00
+	RLC	(%IY + 32),%C	/ FD CB 20 01
+	RLC	(%IY + 48),%D	/ FD CB 30 02
+	RLC	(%IY + 64),%E	/ FD CB 40 03
+	RLC	(%IY + 16),%H	/ FD CB 10 04
+	RLC	(%IY + 32),%L	/ FD CB 20 05
+	RLC	(%IY + 16)	/ FD CB 10 06
+	RLC	(%IY + 32),%A	/ FD CB 20 07
+	RRC	(%IY + 48),%B	/ FD CB 30 08
+	RRC	(%IY + 64),%C	/ FD CB 40 09
+	RRC	(%IY + 16),%D	/ FD CB 10 0A
+	RRC	(%IY + 32),%E	/ FD CB 20 0B
+	RRC	(%IY + 48),%H	/ FD CB 30 0C
+	RRC	(%IY + 64),%L	/ FD CB 40 0D
+	RRC	(%IY + 32)	/ FD CB 20 0E
+	RRC	(%IY + 16),%A	/ FD CB 10 0F
+	RL	(%IY + 32),%B	/ FD CB 20 10
+	RL	(%IY + 48),%C	/ FD CB 30 11
+	RL	(%IY + 64),%D	/ FD CB 40 12
+	RL	(%IY + 16),%E	/ FD CB 10 13
+	RL	(%IY + 32),%H	/ FD CB 20 14
+	RL	(%IY + 48),%L	/ FD CB 30 15
+	RL	(%IY + 48)	/ FD CB 30 16
+	RL	(%IY + 16),%A	/ FD CB 10 17
+	RR	(%IY + 32),%B	/ FD CB 20 18
+	RR	(%IY + 48),%C	/ FD CB 30 19
+	RR	(%IY + 64),%D	/ FD CB 40 1A
+	RR	(%IY + 16),%E	/ FD CB 10 1B
+	RR	(%IY + 32),%H	/ FD CB 20 1C
+	RR	(%IY + 48),%L	/ FD CB 30 1D
+	RR	(%IY + 64)	/ FD CB 40 1E
+	RR	(%IY + 16),%A	/ FD CB 10 1F
+	SLA	(%IY + 32),%B	/ FD CB 20 20
+	SLA	(%IY + 48),%C	/ FD CB 30 21
+	SLA	(%IY + 64),%D	/ FD CB 40 22
+	SLA	(%IY + 16),%E	/ FD CB 10 23
+	SLA	(%IY + 32),%H	/ FD CB 20 24
+	SLA	(%IY + 48),%L	/ FD CB 30 25
+	SLA	(%IY + 16)	/ FD CB 10 26
+	SLA	(%IY + 16),%A	/ FD CB 10 27
+	SRA	(%IY + 32),%B	/ FD CB 20 28
+	SRA	(%IY + 48),%C	/ FD CB 30 29
+	SRA	(%IY + 64),%D	/ FD CB 40 2A
+	SRA	(%IY + 16),%E	/ FD CB 10 2B
+	SRA	(%IY + 32),%H	/ FD CB 20 2C
+	SRA	(%IY + 48),%L	/ FD CB 30 2D
+	SRA	(%IY + 32)	/ FD CB 20 2E
+	SRA	(%IY + 48),%A	/ FD CB 30 2F
+	SLL	(%IY + 16),%B	/ FD CB 10 30
+	SLL	(%IY + 32),%C	/ FD CB 20 31
+	SLL	(%IY + 48),%D	/ FD CB 30 32
+	SLL	(%IY + 64),%E	/ FD CB 40 33
+	SLL	(%IY + 16),%H	/ FD CB 10 34
+	SLL	(%IY + 32),%L	/ FD CB 20 35
+	SLL	(%IY + 48)	/ FD CB 30 36
+	SLL	(%IY + 16),%A	/ FD CB 10 37
+	SRL	(%IY + 32),%B	/ FD CB 20 38
+	SRL	(%IY + 48),%C	/ FD CB 30 39
+	SRL	(%IY + 64),%D	/ FD CB 40 3A
+	SRL	(%IY + 16),%E	/ FD CB 10 3B
+	SRL	(%IY + 32),%H	/ FD CB 20 3C
+	SRL	(%IY + 48),%L	/ FD CB 30 3D
+	SRL	(%IY + 64)	/ FD CB 40 3E
+	SRL	(%IY + 16),%A	/ FD CB 10 3F
 /FDCB d 46	BIT 0, (IY + d)
 /FDCB d 4E	BIT 1, (IY + d)
 /FDCB d 56	BIT 2, (IY + d)

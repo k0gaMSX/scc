@@ -404,6 +404,34 @@ idx(Op *op, Node **args)
 }
 
 void
+rot(Op *op, Node **args)
+{
+	Node *par = args[0];
+	unsigned char buf[5];
+	int n = op->size;
+	unsigned val;
+
+	memcpy(buf, op->bytes, n);
+	switch (par->addr) {
+	case AINDEX:
+		val = par->left->right->sym->value;
+		buf[n-2] = val;
+		if (!args[1])
+			break;
+		par = args[1];
+	case AREG:
+		val = reg2int(par->sym->argtype);
+		buf[n-1] |= val;
+		break;
+	case AINDIR:
+		break;
+	default:
+		abort();
+	}
+	emit(buf, n);
+}
+
+void
 im(Op *op, Node **args)
 {
 	unsigned val = args[0]->sym->value;
