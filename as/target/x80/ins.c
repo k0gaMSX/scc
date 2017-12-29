@@ -485,15 +485,20 @@ im(Op *op, Node **args)
 }
 
 void
-cc(Op *op, Node **args)
+branch(Op *op, Node **args)
 {
 	unsigned char buf[4];
 	Node *flag, *imm;
 	int n = op->size, i = n;
 	unsigned val;
 
-	flag = args[0];
-	imm = args[1];
+	flag = imm = NULL;
+	if (args[0]->addr == AREG) {
+		flag = args[0];
+		imm = args[1];
+	} else if (args[0]->addr == AIMM) {
+		imm = args[0];
+	}
 	memcpy(buf, op->bytes, n);
 
 	if (imm) {
@@ -501,16 +506,10 @@ cc(Op *op, Node **args)
 		buf[--i] = val >> 8;
 		buf[--i] = val;
 	}
-	buf[--i] |= flag2int(flag->sym->argtype) << 3;
+	if (flag)
+		buf[--i] |= flag2int(flag->sym->argtype) << 3;
 
 	emit(buf, n);
-}
-
-void
-jr(Op *op, Node **args)
-{
-	/* TODO */
-	abort();
 }
 
 void

@@ -55,6 +55,8 @@ enum args {
 	AINDER_BC,    /* (BC) */
 	AINDER_SP,    /* (SP) */
 	AINDER_C,     /* (C) */
+	AINDER_IX,    /* (IX) */
+	AINDER_IY,    /* (IY) */
 
 	AIMM3,         /* 3 bit immediate */
 	AZERO,         /* a literal 0 */

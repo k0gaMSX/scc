@@ -91,6 +91,12 @@ match(Op *op, Node **args)
 		case AINDER_BC:
 			arg = AREG_BC;
 			goto indirect;
+		case AINDER_IX:
+			arg = AREG_IX;
+			goto indirect;
+		case AINDER_IY:
+			arg = AREG_IY;
+			goto indirect;
 		case AINDER_SP:
 			arg = AREG_SP;
 		indirect:
