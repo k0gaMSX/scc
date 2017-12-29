@@ -313,7 +313,6 @@ rot_bit(Op *op, Node **args)
 	case AREG:
 		val = reg2int(par);
 		buf[n-1] |= val;
-		break;
 	case AINDIR:
 		break;
 	default:
