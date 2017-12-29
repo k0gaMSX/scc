@@ -7,6 +7,13 @@ static char sccsid[] = "@(#) ./as/target/z80/ins.c";
 #include "../../as.h"
 #include "proc.h"
 
+/*
+ * This implementation is based in:
+ *	- Zilog Z80 CPU Specifications by Sean Young
+ *	- Decoding Z80 opcodes - of use to disassembler and emulator
+ *	  writers - by Cristian Dinu.
+ */
+
 int
 getclass(Node *np)
 {
