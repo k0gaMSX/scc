@@ -34,7 +34,7 @@ dumpstab(char *msg)
 		fprintf(stderr, "[%d]", (int) (bp - hashtbl));
 		for (sym = *bp; sym; sym = sym->hash) {
 			fprintf(stderr, " -> %s:%0X:%0X",
-			       sym->name.buf, sym->flags, sym->argtype);
+			       sym->name.buf, sym->flags, sym->value);
 		}
 		putc('\n', stderr);
 	}

@@ -56,7 +56,7 @@ iarch(void)
 	for (bp = regs; bp->name; ++bp) {
 		Symbol *sym = lookup(bp->name);
 		sym->flags = FREG;
-		sym->argtype = bp->type;
+		sym->value = bp->type;
 	}
 }
 
@@ -115,7 +115,7 @@ match(Op *op, Node **args)
 		case AREG_SP:
 		case AREG_AF:
 		case AREG_AF_:
-			if (np->addr != AREG || np->sym->argtype != arg)
+			if (np->addr != AREG || np->sym->value != arg)
 				return 0;
 			break;
 		case AREG_RCLASS:
@@ -144,7 +144,7 @@ match(Op *op, Node **args)
 		register_class:
 			if (np->addr != AREG)
 				return 0;
-			if (!(*class)(np->sym->argtype))
+			if (!(*class)(np->sym->value))
 				return 0;
 			break;
 		case AINDEX_IY:
@@ -155,7 +155,7 @@ match(Op *op, Node **args)
 		index_address:
 			if (np->addr != AINDEX)
 				return 0;
-			if (np->left->left->sym->argtype != arg)
+			if (np->left->left->sym->value != arg)
 				return 0;
 			if (toobig(np, arg))
 				error("overflow in index");

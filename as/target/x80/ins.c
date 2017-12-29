@@ -203,9 +203,9 @@ ld8(Op *op, Node **args)
 	memcpy(buf, op->bytes, n);
 
 	if (par1->addr == AREG)
-		regval |= reg2int(par1->sym->argtype) << 3;
+		regval |= reg2int(par1->sym->value) << 3;
 	if (par2->addr == AREG)
-		regval |= reg2int(par2->sym->argtype);
+		regval |= reg2int(par2->sym->value);
 	else if (par2->addr == AIMM)
 		buf[--i] = par2->sym->value;
 
@@ -222,7 +222,7 @@ alu16(Op *op, Node **args)
 	unsigned char buf[4];
 
 	par = (args[1]) ? args[1] : args[0];
-	val = reg2int(par->sym->argtype);
+	val = reg2int(par->sym->value);
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= val << 4;
 	emit(buf, n);
@@ -255,7 +255,7 @@ ld16(Op *op, Node **args)
 	val = src->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
-	buf[n-3] |= reg2int(dst->sym->argtype) << 4;
+	buf[n-3] |= reg2int(dst->sym->value) << 4;
 	emit(buf, n);
 }
 
@@ -280,7 +280,7 @@ alu8(Op *op, Node **args)
 		val = par->sym->value;
 		break;
 	case AREG:
-		val = reg2int(par->sym->argtype) << shift;
+		val = reg2int(par->sym->value) << shift;
 		break;
 	case AINDEX:
 		val = par->left->right->sym->value;
@@ -324,7 +324,7 @@ idx(Op *op, Node **args)
 		buf[--i] = imm->sym->value;
 	buf[--i] = idx->sym->value;
 	if (reg)
-		buf[--i] |= reg2int(reg->sym->argtype) << shift;
+		buf[--i] |= reg2int(reg->sym->value) << shift;
 
 	emit(buf, n);
 }
@@ -347,7 +347,7 @@ inout(Op *op, Node **args)
 	if (port->addr == ADIRECT)
 		val = port->left->sym->value;
 	else if (value->addr == AREG)
-		val = reg2int(value->sym->argtype) << 3;
+		val = reg2int(value->sym->value) << 3;
 	else
 		val = 0;
 
@@ -380,7 +380,7 @@ rot_bit(Op *op, Node **args)
 		if (!par)
 			break;
 	case AREG:
-		val = reg2int(par->sym->argtype);
+		val = reg2int(par->sym->value);
 		buf[n-1] |= val;
 		break;
 	case AINDIR:
@@ -430,7 +430,7 @@ branch(Op *op, Node **args)
 		buf[--i] = val;
 	}
 	if (flag)
-		buf[--i] |= flag2int(flag->sym->argtype) << 3;
+		buf[--i] |= flag2int(flag->sym->value) << 3;
 
 	emit(buf, n);
 }

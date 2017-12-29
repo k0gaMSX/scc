@@ -124,7 +124,6 @@ struct symbol {
 	String type;
 	unsigned char flags;
 	unsigned char pass;
-	unsigned char argtype;
 	TUINT value;
 	TUINT size;
 	Section *section;
