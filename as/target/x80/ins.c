@@ -62,9 +62,9 @@ getclass(Node *np)
 }
 
 static int
-reg2int(int reg)
+reg2int(Node *np)
 {
-	switch (reg) {
+	switch (np->sym->value) {
 	case AREG_F:
 	case AREG_B:   return 0;
 	case AREG_C:   return 1;
@@ -89,9 +89,9 @@ reg2int(int reg)
 }
 
 static int
-flag2int(int flag)
+flag2int(Node *np)
 {
-	switch (flag) {
+	switch (np->sym->value) {
 	case AREG_NZ:  return 0;
 	case AREG_Z:   return 1;
 	case AREG_NC:  return 2;
@@ -132,9 +132,9 @@ ld8(Op *op, Node **args)
 	memcpy(buf, op->bytes, n);
 
 	if (par1->addr == AREG)
-		regval |= reg2int(par1->sym->value) << 3;
+		regval |= reg2int(par1) << 3;
 	if (par2->addr == AREG)
-		regval |= reg2int(par2->sym->value);
+		regval |= reg2int(par2);
 	else if (par2->addr == AIMM)
 		buf[--i] = par2->sym->value;
 
@@ -151,7 +151,7 @@ alu16(Op *op, Node **args)
 	unsigned char buf[4];
 
 	par = (args[1]) ? args[1] : args[0];
-	val = reg2int(par->sym->value);
+	val = reg2int(par);
 	memcpy(buf, op->bytes, n);
 	buf[n-1] |= val << 4;
 	emit(buf, n);
@@ -184,7 +184,7 @@ ld16(Op *op, Node **args)
 	val = src->sym->value;
 	buf[n-1] = val >> 8;
 	buf[n-2] = val;
-	buf[n-3] |= reg2int(dst->sym->value) << 4;
+	buf[n-3] |= reg2int(dst) << 4;
 	emit(buf, n);
 }
 
@@ -209,7 +209,7 @@ alu8(Op *op, Node **args)
 		val = par->sym->value;
 		break;
 	case AREG:
-		val = reg2int(par->sym->value) << shift;
+		val = reg2int(par) << shift;
 		break;
 	case AINDEX:
 		val = par->left->right->sym->value;
@@ -253,7 +253,7 @@ idx(Op *op, Node **args)
 		buf[--i] = imm->sym->value;
 	buf[--i] = idx->sym->value;
 	if (reg)
-		buf[--i] |= reg2int(reg->sym->value) << shift;
+		buf[--i] |= reg2int(reg) << shift;
 
 	emit(buf, n);
 }
@@ -276,7 +276,7 @@ inout(Op *op, Node **args)
 	if (port->addr == ADIRECT)
 		val = port->left->sym->value;
 	else if (value->addr == AREG)
-		val = reg2int(value->sym->value) << 3;
+		val = reg2int(value) << 3;
 	else
 		val = 0;
 
@@ -309,7 +309,7 @@ rot_bit(Op *op, Node **args)
 		if (!par)
 			break;
 	case AREG:
-		val = reg2int(par->sym->value);
+		val = reg2int(par);
 		buf[n-1] |= val;
 		break;
 	case AINDIR:
@@ -359,7 +359,7 @@ branch(Op *op, Node **args)
 		buf[--i] = val;
 	}
 	if (flag)
-		buf[--i] |= flag2int(flag->sym->value) << 3;
+		buf[--i] |= flag2int(flag) << 3;
 
 	emit(buf, n);
 }
