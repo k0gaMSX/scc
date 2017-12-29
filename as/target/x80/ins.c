@@ -24,7 +24,6 @@ getclass(Node *np)
 	case AREG_H:
 	case AREG_L:
 		return RCLASS;
-		break;
 	case AREG_IXL:
 	case AREG_IXH:
 		return PCLASS;
@@ -33,19 +32,15 @@ getclass(Node *np)
 		return QCLASS;
 	case AREG_HL:
 		return DDCLASS | QQCLASS;
-		break;
 	case AREG_BC:
 	case AREG_DE:
 		return DDCLASS | QQCLASS | PPCLASS | RRCLASS;
-		break;
 	case AREG_SP:
 		return DDCLASS | PPCLASS | RRCLASS;
-		break;
 	case AREG_AF:
 		return QQCLASS;
 	case AREG_IX:
 		return PPCLASS;
-		break;
 	case AREG_IY:
 		return RRCLASS;
 	case AREG_NZ:

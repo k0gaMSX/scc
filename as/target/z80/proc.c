@@ -75,7 +75,6 @@ match(Op *op, Node **args)
 			--p;
 		if ((np = *args++) == NULL)
 			return (arg & (AREP|AOPT)) != 0;
-		class = getclass(np);
 
 		arg &= ~(AREP|AOPT);
 		switch (arg) {
@@ -119,35 +118,30 @@ match(Op *op, Node **args)
 				return 0;
 			break;
 		case AREG_RCLASS:
-			if ((class & RCLASS) == 0)
-				return 0;
-			break;
+			class = RCLASS;
+			goto check_class;
 		case AREG_PCLASS:
-			if ((class & PCLASS) == 0)
-				return 0;
-			break;
+			class = PCLASS;
+			goto check_class;
 		case AREG_QCLASS:
-			if ((class & QCLASS) == 0)
-				return 0;
-			break;
+			class = QCLASS;
+			goto check_class;
 		case AREG_QQCLASS:
-			if ((class & QQCLASS) == 0)
-				return 0;
-			break;
+			class = QQCLASS;
+			goto check_class;
 		case AREG_PPCLASS:
-			if ((class & PPCLASS) == 0)
-				return 0;
-			break;
+			class = PPCLASS;
+			goto check_class;
 		case AREG_RRCLASS:
-			if ((class & RRCLASS) == 0)
-				return 0;
-			break;
+			class = RRCLASS;
+			goto check_class;
 		case AREG_CCCLASS:
-			if ((class & CCCLASS) == 0)
-				return 0;
-			break;
+			class = CCCLASS;
+			goto check_class;
 		case AREG_DDCLASS:
-			if ((class & DDCLASS) == 0)
+			class = DDCLASS;
+		check_class:
+			if ((getclass(np) & class) == 0)
 				return 0;
 			break;
 		case AINDEX_IY:
