@@ -78,7 +78,7 @@ function str2args(s, args, i, j, out, n, found)
 		a = args[i]
 		found = 0
 		for (j = 1; j <= nregs; j++) {
-			if (match(a, regex[j])) {
+			if (match(a, "^" regex[j])) {
 				out = out value[j]
 				found = 1
 				break
