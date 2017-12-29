@@ -44,8 +44,8 @@ enum args {
 	AREG_QQCLASS, /* register class for BC, DE, HL and AF */
 	AREG_PPCLASS, /* register class for BC, DE, IX and SP */
 	AREG_RRCLASS, /* register class for BC, DE, IY and SP */
-	AREG_SSCLASS, /* flag class for NZ, Z, NC, C, PO, PE, P, M */
-	AREG_CCCLASS, /* flag class for C, NC, Z, NZ */
+	AREG_SSCLASS, /* flag class for C, NC, Z, NZ */
+	AREG_CCCLASS, /* flag class for NZ, Z, NC, C, PO, PE, P, M */
 
 	AINDEX_IX,    /* (IX+d) */
 	AINDEX_IY,    /* (IX+d) */
@@ -72,6 +72,7 @@ enum {
 	PPCLASS = 1 << 5,
 	RRCLASS = 1 << 6,
 	CCCLASS = 1 << 7,
+	SSCLASS = 1 << 8,
 };
 
 extern int getclass(Node *np);

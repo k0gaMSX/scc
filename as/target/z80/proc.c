@@ -138,6 +138,9 @@ match(Op *op, Node **args)
 		case AREG_CCCLASS:
 			class = CCCLASS;
 			goto check_class;
+		case AREG_SSCLASS:
+			class = SSCLASS;
+			goto check_class;
 		case AREG_DDCLASS:
 			class = DDCLASS;
 		check_class:

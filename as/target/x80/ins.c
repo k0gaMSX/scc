@@ -22,7 +22,7 @@ getclass(Node *np)
 
 	switch (np->sym->value) {
 	case AREG_C:
-		return RCLASS | PCLASS | QCLASS | CCCLASS;
+		return RCLASS | PCLASS | QCLASS | CCCLASS | SSCLASS;
 	case AREG_A:
 	case AREG_B:
 	case AREG_D:
@@ -50,14 +50,15 @@ getclass(Node *np)
 		return PPCLASS;
 	case AREG_IY:
 		return RRCLASS;
-	case AREG_NZ:
-	case AREG_Z:
-	case AREG_NC:
 	case AREG_PO:
 	case AREG_PE:
 	case AREG_P:
 	case AREG_M:
 		return CCCLASS;
+	case AREG_NZ:
+	case AREG_Z:
+	case AREG_NC:
+		return CCCLASS | SSCLASS;
 	default:
 		return 0;
 	}
@@ -91,7 +92,7 @@ reg2int(Node *np)
 }
 
 static int
-flag2int(Node *np)
+cc2int(Node *np)
 {
 	switch (np->sym->value) {
 	case AREG_NZ:  return 0;
@@ -102,6 +103,18 @@ flag2int(Node *np)
 	case AREG_PE:  return 5;
 	case AREG_P:   return 6;
 	case AREG_M:   return 7;
+	default:       abort();
+	}
+}
+
+static int
+ss2int(Node *np)
+{
+	switch (np->sym->value) {
+	case AREG_NZ:  return 4;
+	case AREG_Z:   return 5;
+	case AREG_NC:  return 6;
+	case AREG_C:   return 7;
 	default:       abort();
 	}
 }
@@ -338,12 +351,13 @@ im(Op *op, Node **args)
 }
 
 void
-branch(Op *op, Node **args)
+branch(int relative, Op *op, Node **args)
 {
 	unsigned char buf[4];
 	Node *flag, *imm;
 	int n = op->size, i = n;
 	unsigned val;
+	int (*fun)(Node *);
 
 	flag = imm = NULL;
 	if (args[0]->addr == AREG) {
@@ -356,13 +370,32 @@ branch(Op *op, Node **args)
 
 	if (imm) {
 		val = imm->sym->value;
-		buf[--i] = val >> 8;
+		if (!relative) {
+			fun = cc2int;
+			buf[--i] = val >> 8;
+		} else {
+			fun = ss2int;
+			val -= cursec->curpc - 2;
+		}
 		buf[--i] = val;
+
+		if (flag)
+			buf[--i] |= (*fun)(flag) << 3;
 	}
-	if (flag)
-		buf[--i] |= flag2int(flag) << 3;
 
 	emit(buf, n);
+}
+
+void
+jp(Op *op, Node **args)
+{
+	branch(0, op, args);
+}
+
+void
+jr(Op *op, Node **args)
+{
+	branch(1, op, args);
 }
 
 void

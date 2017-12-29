@@ -1,4 +1,4 @@
-# Tab 16, tabs 16, :set ts=16
+# Tab 18, tabs 16, :set ts=18
 # op	args	size	bytes	format	cpu
 .SECTION	sym,string?	0	none	section	Z80,R800,GB80
 .TEXT	none	0	none	text	Z80,R800,GB80
@@ -332,20 +332,20 @@ OUTD	none	2	0xed,0xab	noargs	Z80,R800
 OTDR	none	2	0xed,0xbb	noargs	Z80,R800
 
 # Jump group
-JP	imm16	3	0xc3	branch	Z80,R800,GB80
-JP	cc,imm16	3	0xc2	branch	Z80,R800,GB80
-JR	imm8	2	0x18	branch	Z80,R800,GB80
-JR	ss,imm8	2	0x00	branch	Z80,R800,GB80
-JP	(HL)	1	0xe9	branch	Z80,R800,GB80
-JP	(IX)	2	0xdd,0xe9	branch	Z80,R800
-JP	(IY)	2	0xfd,0xe9	branch	Z80,R800
-DJNZ	imm8	2	0x10	branch	Z80,R800,GB80
+JP	imm16	3	0xc3	jp	Z80,R800,GB80
+JP	cc,imm16	3	0xc2	jp	Z80,R800,GB80
+JR	imm16	2	0x18	jr	Z80,R800,GB80
+JR	ss,imm16	2	0x00	jr	Z80,R800,GB80
+JP	(HL)	1	0xe9	jp	Z80,R800,GB80
+JP	(IX)	2	0xdd,0xe9	jp	Z80,R800
+JP	(IY)	2	0xfd,0xe9	jp	Z80,R800
+DJNZ	imm16	2	0x10	jr	Z80,R800,GB80
 
 # Call and return group
-CALL	imm16	3	0xcd	branch	Z80,R800,GB80
-CALL	cc,imm16	3	0xc4	branch	Z80,R800
+CALL	imm16	3	0xcd	jp	Z80,R800,GB80
+CALL	cc,imm16	3	0xc4	jp	Z80,R800
 RET	none	1	0xc9	noargs	Z80,R800,GB80
-RET	cc	1	0xc0	branch	Z80,R800
+RET	cc	1	0xc0	jp	Z80,R800
 RETI	none	2	0xed,0x4d	noargs	Z80,R800
 RETN	none	2	0xed,0x45	noargs	Z80,R800
 RST	rst	1	0xc7	rst	Z80,R800,GB80

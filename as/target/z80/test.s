@@ -14,7 +14,7 @@
 	DEC	%C	/ 0D
 	LD	%C,64	/ 0E 40
 	RRCA		/ 0F
-/10 n	DJNZ PC + n
+L1:	DJNZ	L1	/ 10 02
 	LD	%DE,32	/ 11 20 00
 	LD	(%DE),%A	/ 12
 	INC	%DE	/ 13
@@ -22,7 +22,7 @@
 	DEC	%D	/ 15
 	LD	%D,64	/ 16 40
 	RLA		/ 17
-/18 n	JR PC + n
+L2:	JR	L2	/ 18 02
 	ADD	%HL,%DE	/ 19
 	LD	%A,(%DE)	/ 1A
 	DEC	%DE	/ 1B
@@ -30,7 +30,7 @@
 	DEC	%E	/ 1D
 	LD	%E,64	/ 1E 40
 	RRA		/ 1F
-/20 n	JR NZ, PC + n
+L3:	JR	%NZ,L3	/ 20 02
 	LD	%HL,32	/ 21 20 00
 	LD	(32768),%HL	/ 22 00 80
 	INC	%HL	/ 23
@@ -38,7 +38,7 @@
 	DEC	%H	/ 25
 	LD	%H,64	/ 26 40
 	DAA		/ 27
-/28 n	JR Z, PC + n
+L4:	JR	%Z,L4	/ 28 02
 	ADD	%HL,%HL	/ 29
 	LD	%HL, (16384)	/ 2A 00 40
 	DEC	%HL	/ 2B
@@ -46,7 +46,7 @@
 	DEC	%L	/ 2D
 	LD	%L,32	/ 2E 20
 	CPL		/ 2F
-/30 n	JR NC, PC + n
+L5:	JR	%NC,L5	/ 30 02
 	LD	%SP,64	/ 31 40 00
 	LD	(32768),%A	/ 32 00 80
 	INC	%SP	/ 33
@@ -54,7 +54,7 @@
 	DEC	(%HL)	/ 35
 	LD	(%HL),32	/ 36 20
 	SCF		/ 37
-/38 n	JR C, PC + n
+L6:	JR	%C,L6	/ 38 02
 	ADD	%HL,%SP	/ 39
 	LD	%A,(16384)	/ 3A 00 40
 	DEC	%SP	/ 3B
