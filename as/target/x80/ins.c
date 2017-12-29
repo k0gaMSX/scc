@@ -176,44 +176,15 @@ flag2int(int flag)
 }
 
 void
-r8_imm8(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par1 = args[0];
-	par2 = args[1];
-
-	memcpy(buf, op->bytes, n);
-	buf[n-1] = par2->sym->value;
-	buf[n-2] |= reg2int(par1->sym->argtype) << 3;
-	emit(buf, n);
-}
-
-void
-imm8(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par2 = args[1];
-
-	memcpy(buf, op->bytes, n);
-	buf[n-1] = par2->sym->value;
-	emit(buf, n);
-}
-
-void
-imm16(Op *op, Node **args)
+dir(Op *op, Node **args)
 {
 	Node *imm;
 	unsigned char buf[4];
 	unsigned val;
 	int n = op->size;
 
-	imm = (args[1]) ? args[1] : args[0];
+	imm = (args[1]->addr == ADIRECT) ? args[1] : args[0];
+	imm = imm->left;
 	memcpy(buf, op->bytes, n);
 	val = imm->sym->value;
 	buf[n-1] = val >> 8;
@@ -222,60 +193,23 @@ imm16(Op *op, Node **args)
 }
 
 void
-dir(Op *op, Node **args)
+ld8(Op *op, Node **args)
 {
-	Node *dir;
+	Node *par1 = args[0], *par2 = args[1];
+	int n = op->size, i = n;;
+	unsigned regval = 0;
+	unsigned char buf[4];
 
-	dir = (args[1]->addr == ADIRECT) ? args[1] : args[0];
-	args[1] = dir->left;
-	imm16(op, args);
-}
-
-void
-r8_r8(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par1 = args[0];
-	par2 = args[1];
 	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par1->sym->argtype) << 3 | 
-	            reg2int(par2->sym->argtype);
-	emit(buf, n);
-}
 
-void
-r8(Op *op, Node **args)
-{
-	Node *par;
-	unsigned char buf[3];
-	int n = op->size;
+	if (par1->addr == AREG)
+		regval |= reg2int(par1->sym->argtype) << 3;
+	if (par2->addr == AREG)
+		regval |= reg2int(par2->sym->argtype);
+	else if (par2->addr == AIMM)
+		buf[--i] = par2->sym->value;
 
-	par = args[0];
-	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par->sym->argtype);
-	emit(buf, n);
-}
-
-void
-xx_r8(Op *op, Node **args)
-{
-	args[0] = args[1];
-	r8(op, args);
-}
-
-void
-r8_xx(Op *op, Node **args)
-{
-	Node *par;
-	unsigned char buf[3];
-	int n = op->size;
-
-	par = args[0];
-	memcpy(buf, op->bytes, n);
-	buf[n-1] |= reg2int(par->sym->argtype) << 3;
+	buf[--i] |= regval;
 	emit(buf, n);
 }
 
@@ -379,12 +313,11 @@ idx(Op *op, Node **args)
 	}
 	idx = args[0]->left->right;
 
-	if (args[1]) {
-		if (args[1]->addr == AREG)
-			reg = args[1];
-		else
-			imm = args[1];
-	}
+	if (args[1]->addr == AREG)
+		reg = args[1];
+	else
+		imm = args[1];
+
 	memcpy(buf, op->bytes, n);
 
 	if (imm)

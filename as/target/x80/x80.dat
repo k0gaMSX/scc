@@ -46,23 +46,23 @@
 # ss is any flag from C, NC, Z, NZ
 
 # 8 bit load group
-LD	r,imm8	2	0x06	r8_imm8	Z80,R800,GB80
-LD	p,imm8	3	0xdd,0x06	r8_imm8	Z80,R800
-LD	q,imm8	3	0xfd,0x06	r8_imm8	Z80,R800
-LD	(HL),imm8	2	0x36	imm8	Z80,R800,GB80
+LD	r,imm8	2	0x06	ld8	Z80,R800,GB80
+LD	p,imm8	3	0xdd,0x06	ld8	Z80,R800
+LD	q,imm8	3	0xfd,0x06	ld8	Z80,R800
+LD	(HL),imm8	2	0x36	ld8	Z80,R800,GB80
 
-LD	r,r	1	0x40	r8_r8	Z80,R800,GB80
-LD	p,p	2	0xdd,0x40	r8_r8	Z80,R800
-LD	q,q	2	0xfd,0x40	r8_r8	Z80,R800
-LD	(HL),r	1	0x70	xx_r8	Z80,R800,GB80
-LD	r,(HL)	1	0x46	r8_xx	Z80,R800,GB80
+LD	r,r	1	0x40	ld8	Z80,R800,GB80
+LD	p,p	2	0xdd,0x40	ld8	Z80,R800
+LD	q,q	2	0xfd,0x40	ld8	Z80,R800
+LD	(HL),r	1	0x70	ld8	Z80,R800,GB80
+LD	r,(HL)	1	0x46	ld8	Z80,R800,GB80
 
 LD	r,(IX+n)	3	0xdd,0x46	idx	Z80,R800
 LD	r,(IY+n)	3	0xfd,0x46	idx	Z80,R800
 LD	(IX+n),r	3	0xdd,0x70	idx	Z80,R800
 LD	(IY+n),r	3	0xfd,0x70	idx	Z80,R800
 
-LD	(HL),imm8	2	0x36	imm8	Z80,R800,GB80
+LD	(HL),imm8	2	0x36	ld8	Z80,R800,GB80
 LD	(IX+n),imm8	4	0xdd,0x36	idx	Z80,R800
 LD	(IY+n),imm8	4	0xfd,0x36	idx	Z80,R800
 
