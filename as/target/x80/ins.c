@@ -8,125 +8,54 @@ static char sccsid[] = "@(#) ./as/target/z80/ins.c";
 #include "proc.h"
 
 int
-rclass(int reg)
+getclass(Node *np)
 {
-	switch (reg) {
-	case AREG_B:
+	if (np->addr != AREG)
+		return 0;
+
+	switch (np->sym->value) {
 	case AREG_C:
+		return RCLASS | PCLASS | QCLASS | CCCLASS;
+	case AREG_A:
+	case AREG_B:
 	case AREG_D:
 	case AREG_E:
+		return RCLASS | PCLASS | QCLASS;
 	case AREG_H:
 	case AREG_L:
-	case AREG_A:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-pclass(int reg)
-{
-	switch (reg) {
-	case AREG_B:
-	case AREG_C:
-	case AREG_D:
-	case AREG_E:
-	case AREG_IXH:
+		return RCLASS;
+		break;
 	case AREG_IXL:
-	case AREG_A:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-qclass(int reg)
-{
-	switch (reg) {
-	case AREG_B:
-	case AREG_C:
-	case AREG_D:
-	case AREG_E:
-	case AREG_IYH:
+	case AREG_IXH:
+		return PCLASS;
 	case AREG_IYL:
-	case AREG_A:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-ddclass(int reg)
-{
-	switch (reg) {
+	case AREG_IYH:
+		return QCLASS;
+	case AREG_HL:
+		return DDCLASS | QQCLASS;
+		break;
 	case AREG_BC:
 	case AREG_DE:
-	case AREG_HL:
+		return DDCLASS | QQCLASS | PPCLASS | RRCLASS;
+		break;
 	case AREG_SP:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-qqclass(int reg)
-{
-	switch (reg) {
-	case AREG_BC:
-	case AREG_DE:
-	case AREG_HL:
+		return DDCLASS | PPCLASS | RRCLASS;
+		break;
 	case AREG_AF:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-ppclass(int reg)
-{
-	switch (reg) {
-	case AREG_BC:
-	case AREG_DE:
+		return QQCLASS;
 	case AREG_IX:
-	case AREG_SP:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-rrclass(int reg)
-{
-	switch (reg) {
-	case AREG_BC:
-	case AREG_DE:
+		return PPCLASS;
+		break;
 	case AREG_IY:
-	case AREG_SP:
-		return 1;
-	default:
-		return 0;
-	}
-}
-
-int
-ccclass(int reg)
-{
-	switch (reg) {
+		return RRCLASS;
 	case AREG_NZ:
 	case AREG_Z:
 	case AREG_NC:
-	case AREG_C:
 	case AREG_PO:
 	case AREG_PE:
 	case AREG_P:
 	case AREG_M:
-		return 1;
+		return CCCLASS;
 	default:
 		return 0;
 	}

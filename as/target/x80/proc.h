@@ -63,11 +63,15 @@ enum args {
 	ARST,          /* 0h, 08h, 10h, 18h, 20h, 28h, 30h, 38h */
 };
 
-extern int rclass(int reg);
-extern int pclass(int reg);
-extern int qclass(int reg);
-extern int ddclass(int reg);
-extern int qqclass(int reg);
-extern int ppclass(int reg);
-extern int rrclass(int reg);
-extern int ccclass(int reg);
+enum {
+	RCLASS  = 1 << 0,
+	PCLASS  = 1 << 1,
+	QCLASS  = 1 << 2,
+	DDCLASS = 1 << 3,
+	QQCLASS = 1 << 4,
+	PPCLASS = 1 << 5,
+	RRCLASS = 1 << 6,
+	CCCLASS = 1 << 7,
+};
+
+extern int getclass(Node *np);

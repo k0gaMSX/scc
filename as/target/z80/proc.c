@@ -64,9 +64,8 @@ int
 match(Op *op, Node **args)
 {
 	unsigned char *p;
-	int arg;
+	int arg, class;
 	Node *np;
-	int (*class)(int);
 
 	if (!op->args)
 		return args == NULL;
@@ -76,6 +75,7 @@ match(Op *op, Node **args)
 			--p;
 		if ((np = *args++) == NULL)
 			return (arg & (AREP|AOPT)) != 0;
+		class = getclass(np);
 
 		arg &= ~(AREP|AOPT);
 		switch (arg) {
@@ -119,32 +119,35 @@ match(Op *op, Node **args)
 				return 0;
 			break;
 		case AREG_RCLASS:
-			class = rclass;
-			goto register_class;
-		case AREG_PCLASS:
-			class = pclass;
-			goto register_class;
-		case AREG_QCLASS:
-			class = qclass;
-			goto register_class;
-		case AREG_QQCLASS:
-			class = qqclass;
-			goto register_class;
-		case AREG_PPCLASS:
-			class = ppclass;
-			goto register_class;
-		case AREG_RRCLASS:
-			class = rrclass;
-			goto register_class;
-		case AREG_CCCLASS:
-			class = ccclass;
-			goto register_class;
-		case AREG_DDCLASS:
-			class = ddclass;
-		register_class:
-			if (np->addr != AREG)
+			if ((class & RCLASS) == 0)
 				return 0;
-			if (!(*class)(np->sym->value))
+			break;
+		case AREG_PCLASS:
+			if ((class & PCLASS) == 0)
+				return 0;
+			break;
+		case AREG_QCLASS:
+			if ((class & QCLASS) == 0)
+				return 0;
+			break;
+		case AREG_QQCLASS:
+			if ((class & QQCLASS) == 0)
+				return 0;
+			break;
+		case AREG_PPCLASS:
+			if ((class & PPCLASS) == 0)
+				return 0;
+			break;
+		case AREG_RRCLASS:
+			if ((class & RRCLASS) == 0)
+				return 0;
+			break;
+		case AREG_CCCLASS:
+			if ((class & CCCLASS) == 0)
+				return 0;
+			break;
+		case AREG_DDCLASS:
+			if ((class & DDCLASS) == 0)
 				return 0;
 			break;
 		case AINDEX_IY:
