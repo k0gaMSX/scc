@@ -80,19 +80,19 @@ LD	I,A	2	0xed,0x47	noargs	Z80,R800
 LD	R,A	2	0xed,0x4f	noargs	Z80,R800
 
 # 16 bit load group
-LD	dd,imm16	3	0x01	r16_imm16	Z80,R800,GB80
-LD	IX,imm16	4	0xdd,0x21	imm16	Z80,R800
-LD	IY,imm16	4	0xfd,0x21	imm16	Z80,R800
+LD	dd,imm16	3	0x01	ld16	Z80,R800,GB80
+LD	IX,imm16	4	0xdd,0x21	ld16	Z80,R800
+LD	IY,imm16	4	0xfd,0x21	ld16	Z80,R800
 
-LD	HL,(n)	3	0x2a	dir	Z80,R800,GB80
-LD	dd,(n)	4	0xed,0x4b	r16_dir	Z80,R800
-LD	IX,(n)	4	0xdd,0x2a	dir	Z80,R800
-LD	IY,(n)	4	0xfd,0x2a	dir	Z80,R800
+LD	HL,(n)	3	0x2a	ld16	Z80,R800,GB80
+LD	dd,(n)	4	0xed,0x4b	ld16	Z80,R800
+LD	IX,(n)	4	0xdd,0x2a	ld16	Z80,R800
+LD	IY,(n)	4	0xfd,0x2a	ld16	Z80,R800
 
-LD	(n),HL	3	0x22	dir	Z80,R800,GB80
-LD	(n),dd	4	0xed,0x43	r16_dir	Z80,R800
-LD	(n),IX	4	0xdd,0x22	dir	Z80,R800
-LD	(n),IY	4	0xfd,0x22	dir	Z80,R800
+LD	(n),HL	3	0x22	ld16	Z80,R800,GB80
+LD	(n),dd	4	0xed,0x43	ld16	Z80,R800
+LD	(n),IX	4	0xdd,0x22	ld16	Z80,R800
+LD	(n),IY	4	0xfd,0x22	ld16	Z80,R800
 
 LD	SP,HL	1	0xf9	noargs	Z80,R800,GB80
 LD	SP,IX	2	0xdd,0xf9	noargs	Z80,R800

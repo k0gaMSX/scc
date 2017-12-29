@@ -280,40 +280,6 @@ r8_xx(Op *op, Node **args)
 }
 
 void
-r16_imm16(Op *op, Node **args)
-{
-	Node *par1, *par2;
-	unsigned char buf[4];
-	int n = op->size;
-	unsigned val;
-
-	par1 = args[0];
-	par2 = args[1];
-
-	memcpy(buf, op->bytes, n);
-	val = par2->sym->value;
-	buf[n-1] = val >> 8;
-	buf[n-2] = val;
-	buf[n-3] |= reg2int(par1->sym->argtype) << 4;
-	emit(buf, n);
-}
-
-void
-r16_dir(Op *op, Node **args)
-{
-	Node *dir, *reg;
-
-	if (args[1]->addr == ADIRECT)
-		dir = args[1], reg = args[0];
-	else
-		dir = args[0], reg = args[1];
-
-	args[0] = reg;
-	args[1] = dir->left;
-	r16_imm16(op, args);
-}
-
-void
 alu16(Op *op, Node **args)
 {
 	Node *par;
@@ -331,8 +297,32 @@ alu16(Op *op, Node **args)
 void
 ld16(Op *op, Node **args)
 {
-	if (!args[1])
+	Node *dst, *src, *tmp;
+	int n = op->size;
+	unsigned val;
+	unsigned char buf[4];
+
+	dst = args[0];
+	src = args[1];
+	if (!src) {
 		alu16(op, args);
+		return;
+	}
+
+	if (dst->addr != AREG) {
+		tmp = src;
+		src = dst;
+		dst = tmp;
+	}
+
+	memcpy(buf, op->bytes, n);
+	if (src->addr == ADIRECT)
+		src = src->left;
+	val = src->sym->value;
+	buf[n-1] = val >> 8;
+	buf[n-2] = val;
+	buf[n-3] |= reg2int(dst->sym->argtype) << 4;
+	emit(buf, n);
 }
 
 void
