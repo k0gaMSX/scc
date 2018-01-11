@@ -53,23 +53,29 @@ getargs(char *s)
 static char *
 field(char **oldp, size_t *siz)
 {
-	char *s, *begin;
+	char *s, *t, *begin;
+	size_t n;
 
 	if ((begin = *oldp) == NULL)
 		return NULL;
 
-	if (*begin == '/') {
-		*begin = '\0';
-		*oldp = NULL;
-	} else if (s = memchr(begin, '\t', *siz)) {
-		*s++ = '\0';
-		*siz -= s - begin;
-		*oldp = s;
-	} else {
-		*oldp = NULL;
+	for (s = begin; *s == ' '; ++s)
+		;
+	if (*s == '\0' || *s == '/' || *s == ';') {
+		*t = '\0';
+		return *oldp = NULL;
 	}
 
-	return (*begin != '\0') ? begin : NULL;
+	for (t = s; *t && *t != '\t'; ++t)
+		;
+	if (*t == '\t')
+		*t++ = '\0';
+	*siz -= begin - t;
+	*oldp = t;
+
+	while (t >= s && *t == ' ')
+		*t-- = '\0';
+	return (*s != '\0') ? s : NULL;
 }
 
 static int
@@ -86,6 +92,11 @@ validlabel(char *name)
 		case '.':
 		case '$':
 			continue;
+		case ':':
+			if (*name != '\0')
+				return 0;
+			*--name = '\0';
+			continue;
 		default:
 			return 0;
 		}
@@ -98,14 +109,8 @@ extract(char *s, size_t len, struct line *lp)
 {
 	int r = 0;
 
-	if (lp->label = field(&s, &len)) {
-		size_t n = strlen(lp->label);
-		if (lp->label[n-1] == ':')
-			lp->label[n-1] = '\0';
-		if (!validlabel(lp->label))
-			error("incorrect label name '%s'", lp->label);
+	if (lp->label = field(&s, &len))
 		r++;
-	}
 	if (lp->op = field(&s, &len))
 		r++;
 	if (lp->args = field(&s, &len))
@@ -113,6 +118,8 @@ extract(char *s, size_t len, struct line *lp)
 
 	if (s && *s && *s != '/')
 		error("trailing characters at the end of the line");
+	if (lp->label && !validlabel(lp->label))
+		error("incorrect label name '%s'", lp->label);
 
 	return r;
 }
