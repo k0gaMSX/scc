@@ -370,18 +370,18 @@ branch(int relative, Op *op, Node **args)
 
 	if (imm) {
 		val = imm->sym->value;
-		if (!relative) {
-			fun = cc2int;
+		if (!relative)
 			buf[--i] = val >> 8;
-		} else {
-			fun = ss2int;
+		else
 			val -= cursec->curpc - 2;
-		}
 		buf[--i] = val;
 
-		if (flag)
-			buf[--i] |= (*fun)(flag) << 3;
 	}
+	if (flag) {
+		fun = (relative) ? ss2int : cc2int;
+		buf[--i] |= (*fun)(flag) << 3;
+	}
+
 
 	emit(buf, n);
 }
