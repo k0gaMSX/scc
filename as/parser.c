@@ -141,10 +141,8 @@ repeat:
 	n = strlen(buff);
 	if (n == 0)
 		goto repeat;
-	if (buff[n-1] != '\n') {
+	if (buff[n-1] != '\n')
 		error("line too long");
-		goto repeat;
-	}
 	buff[n-1] = '\0';
 
 	if (extract(buff, n, lp) == 0)
