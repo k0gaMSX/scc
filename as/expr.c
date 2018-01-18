@@ -389,10 +389,10 @@ primary(void)
 		np->addr = addr;
 		next();
 		break;
-	case '(':
+	case '[':
 		next();
 		np = or();
-		expect(')');
+		expect(']');
 		np = content(np);
 		break;
 	default:
