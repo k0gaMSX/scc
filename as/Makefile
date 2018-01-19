@@ -26,7 +26,7 @@ dep:
 clean:
 	rm -f *.o
 	rm -f target/*/*.o
-	rm -f target/*/instbl.c
+	rm -f target/*/*tbl.c
 	rm -f as-*
 
 distclean: clean

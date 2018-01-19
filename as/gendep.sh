@@ -15,7 +15,7 @@ sort -u |
 while read i
 do
 	cat <<EOF
-include target/$i/target.mk
+include target/$i.mk
 
 \$(OBJ-$i): \$(HDR)
 all: as-$i

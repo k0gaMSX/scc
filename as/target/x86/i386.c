@@ -1,10 +1,11 @@
-static char sccsid[] = "@(#) ./as/target/i386/proc.c";
-
-#include <stdlib.h>
+static char sccsid[] = "@(#) ./as/target/x86/i386.c";
 
 #include "../../../inc/scc.h"
 #include "../../as.h"
 #include "../x86/proc.h"
+
+TUINT maxaddr = 0xFFFFFFFF;
+int endian = LITTLE_ENDIAN;
 
 void
 iarch(void)
@@ -96,35 +97,4 @@ iarch(void)
 		sym->flags = FREG;
 		sym->value = bp->type;
 	}
-}
-
-int
-match(Op *op, Node **args)
-{
-	unsigned char *p;
-	int a, olda;
-
-	if (!op->args)
-		return args == NULL;
-
-	for (p = op->args; *p; ++p) {
-		if (*p != AREP)
-			a = *p;
-		else
-			--p;
-
-		switch (a) {
-		case AIMM8:
-		case AIMM16:
-		case AIMM32:
-		case AIMM64:
-		case AREG_AL:
-		case AREG_AH:
-		case AREG_AX:
-		case AREG_EAX:
-		default:
-			abort();
-		}
-	}
-	return 1;
 }
