@@ -12,6 +12,8 @@ extern int debug;
 
 #define TINT        long long
 #define TUINT       unsigned long long
+#define TUINT_MAX   ULLONG_MAX
+#define TINT_MAX    LLONG_MAX
 #define TFLOAT      double
 
 struct items {
