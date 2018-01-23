@@ -1,6 +1,7 @@
 static char sccsid[] = "@(#) ./as/node.c";
 
 #include <ctype.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -210,13 +211,27 @@ out_loop:
 static int
 number(void)
 {
-	int c;
+	int c, base = 10;
 	char *p;
+	TUINT n;
 
-	while (isxdigit(*endp))
+	if (*endp == '0') {
+		base = 8;
 		++endp;
+		if (*endp == 'x') {
+			base = 16;
+			++endp;
+		}
+	}
+	for (n = 0; (c = *endp) && isxdigit(c); n += c) {
+		n *= base;
+		c -= '0';
+		if (n >= TUINT_MAX - c*base)
+			error("overflow in number");
+		endp++;
+	}
 	tok2str();
-	yylval.sym = tmpsym(atoi(yytext));  /* TODO: parse the string */
+	yylval.sym = tmpsym(n);
 
 	return NUMBER;
 }
