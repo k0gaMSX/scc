@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+file=${1?}
 exec >test.log
 exec 2>&1
 
@@ -9,7 +10,7 @@ tmp2=`mktemp`
 
 trap "rm -f a.out $tmp1 $tmp2" 0 2 3 
 
-./as-$cpu target/$cpu/test.s
+./as-$cpu $file
 
 sed -n '/^\// ! {
 	s%.*/%%
@@ -19,7 +20,7 @@ sed -n '/^\// ! {
 	s%[ 	][ 	]*%\
 %g
 	p
-}' target/$cpu/test.s |
+}' $file |
 nl -b a > $tmp1
 
 
