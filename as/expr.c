@@ -205,7 +205,7 @@ out_loop:
 	tok2str();
 	yylval.sym = lookup(yytext);
 
-	return IDEN;
+	return ((yylval.sym->flags & FTMASK) == FREG) ? REG : IDEN;
 }
 
 static int
@@ -280,23 +280,6 @@ operator(void)
 }
 
 static int
-reg(void)
-{
-	int c;
-	char *p;
-
-	if (*textp == '%')
-		++textp, ++endp;
-	while (isalnum(c = *endp) || c == '\'')
-		++endp;
-	tok2str();
-	yylval.sym = lookup(yytext);
-	if ((yylval.sym->flags & FTMASK) != FREG)
-		error("incorrect register name '%s'", yytext);
-	return REG;
-}
-
-static int
 next(void)
 {
 	int c;
@@ -318,10 +301,6 @@ next(void)
 	case '\'':
 		c = character();
 		break;
-	case '%':
-		c = reg();
-		break;
-	case '#':
 	case '$':
 		c = number();
 		break;
