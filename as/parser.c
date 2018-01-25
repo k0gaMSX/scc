@@ -296,7 +296,7 @@ field(char **oldp, size_t *siz)
 	if ((begin = *oldp) == NULL)
 		return NULL;
 
-	for (s = begin; *s == ' '; ++s)
+	for (s = begin; isspace(*s) && *s != '\t'; ++s)
 		;
 	if (*s == '\0' || *s == '/' || *s == ';') {
 		*t = '\0';
@@ -310,7 +310,7 @@ field(char **oldp, size_t *siz)
 	*siz -= begin - t;
 	*oldp = t;
 
-	while (t >= s && *t == ' ')
+	while (t >= s && isspace(*t))
 		*t-- = '\0';
 	return (*s != '\0') ? s : NULL;
 }
