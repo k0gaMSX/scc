@@ -143,13 +143,32 @@ binary(int op, Node *l, Node *r)
 }
 
 static Node *
-unary(int op, Node *np)
+unaryop(int op, Node *np)
 {
-	if (op !=  '!')
+	TUINT val;
+
+	if (np->addr != ANUMBER)
+		error("invalid argument for unary operator");
+	if (np->op != NUMBER) {
+		np = node(op, np, NULL);
+		np->addr = ANUMBER;
+		return np;
+	}
+
+	val = np->sym->value;
+	switch (op) {
+	case '!':
+		val = !val;
+	case '+':
+		break;
+	case '-':
+		val = -val;
+		break;
+	default:
 		abort();
-	if (np->op != NUMBER)
-		return node(op, np, NULL);
-	np->sym->value = ~np->sym->value;
+	}
+	np->sym->value = val;
+
 	return np;
 }
 
@@ -359,7 +378,7 @@ content(Node *np)
 /* grammar functions                                                     */
 /*************************************************************************/
 
-static Node *or(void);
+static Node *expr(void);
 
 static Node *
 primary(void)
@@ -384,12 +403,12 @@ primary(void)
 		next();
 		break;
 	case '(':
-		np = or();
+		np = expr();
 		expect(')');
 		break;
 	case '[':
 		next();
-		np = or();
+		np = expr();
 		expect(']');
 		np = content(np);
 		break;
@@ -401,12 +420,29 @@ primary(void)
 }
 
 static Node *
+unary(void)
+{
+	int op, tok;
+	Node *np;
+
+	switch (tok = yytoken) {
+	case '!':
+	case '-':
+	case '+':
+		next();
+		return unaryop(tok, primary());
+	default:
+		return primary();
+	}
+}
+
+static Node *
 mul(void)
 {
 	int op;
 	Node *np;
 
-	np = primary();
+	np = unary();
 	for (;;) {
 		switch (op = yytoken) {
 		case '*':
@@ -467,30 +503,19 @@ relational(void)
 }
 
 static Node *
-not(void)
-{
-	Node *np;
-
-	np = relational();
-	while (accept('!'))
-		np = unary('!', relational());
-	return np;
-}
-
-static Node *
 and(void)
 {
 	int op;
 	Node *np;
 
-	np = not();
+	np = relational();
 	while (accept('&'))
-		np = binary('&', np, not());
+		np = binary('&', np, relational());
 	return np;
 }
 
 static Node *
-or(void)
+expr(void)
 {
 	int op;
 	Node *np;
@@ -529,7 +554,7 @@ operand(char **strp)
 		textp++;
 	default:
 		next();
-		np = or();
+		np = expr();
 		if (imm)
 			np->addr = AIMM;
 		if (yytoken != ',' && yytoken != EOS)

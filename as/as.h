@@ -56,6 +56,7 @@ enum tokens {
 	NUMBER,
 	REG,
 	STRING,
+	MINUS,
 	SHL,
 	SHR,
 	GE,
