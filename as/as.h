@@ -141,6 +141,12 @@ struct node {
 	struct node *right;
 };
 
+union yylval {
+	TUINT val;
+	Symbol *sym;
+};
+
+
 /* symbol.c */
 extern void cleansecs(void);
 extern void isecs(void);
@@ -169,11 +175,16 @@ extern Node *operand(char **s);
 extern Node *expr(void);
 extern void deltree(Node *np);
 extern Node *node(int op, Node *l, Node *r);
+extern Node *getreg(void);
+extern void regctx(void);
+extern void unexpected(void);
+extern void expect(int token);
+int next(void);
 
 /* proc.c */
 extern void iarch(void);
 extern int match(Op *op, Node **args);
-extern Node *addrmode(void);
+extern Node *moperand(void);
 
 /* ins.c */
 extern char *tobytes(TUINT v, int n, int inc);
@@ -200,3 +211,6 @@ extern int endian;
 extern Symbol *linesym, *symlist;
 extern char *infile;
 extern int endpass;
+extern int yytoken;
+extern size_t yylen;
+extern union yylval yylval;

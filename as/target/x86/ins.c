@@ -38,6 +38,6 @@ match(Op *op, Node **args)
 }
 
 Node *
-addrmode(void)
+moperand(void)
 {
 }

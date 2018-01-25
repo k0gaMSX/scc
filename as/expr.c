@@ -1,4 +1,4 @@
-static char sccsid[] = "@(#) ./as/node.c";
+static char sccsid[] = "@(#) ./as/expr.c";
 
 #include <ctype.h>
 #include <limits.h>
@@ -11,16 +11,12 @@ static char sccsid[] = "@(#) ./as/node.c";
 
 #define NNODES   10
 
-union yylval {
-	TUINT val;
-	Symbol *sym;
-};
+int yytoken;
+size_t yylen;
+union yylval yylval;
 
 static Alloc *arena;
-static int yytoken;
 static char yytext[INTIDENTSIZ+1], *textp, *endp;
-static size_t yylen;
-static union yylval yylval;
 static int regmode;
 
 #define accept(t) (yytoken == (t) ? next() : 0)
@@ -133,10 +129,8 @@ binary(int op, Node *l, Node *r)
 
 	if (l->op == NUMBER && r->op == NUMBER)
 		return fold(op, l, r);
-	else if (l->addr == AREG && r->addr == ANUMBER)
-		addr = AREG_OFF;
-	else if (l->addr == AREG && l->addr != ANUMBER)
-		error("incorrect operand");
+	else
+		abort();
 	np = node(op, l, r);
 	np->addr = addr;
 
@@ -297,7 +291,7 @@ operator(void)
 	return c;
 }
 
-static int
+int
 next(void)
 {
 	int c;
@@ -337,19 +331,20 @@ next(void)
 	return yytoken = c;
 }
 
-static void
-unexpected(void)
-{
-	error("unexpected '%s'", yytext);
-}
-
-static void
+void
 expect(int token)
 {
 	if (yytoken != token)
 		unexpected();
 	next();
 }
+
+void
+unexpected(void)
+{
+	error("unexpected '%s'", yytext);
+}
+
 
 /*************************************************************************/
 /* grammar functions                                                     */
@@ -362,9 +357,6 @@ primary(void)
 	Node *np;
 
 	switch (yytoken) {
-	case REG:
-		addr = AREG;
-		goto basic_atom;
 	case IDEN:
 	case NUMBER:
 		addr = ANUMBER;
@@ -509,35 +501,48 @@ expr(void)
 }
 
 Node *
+getreg(void)
+{
+	Node *np;
+
+	np = node(REG, NULL, NULL);
+	np->sym = yylval.sym;
+	np->addr = AREG;
+	expect(REG);
+	return np;
+}
+
+void
+regctx(void)
+{
+	regmode = 1;
+}
+
+Node *
 operand(char **strp)
 {
 	int imm = 0;
 	Node *np;
 
-	regmode = 1;
 	textp = *strp;
+	regctx();
 	switch (next()) {
 	case EOS:
 		np = NULL;
 		break;
-	case '(':
-		next();
-		np = addrmode();
-		expect(')');
-		break;
 	case REG:
-		np = node(yytoken, NULL, NULL);
-		np->sym = yylval.sym;
-		np->addr = AREG;
-		next();
+		np = getreg();
 		break;
 	case '$':
 		next();
 		imm = 1;
 	default:
-		np = expr();
-		if (imm)
+		if (!imm) {
+			np = moperand();
+		} else {
+			np = expr();
 			np->addr = AIMM;
+		}
 	}
 	if (yytoken != ',' && yytoken != EOS)
 		error("trailing characters in expression '%s'", textp);

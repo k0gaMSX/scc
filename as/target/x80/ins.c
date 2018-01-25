@@ -148,24 +148,53 @@ match(Op *op, Node **args)
 	return *args == NULL;
 }
 
+/*
+ * (expr) -> ADIRECT
+ * (REG)  -> AINDIR
+ * (REG + expr) -> AINDEX
+ * (REG - expr) -> AINDEX
+ * expr (REG) -> AINDEX
+ */
 Node *
-addrmode(void)
+moperand(void)
 {
 	int op;
-	Node *np = expr();
+	Node *np, *dir, *off, *reg;
 
-	switch (np->addr) {
-	case AREG:
-		op = AINDIR;
-		break;
-	case AREG_OFF:
-		op = AINDEX;
-		break;
-	case ANUMBER:
+	dir = off = reg = NULL;
+	if (yytoken == '(') {
+		regctx();
+		if (next() != REG) {
+			dir = expr();
+		} else {
+			reg = getreg();
+			switch (yytoken) {
+			case '+':
+			case '-':
+				off = expr();
+			case ')':
+				break;
+			default:
+				unexpected();
+			}
+		}
+	} else {
+		off = expr();
+		regctx();
+		expect('(');
+		reg = getreg();
+	}
+	expect(')');
+
+	if (dir) {
 		op = ADIRECT;
-		break;
-	default:
-		abort();
+		np = dir;
+	} else if (off) {
+		np = node(AREG_OFF, reg, off);
+		op = AINDEX;
+	} else {
+		np = reg;
+		op = AINDIR;
 	}
 	np = node(op, np, NULL);
 	np->addr = op;
