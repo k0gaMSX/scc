@@ -74,5 +74,3 @@ enum {
 	CCCLASS = 1 << 7,
 	SSCLASS = 1 << 8,
 };
-
-extern int getclass(Node *np);

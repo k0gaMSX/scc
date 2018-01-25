@@ -1,11 +1,13 @@
 static char sccsid[] = "@(#) ./as/parser.c";
 #include <ctype.h>
+#include <limits.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstd.h>
 #include "../inc/scc.h"
 #include "as.h"
 
@@ -14,8 +16,192 @@ static char sccsid[] = "@(#) ./as/parser.c";
 
 int nerrors;
 jmp_buf recover;
+char yytext[INTIDENTSIZ+1];
+int yytoken;
+size_t yylen;
+union yylval yylval;
 
+static char *textp, *endp;
+static int regmode;
 static unsigned lineno;
+
+static int
+follow(int expect1, int expect2, int ifyes1, int ifyes2, int ifno)
+{
+	int c;
+
+	if ((c = *++textp) == expect1)
+		return ifyes1;
+	if (c == expect2)
+		return ifyes2;
+	--textp;
+	return ifno;
+}
+
+static void
+tok2str(void)
+{
+	if ((yylen = endp - textp) > INTIDENTSIZ) {
+		error("token too big");
+		yylen = INTIDENTSIZ;
+	}
+	memcpy(yytext, textp, yylen);
+	yytext[yylen] = '\0';
+	textp = endp;
+}
+
+static int
+iden(void)
+{
+	int c;
+	char *p;
+
+	for ( ; c = *endp; ++endp) {
+		if (isalnum(c))
+			continue;
+		switch (c) {
+		case '\'':
+		case '_':
+		case '-':
+		case '.':
+		case '$':
+			continue;
+		default:
+			goto out_loop;
+		}
+	}
+
+out_loop:
+	tok2str();
+	yylval.sym = lookup(yytext);
+
+	return ((yylval.sym->flags & FTMASK) == FREG) ? REG : IDEN;
+}
+
+static int
+number(void)
+{
+	int c, base = 10;
+	char *p;
+	TUINT n;
+
+	if (*endp == '0') {
+		base = 8;
+		++endp;
+		if (*endp == 'x') {
+			base = 16;
+			++endp;
+		}
+	}
+	for (n = 0; (c = *endp) && isxdigit(c); n += c) {
+		n *= base;
+		c -= '0';
+		if (n >= TUINT_MAX - c*base)
+			error("overflow in number");
+		endp++;
+	}
+	tok2str();
+	yylval.sym = tmpsym(n);
+
+	return NUMBER;
+}
+
+static int
+character(void)
+{
+	int c;
+	char *p;
+
+	while (*endp != '\'')
+		++endp;
+	return NUMBER;
+}
+
+static int
+string(void)
+{
+	int c;
+	char *p;
+
+	for (++endp; *endp != '"'; ++endp)
+		;
+	++endp;
+	tok2str();
+	yylval.sym = tmpsym(0);
+	/* FIXME: this memory is not freed ever */
+	yylval.sym->name.buf = xstrdup(yytext);
+
+	return STRING;
+}
+
+static int
+operator(void)
+{
+	int c;
+
+	++endp;
+	if ((c = *textp) == '>')
+		c = follow('=', '>', LE, SHL, '>');
+	else if (c == '<')
+		c = follow('=', '<', GE, SHR, '>');
+	tok2str();
+
+	return c;
+}
+
+int
+next(void)
+{
+	int c;
+
+	while (isspace(*textp))
+		++textp;
+
+	endp = textp;
+
+	switch (c = *textp) {
+	case '\0':
+		strcpy(yytext, "EOS");
+		yylen = 3;
+		c = EOS;
+		break;
+	case '"':
+		c = string();
+		break;
+	case '\'':
+		c = character();
+		break;
+	case '%':
+		c = (regmode ? iden : operator)();
+		break;
+	case '_':
+		c = iden();
+		break;
+	default:
+		if (isdigit(c))
+			c = number();
+		else if (isalpha(c))
+			c = iden();
+		else
+			c = operator();
+		break;
+	}
+	return yytoken = c;
+}
+
+void
+expect(int token)
+{
+	if (yytoken != token)
+		unexpected();
+	next();
+}
+
+void
+unexpected(void)
+{
+	error("unexpected '%s'", yytext);
+}
 
 void
 error(char *msg, ...)
@@ -32,6 +218,57 @@ error(char *msg, ...)
 	if (nerrors == 10)
 		die("as: too many errors");
 	longjmp(recover, 1);
+}
+
+Node *
+getreg(void)
+{
+	Node *np;
+
+	np = node(REG, NULL, NULL);
+	np->sym = yylval.sym;
+	np->addr = AREG;
+	expect(REG);
+	return np;
+}
+
+void
+regctx(int mode)
+{
+	regmode = mode;
+}
+
+Node *
+operand(char **strp)
+{
+	int imm = 0;
+	Node *np;
+
+	textp = *strp;
+	regctx(1);
+	switch (next()) {
+	case EOS:
+		np = NULL;
+		break;
+	case REG:
+		np = getreg();
+		break;
+	case '$':
+		next();
+		imm = 1;
+	default:
+		if (!imm) {
+			np = moperand();
+		} else {
+			np = expr();
+			np->addr = AIMM;
+		}
+	}
+	if (yytoken != ',' && yytoken != EOS)
+		error("trailing characters in expression '%s'", textp);
+	*strp = endp;
+
+	return np;
 }
 
 Node **

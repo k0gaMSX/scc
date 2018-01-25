@@ -169,17 +169,18 @@ extern void error(char *msg, ...);
 #ifdef stdin
 extern int nextline(FILE *fp, struct line *linep);
 #endif
-
-/* expr.c */
-extern Node *operand(char **s);
-extern Node *expr(void);
-extern void deltree(Node *np);
-extern Node *node(int op, Node *l, Node *r);
-extern Node *getreg(void);
-extern void regctx(void);
 extern void unexpected(void);
 extern void expect(int token);
 int next(void);
+#define accept(t) (yytoken == (t) ? next() : 0)
+extern void regctx(int mode);
+extern Node *getreg(void);
+extern Node *operand(char **s);
+
+/* expr.c */
+extern Node *expr(void);
+extern void deltree(Node *np);
+extern Node *node(int op, Node *l, Node *r);
 
 /* proc.c */
 extern void iarch(void);
@@ -214,3 +215,4 @@ extern int endpass;
 extern int yytoken;
 extern size_t yylen;
 extern union yylval yylval;
+extern char yytext[];

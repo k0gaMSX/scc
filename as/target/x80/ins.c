@@ -14,6 +14,56 @@ static char sccsid[] = "@(#) ./as/target/x80/ins.c";
  *	  writers - by Cristian Dinu.
  */
 
+static int
+getclass(Node *np)
+{
+	if (np->addr != AREG)
+		return 0;
+
+	switch (np->sym->value) {
+	case AREG_C:
+		return RCLASS | PCLASS | QCLASS | CCCLASS | SSCLASS;
+	case AREG_A:
+	case AREG_B:
+	case AREG_D:
+	case AREG_E:
+		return RCLASS | PCLASS | QCLASS;
+	case AREG_H:
+	case AREG_L:
+		return RCLASS;
+	case AREG_IXL:
+	case AREG_IXH:
+		return PCLASS;
+	case AREG_IYL:
+	case AREG_IYH:
+		return QCLASS;
+	case AREG_HL:
+		return DDCLASS | QQCLASS;
+	case AREG_BC:
+	case AREG_DE:
+		return DDCLASS | QQCLASS | PPCLASS | RRCLASS;
+	case AREG_SP:
+		return DDCLASS | PPCLASS | RRCLASS;
+	case AREG_AF:
+		return QQCLASS;
+	case AREG_IX:
+		return PPCLASS;
+	case AREG_IY:
+		return RRCLASS;
+	case AREG_PO:
+	case AREG_PE:
+	case AREG_P:
+	case AREG_M:
+		return CCCLASS;
+	case AREG_NZ:
+	case AREG_Z:
+	case AREG_NC:
+		return CCCLASS | SSCLASS;
+	default:
+		return 0;
+	}
+}
+
 int
 match(Op *op, Node **args)
 {
@@ -162,9 +212,8 @@ moperand(void)
 	Node *np, *dir, *off, *reg;
 
 	dir = off = reg = NULL;
-	if (yytoken == '(') {
-		regctx();
-		if (next() != REG) {
+	if (accept('(')) {
+		if (yytoken != REG) {
 			dir = expr();
 		} else {
 			reg = getreg();
@@ -180,7 +229,6 @@ moperand(void)
 		}
 	} else {
 		off = expr();
-		regctx();
 		expect('(');
 		reg = getreg();
 	}
@@ -199,56 +247,6 @@ moperand(void)
 	np = node(op, np, NULL);
 	np->addr = op;
 	return np;
-}
-
-int
-getclass(Node *np)
-{
-	if (np->addr != AREG)
-		return 0;
-
-	switch (np->sym->value) {
-	case AREG_C:
-		return RCLASS | PCLASS | QCLASS | CCCLASS | SSCLASS;
-	case AREG_A:
-	case AREG_B:
-	case AREG_D:
-	case AREG_E:
-		return RCLASS | PCLASS | QCLASS;
-	case AREG_H:
-	case AREG_L:
-		return RCLASS;
-	case AREG_IXL:
-	case AREG_IXH:
-		return PCLASS;
-	case AREG_IYL:
-	case AREG_IYH:
-		return QCLASS;
-	case AREG_HL:
-		return DDCLASS | QQCLASS;
-	case AREG_BC:
-	case AREG_DE:
-		return DDCLASS | QQCLASS | PPCLASS | RRCLASS;
-	case AREG_SP:
-		return DDCLASS | PPCLASS | RRCLASS;
-	case AREG_AF:
-		return QQCLASS;
-	case AREG_IX:
-		return PPCLASS;
-	case AREG_IY:
-		return RRCLASS;
-	case AREG_PO:
-	case AREG_PE:
-	case AREG_P:
-	case AREG_M:
-		return CCCLASS;
-	case AREG_NZ:
-	case AREG_Z:
-	case AREG_NC:
-		return CCCLASS | SSCLASS;
-	default:
-		return 0;
-	}
 }
 
 static int
