@@ -318,10 +318,7 @@ next(void)
 	case '\'':
 		c = character();
 		break;
-	case '$':
-	case '.':
 	case '_':
-	case '%':
 		c = iden();
 		break;
 	default:
@@ -350,35 +347,35 @@ expect(int token)
 	next();
 }
 
+static Node *expr(void);
+
 Node *
-content(Node *np)
+zilog(void)
 {
 	int op;
+	Node *np = expr();
 
 	switch (np->addr) {
 	case AREG:
 		op = AINDIR;
-		goto new_node;
+		break;
 	case AREG_OFF:
 		op = AINDEX;
-		goto new_node;
+		break;
 	case ANUMBER:
 		op = ADIRECT;
-	new_node:
-		np = node(op, np, NULL);
-		np->addr = op;
 		break;
 	default:
 		abort();
 	}
+	np = node(op, np, NULL);
+	np->addr = op;
 	return np;
 }
 
 /*************************************************************************/
 /* grammar functions                                                     */
 /*************************************************************************/
-
-static Node *expr(void);
 
 static Node *
 primary(void)
@@ -406,12 +403,6 @@ primary(void)
 		np = expr();
 		expect(')');
 		break;
-	case '[':
-		next();
-		np = expr();
-		expect(']');
-		np = content(np);
-		break;
 	default:
 		unexpected();
 	}
@@ -426,6 +417,10 @@ unary(void)
 	Node *np;
 
 	switch (tok = yytoken) {
+	case '%':
+	case '$':
+	case '.':
+		/* TODO: implement identifiers with %, $ and . */
 	case '!':
 	case '-':
 	case '+':
@@ -539,29 +534,34 @@ operand(char **strp)
 {
 	int imm = 0;
 	Node *np;
-	char *s = *strp;
 
-	while (isspace(*s))
-		++s;
-	textp = s;
-
-	switch (*s) {
-	case '\0':
+	textp = *strp;
+	switch (next()) {
+	case EOS:
 		np = NULL;
 		break;
-	case '$':
-		imm = 1;
-		textp++;
-	default:
+	case '(':
 		next();
+		np = zilog();
+		expect(')');
+		break;
+	case REG:
+		np = node(yytoken, NULL, NULL);
+		np->sym = yylval.sym;
+		np->addr = AREG;
+		next();
+		break;
+	case '$':
+		next();
+		imm = 1;
+	default:
 		np = expr();
 		if (imm)
 			np->addr = AIMM;
-		if (yytoken != ',' && yytoken != EOS)
-			error("trailing characters in expression '%s'", textp);
-		s = endp;
 	}
+	if (yytoken != ',' && yytoken != EOS)
+		error("trailing characters in expression '%s'", textp);
+	*strp = endp;
 
-	*strp = s;
 	return np;
 }
