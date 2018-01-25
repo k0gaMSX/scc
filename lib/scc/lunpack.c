@@ -36,14 +36,14 @@ lunpack(unsigned char *src, char *fmt, ...)
 			break;
 		case 'q':
 			qp = va_arg(va, unsigned long long *);
-			q =  (unsigned long) *bp++ << 56;
-			q |= (unsigned long) *bp++ << 48;
-			q |= (unsigned long) *bp++ << 40;
-			q |= (unsigned long) *bp++ << 32;
-			q |= (unsigned long) *bp++ << 24;
-			q |= (unsigned long) *bp++ << 16;
-			q |= (unsigned long) *bp++ << 8;
-			q |= (unsigned long) *bp++;
+			q =  (unsigned long long) *bp++ << 56;
+			q |= (unsigned long long) *bp++ << 48;
+			q |= (unsigned long long) *bp++ << 40;
+			q |= (unsigned long long) *bp++ << 32;
+			q |= (unsigned long long) *bp++ << 24;
+			q |= (unsigned long long) *bp++ << 16;
+			q |= (unsigned long long) *bp++ << 8;
+			q |= (unsigned long long) *bp++;
 			*qp = q;
 			break;
 		default:
