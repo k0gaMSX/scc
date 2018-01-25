@@ -1,4 +1,4 @@
-# Tab 18, tabs 16, :set ts=18
+# Tab 18, tabs 18, :set ts=18
 # op	args	size	bytes	format	cpu
 .SECTION	sym,string?	0	none	section	Z80,R800,GB80
 .TEXT	none	0	none	text	Z80,R800,GB80
