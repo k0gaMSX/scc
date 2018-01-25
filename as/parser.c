@@ -361,27 +361,58 @@ extract(char *s, size_t len, struct line *lp)
 	return r;
 }
 
+static void
+comment(FILE *fp)
+{
+	int c;
+
+	while ((c = getc(fp)) != EOF) {
+		if (c != '*')
+			continue;
+		if ((c = getc(fp)) == '/')
+			return;
+		ungetc(c, fp);
+	}
+}
+
+static size_t
+getline(FILE *fp, char buff[MAXLINE])
+{
+	int c;
+	char *bp;
+
+	for (bp = buff; (c = getc(fp)) != EOF; *bp++ = c) {
+		if (c == '\n')
+			break;
+		if (c == '/') {
+			if ((c = getc(fp)) != '*') {
+				ungetc(c, fp);
+			} else {
+				comment(fp);
+				c = ' ';
+			}
+		} else if (c > UCHAR_MAX) {
+			error("invalid character '%x'", c);
+		}
+		if (bp == &buff[MAXLINE])
+			error("line too long");
+	}
+	return bp - buff;
+}
+
 int
 nextline(FILE *fp, struct line *lp)
 {
 	size_t n;
-	char *p;
 	static char buff[MAXLINE];
 
 repeat:
-	if (!fgets(buff, sizeof(buff), fp))
+	if (feof(fp))
 		return 0;
-
+	if ((n = getline(fp, buff)) == 0)
+		goto repeat;
 	if (++lineno == 0)
 		die("as: file too long");
-
-	n = strlen(buff);
-	if (n == 0)
-		goto repeat;
-	if (buff[n-1] != '\n')
-		error("line too long");
-	buff[n-1] = '\0';
-
 	if (extract(buff, n, lp) == 0)
 		goto repeat;
 	return 1;
