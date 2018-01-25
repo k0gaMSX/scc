@@ -21,6 +21,7 @@ static int yytoken;
 static char yytext[INTIDENTSIZ+1], *textp, *endp;
 static size_t yylen;
 static union yylval yylval;
+static int regmode;
 
 #define accept(t) (yytoken == (t) ? next() : 0)
 
@@ -318,6 +319,9 @@ next(void)
 	case '\'':
 		c = character();
 		break;
+	case '%':
+		c = (regmode ? iden : operator)();
+		break;
 	case '_':
 		c = iden();
 		break;
@@ -515,6 +519,7 @@ expr(void)
 	int op;
 	Node *np;
 
+	regmode = 0;
 	np = and();
 	for (;;) {
 		switch (op = yytoken) {
@@ -535,6 +540,7 @@ operand(char **strp)
 	int imm = 0;
 	Node *np;
 
+	regmode = 1;
 	textp = *strp;
 	switch (next()) {
 	case EOS:
