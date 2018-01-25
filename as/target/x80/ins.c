@@ -148,6 +148,30 @@ match(Op *op, Node **args)
 	return *args == NULL;
 }
 
+Node *
+addrmode(void)
+{
+	int op;
+	Node *np = expr();
+
+	switch (np->addr) {
+	case AREG:
+		op = AINDIR;
+		break;
+	case AREG_OFF:
+		op = AINDEX;
+		break;
+	case ANUMBER:
+		op = ADIRECT;
+		break;
+	default:
+		abort();
+	}
+	np = node(op, np, NULL);
+	np->addr = op;
+	return np;
+}
+
 int
 getclass(Node *np)
 {

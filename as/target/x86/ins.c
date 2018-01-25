@@ -36,3 +36,8 @@ match(Op *op, Node **args)
 	}
 	return 1;
 }
+
+Node *
+addrmode(void)
+{
+}

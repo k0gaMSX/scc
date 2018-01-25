@@ -166,11 +166,14 @@ extern int nextline(FILE *fp, struct line *linep);
 
 /* expr.c */
 extern Node *operand(char **s);
+extern Node *expr(void);
 extern void deltree(Node *np);
+extern Node *node(int op, Node *l, Node *r);
 
 /* proc.c */
 extern void iarch(void);
 extern int match(Op *op, Node **args);
+extern Node *addrmode(void);
 
 /* ins.c */
 extern char *tobytes(TUINT v, int n, int inc);

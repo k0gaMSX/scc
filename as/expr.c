@@ -25,7 +25,7 @@ static int regmode;
 
 #define accept(t) (yytoken == (t) ? next() : 0)
 
-static Node *
+Node *
 node(int op, Node *l, Node *r)
 {
 	struct arena *ap;
@@ -351,32 +351,6 @@ expect(int token)
 	next();
 }
 
-static Node *expr(void);
-
-Node *
-zilog(void)
-{
-	int op;
-	Node *np = expr();
-
-	switch (np->addr) {
-	case AREG:
-		op = AINDIR;
-		break;
-	case AREG_OFF:
-		op = AINDEX;
-		break;
-	case ANUMBER:
-		op = ADIRECT;
-		break;
-	default:
-		abort();
-	}
-	np = node(op, np, NULL);
-	np->addr = op;
-	return np;
-}
-
 /*************************************************************************/
 /* grammar functions                                                     */
 /*************************************************************************/
@@ -513,7 +487,7 @@ and(void)
 	return np;
 }
 
-static Node *
+Node *
 expr(void)
 {
 	int op;
@@ -548,7 +522,7 @@ operand(char **strp)
 		break;
 	case '(':
 		next();
-		np = zilog();
+		np = addrmode();
 		expect(')');
 		break;
 	case REG:
