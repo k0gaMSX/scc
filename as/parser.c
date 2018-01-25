@@ -44,7 +44,7 @@ getargs(char *s)
 		return NULL;
 
 	for (ap = args; ap < &args[NARGS-1]; ++ap) {
-		if ((*ap = expr(&s)) == NULL)
+		if ((*ap = operand(&s)) == NULL)
 			return args;
 	}
 	error("too many arguments in one instruction");

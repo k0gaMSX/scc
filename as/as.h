@@ -35,6 +35,7 @@ enum common_args {
 	AIMM = 1,
 	ASTR,
 	AREG,
+	ANUMBER,
 	AIMM8,
 	AIMM16,
 	AIMM32,
@@ -163,7 +164,7 @@ extern int nextline(FILE *fp, struct line *linep);
 #endif
 
 /* expr.c */
-extern Node *expr(char **s);
+extern Node *operand(char **s);
 extern void deltree(Node *np);
 
 /* proc.c */

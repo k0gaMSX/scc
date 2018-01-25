@@ -117,7 +117,7 @@ fold(int op, Node *l, Node *r)
 
 	np = node(NUMBER, NULL, NULL);
 	np->sym = tmpsym(val);
-	np->addr = AIMM;
+	np->addr = ANUMBER;
 	return np;
 
 division_by_zero:
@@ -132,11 +132,9 @@ binary(int op, Node *l, Node *r)
 
 	if (l->op == NUMBER && r->op == NUMBER)
 		return fold(op, l, r);
-	if (l->addr == AIMM && r->addr == AIMM)
-		addr = AIMM;
-	else if (l->addr == AREG && r->addr == AIMM)
+	else if (l->addr == AREG && r->addr == ANUMBER)
 		addr = AREG_OFF;
-	else
+	else if (l->addr == AREG && l->addr != ANUMBER)
 		error("incorrect operand");
 	np = node(op, l, r);
 	np->addr = addr;
@@ -302,18 +300,20 @@ next(void)
 		c = character();
 		break;
 	case '$':
-		c = number();
+	case '.':
+	case '_':
+	case '%':
+		c = iden();
 		break;
 	default:
 		if (isdigit(c))
 			c = number();
-		else if (isalpha(c) || c == '_' || c == '.')
+		else if (isalpha(c))
 			c = iden();
 		else
 			c = operator();
 		break;
 	}
-
 	return yytoken = c;
 }
 
@@ -343,7 +343,7 @@ content(Node *np)
 	case AREG_OFF:
 		op = AINDEX;
 		goto new_node;
-	case AIMM:
+	case ANUMBER:
 		op = ADIRECT;
 	new_node:
 		np = node(op, np, NULL);
@@ -373,7 +373,7 @@ primary(void)
 		goto basic_atom;
 	case IDEN:
 	case NUMBER:
-		addr = AIMM;
+		addr = ANUMBER;
 		goto basic_atom;
 	case STRING:
 		addr = ASTR;
@@ -382,6 +382,10 @@ primary(void)
 		np->sym = yylval.sym;
 		np->addr = addr;
 		next();
+		break;
+	case '(':
+		np = or();
+		expect(')');
 		break;
 	case '[':
 		next();
@@ -506,20 +510,33 @@ or(void)
 }
 
 Node *
-expr(char **s)
+operand(char **strp)
 {
+	int imm = 0;
 	Node *np;
+	char *s = *strp;
 
-	textp = *s;
-	if (*textp == '\0')
-		return NULL;
+	while (isspace(*s))
+		++s;
+	textp = s;
 
-	next();
-	np = or();
+	switch (*s) {
+	case '\0':
+		np = NULL;
+		break;
+	case '$':
+		imm = 1;
+		textp++;
+	default:
+		next();
+		np = or();
+		if (imm)
+			np->addr = AIMM;
+		if (yytoken != ',' && yytoken != EOS)
+			error("trailing characters in expression '%s'", textp);
+		s = endp;
+	}
 
-	if (yytoken != ',' && yytoken != EOS)
-		error("trailing characters in expression '%s'", textp);
-	*s = endp;
-
+	*strp = s;
 	return np;
 }

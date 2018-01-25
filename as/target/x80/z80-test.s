@@ -1,10 +1,10 @@
 	NOP		/ 00
-	LD	BC,64	/ 01 40 00
+	LD	BC,$64	/ 01 40 00
 	LD	[BC],A	/ 02
 	INC	BC	/ 03
 	INC	B	/ 04
 	DEC	B	/ 05
-	LD	B,32	/ 06 20
+	LD	B,$32	/ 06 20
 	RLCA		/ 07
 	EX	AF,AF'	/ 08
 	ADD	HL,BC	/ 09
@@ -12,55 +12,55 @@
 	DEC	BC	/ 0B
 	INC	C	/ 0C
 	DEC	C	/ 0D
-	LD	C,64	/ 0E 40
+	LD	C,$64	/ 0E 40
 	RRCA		/ 0F
-L1:	DJNZ	L1	/ 10 02
-	LD	DE,32	/ 11 20 00
+L1:	DJNZ	$L1	/ 10 02
+	LD	DE,$32	/ 11 20 00
 	LD	[DE],A	/ 12
 	INC	DE	/ 13
 	INC	D	/ 14
 	DEC	D	/ 15
-	LD	D,64	/ 16 40
+	LD	D,$64	/ 16 40
 	RLA		/ 17
-L2:	JR	L2	/ 18 02
+L2:	JR	$L2	/ 18 02
 	ADD	HL,DE	/ 19
 	LD	A,[DE]	/ 1A
 	DEC	DE	/ 1B
 	INC	E	/ 1C
 	DEC	E	/ 1D
-	LD	E,64	/ 1E 40
+	LD	E,$64	/ 1E 40
 	RRA		/ 1F
-L3:	JR	NZ,L3	/ 20 02
-	LD	HL,32	/ 21 20 00
+L3:	JR	NZ,$L3	/ 20 02
+	LD	HL,$32	/ 21 20 00
 	LD	[32768],HL	/ 22 00 80
 	INC	HL	/ 23
 	INC	H	/ 24
 	DEC	H	/ 25
-	LD	H,64	/ 26 40
+	LD	H,$64	/ 26 40
 	DAA		/ 27
-L4:	JR	Z,L4	/ 28 02
+L4:	JR	Z,$L4	/ 28 02
 	ADD	HL,HL	/ 29
 	LD	HL, [16384]	/ 2A 00 40
 	DEC	HL	/ 2B
 	INC	L	/ 2C
 	DEC	L	/ 2D
-	LD	L,32	/ 2E 20
+	LD	L,$32	/ 2E 20
 	CPL		/ 2F
-L5:	JR	NC,L5	/ 30 02
-	LD	SP,64	/ 31 40 00
+L5:	JR	NC,$L5	/ 30 02
+	LD	SP,$64	/ 31 40 00
 	LD	[32768],A	/ 32 00 80
 	INC	SP	/ 33
 	INC	[HL]	/ 34
 	DEC	[HL]	/ 35
-	LD	[HL],32	/ 36 20
+	LD	[HL],$32	/ 36 20
 	SCF		/ 37
-L6:	JR	C,L6	/ 38 02
+L6:	JR	C,$L6	/ 38 02
 	ADD	HL,SP	/ 39
 	LD	A,[16384]	/ 3A 00 40
 	DEC	SP	/ 3B
 	INC	A	/ 3C
 	DEC	A	/ 3D
-	LD	A,32	/ 3E 20
+	LD	A,$32	/ 3E 20
 	CCF		/ 3F
 	LD	B,B	/ 40
 	LD	B,C	/ 41
@@ -192,15 +192,15 @@ L6:	JR	C,L6	/ 38 02
 	CP	A,A	/ BF
 	RET	NZ	/ C0
 	POP	BC	/ C1
-	JP	NZ,16384	/ C2 00 40
-	JP	32768	/ C3 00 80
-	CALL	NZ,32768	/ C4 00 80
+	JP	NZ,$16384	/ C2 00 40
+	JP	$32768	/ C3 00 80
+	CALL	NZ,$32768	/ C4 00 80
 	PUSH	BC	/ C5
-	ADD	A,32	/ C6 20
-	RST	0	/ C7
+	ADD	A,$32	/ C6 20
+	RST	$0	/ C7
 	RET	Z	/ C8
 	RET		/ C9
-	JP	Z,32768	/ CA 00 80
+	JP	Z,$32768	/ CA 00 80
 	RLC	B	/ CB 00
 	RLC	C	/ CB 01
 	RLC	D	/ CB 02
@@ -265,232 +265,232 @@ L6:	JR	C,L6	/ 38 02
 	SRL	L	/ CB 3D
 	SRL	[HL]	/ CB 3E
 	SRL	A	/ CB 3F
-	BIT	0,B	/ CB 40
-	BIT	0,C	/ CB 41
-	BIT	0,D	/ CB 42
-	BIT	0,E	/ CB 43
-	BIT	0,H	/ CB 44
-	BIT	0,L	/ CB 45
-	BIT	0,[HL]	/ CB 46
-	BIT	0,A	/ CB 47
-	BIT	1,B	/ CB 48
-	BIT	1,C	/ CB 49
-	BIT	1,D	/ CB 4A
-	BIT	1,E	/ CB 4B
-	BIT	1,H	/ CB 4C
-	BIT	1,L	/ CB 4D
-	BIT	1,[HL]	/ CB 4E
-	BIT	1,A	/ CB 4F
-	BIT	2,B	/ CB 50
-	BIT	2,C	/ CB 51
-	BIT	2,D	/ CB 52
-	BIT	2,E	/ CB 53
-	BIT	2,H	/ CB 54
-	BIT	2,L	/ CB 55
-	BIT	2,[HL]	/ CB 56
-	BIT	2,A	/ CB 57
-	BIT	3,B	/ CB 58
-	BIT	3,C	/ CB 59
-	BIT	3,D	/ CB 5A
-	BIT	3,E	/ CB 5B
-	BIT	3,H	/ CB 5C
-	BIT	3,L	/ CB 5D
-	BIT	3,[HL]	/ CB 5E
-	BIT	3,A	/ CB 5F
-	BIT	4,B	/ CB 60
-	BIT	4,C	/ CB 61
-	BIT	4,D	/ CB 62
-	BIT	4,E	/ CB 63
-	BIT	4,H	/ CB 64
-	BIT	4,L	/ CB 65
-	BIT	4,[HL]	/ CB 66
-	BIT	4,A	/ CB 67
-	BIT	5,B	/ CB 68
-	BIT	5,C	/ CB 69
-	BIT	5,D	/ CB 6A
-	BIT	5,E	/ CB 6B
-	BIT	5,H	/ CB 6C
-	BIT	5,L	/ CB 6D
-	BIT	5,[HL]	/ CB 6E
-	BIT	5,A	/ CB 6F
-	BIT	6,B	/ CB 70
-	BIT	6,C	/ CB 71
-	BIT	6,D	/ CB 72
-	BIT	6,E	/ CB 73
-	BIT	6,H	/ CB 74
-	BIT	6,L	/ CB 75
-	BIT	6,[HL]	/ CB 76
-	BIT	6,A	/ CB 77
-	BIT	7,B	/ CB 78
-	BIT	7,C	/ CB 79
-	BIT	7,D	/ CB 7A
-	BIT	7,E	/ CB 7B
-	BIT	7,H	/ CB 7C
-	BIT	7,L	/ CB 7D
-	BIT	7,[HL]	/ CB 7E
-	BIT	7,A	/ CB 7F
-	RES	0,B	/ CB 80
-	RES	0,C	/ CB 81
-	RES	0,D	/ CB 82
-	RES	0,E	/ CB 83
-	RES	0,H	/ CB 84
-	RES	0,L	/ CB 85
-	RES	0,[HL]	/ CB 86
-	RES	0,A	/ CB 87
-	RES	1,B	/ CB 88
-	RES	1,C	/ CB 89
-	RES	1,D	/ CB 8A
-	RES	1,E	/ CB 8B
-	RES	1,H	/ CB 8C
-	RES	1,L	/ CB 8D
-	RES	1,[HL]	/ CB 8E
-	RES	1,A	/ CB 8F
-	RES	2,B	/ CB 90
-	RES	2,C	/ CB 91
-	RES	2,D	/ CB 92
-	RES	2,E	/ CB 93
-	RES	2,H	/ CB 94
-	RES	2,L	/ CB 95
-	RES	2,[HL]	/ CB 96
-	RES	2,A	/ CB 97
-	RES	3,B	/ CB 98
-	RES	3,C	/ CB 99
-	RES	3,D	/ CB 9A
-	RES	3,E	/ CB 9B
-	RES	3,H	/ CB 9C
-	RES	3,L	/ CB 9D
-	RES	3,[HL]	/ CB 9E
-	RES	3,A	/ CB 9F
-	RES	4,B	/ CB A0
-	RES	4,C	/ CB A1
-	RES	4,D	/ CB A2
-	RES	4,E	/ CB A3
-	RES	4,H	/ CB A4
-	RES	4,L	/ CB A5
-	RES	4,[HL]	/ CB A6
-	RES	4,A	/ CB A7
-	RES	5,B	/ CB A8
-	RES	5,C	/ CB A9
-	RES	5,D	/ CB AA
-	RES	5,E	/ CB AB
-	RES	5,H	/ CB AC
-	RES	5,L	/ CB AD
-	RES	5,[HL]	/ CB AE
-	RES	5,A	/ CB AF
-	RES	6,B	/ CB B0
-	RES	6,C	/ CB B1
-	RES	6,D	/ CB B2
-	RES	6,E	/ CB B3
-	RES	6,H	/ CB B4
-	RES	6,L	/ CB B5
-	RES	6,[HL]	/ CB B6
-	RES	6,A	/ CB B7
-	RES	7,B	/ CB B8
-	RES	7,C	/ CB B9
-	RES	7,D	/ CB BA
-	RES	7,E	/ CB BB
-	RES	7,H	/ CB BC
-	RES	7,L	/ CB BD
-	RES	7,[HL]	/ CB BE
-	RES	7,A	/ CB BF
-	SET	0,B	/ CB C0
-	SET	0,C	/ CB C1
-	SET	0,D	/ CB C2
-	SET	0,E	/ CB C3
-	SET	0,H	/ CB C4
-	SET	0,L	/ CB C5
-	SET	0,[HL]	/ CB C6
-	SET	0,A	/ CB C7
-	SET	1,B	/ CB C8
-	SET	1,C	/ CB C9
-	SET	1,D	/ CB CA
-	SET	1,E	/ CB CB
-	SET	1,H	/ CB CC
-	SET	1,L	/ CB CD
-	SET	1,[HL]	/ CB CE
-	SET	1,A	/ CB CF
-	SET	2,B	/ CB D0
-	SET	2,C	/ CB D1
-	SET	2,D	/ CB D2
-	SET	2,E	/ CB D3
-	SET	2,H	/ CB D4
-	SET	2,L	/ CB D5
-	SET	2,[HL]	/ CB D6
-	SET	2,A	/ CB D7
-	SET	3,B	/ CB D8
-	SET	3,C	/ CB D9
-	SET	3,D	/ CB DA
-	SET	3,E	/ CB DB
-	SET	3,H	/ CB DC
-	SET	3,L	/ CB DD
-	SET	3,[HL]	/ CB DE
-	SET	3,A	/ CB DF
-	SET	4,B	/ CB E0
-	SET	4,C	/ CB E1
-	SET	4,D	/ CB E2
-	SET	4,E	/ CB E3
-	SET	4,H	/ CB E4
-	SET	4,L	/ CB E5
-	SET	4,[HL]	/ CB E6
-	SET	4,A	/ CB E7
-	SET	5,B	/ CB E8
-	SET	5,C	/ CB E9
-	SET	5,D	/ CB EA
-	SET	5,E	/ CB EB
-	SET	5,H	/ CB EC
-	SET	5,L	/ CB ED
-	SET	5,[HL]	/ CB EE
-	SET	5,A	/ CB EF
-	SET	6,B	/ CB F0
-	SET	6,C	/ CB F1
-	SET	6,D	/ CB F2
-	SET	6,E	/ CB F3
-	SET	6,H	/ CB F4
-	SET	6,L	/ CB F5
-	SET	6,[HL]	/ CB F6
-	SET	6,A	/ CB F7
-	SET	7,B	/ CB F8
-	SET	7,C	/ CB F9
-	SET	7,D	/ CB FA
-	SET	7,E	/ CB FB
-	SET	7,H	/ CB FC
-	SET	7,L	/ CB FD
-	SET	7,[HL]	/ CB FE
-	SET	7,A	/ CB FF
-	CALL	Z,16384	/ CC 00 40
-	CALL	16384	/ CD 00 40
-	ADC	A,64	/ CE 40
-	RST	8	/ CF
+	BIT	$0,B	/ CB 40
+	BIT	$0,C	/ CB 41
+	BIT	$0,D	/ CB 42
+	BIT	$0,E	/ CB 43
+	BIT	$0,H	/ CB 44
+	BIT	$0,L	/ CB 45
+	BIT	$0,[HL]	/ CB 46
+	BIT	$0,A	/ CB 47
+	BIT	$1,B	/ CB 48
+	BIT	$1,C	/ CB 49
+	BIT	$1,D	/ CB 4A
+	BIT	$1,E	/ CB 4B
+	BIT	$1,H	/ CB 4C
+	BIT	$1,L	/ CB 4D
+	BIT	$1,[HL]	/ CB 4E
+	BIT	$1,A	/ CB 4F
+	BIT	$2,B	/ CB 50
+	BIT	$2,C	/ CB 51
+	BIT	$2,D	/ CB 52
+	BIT	$2,E	/ CB 53
+	BIT	$2,H	/ CB 54
+	BIT	$2,L	/ CB 55
+	BIT	$2,[HL]	/ CB 56
+	BIT	$2,A	/ CB 57
+	BIT	$3,B	/ CB 58
+	BIT	$3,C	/ CB 59
+	BIT	$3,D	/ CB 5A
+	BIT	$3,E	/ CB 5B
+	BIT	$3,H	/ CB 5C
+	BIT	$3,L	/ CB 5D
+	BIT	$3,[HL]	/ CB 5E
+	BIT	$3,A	/ CB 5F
+	BIT	$4,B	/ CB 60
+	BIT	$4,C	/ CB 61
+	BIT	$4,D	/ CB 62
+	BIT	$4,E	/ CB 63
+	BIT	$4,H	/ CB 64
+	BIT	$4,L	/ CB 65
+	BIT	$4,[HL]	/ CB 66
+	BIT	$4,A	/ CB 67
+	BIT	$5,B	/ CB 68
+	BIT	$5,C	/ CB 69
+	BIT	$5,D	/ CB 6A
+	BIT	$5,E	/ CB 6B
+	BIT	$5,H	/ CB 6C
+	BIT	$5,L	/ CB 6D
+	BIT	$5,[HL]	/ CB 6E
+	BIT	$5,A	/ CB 6F
+	BIT	$6,B	/ CB 70
+	BIT	$6,C	/ CB 71
+	BIT	$6,D	/ CB 72
+	BIT	$6,E	/ CB 73
+	BIT	$6,H	/ CB 74
+	BIT	$6,L	/ CB 75
+	BIT	$6,[HL]	/ CB 76
+	BIT	$6,A	/ CB 77
+	BIT	$7,B	/ CB 78
+	BIT	$7,C	/ CB 79
+	BIT	$7,D	/ CB 7A
+	BIT	$7,E	/ CB 7B
+	BIT	$7,H	/ CB 7C
+	BIT	$7,L	/ CB 7D
+	BIT	$7,[HL]	/ CB 7E
+	BIT	$7,A	/ CB 7F
+	RES	$0,B	/ CB 80
+	RES	$0,C	/ CB 81
+	RES	$0,D	/ CB 82
+	RES	$0,E	/ CB 83
+	RES	$0,H	/ CB 84
+	RES	$0,L	/ CB 85
+	RES	$0,[HL]	/ CB 86
+	RES	$0,A	/ CB 87
+	RES	$1,B	/ CB 88
+	RES	$1,C	/ CB 89
+	RES	$1,D	/ CB 8A
+	RES	$1,E	/ CB 8B
+	RES	$1,H	/ CB 8C
+	RES	$1,L	/ CB 8D
+	RES	$1,[HL]	/ CB 8E
+	RES	$1,A	/ CB 8F
+	RES	$2,B	/ CB 90
+	RES	$2,C	/ CB 91
+	RES	$2,D	/ CB 92
+	RES	$2,E	/ CB 93
+	RES	$2,H	/ CB 94
+	RES	$2,L	/ CB 95
+	RES	$2,[HL]	/ CB 96
+	RES	$2,A	/ CB 97
+	RES	$3,B	/ CB 98
+	RES	$3,C	/ CB 99
+	RES	$3,D	/ CB 9A
+	RES	$3,E	/ CB 9B
+	RES	$3,H	/ CB 9C
+	RES	$3,L	/ CB 9D
+	RES	$3,[HL]	/ CB 9E
+	RES	$3,A	/ CB 9F
+	RES	$4,B	/ CB A0
+	RES	$4,C	/ CB A1
+	RES	$4,D	/ CB A2
+	RES	$4,E	/ CB A3
+	RES	$4,H	/ CB A4
+	RES	$4,L	/ CB A5
+	RES	$4,[HL]	/ CB A6
+	RES	$4,A	/ CB A7
+	RES	$5,B	/ CB A8
+	RES	$5,C	/ CB A9
+	RES	$5,D	/ CB AA
+	RES	$5,E	/ CB AB
+	RES	$5,H	/ CB AC
+	RES	$5,L	/ CB AD
+	RES	$5,[HL]	/ CB AE
+	RES	$5,A	/ CB AF
+	RES	$6,B	/ CB B0
+	RES	$6,C	/ CB B1
+	RES	$6,D	/ CB B2
+	RES	$6,E	/ CB B3
+	RES	$6,H	/ CB B4
+	RES	$6,L	/ CB B5
+	RES	$6,[HL]	/ CB B6
+	RES	$6,A	/ CB B7
+	RES	$7,B	/ CB B8
+	RES	$7,C	/ CB B9
+	RES	$7,D	/ CB BA
+	RES	$7,E	/ CB BB
+	RES	$7,H	/ CB BC
+	RES	$7,L	/ CB BD
+	RES	$7,[HL]	/ CB BE
+	RES	$7,A	/ CB BF
+	SET	$0,B	/ CB C0
+	SET	$0,C	/ CB C1
+	SET	$0,D	/ CB C2
+	SET	$0,E	/ CB C3
+	SET	$0,H	/ CB C4
+	SET	$0,L	/ CB C5
+	SET	$0,[HL]	/ CB C6
+	SET	$0,A	/ CB C7
+	SET	$1,B	/ CB C8
+	SET	$1,C	/ CB C9
+	SET	$1,D	/ CB CA
+	SET	$1,E	/ CB CB
+	SET	$1,H	/ CB CC
+	SET	$1,L	/ CB CD
+	SET	$1,[HL]	/ CB CE
+	SET	$1,A	/ CB CF
+	SET	$2,B	/ CB D0
+	SET	$2,C	/ CB D1
+	SET	$2,D	/ CB D2
+	SET	$2,E	/ CB D3
+	SET	$2,H	/ CB D4
+	SET	$2,L	/ CB D5
+	SET	$2,[HL]	/ CB D6
+	SET	$2,A	/ CB D7
+	SET	$3,B	/ CB D8
+	SET	$3,C	/ CB D9
+	SET	$3,D	/ CB DA
+	SET	$3,E	/ CB DB
+	SET	$3,H	/ CB DC
+	SET	$3,L	/ CB DD
+	SET	$3,[HL]	/ CB DE
+	SET	$3,A	/ CB DF
+	SET	$4,B	/ CB E0
+	SET	$4,C	/ CB E1
+	SET	$4,D	/ CB E2
+	SET	$4,E	/ CB E3
+	SET	$4,H	/ CB E4
+	SET	$4,L	/ CB E5
+	SET	$4,[HL]	/ CB E6
+	SET	$4,A	/ CB E7
+	SET	$5,B	/ CB E8
+	SET	$5,C	/ CB E9
+	SET	$5,D	/ CB EA
+	SET	$5,E	/ CB EB
+	SET	$5,H	/ CB EC
+	SET	$5,L	/ CB ED
+	SET	$5,[HL]	/ CB EE
+	SET	$5,A	/ CB EF
+	SET	$6,B	/ CB F0
+	SET	$6,C	/ CB F1
+	SET	$6,D	/ CB F2
+	SET	$6,E	/ CB F3
+	SET	$6,H	/ CB F4
+	SET	$6,L	/ CB F5
+	SET	$6,[HL]	/ CB F6
+	SET	$6,A	/ CB F7
+	SET	$7,B	/ CB F8
+	SET	$7,C	/ CB F9
+	SET	$7,D	/ CB FA
+	SET	$7,E	/ CB FB
+	SET	$7,H	/ CB FC
+	SET	$7,L	/ CB FD
+	SET	$7,[HL]	/ CB FE
+	SET	$7,A	/ CB FF
+	CALL	Z,$16384	/ CC 00 40
+	CALL	$16384	/ CD 00 40
+	ADC	A,$64	/ CE 40
+	RST	$8	/ CF
 	RET	NC	/ D0
 	POP	DE	/ D1
-	JP	NC,16384	/ D2 00 40
+	JP	NC,$16384	/ D2 00 40
 	OUT	[153],A	/ D3 99
-	CALL	NC,32768	/ D4 00 80
+	CALL	NC,$32768	/ D4 00 80
 	PUSH	DE	/ D5
-	SUB	A,32	/ D6 20
-	RST	16	/ D7
+	SUB	A,$32	/ D6 20
+	RST	$16	/ D7
 	RET	C	/ D8
 	EXX		/ D9
-	JP	C,16384	/ DA 00 40
+	JP	C,$16384	/ DA 00 40
 	IN	A,[153]	/ DB 99
-	CALL	C,32768	/ DC 00 80
+	CALL	C,$32768	/ DC 00 80
 	ADD	IX,BC	/ DD 09
 	ADD	IX,DE	/ DD 19
-	LD	IX,64	/ DD 21 40 00
+	LD	IX,$64	/ DD 21 40 00
 	LD	[32768],IX	/ DD 22 00 80
 	INC	IX	/ DD 23
 	INC	IXH	/ DD 24
 	DEC	IXH	/ DD 25
-	LD	IXH,32	/ DD 26 20
+	LD	IXH,$32	/ DD 26 20
 	ADD	IX,IX	/ DD 29
 	LD	IX,[16384]	/ DD 2A 00 40
 	DEC	IX	/ DD 2B
 	INC	IXL	/ DD 2C
 	DEC	IXL	/ DD 2D
-	LD	IXL,64	/ DD 2E 40
+	LD	IXL,$64	/ DD 2E 40
 	INC	[IX + 32]	/ DD 34 20
 	DEC	[IX + 16]	/ DD 35 10
-	LD	[IX + 64],128	/ DD 36 40 80
+	LD	[IX + 64],$128	/ DD 36 40 80
 	ADD	IX,SP	/ DD 39
 	LD	B,IXH	/ DD 44
 	LD	B,IXL	/ DD 45
@@ -618,169 +618,169 @@ L6:	JR	C,L6	/ 38 02
 	SRL	[IX + 48],L	/ DD CB 30 3D
 	SRL	[IX + 48]	/ DD CB 30 3E
 	SRL	[IX + 64],A	/ DD CB 40 3F
-	BIT	0,[IX + 16]	/ DD CB 10 46
-	BIT	1,[IX + 32]	/ DD CB 20 4E
-	BIT	2,[IX + 48]	/ DD CB 30 56
-	BIT	3,[IX + 64]	/ DD CB 40 5E
-	BIT	4,[IX + 16]	/ DD CB 10 66
-	BIT	5,[IX + 32]	/ DD CB 20 6E
-	BIT	6,[IX + 48]	/ DD CB 30 76
-	BIT	7,[IX + 64]	/ DD CB 40 7E
-	RES	0,[IX + 16],B	/ DD CB 10 80
-	RES	0,[IX + 32],C	/ DD CB 20 81
-	RES	0,[IX + 48],D	/ DD CB 30 82
-	RES	0,[IX + 64],E	/ DD CB 40 83
-	RES	0,[IX + 16],H	/ DD CB 10 84
-	RES	0,[IX + 32],L	/ DD CB 20 85
-	RES	0,[IX + 48]	/ DD CB 30 86
-	RES	0,[IX + 64],A	/ DD CB 40 87
-	RES	1,[IX + 16],B	/ DD CB 10 88
-	RES	1,[IX + 32],C	/ DD CB 20 89
-	RES	1,[IX + 48],D	/ DD CB 30 8A
-	RES	1,[IX + 64],E	/ DD CB 40 8B
-	RES	1,[IX + 16],H	/ DD CB 10 8C
-	RES	1,[IX + 32],L	/ DD CB 20 8D
-	RES	1,[IX + 48]	/ DD CB 30 8E
-	RES	1,[IX + 64],A	/ DD CB 40 8F
-	RES	2,[IX + 16],B	/ DD CB 10 90
-	RES	2,[IX + 32],C	/ DD CB 20 91
-	RES	2,[IX + 48],D	/ DD CB 30 92
-	RES	2,[IX + 64],E	/ DD CB 40 93
-	RES	2,[IX + 16],H	/ DD CB 10 94
-	RES	2,[IX + 32],L	/ DD CB 20 95
-	RES	2,[IX + 48]	/ DD CB 30 96
-	RES	2,[IX + 64],A	/ DD CB 40 97
-	RES	3,[IX + 16],B	/ DD CB 10 98
-	RES	3,[IX + 32],C	/ DD CB 20 99
-	RES	3,[IX + 48],D	/ DD CB 30 9A
-	RES	3,[IX + 64],E	/ DD CB 40 9B
-	RES	3,[IX + 16],H	/ DD CB 10 9C
-	RES	3,[IX + 32],L	/ DD CB 20 9D
-	RES	3,[IX + 48]	/ DD CB 30 9E
-	RES	3,[IX + 64],A	/ DD CB 40 9F
-	RES	4,[IX + 16],B	/ DD CB 10 A0
-	RES	4,[IX + 32],C	/ DD CB 20 A1
-	RES	4,[IX + 48],D	/ DD CB 30 A2
-	RES	4,[IX + 64],E	/ DD CB 40 A3
-	RES	4,[IX + 16],H	/ DD CB 10 A4
-	RES	4,[IX + 32],L	/ DD CB 20 A5
-	RES	4,[IX + 48]	/ DD CB 30 A6
-	RES	4,[IX + 64],A	/ DD CB 40 A7
-	RES	5,[IX + 16],B	/ DD CB 10 A8
-	RES	5,[IX + 32],C	/ DD CB 20 A9
-	RES	5,[IX + 48],D	/ DD CB 30 AA
-	RES	5,[IX + 64],E	/ DD CB 40 AB
-	RES	5,[IX + 16],H	/ DD CB 10 AC
-	RES	5,[IX + 32],L	/ DD CB 20 AD
-	RES	5,[IX + 48]	/ DD CB 30 AE
-	RES	5,[IX + 64],A	/ DD CB 40 AF
-	RES	6,[IX + 16],B	/ DD CB 10 B0
-	RES	6,[IX + 32],C	/ DD CB 20 B1
-	RES	6,[IX + 48],D	/ DD CB 30 B2
-	RES	6,[IX + 64],E	/ DD CB 40 B3
-	RES	6,[IX + 16],H	/ DD CB 10 B4
-	RES	6,[IX + 32],L	/ DD CB 20 B5
-	RES	6,[IX + 48]	/ DD CB 30 B6
-	RES	6,[IX + 64],A	/ DD CB 40 B7
-	RES	7,[IX + 16],B	/ DD CB 10 B8
-	RES	7,[IX + 32],C	/ DD CB 20 B9
-	RES	7,[IX + 48],D	/ DD CB 30 BA
-	RES	7,[IX + 64],E	/ DD CB 40 BB
-	RES	7,[IX + 16],H	/ DD CB 10 BC
-	RES	7,[IX + 32],L	/ DD CB 20 BD
-	RES	7,[IX + 48]	/ DD CB 30 BE
-	RES	7,[IX + 64],A	/ DD CB 40 BF
-	SET	0,[IX + 16],B	/ DD CB 10 C0
-	SET	0,[IX + 32],C	/ DD CB 20 C1
-	SET	0,[IX + 48],D	/ DD CB 30 C2
-	SET	0,[IX + 64],E	/ DD CB 40 C3
-	SET	0,[IX + 16],H	/ DD CB 10 C4
-	SET	0,[IX + 32],L	/ DD CB 20 C5
-	SET	0,[IX + 48]	/ DD CB 30 C6
-	SET	0,[IX + 64],A	/ DD CB 40 C7
-	SET	1,[IX + 16],B	/ DD CB 10 C8
-	SET	1,[IX + 32],C	/ DD CB 20 C9
-	SET	1,[IX + 48],D	/ DD CB 30 CA
-	SET	1,[IX + 64],E	/ DD CB 40 CB
-	SET	1,[IX + 16],H	/ DD CB 10 CC
-	SET	1,[IX + 32],L	/ DD CB 20 CD
-	SET	1,[IX + 48]	/ DD CB 30 CE
-	SET	1,[IX + 64],A	/ DD CB 40 CF
-	SET	2,[IX + 16],B	/ DD CB 10 D0
-	SET	2,[IX + 32],C	/ DD CB 20 D1
-	SET	2,[IX + 48],D	/ DD CB 30 D2
-	SET	2,[IX + 64],E	/ DD CB 40 D3
-	SET	2,[IX + 16],H	/ DD CB 10 D4
-	SET	2,[IX + 32],L	/ DD CB 20 D5
-	SET	2,[IX + 48]	/ DD CB 30 D6
-	SET	2,[IX + 64],A	/ DD CB 40 D7
-	SET	3,[IX + 16],B	/ DD CB 10 D8
-	SET	3,[IX + 32],C	/ DD CB 20 D9
-	SET	3,[IX + 48],D	/ DD CB 30 DA
-	SET	3,[IX + 64],E	/ DD CB 40 DB
-	SET	3,[IX + 16],H	/ DD CB 10 DC
-	SET	3,[IX + 32],L	/ DD CB 20 DD
-	SET	3,[IX + 48]	/ DD CB 30 DE
-	SET	3,[IX + 64],A	/ DD CB 40 DF
-	SET	4,[IX + 16],B	/ DD CB 10 E0
-	SET	4,[IX + 32],C	/ DD CB 20 E1
-	SET	4,[IX + 48],D	/ DD CB 30 E2
-	SET	4,[IX + 64],E	/ DD CB 40 E3
-	SET	4,[IX + 16],H	/ DD CB 10 E4
-	SET	4,[IX + 32],L	/ DD CB 20 E5
-	SET	4,[IX + 48]	/ DD CB 30 E6
-	SET	4,[IX + 64],A	/ DD CB 40 E7
-	SET	5,[IX + 16],B	/ DD CB 10 E8
-	SET	5,[IX + 32],C	/ DD CB 20 E9
-	SET	5,[IX + 48],D	/ DD CB 30 EA
-	SET	5,[IX + 64],E	/ DD CB 40 EB
-	SET	5,[IX + 16],H	/ DD CB 10 EC
-	SET	5,[IX + 32],L	/ DD CB 20 ED
-	SET	5,[IX + 48]	/ DD CB 30 EE
-	SET	5,[IX + 64],A	/ DD CB 40 EF
-	SET	6,[IX + 16],B	/ DD CB 10 F0
-	SET	6,[IX + 32],C	/ DD CB 20 F1
-	SET	6,[IX + 48],D	/ DD CB 30 F2
-	SET	6,[IX + 64],E	/ DD CB 40 F3
-	SET	6,[IX + 16],H	/ DD CB 10 F4
-	SET	6,[IX + 32],L	/ DD CB 20 F5
-	SET	6,[IX + 48]	/ DD CB 30 F6
-	SET	6,[IX + 64],A	/ DD CB 40 F7
-	SET	7,[IX + 16],B	/ DD CB 10 F8
-	SET	7,[IX + 32],C	/ DD CB 20 F9
-	SET	7,[IX + 48],D	/ DD CB 30 FA
-	SET	7,[IX + 64],E	/ DD CB 40 FB
-	SET	7,[IX + 16],H	/ DD CB 10 FC
-	SET	7,[IX + 32],L	/ DD CB 20 FD
-	SET	7,[IX + 48]	/ DD CB 30 FE
-	SET	7,[IX + 64],A	/ DD CB 40 FF
+	BIT	$0,[IX + 16]	/ DD CB 10 46
+	BIT	$1,[IX + 32]	/ DD CB 20 4E
+	BIT	$2,[IX + 48]	/ DD CB 30 56
+	BIT	$3,[IX + 64]	/ DD CB 40 5E
+	BIT	$4,[IX + 16]	/ DD CB 10 66
+	BIT	$5,[IX + 32]	/ DD CB 20 6E
+	BIT	$6,[IX + 48]	/ DD CB 30 76
+	BIT	$7,[IX + 64]	/ DD CB 40 7E
+	RES	$0,[IX + 16],B	/ DD CB 10 80
+	RES	$0,[IX + 32],C	/ DD CB 20 81
+	RES	$0,[IX + 48],D	/ DD CB 30 82
+	RES	$0,[IX + 64],E	/ DD CB 40 83
+	RES	$0,[IX + 16],H	/ DD CB 10 84
+	RES	$0,[IX + 32],L	/ DD CB 20 85
+	RES	$0,[IX + 48]	/ DD CB 30 86
+	RES	$0,[IX + 64],A	/ DD CB 40 87
+	RES	$1,[IX + 16],B	/ DD CB 10 88
+	RES	$1,[IX + 32],C	/ DD CB 20 89
+	RES	$1,[IX + 48],D	/ DD CB 30 8A
+	RES	$1,[IX + 64],E	/ DD CB 40 8B
+	RES	$1,[IX + 16],H	/ DD CB 10 8C
+	RES	$1,[IX + 32],L	/ DD CB 20 8D
+	RES	$1,[IX + 48]	/ DD CB 30 8E
+	RES	$1,[IX + 64],A	/ DD CB 40 8F
+	RES	$2,[IX + 16],B	/ DD CB 10 90
+	RES	$2,[IX + 32],C	/ DD CB 20 91
+	RES	$2,[IX + 48],D	/ DD CB 30 92
+	RES	$2,[IX + 64],E	/ DD CB 40 93
+	RES	$2,[IX + 16],H	/ DD CB 10 94
+	RES	$2,[IX + 32],L	/ DD CB 20 95
+	RES	$2,[IX + 48]	/ DD CB 30 96
+	RES	$2,[IX + 64],A	/ DD CB 40 97
+	RES	$3,[IX + 16],B	/ DD CB 10 98
+	RES	$3,[IX + 32],C	/ DD CB 20 99
+	RES	$3,[IX + 48],D	/ DD CB 30 9A
+	RES	$3,[IX + 64],E	/ DD CB 40 9B
+	RES	$3,[IX + 16],H	/ DD CB 10 9C
+	RES	$3,[IX + 32],L	/ DD CB 20 9D
+	RES	$3,[IX + 48]	/ DD CB 30 9E
+	RES	$3,[IX + 64],A	/ DD CB 40 9F
+	RES	$4,[IX + 16],B	/ DD CB 10 A0
+	RES	$4,[IX + 32],C	/ DD CB 20 A1
+	RES	$4,[IX + 48],D	/ DD CB 30 A2
+	RES	$4,[IX + 64],E	/ DD CB 40 A3
+	RES	$4,[IX + 16],H	/ DD CB 10 A4
+	RES	$4,[IX + 32],L	/ DD CB 20 A5
+	RES	$4,[IX + 48]	/ DD CB 30 A6
+	RES	$4,[IX + 64],A	/ DD CB 40 A7
+	RES	$5,[IX + 16],B	/ DD CB 10 A8
+	RES	$5,[IX + 32],C	/ DD CB 20 A9
+	RES	$5,[IX + 48],D	/ DD CB 30 AA
+	RES	$5,[IX + 64],E	/ DD CB 40 AB
+	RES	$5,[IX + 16],H	/ DD CB 10 AC
+	RES	$5,[IX + 32],L	/ DD CB 20 AD
+	RES	$5,[IX + 48]	/ DD CB 30 AE
+	RES	$5,[IX + 64],A	/ DD CB 40 AF
+	RES	$6,[IX + 16],B	/ DD CB 10 B0
+	RES	$6,[IX + 32],C	/ DD CB 20 B1
+	RES	$6,[IX + 48],D	/ DD CB 30 B2
+	RES	$6,[IX + 64],E	/ DD CB 40 B3
+	RES	$6,[IX + 16],H	/ DD CB 10 B4
+	RES	$6,[IX + 32],L	/ DD CB 20 B5
+	RES	$6,[IX + 48]	/ DD CB 30 B6
+	RES	$6,[IX + 64],A	/ DD CB 40 B7
+	RES	$7,[IX + 16],B	/ DD CB 10 B8
+	RES	$7,[IX + 32],C	/ DD CB 20 B9
+	RES	$7,[IX + 48],D	/ DD CB 30 BA
+	RES	$7,[IX + 64],E	/ DD CB 40 BB
+	RES	$7,[IX + 16],H	/ DD CB 10 BC
+	RES	$7,[IX + 32],L	/ DD CB 20 BD
+	RES	$7,[IX + 48]	/ DD CB 30 BE
+	RES	$7,[IX + 64],A	/ DD CB 40 BF
+	SET	$0,[IX + 16],B	/ DD CB 10 C0
+	SET	$0,[IX + 32],C	/ DD CB 20 C1
+	SET	$0,[IX + 48],D	/ DD CB 30 C2
+	SET	$0,[IX + 64],E	/ DD CB 40 C3
+	SET	$0,[IX + 16],H	/ DD CB 10 C4
+	SET	$0,[IX + 32],L	/ DD CB 20 C5
+	SET	$0,[IX + 48]	/ DD CB 30 C6
+	SET	$0,[IX + 64],A	/ DD CB 40 C7
+	SET	$1,[IX + 16],B	/ DD CB 10 C8
+	SET	$1,[IX + 32],C	/ DD CB 20 C9
+	SET	$1,[IX + 48],D	/ DD CB 30 CA
+	SET	$1,[IX + 64],E	/ DD CB 40 CB
+	SET	$1,[IX + 16],H	/ DD CB 10 CC
+	SET	$1,[IX + 32],L	/ DD CB 20 CD
+	SET	$1,[IX + 48]	/ DD CB 30 CE
+	SET	$1,[IX + 64],A	/ DD CB 40 CF
+	SET	$2,[IX + 16],B	/ DD CB 10 D0
+	SET	$2,[IX + 32],C	/ DD CB 20 D1
+	SET	$2,[IX + 48],D	/ DD CB 30 D2
+	SET	$2,[IX + 64],E	/ DD CB 40 D3
+	SET	$2,[IX + 16],H	/ DD CB 10 D4
+	SET	$2,[IX + 32],L	/ DD CB 20 D5
+	SET	$2,[IX + 48]	/ DD CB 30 D6
+	SET	$2,[IX + 64],A	/ DD CB 40 D7
+	SET	$3,[IX + 16],B	/ DD CB 10 D8
+	SET	$3,[IX + 32],C	/ DD CB 20 D9
+	SET	$3,[IX + 48],D	/ DD CB 30 DA
+	SET	$3,[IX + 64],E	/ DD CB 40 DB
+	SET	$3,[IX + 16],H	/ DD CB 10 DC
+	SET	$3,[IX + 32],L	/ DD CB 20 DD
+	SET	$3,[IX + 48]	/ DD CB 30 DE
+	SET	$3,[IX + 64],A	/ DD CB 40 DF
+	SET	$4,[IX + 16],B	/ DD CB 10 E0
+	SET	$4,[IX + 32],C	/ DD CB 20 E1
+	SET	$4,[IX + 48],D	/ DD CB 30 E2
+	SET	$4,[IX + 64],E	/ DD CB 40 E3
+	SET	$4,[IX + 16],H	/ DD CB 10 E4
+	SET	$4,[IX + 32],L	/ DD CB 20 E5
+	SET	$4,[IX + 48]	/ DD CB 30 E6
+	SET	$4,[IX + 64],A	/ DD CB 40 E7
+	SET	$5,[IX + 16],B	/ DD CB 10 E8
+	SET	$5,[IX + 32],C	/ DD CB 20 E9
+	SET	$5,[IX + 48],D	/ DD CB 30 EA
+	SET	$5,[IX + 64],E	/ DD CB 40 EB
+	SET	$5,[IX + 16],H	/ DD CB 10 EC
+	SET	$5,[IX + 32],L	/ DD CB 20 ED
+	SET	$5,[IX + 48]	/ DD CB 30 EE
+	SET	$5,[IX + 64],A	/ DD CB 40 EF
+	SET	$6,[IX + 16],B	/ DD CB 10 F0
+	SET	$6,[IX + 32],C	/ DD CB 20 F1
+	SET	$6,[IX + 48],D	/ DD CB 30 F2
+	SET	$6,[IX + 64],E	/ DD CB 40 F3
+	SET	$6,[IX + 16],H	/ DD CB 10 F4
+	SET	$6,[IX + 32],L	/ DD CB 20 F5
+	SET	$6,[IX + 48]	/ DD CB 30 F6
+	SET	$6,[IX + 64],A	/ DD CB 40 F7
+	SET	$7,[IX + 16],B	/ DD CB 10 F8
+	SET	$7,[IX + 32],C	/ DD CB 20 F9
+	SET	$7,[IX + 48],D	/ DD CB 30 FA
+	SET	$7,[IX + 64],E	/ DD CB 40 FB
+	SET	$7,[IX + 16],H	/ DD CB 10 FC
+	SET	$7,[IX + 32],L	/ DD CB 20 FD
+	SET	$7,[IX + 48]	/ DD CB 30 FE
+	SET	$7,[IX + 64],A	/ DD CB 40 FF
 	POP	IX	/ DD E1
 	EX	[SP],IX	/ DD E3
 	PUSH	IX	/ DD E5
 	JP	[IX]	/ DD E9
 	LD	SP,IX	/ DD F9
-	SBC	A,64	/ DE 40
-	RST	24	/ DF
+	SBC	A,$64	/ DE 40
+	RST	$24	/ DF
 	RET	PO	/ E0
 	POP	HL	/ E1
-	JP	PO,32768	/ E2 00 80
+	JP	PO,$32768	/ E2 00 80
 	EX	[SP],HL	/ E3
-	CALL	PO,16384	/ E4 00 40
+	CALL	PO,$16384	/ E4 00 40
 	PUSH	HL	/ E5
-	AND	A,16	/ E6 10
-	RST	32	/ E7
+	AND	A,$16	/ E6 10
+	RST	$32	/ E7
 	RET	PE	/ E8
 	JP	[HL]	/ E9
-	JP	PE,16384	/ EA 00 40
+	JP	PE,$16384	/ EA 00 40
 	EX	DE,HL	/ EB
-	CALL	PE,16384	/ EC 00 40
+	CALL	PE,$16384	/ EC 00 40
 	IN	B,[C]	/ ED 40
 	OUT	[C],B	/ ED 41
 	SBC	HL,BC	/ ED 42
 	LD	[32768],BC	/ ED 43 00 80
 	NEG		/ ED 44
 	RETN		/ ED 45
-	IM	0	/ ED 46
+	IM	$0	/ ED 46
 	LD	I,A	/ ED 47
 	IN	C,[C]	/ ED 48
 	OUT	[C],C	/ ED 49
@@ -792,13 +792,13 @@ L6:	JR	C,L6	/ 38 02
 	OUT	[C],D	/ ED 51
 	SBC	HL,DE	/ ED 52
 	LD	[32768],DE	/ ED 53 00 80
-	IM	1	/ ED 56
+	IM	$1	/ ED 56
 	LD	A,I	/ ED 57
 	IN	E,[C]	/ ED 58
 	OUT	[C],E	/ ED 59
 	ADC	HL,DE	/ ED 5A
 	LD	DE,[16384]	/ ED 5B 00 40
-	IM	2	/ ED 5E
+	IM	$2	/ ED 5E
 	LD	A,R	/ ED 5F
 	IN	H,[C]	/ ED 60
 	OUT	[C],H	/ ED 61
@@ -809,7 +809,7 @@ L6:	JR	C,L6	/ 38 02
 	ADC	HL,HL	/ ED 6A
 	RLD		/ ED 6F
 	IN	F,[C]	/ ED 70
-	OUT	[C],0	/ ED 71
+	OUT	[C],$0	/ ED 71
 	SBC	HL,SP	/ ED 72
 	LD	[16384],SP	/ ED 73 00 40
 	IN	A,[C]	/ ED 78
@@ -832,38 +832,38 @@ L6:	JR	C,L6	/ 38 02
 	CPDR		/ ED B9
 	INDR		/ ED BA
 	OTDR		/ ED BB
-	XOR	A,32	/ EE 20
-	RST	40	/ EF
+	XOR	A,$32	/ EE 20
+	RST	$40	/ EF
 	RET	P	/ F0
 	POP	AF	/ F1
-	JP	P,32768	/ F2 00 80
+	JP	P,$32768	/ F2 00 80
 	DI		/ F3
-	CALL	P,16384	/ F4 00 40
+	CALL	P,$16384	/ F4 00 40
 	PUSH	AF	/ F5
-	OR	A,32	/ F6 20
-	RST	48	/ F7
+	OR	A,$32	/ F6 20
+	RST	$48	/ F7
 	RET	M	/ F8
 	LD	SP,HL	/ F9
-	JP	M,32768	/ FA 00 80
+	JP	M,$32768	/ FA 00 80
 	EI		/ FB
-	CALL	M,16384	/ FC 00 40
+	CALL	M,$16384	/ FC 00 40
 	ADD	IY,BC	/ FD 09
 	ADD	IY,DE	/ FD 19
-	LD	IY,32768	/ FD 21 00 80
+	LD	IY,$32768	/ FD 21 00 80
 	LD	[16384],IY	/ FD 22 00 40
 	INC	IY	/ FD 23
 	INC	IYH	/ FD 24
 	DEC	IYH	/ FD 25
-	LD	IYH,32	/ FD 26 20
+	LD	IYH,$32	/ FD 26 20
 	ADD	IY,IY	/ FD 29
 	LD	IY,[32768]	/ FD 2A 00 80
 	DEC	IY	/ FD 2B
 	INC	IYL	/ FD 2C
 	DEC	IYL	/ FD 2D
-	LD	IYL,16	/ FD 2E 10
+	LD	IYL,$16	/ FD 2E 10
 	INC	[IY + 32]	/ FD 34 20
 	DEC	[IY + 48]	/ FD 35 30
-	LD	[IY + 64],16	/ FD 36 40 10
+	LD	[IY + 64],$16	/ FD 36 40 10
 	ADD	IY,SP	/ FD 39
 	LD	B,IYH	/ FD 44
 	LD	B,IYL	/ FD 45
@@ -991,146 +991,146 @@ L6:	JR	C,L6	/ 38 02
 	SRL	[IY + 48],L	/ FD CB 30 3D
 	SRL	[IY + 64]	/ FD CB 40 3E
 	SRL	[IY + 16],A	/ FD CB 10 3F
-	BIT	0,[IY + 16]	/ FD CB 10 46
-	BIT	1,[IY + 32]	/ FD CB 20 4E
-	BIT	2,[IY + 48]	/ FD CB 30 56
-	BIT	3,[IY + 64]	/ FD CB 40 5E
-	BIT	4,[IY + 16]	/ FD CB 10 66
-	BIT	5,[IY + 32]	/ FD CB 20 6E
-	BIT	6,[IY + 48]	/ FD CB 30 76
-	BIT	7,[IY + 64]	/ FD CB 40 7E
-	RES	0,[IY + 16],B	/ FD CB 10 80
-	RES	0,[IY + 32],C	/ FD CB 20 81
-	RES	0,[IY + 48],D	/ FD CB 30 82
-	RES	0,[IY + 64],E	/ FD CB 40 83
-	RES	0,[IY + 16],H	/ FD CB 10 84
-	RES	0,[IY + 32],L	/ FD CB 20 85
-	RES	0,[IY + 48]	/ FD CB 30 86
-	RES	0,[IY + 64],A	/ FD CB 40 87
-	RES	1,[IY + 16],B	/ FD CB 10 88
-	RES	1,[IY + 32],C	/ FD CB 20 89
-	RES	1,[IY + 48],D	/ FD CB 30 8A
-	RES	1,[IY + 64],E	/ FD CB 40 8B
-	RES	1,[IY + 16],H	/ FD CB 10 8C
-	RES	1,[IY + 32],L	/ FD CB 20 8D
-	RES	1,[IY + 48]	/ FD CB 30 8E
-	RES	1,[IY + 64],A	/ FD CB 40 8F
-	RES	2,[IY + 16],B	/ FD CB 10 90
-	RES	2,[IY + 32],C	/ FD CB 20 91
-	RES	2,[IY + 48],D	/ FD CB 30 92
-	RES	2,[IY + 64],E	/ FD CB 40 93
-	RES	2,[IY + 16],H	/ FD CB 10 94
-	RES	2,[IY + 32],L	/ FD CB 20 95
-	RES	2,[IY + 48]	/ FD CB 30 96
-	RES	2,[IY + 64],A	/ FD CB 40 97
-	RES	3,[IY + 16],B	/ FD CB 10 98
-	RES	3,[IY + 32],C	/ FD CB 20 99
-	RES	3,[IY + 48],D	/ FD CB 30 9A
-	RES	3,[IY + 64],E	/ FD CB 40 9B
-	RES	3,[IY + 16],H	/ FD CB 10 9C
-	RES	3,[IY + 32],L	/ FD CB 20 9D
-	RES	3,[IY + 48]	/ FD CB 30 9E
-	RES	3,[IY + 64],A	/ FD CB 40 9F
-	RES	4,[IY + 16],B	/ FD CB 10 A0
-	RES	4,[IY + 32],C	/ FD CB 20 A1
-	RES	4,[IY + 48],D	/ FD CB 30 A2
-	RES	4,[IY + 64],E	/ FD CB 40 A3
-	RES	4,[IY + 16],H	/ FD CB 10 A4
-	RES	4,[IY + 32],L	/ FD CB 20 A5
-	RES	4,[IY + 48]	/ FD CB 30 A6
-	RES	4,[IY + 64],A	/ FD CB 40 A7
-	RES	5,[IY + 16],B	/ FD CB 10 A8
-	RES	5,[IY + 32],C	/ FD CB 20 A9
-	RES	5,[IY + 48],D	/ FD CB 30 AA
-	RES	5,[IY + 64],E	/ FD CB 40 AB
-	RES	5,[IY + 16],H	/ FD CB 10 AC
-	RES	5,[IY + 32],L	/ FD CB 20 AD
-	RES	5,[IY + 48]	/ FD CB 30 AE
-	RES	5,[IY + 64],A	/ FD CB 40 AF
-	RES	6,[IY + 16],B	/ FD CB 10 B0
-	RES	6,[IY + 32],C	/ FD CB 20 B1
-	RES	6,[IY + 48],D	/ FD CB 30 B2
-	RES	6,[IY + 64],E	/ FD CB 40 B3
-	RES	6,[IY + 16],H	/ FD CB 10 B4
-	RES	6,[IY + 32],L	/ FD CB 20 B5
-	RES	6,[IY + 48]	/ FD CB 30 B6
-	RES	6,[IY + 64],A	/ FD CB 40 B7
-	RES	7,[IY + 16],B	/ FD CB 10 B8
-	RES	7,[IY + 32],C	/ FD CB 20 B9
-	RES	7,[IY + 48],D	/ FD CB 30 BA
-	RES	7,[IY + 64],E	/ FD CB 40 BB
-	RES	7,[IY + 16],H	/ FD CB 10 BC
-	RES	7,[IY + 32],L	/ FD CB 20 BD
-	RES	7,[IY + 48]	/ FD CB 30 BE
-	RES	7,[IY + 64],A	/ FD CB 40 BF
-	SET	0,[IY + 16],B	/ FD CB 10 C0
-	SET	0,[IY + 32],C	/ FD CB 20 C1
-	SET	0,[IY + 48],D	/ FD CB 30 C2
-	SET	0,[IY + 64],E	/ FD CB 40 C3
-	SET	0,[IY + 16],H	/ FD CB 10 C4
-	SET	0,[IY + 32],L	/ FD CB 20 C5
-	SET	0,[IY + 48]	/ FD CB 30 C6
-	SET	0,[IY + 64],A	/ FD CB 40 C7
-	SET	1,[IY + 16],B	/ FD CB 10 C8
-	SET	1,[IY + 32],C	/ FD CB 20 C9
-	SET	1,[IY + 48],D	/ FD CB 30 CA
-	SET	1,[IY + 64],E	/ FD CB 40 CB
-	SET	1,[IY + 16],H	/ FD CB 10 CC
-	SET	1,[IY + 32],L	/ FD CB 20 CD
-	SET	1,[IY + 48]	/ FD CB 30 CE
-	SET	1,[IY + 64],A	/ FD CB 40 CF
-	SET	2,[IY + 16],B	/ FD CB 10 D0
-	SET	2,[IY + 32],C	/ FD CB 20 D1
-	SET	2,[IY + 48],D	/ FD CB 30 D2
-	SET	2,[IY + 64],E	/ FD CB 40 D3
-	SET	2,[IY + 16],H	/ FD CB 10 D4
-	SET	2,[IY + 32],L	/ FD CB 20 D5
-	SET	2,[IY + 48]	/ FD CB 30 D6
-	SET	2,[IY + 64],A	/ FD CB 40 D7
-	SET	3,[IY + 16],B	/ FD CB 10 D8
-	SET	3,[IY + 32],C	/ FD CB 20 D9
-	SET	3,[IY + 48],D	/ FD CB 30 DA
-	SET	3,[IY + 64],E	/ FD CB 40 DB
-	SET	3,[IY + 16],H	/ FD CB 10 DC
-	SET	3,[IY + 32],L	/ FD CB 20 DD
-	SET	3,[IY + 48]	/ FD CB 30 DE
-	SET	3,[IY + 64],A	/ FD CB 40 DF
-	SET	4,[IY + 16],B	/ FD CB 10 E0
-	SET	4,[IY + 32],C	/ FD CB 20 E1
-	SET	4,[IY + 48],D	/ FD CB 30 E2
-	SET	4,[IY + 64],E	/ FD CB 40 E3
-	SET	4,[IY + 16],H	/ FD CB 10 E4
-	SET	4,[IY + 32],L	/ FD CB 20 E5
-	SET	4,[IY + 48]	/ FD CB 30 E6
-	SET	4,[IY + 64],A	/ FD CB 40 E7
-	SET	5,[IY + 16],B	/ FD CB 10 E8
-	SET	5,[IY + 32],C	/ FD CB 20 E9
-	SET	5,[IY + 48],D	/ FD CB 30 EA
-	SET	5,[IY + 64],E	/ FD CB 40 EB
-	SET	5,[IY + 16],H	/ FD CB 10 EC
-	SET	5,[IY + 32],L	/ FD CB 20 ED
-	SET	5,[IY + 48]	/ FD CB 30 EE
-	SET	5,[IY + 64],A	/ FD CB 40 EF
-	SET	6,[IY + 16],B	/ FD CB 10 F0
-	SET	6,[IY + 32],C	/ FD CB 20 F1
-	SET	6,[IY + 48],D	/ FD CB 30 F2
-	SET	6,[IY + 64],E	/ FD CB 40 F3
-	SET	6,[IY + 16],H	/ FD CB 10 F4
-	SET	6,[IY + 32],L	/ FD CB 20 F5
-	SET	6,[IY + 48]	/ FD CB 30 F6
-	SET	6,[IY + 64],A	/ FD CB 40 F7
-	SET	7,[IY + 16],B	/ FD CB 10 F8
-	SET	7,[IY + 32],C	/ FD CB 20 F9
-	SET	7,[IY + 48],D	/ FD CB 30 FA
-	SET	7,[IY + 64],E	/ FD CB 40 FB
-	SET	7,[IY + 16],H	/ FD CB 10 FC
-	SET	7,[IY + 32],L	/ FD CB 20 FD
-	SET	7,[IY + 48]	/ FD CB 30 FE
-	SET	7,[IY + 64],A	/ FD CB 40 FF
+	BIT	$0,[IY + 16]	/ FD CB 10 46
+	BIT	$1,[IY + 32]	/ FD CB 20 4E
+	BIT	$2,[IY + 48]	/ FD CB 30 56
+	BIT	$3,[IY + 64]	/ FD CB 40 5E
+	BIT	$4,[IY + 16]	/ FD CB 10 66
+	BIT	$5,[IY + 32]	/ FD CB 20 6E
+	BIT	$6,[IY + 48]	/ FD CB 30 76
+	BIT	$7,[IY + 64]	/ FD CB 40 7E
+	RES	$0,[IY + 16],B	/ FD CB 10 80
+	RES	$0,[IY + 32],C	/ FD CB 20 81
+	RES	$0,[IY + 48],D	/ FD CB 30 82
+	RES	$0,[IY + 64],E	/ FD CB 40 83
+	RES	$0,[IY + 16],H	/ FD CB 10 84
+	RES	$0,[IY + 32],L	/ FD CB 20 85
+	RES	$0,[IY + 48]	/ FD CB 30 86
+	RES	$0,[IY + 64],A	/ FD CB 40 87
+	RES	$1,[IY + 16],B	/ FD CB 10 88
+	RES	$1,[IY + 32],C	/ FD CB 20 89
+	RES	$1,[IY + 48],D	/ FD CB 30 8A
+	RES	$1,[IY + 64],E	/ FD CB 40 8B
+	RES	$1,[IY + 16],H	/ FD CB 10 8C
+	RES	$1,[IY + 32],L	/ FD CB 20 8D
+	RES	$1,[IY + 48]	/ FD CB 30 8E
+	RES	$1,[IY + 64],A	/ FD CB 40 8F
+	RES	$2,[IY + 16],B	/ FD CB 10 90
+	RES	$2,[IY + 32],C	/ FD CB 20 91
+	RES	$2,[IY + 48],D	/ FD CB 30 92
+	RES	$2,[IY + 64],E	/ FD CB 40 93
+	RES	$2,[IY + 16],H	/ FD CB 10 94
+	RES	$2,[IY + 32],L	/ FD CB 20 95
+	RES	$2,[IY + 48]	/ FD CB 30 96
+	RES	$2,[IY + 64],A	/ FD CB 40 97
+	RES	$3,[IY + 16],B	/ FD CB 10 98
+	RES	$3,[IY + 32],C	/ FD CB 20 99
+	RES	$3,[IY + 48],D	/ FD CB 30 9A
+	RES	$3,[IY + 64],E	/ FD CB 40 9B
+	RES	$3,[IY + 16],H	/ FD CB 10 9C
+	RES	$3,[IY + 32],L	/ FD CB 20 9D
+	RES	$3,[IY + 48]	/ FD CB 30 9E
+	RES	$3,[IY + 64],A	/ FD CB 40 9F
+	RES	$4,[IY + 16],B	/ FD CB 10 A0
+	RES	$4,[IY + 32],C	/ FD CB 20 A1
+	RES	$4,[IY + 48],D	/ FD CB 30 A2
+	RES	$4,[IY + 64],E	/ FD CB 40 A3
+	RES	$4,[IY + 16],H	/ FD CB 10 A4
+	RES	$4,[IY + 32],L	/ FD CB 20 A5
+	RES	$4,[IY + 48]	/ FD CB 30 A6
+	RES	$4,[IY + 64],A	/ FD CB 40 A7
+	RES	$5,[IY + 16],B	/ FD CB 10 A8
+	RES	$5,[IY + 32],C	/ FD CB 20 A9
+	RES	$5,[IY + 48],D	/ FD CB 30 AA
+	RES	$5,[IY + 64],E	/ FD CB 40 AB
+	RES	$5,[IY + 16],H	/ FD CB 10 AC
+	RES	$5,[IY + 32],L	/ FD CB 20 AD
+	RES	$5,[IY + 48]	/ FD CB 30 AE
+	RES	$5,[IY + 64],A	/ FD CB 40 AF
+	RES	$6,[IY + 16],B	/ FD CB 10 B0
+	RES	$6,[IY + 32],C	/ FD CB 20 B1
+	RES	$6,[IY + 48],D	/ FD CB 30 B2
+	RES	$6,[IY + 64],E	/ FD CB 40 B3
+	RES	$6,[IY + 16],H	/ FD CB 10 B4
+	RES	$6,[IY + 32],L	/ FD CB 20 B5
+	RES	$6,[IY + 48]	/ FD CB 30 B6
+	RES	$6,[IY + 64],A	/ FD CB 40 B7
+	RES	$7,[IY + 16],B	/ FD CB 10 B8
+	RES	$7,[IY + 32],C	/ FD CB 20 B9
+	RES	$7,[IY + 48],D	/ FD CB 30 BA
+	RES	$7,[IY + 64],E	/ FD CB 40 BB
+	RES	$7,[IY + 16],H	/ FD CB 10 BC
+	RES	$7,[IY + 32],L	/ FD CB 20 BD
+	RES	$7,[IY + 48]	/ FD CB 30 BE
+	RES	$7,[IY + 64],A	/ FD CB 40 BF
+	SET	$0,[IY + 16],B	/ FD CB 10 C0
+	SET	$0,[IY + 32],C	/ FD CB 20 C1
+	SET	$0,[IY + 48],D	/ FD CB 30 C2
+	SET	$0,[IY + 64],E	/ FD CB 40 C3
+	SET	$0,[IY + 16],H	/ FD CB 10 C4
+	SET	$0,[IY + 32],L	/ FD CB 20 C5
+	SET	$0,[IY + 48]	/ FD CB 30 C6
+	SET	$0,[IY + 64],A	/ FD CB 40 C7
+	SET	$1,[IY + 16],B	/ FD CB 10 C8
+	SET	$1,[IY + 32],C	/ FD CB 20 C9
+	SET	$1,[IY + 48],D	/ FD CB 30 CA
+	SET	$1,[IY + 64],E	/ FD CB 40 CB
+	SET	$1,[IY + 16],H	/ FD CB 10 CC
+	SET	$1,[IY + 32],L	/ FD CB 20 CD
+	SET	$1,[IY + 48]	/ FD CB 30 CE
+	SET	$1,[IY + 64],A	/ FD CB 40 CF
+	SET	$2,[IY + 16],B	/ FD CB 10 D0
+	SET	$2,[IY + 32],C	/ FD CB 20 D1
+	SET	$2,[IY + 48],D	/ FD CB 30 D2
+	SET	$2,[IY + 64],E	/ FD CB 40 D3
+	SET	$2,[IY + 16],H	/ FD CB 10 D4
+	SET	$2,[IY + 32],L	/ FD CB 20 D5
+	SET	$2,[IY + 48]	/ FD CB 30 D6
+	SET	$2,[IY + 64],A	/ FD CB 40 D7
+	SET	$3,[IY + 16],B	/ FD CB 10 D8
+	SET	$3,[IY + 32],C	/ FD CB 20 D9
+	SET	$3,[IY + 48],D	/ FD CB 30 DA
+	SET	$3,[IY + 64],E	/ FD CB 40 DB
+	SET	$3,[IY + 16],H	/ FD CB 10 DC
+	SET	$3,[IY + 32],L	/ FD CB 20 DD
+	SET	$3,[IY + 48]	/ FD CB 30 DE
+	SET	$3,[IY + 64],A	/ FD CB 40 DF
+	SET	$4,[IY + 16],B	/ FD CB 10 E0
+	SET	$4,[IY + 32],C	/ FD CB 20 E1
+	SET	$4,[IY + 48],D	/ FD CB 30 E2
+	SET	$4,[IY + 64],E	/ FD CB 40 E3
+	SET	$4,[IY + 16],H	/ FD CB 10 E4
+	SET	$4,[IY + 32],L	/ FD CB 20 E5
+	SET	$4,[IY + 48]	/ FD CB 30 E6
+	SET	$4,[IY + 64],A	/ FD CB 40 E7
+	SET	$5,[IY + 16],B	/ FD CB 10 E8
+	SET	$5,[IY + 32],C	/ FD CB 20 E9
+	SET	$5,[IY + 48],D	/ FD CB 30 EA
+	SET	$5,[IY + 64],E	/ FD CB 40 EB
+	SET	$5,[IY + 16],H	/ FD CB 10 EC
+	SET	$5,[IY + 32],L	/ FD CB 20 ED
+	SET	$5,[IY + 48]	/ FD CB 30 EE
+	SET	$5,[IY + 64],A	/ FD CB 40 EF
+	SET	$6,[IY + 16],B	/ FD CB 10 F0
+	SET	$6,[IY + 32],C	/ FD CB 20 F1
+	SET	$6,[IY + 48],D	/ FD CB 30 F2
+	SET	$6,[IY + 64],E	/ FD CB 40 F3
+	SET	$6,[IY + 16],H	/ FD CB 10 F4
+	SET	$6,[IY + 32],L	/ FD CB 20 F5
+	SET	$6,[IY + 48]	/ FD CB 30 F6
+	SET	$6,[IY + 64],A	/ FD CB 40 F7
+	SET	$7,[IY + 16],B	/ FD CB 10 F8
+	SET	$7,[IY + 32],C	/ FD CB 20 F9
+	SET	$7,[IY + 48],D	/ FD CB 30 FA
+	SET	$7,[IY + 64],E	/ FD CB 40 FB
+	SET	$7,[IY + 16],H	/ FD CB 10 FC
+	SET	$7,[IY + 32],L	/ FD CB 20 FD
+	SET	$7,[IY + 48]	/ FD CB 30 FE
+	SET	$7,[IY + 64],A	/ FD CB 40 FF
 	POP	IY	/ FD E1
 	EX	[SP],IY	/ FD E3
 	PUSH	IY	/ FD E5
 	JP	[IY]	/ FD E9
 	LD	SP,IY	/ FD F9
-	CP	A,32	/ FE 20
-	RST	56	/ FF
+	CP	A,$32	/ FE 20
+	RST	$56	/ FF
