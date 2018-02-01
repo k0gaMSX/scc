@@ -176,6 +176,8 @@ int next(void);
 extern void regctx(int mode);
 extern Node *getreg(void);
 extern Node *operand(char **s);
+extern void addinput(char *fname);
+extern int delinput(void);
 
 /* expr.c */
 extern Node *expr(void);

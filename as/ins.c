@@ -241,3 +241,9 @@ end(Op *op, Node **args)
 {
 	endpass = 1;
 }
+
+void
+include(Op *op, Node **args)
+{
+	addinput(args[0]->sym->name.buf);
+}

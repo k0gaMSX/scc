@@ -1,4 +1,5 @@
 static char sccsid[] = "@(#) ./as/parser.c";
+#include <assert.h>
 #include <ctype.h>
 #include <limits.h>
 #include <setjmp.h>
@@ -12,7 +13,14 @@ static char sccsid[] = "@(#) ./as/parser.c";
 #include "as.h"
 
 #define NARGS 20
+#define NR_INPUTS 10
 #define MAXLINE 100
+
+struct input {
+	char *fname;
+	unsigned lineno;
+	FILE *fp;
+};
 
 int nerrors;
 jmp_buf recover;
@@ -24,6 +32,7 @@ union yylval yylval;
 static char *textp, *endp;
 static int regmode;
 static unsigned lineno;
+static struct input inputs[NR_INPUTS], *isp = inputs;
 
 static int
 follow(int expect1, int expect2, int ifyes1, int ifyes2, int ifno)
@@ -121,15 +130,20 @@ static int
 string(void)
 {
 	int c;
-	char *p;
+	size_t l;
+	char *s;
+	Symbol *sym = tmpsym(0);
 
 	for (++endp; *endp != '"'; ++endp)
 		;
 	++endp;
 	tok2str();
-	yylval.sym = tmpsym(0);
+	yylval.sym = sym;
 	/* FIXME: this memory is not freed ever */
-	yylval.sym->name.buf = xstrdup(yytext);
+	l = yylen-2;
+	s = memcpy(xmalloc(l+1), yytext+1, l);
+	s[l] = '\0';
+	sym->name.buf = s;
 
 	return STRING;
 }
@@ -207,9 +221,13 @@ void
 error(char *msg, ...)
 {
 	va_list va;
+	struct input *ip;
+
+	assert(isp > inputs);
+	ip = &isp[-1];
 
 	va_start(va, msg);
-	fprintf(stderr, "as:%s:%u: ", infile, lineno);
+	fprintf(stderr, "as:%s:%u: ", ip->fname, ip->lineno);
 	vfprintf(stderr, msg, va);
 	putc('\n', stderr);
 	nerrors++;
@@ -252,6 +270,12 @@ operand(char **strp)
 		break;
 	case REG:
 		np = getreg();
+		break;
+	case STRING:
+		np = node(yytoken, NULL, NULL);
+		np->sym = yylval.sym;
+		np->addr = ASTR;
+		next();
 		break;
 	case '$':
 		next();
@@ -403,17 +427,51 @@ getline(FILE *fp, char buff[MAXLINE])
 int
 nextline(FILE *fp, struct line *lp)
 {
+	struct input *ip;
 	size_t n;
 	static char buff[MAXLINE];
 
+	assert(isp > inputs);
 repeat:
-	if (feof(fp))
+	if (isp == inputs)
 		return 0;
-	if ((n = getline(fp, buff)) == 0)
+	ip = &isp[-1];
+	if (feof(ip->fp)) {
+		delinput();
 		goto repeat;
-	if (++lineno == 0)
+	}
+	if ((n = getline(ip->fp, buff)) == 0)
+		goto repeat;
+	if (++ip->lineno == 0)
 		die("as: file too long");
 	if (extract(buff, n, lp) == 0)
 		goto repeat;
 	return 1;
+}
+
+void
+addinput(char *fname)
+{
+	FILE *fp;
+
+	if (isp == &inputs[NR_INPUTS])
+		die("too many included files");
+	if ((fp = fopen(fname, "r")) == NULL)
+		die("error opening input file '%s'", fname);
+	isp->fname = xstrdup(fname);
+	isp->fp = fp;
+	isp->lineno = 0;
+	++isp;
+}
+
+int
+delinput(void)
+{
+	if (isp == inputs)
+		return EOF;
+	--isp;
+	if (fclose(isp->fp) == EOF)
+		die("error closing file '%s'", isp->fname);
+	free(isp->fname);
+	return 0;
 }
