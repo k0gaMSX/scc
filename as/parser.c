@@ -299,14 +299,24 @@ Node **
 getargs(char *s)
 {
 	Node **ap;
-	static Node *args[NARGS];
+	extern int left2right;
+	static Node *args[NARGS+1];
 
 	if (!s)
 		return NULL;
 
-	for (ap = args; ap < &args[NARGS-1]; ++ap) {
-		if ((*ap = operand(&s)) == NULL)
-			return args;
+	if (!left2right) {
+		ap = args;
+		do {
+			if ((*ap = operand(&s)) == NULL)
+				return args;
+		} while (++ap < &args[NARGS]);
+	} else {
+		ap = &args[NARGS];
+		do {
+			if ((*--ap = operand(&s)) == NULL)
+				return ap+1;
+		} while (ap > args+1);
 	}
 	error("too many arguments in one instruction");
 }
@@ -411,6 +421,7 @@ getline(FILE *fp, char buff[MAXLINE])
 		if (c == '/') {
 			if ((c = getc(fp)) != '*') {
 				ungetc(c, fp);
+				c = '/';
 			} else {
 				comment(fp);
 				c = ' ';
@@ -418,9 +429,11 @@ getline(FILE *fp, char buff[MAXLINE])
 		} else if (c > UCHAR_MAX) {
 			error("invalid character '%x'", c);
 		}
-		if (bp == &buff[MAXLINE])
+		if (bp == &buff[MAXLINE-1])
 			error("line too long");
 	}
+	*bp = '\0';
+
 	return bp - buff;
 }
 

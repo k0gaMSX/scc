@@ -6,6 +6,7 @@ static char sccsid[] = "@(#) ./as/target/x86/i386.c";
 
 TUINT maxaddr = 0xFFFFFFFF;
 int endian = LITTLE_ENDIAN;
+int left2right = 0;
 
 void
 iarch(void)

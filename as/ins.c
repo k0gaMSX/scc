@@ -247,3 +247,14 @@ include(Op *op, Node **args)
 {
 	addinput(args[0]->sym->name.buf);
 }
+
+void
+att(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+	extern int left2right;
+
+	if ((sym->flags & FABS) == 0)
+		error("align expression is not an absolute expression");
+	left2right = sym->value;
+}
