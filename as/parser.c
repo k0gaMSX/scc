@@ -333,7 +333,7 @@ field(char **oldp, size_t *siz)
 	for (s = begin; isspace(*s) && *s != '\t'; ++s)
 		;
 	if (*s == '\0' || *s == '/' || *s == ';') {
-		*t = '\0';
+		*s = '\0';
 		return *oldp = NULL;
 	}
 
