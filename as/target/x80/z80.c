@@ -8,6 +8,7 @@ static char sccsid[] = "@(#) ./as/target/x80/z80.c";
 
 TUINT maxaddr = 0xFFFFFFFF;
 int endian = LITTLE_ENDIAN;
+int left2right = 0;
 
 void
 iarch(void)

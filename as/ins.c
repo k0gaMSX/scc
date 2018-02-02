@@ -241,3 +241,14 @@ end(Op *op, Node **args)
 {
 	endpass = 1;
 }
+
+void
+att(Op *op, Node **args)
+{
+	Symbol *sym = args[0]->sym;
+	extern int left2right;
+
+	if ((sym->flags & FABS) == 0)
+		error("align expression is not an absolute expression");
+	left2right = sym->value;
+}

@@ -31,6 +31,7 @@
 .STRING	string+	0	none	string	Z80,R800,GB80
 .ASCII	string+	0	none	ascii	Z80,R800,GB80
 .ALIGN	imm16+	0	none	align	Z80,R800,GB80
+.ATT	imm8	0	none	att	Z80,R800,GB80
 .END	none	0	none	end	Z80,R800,GB80
 
 
