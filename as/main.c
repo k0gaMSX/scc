@@ -74,6 +74,7 @@ dopass(char *fname)
 	extern int nerrors;
 	extern jmp_buf recover;
 
+	/* TODO: reset line number */
 	if ((fp = fopen(fname, "r")) == NULL)
 		die("as: error opening '%s'", fname);
 	cleansecs();

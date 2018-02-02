@@ -387,6 +387,7 @@ getline(FILE *fp, char buff[MAXLINE])
 		if (c == '/') {
 			if ((c = getc(fp)) != '*') {
 				ungetc(c, fp);
+				c = '/';
 			} else {
 				comment(fp);
 				c = ' ';
@@ -394,9 +395,11 @@ getline(FILE *fp, char buff[MAXLINE])
 		} else if (c > UCHAR_MAX) {
 			error("invalid character '%x'", c);
 		}
-		if (bp == &buff[MAXLINE])
+		if (bp == &buff[MAXLINE-1])
 			error("line too long");
 	}
+	*bp = '\0';
+
 	return bp - buff;
 }
 
