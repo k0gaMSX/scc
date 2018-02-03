@@ -453,10 +453,11 @@ repeat:
 		delinput();
 		goto repeat;
 	}
-	if ((n = getline(ip->fp, buff)) == 0)
-		goto repeat;
+	n = getline(ip->fp, buff);
 	if (++ip->lineno == 0)
 		die("as: file too long");
+	if (n == 0)
+		goto repeat;
 	if (extract(buff, n, lp) == 0)
 		goto repeat;
 	return 1;
