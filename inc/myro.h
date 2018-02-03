@@ -63,6 +63,13 @@ enum myrosymflg {
 	MYROSYM_ABS    = 1 << 4,
 };
 
+enum myrosectnames {
+	MYRO_TEXT = 0,
+	MYRO_DATA = 1,
+	MYRO_BSS  = 2,
+	MYRO_ABS  = 3,
+};
+
 extern int wrmyrohdr(FILE *fp, struct myrohdr *hdr);
 extern int wrmyrosec(FILE *fp, struct myrosect *sect);
 extern int wrmyrosym(FILE *fp, struct myrosym *sym);

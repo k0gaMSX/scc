@@ -1,5 +1,6 @@
 static char sccsid[] = "@(#) ./nm/main.c";
 
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdint.h>
@@ -66,7 +67,30 @@ cmp(const void *p1, const void *p2)
 static int
 typeof(struct myrosym *sym)
 {
-	return 'U';
+	int t, flags = sym->flags;
+
+	switch (sym->section) {
+	case MYRO_TEXT:
+		t = 't';
+		break;
+	case MYRO_DATA:
+		t = 'd';
+		break;
+	case MYRO_BSS:
+		t = (flags & MYROSYM_COMMON) ? 'c' : 'b';
+		break;
+	case MYRO_ABS:
+		t = 'a';
+		break;
+	default:
+		t = (flags & MYROSYM_UNDEF) ? 'u' : '?';
+		break;
+	}
+	if (flags & MYROSYM_ABS)
+		t = 'a';
+	if (flags & MYROSYM_EXTERN)
+		t = tolower(t);
+	return t;
 }
 
 static void
