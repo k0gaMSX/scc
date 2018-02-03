@@ -9,24 +9,24 @@ File Format
 -----------
 
 	+== Header ======+
-	| signature      | 32 bit
+	| signature      | 32 bits
 	+----------------+
-	| format str     | 32 bit
+	| format str     | MyroN bit
 	|                |
 	+----------------+
-	| entrypoint     | 64 bit
+	| entrypoint     | MyroN bit
 	|                |
 	+----------------+
-	| stringtab size | 64 bit
+	| stringtab size | MyroN bit
 	|                |
 	+----------------+
-	| section size   | 64 bit
+	| section size   | MyroN bit
 	| 		 |
 	+----------------+
-	| symtab size    | 64 bit
+	| symtab size    | MyroN bit
 	|                |
 	+----------------+
-	| reloctab size  | 64 bit
+	| reloctab size  | MyroN bit
 	|                |
 	+== Metadata ====+
 	| strings...     |
@@ -56,11 +56,11 @@ the symbol table, and the size of the relocation table.
 Metadata: Strings
 -----------------
 
-The string table directly follows the header. It contains an array of strings.
-Each string is a sequence of bytes terminated by a zero byte. A string may
-contain any characters other than the zero byte. Any reference to a string
-is done using an offset of 32 bits into the string table. If it is needed
-to indicate a "no string" then the value 0FFFFFFFFH may be used.
+The string table directly follows the header. It contains an array
+of strings.  Each string is a sequence of bytes terminated by a zero
+byte. A string may contain any characters other than the zero byte. Any
+reference to a string is done using an offset into the string table. If
+it is needed to indicate a "no string" then the value -1 may be used.
 
 Metadata: Sections
 ------------------
@@ -77,9 +77,9 @@ data in a program goes.
 	+----------------+
 	| aligment       |  8 bit
 	+----------------+
-	| offset         | 64 bit
+	| offset         | MyroN bit
 	+----------------+
-	| len            | 64 bit
+	| len            | MyroN bit
 	+----------------+
 
 All the files must defined at least 5 sections, numbered 1 through 5,
@@ -112,22 +112,20 @@ of symbol defs. Each symbol has the following structure:
 
 
 	+== Sym =========+
-	| str name	 | 32 bit
+	| str name	 | 32 bits
 	+----------------+
-	| str type       | 32 bit
+	| str type       | 32 bits
 	+----------------+
-	| section id     | 8 bit
+	| section id     | 8 bits
 	+----------------+
-	| flags          | 8 bit
+	| flags          | 8 bits
 	+----------------+
-	| offset         | 64 bit
+	| offset         | MyroN bits
 	|                |
 	+----------------+
-	| len            | 64 bit
+	| len            | MyroN bits
 	|                |
 	+----------------+
-
-A symbol is 24 bytes in size.
 
 The string is an offset into the string table, pointing to the start
 of the string. The kind describes where in the output the data goes
@@ -149,18 +147,18 @@ following structure:
 
 
 	+== Reloc =======+
-	| 0 | symbol id  | 32 bit
+	| 0 | symbol id  | 32 bits
 	| 1 | section id |
 	+----------------+
-	| flags          | 8 bit
+	| flags          | 8 bits
 	+----------------+
-	| rel size       | 8 bit
+	| rel size       | 8 bits
 	+----------------+
-	| mask size      | 8 bit
+	| mask size      | 8 bits
 	+----------------+
-	| mask shift     | 8 bit
+	| mask shift     | 8 bits
 	+----------------+
-	| offset         | 64 bit
+	| offset         | MyroN bits
 	|                |
 	+----------------+
 
