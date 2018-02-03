@@ -64,7 +64,7 @@ lookup(char *name)
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = newstring(name);
-	sym->flags = FRELOC | FUNDEF | FNTYPE;
+	sym->flags = FNTYPE;
 	sym->size = sym->value = 0;
 	sym->section = cursec;
 	sym->hash = *list;
@@ -106,13 +106,11 @@ deflabel(char *name)
 	}
 
 	sym = lookup(name);
-	if (pass == 1 && (sym->flags & FUNDEF) == 0)
+	if (pass == 1 && (sym->flags & FDEF))
 		error("redefinition of label '%s'", name);
-	if (cursec->flags & SABS) {
-		sym->flags &= ~FRELOC;
+	if (cursec->flags & SABS)
 		sym->flags |= FABS;
-	}
-	sym->flags &= ~FUNDEF;
+	sym->flags |= FDEF;
 	sym->value = cursec->curpc;
 	sym->section = cursec;
 

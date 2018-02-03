@@ -92,7 +92,7 @@ getsymflags(Symbol *sym)
 		flags |= MYROSYM_COMMON;
 	if (sym->flags & FEXTERN)
 		flags |= MYROSYM_EXTERN;
-	if (sym->flags & FUNDEF)
+	if (!(sym->flags & FDEF))
 		flags |= MYROSYM_UNDEF;
 	return flags;
 }

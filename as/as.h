@@ -11,9 +11,8 @@ enum symflags {
 
 	FCOMMON = 1 << 2,
 	FEXTERN = 1 << 3,
-	FUNDEF  = 1 << 4,
+	FDEF  = 1 << 4,
 	FGLOBAL = 1 << 5,
-	FRELOC  = 1 << 6,
 	FABS    = 1 << 7,
 };
 
