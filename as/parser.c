@@ -84,7 +84,7 @@ out_loop:
 	tok2str();
 	yylval.sym = lookup(yytext);
 
-	return ((yylval.sym->flags & FTMASK) == FREG) ? REG : IDEN;
+	return (yylval.sym->flags & FREG) ? REG : IDEN;
 }
 
 static int

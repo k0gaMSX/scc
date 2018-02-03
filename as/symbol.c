@@ -64,7 +64,7 @@ lookup(char *name)
 
 	sym = xmalloc(sizeof(*sym));
 	sym->name = newstring(name);
-	sym->flags = FNTYPE;
+	sym->flags = 0;
 	sym->size = sym->value = 0;
 	sym->section = cursec;
 	sym->hash = *list;
@@ -190,12 +190,10 @@ setsec(char *name, char *attr)
 {
 	Section *sec;
 	Symbol *sym;
-	int flags, type;
 
 	cursec = NULL;
 	sym = lookup(name);
-	type = sym->flags & FTMASK;
-	if (type != FNTYPE && type != FSECT)
+	if (sym->flags & ~FSECT)
 		error("invalid section name '%s'", name);
 
 	if ((sec = sym->section) == NULL) {

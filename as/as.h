@@ -3,16 +3,13 @@
  * type of segment
  */
 enum symflags {
-	FTMASK   = 0x3,
-	FNTYPE  = 0,
-	FREG    = 1,
-	FSECT   = 2,
-	FSYM    = 3,
-
-	FCOMMON = 1 << 2,
-	FEXTERN = 1 << 3,
-	FDEF  = 1 << 4,
-	FGLOBAL = 1 << 5,
+	FREG    = 1 << 0,
+	FSECT   = 1 << 1,
+	FSYM    = 1 << 2,
+	FCOMMON = 1 << 3,
+	FEXTERN = 1 << 4,
+	FDEF    = 1 << 5,
+	FGLOBAL = 1 << 6,
 	FABS    = 1 << 7,
 };
 
