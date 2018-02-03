@@ -30,12 +30,10 @@ object(char *fname, FILE *fp)
 
 	fgetpos(fp, &pos);
 	fread(magic, sizeof(magic), 1, fp);
-	if (!ferror(fp)) {
-		if (!strncmp(magic, MYROMAGIC, MYROMAGIC_SIZ))
-			return 1;
-	}
-
 	fsetpos(fp, &pos);
+
+	if (!ferror(fp) && !strncmp(magic, MYROMAGIC, MYROMAGIC_SIZ))
+		return 1;
 	return 0;
 }
 
@@ -47,13 +45,10 @@ archive(char *fname, FILE *fp)
 
 	fgetpos(fp, &pos);
 	fread(magic, sizeof(magic), 1, fp);
-
-	if (!ferror(fp)) {
-		if (!strncmp(magic, ARMAGIC, ARMAGIC_SIZ))
-			return 1;
-	}
-
 	fsetpos(fp, &pos);
+
+	if (!ferror(fp) && !strncmp(magic, ARMAGIC, ARMAGIC_SIZ))
+		return 1;
 	return 0;
 }
 
@@ -75,7 +70,7 @@ typeof(struct myrosym *sym)
 }
 
 static void
-print(char *file, char *member, struct myrosym *sym, FILE *fp)
+print(char *file, char *member, struct myrosym *sym)
 {
 	char *fmt, *name = strings + sym->name;
 	int type = typeof(sym);
@@ -86,9 +81,9 @@ print(char *file, char *member, struct myrosym *sym, FILE *fp)
 		return;
 
 	if (Aflag)
-		fprintf(fp, (archflag) ? "%s[%s]: " : "%s: ", file, member);
+		printf((archflag) ? "%s[%s]: " : "%s: ", file, member);
 	if (Pflag) {
-		fprintf(fp, "%s %c", name, type);
+		printf("%s %c", name, type);
 		if (type != 'U') {
 			if (radix == 8)
 				fmt = "%llo %llo";
@@ -96,7 +91,7 @@ print(char *file, char *member, struct myrosym *sym, FILE *fp)
 				fmt = "%llu %llu";
 			else
 				fmt = "%llx %llx";
-			fprintf(fp, fmt, sym->offset, sym->len);
+			printf(fmt, sym->offset, sym->len);
 		}
 	} else {
 		if (type == 'U')
@@ -107,10 +102,10 @@ print(char *file, char *member, struct myrosym *sym, FILE *fp)
 			fmt = "%016.16lld";
 		else
 			fmt = "%016.16llx";
-		fprintf(fp, fmt, sym->offset);
-		fprintf(fp, " %c %s", type, name);
+		printf(fmt, sym->offset);
+		printf(" %c %s", type, name);
 	}
-	putc('\n', fp);
+	putchar('\n');
 }
 
 static void
@@ -154,19 +149,23 @@ nm(char *fname, char *member, FILE *fp)
 
 	for (i = 0; i < n; ++i) {
 		if (rdmyrosym(fp, &syms[i]) < 0)
-			goto free_arrays;
+			goto symbol_error;
 		if (syms[i].name >= hdr.strsize)
 			goto offset_overflow;
 	}
 	qsort(syms, n, sizeof(*syms), cmp);
 	for (i = 0; i < n; ++i)
-		print(fname, member, &syms[i], fp);
+		print(fname, member, &syms[i]);
 
 
 free_arrays:
 	free(syms);
 	free(strings);
 	return;
+
+symbol_error:
+	fprintf(stderr, "nm: %s: error reading symbols\n", fname);
+	goto free_arrays;
 
 offset_overflow:
 	fprintf(stderr, "nm: %s: overflow in headers of archive\n",
@@ -273,8 +272,8 @@ main(int argc, char *argv[])
 	if (argc == 0) {
 		doit("a.out");
 	} else {
-		while (argc-- > 0)
-			doit(*++argv);
+		for ( ; *argv; ++argv)
+			doit(*argv);
 	}
 
 	return 0;
