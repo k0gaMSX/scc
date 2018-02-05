@@ -43,4 +43,4 @@ cat $tmp1
 printf "\nobjdump\n"
 cat $tmp2
 printf "\ndiff\n"
-diff $tmp1 $tmp2
+diff -u $tmp1 $tmp2
