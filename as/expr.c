@@ -164,20 +164,14 @@ unaryop(int op, Node *np)
 static Node *
 primary(void)
 {
-	int addr, op;
 	Node *np;
 
 	switch (yytoken) {
 	case IDEN:
 	case NUMBER:
-		addr = ANUMBER;
-		goto basic_atom;
-	case STRING:
-		addr = ASTR;
-	basic_atom:
 		np = node(yytoken, NULL, NULL);
 		np->sym = yylval.sym;
-		np->addr = addr;
+		np->addr = ANUMBER;
 		next();
 		break;
 	case '(':

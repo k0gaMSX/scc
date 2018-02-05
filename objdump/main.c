@@ -222,7 +222,7 @@ printdata(struct obj_info *obj)
 	for (off = 0; ; off += 32) {
 		printf(" %016llX:", off);
 		for (i = 0; i < 2; i++) {
-			for (j = 0; j < 16; j++) {
+			for (j = 0; j < 8; j++) {
 				if ((c = getc(obj->fp)) == EOF)
 					goto exit_loop;
 				printf(" %02X", c);

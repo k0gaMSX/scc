@@ -1,0 +1,177 @@
+Object File Format
+------------------
+
+The object file format is designed to be the simplest format that covers
+all the needs of many modern programming languages, with sufficient support
+for hand written assembly. All the types are little endian.
+
+File Format
+-----------
+
+	+== Header ======+
+	| signature      | 32 bits
+	+----------------+
+	| format str     | MyroN bit
+	|                |
+	+----------------+
+	| entrypoint     | MyroN bit
+	|                |
+	+----------------+
+	| stringtab size | MyroN bit
+	|                |
+	+----------------+
+	| section size   | MyroN bit
+	| 		 |
+	+----------------+
+	| symtab size    | MyroN bit
+	|                |
+	+----------------+
+	| reloctab size  | MyroN bit
+	|                |
+	+== Metadata ====+
+	| strings...     |
+	| ....           |
+	+----------------+
+	| sections...    |
+	| ...            |
+	|----------------+
+	| symbols....    |
+	| ...            |
+	+----------------+
+	| relocations... |
+	| ...            |
+	+== Data ========+
+	| data...        |
+	| ...            |
+	+================+
+
+The file is composed of three components: The header, the metadata, and
+the data. The header begins with a signature, containing the four bytes
+"uobj", identifying this file as a unified object. It is followed by
+a string offste with a format description (it may be used to indicate
+file format version, architecture, abi, ...) .This is followed by the
+size of the string table, the size of the section table, the size of
+the symbol table, and the size of the relocation table.
+
+Metadata: Strings
+-----------------
+
+The string table directly follows the header. It contains an array
+of strings.  Each string is a sequence of bytes terminated by a zero
+byte. A string may contain any characters other than the zero byte. Any
+reference to a string is done using an offset into the string table. If
+it is needed to indicate a "no string" then the value -1 may be used.
+
+Metadata: Sections
+------------------
+
+The section table follows the string table. The section table defines where
+data in a program goes.
+
+	+== Sect ========+
+	| str 		 | 32 bit
+	+----------------+
+	| flags          | 16 bit
+	+----------------+
+	| fill value     |  8 bit
+	+----------------+
+	| aligment       |  8 bit
+	+----------------+
+	| offset         | MyroN bit
+	+----------------+
+	| len            | MyroN bit
+	+----------------+
+
+All the files must defined at least 5 sections, numbered 1 through 5,
+which are implcitly included in every binary:
+
+	.text		SprotRread | SprotWrite | Sload | Sfile | SprotExec
+	.data		SprotRread | SprotWrite | Sload | Sfile
+	.bss		SprotRread | SprotWrite | Sload
+	.rodata		SprotRread | Sload | Sfile
+	.blob		Sblod      | Sfile
+
+A program may have at most 65,535 sections. Sections have the followign flags;
+
+	SprotRead	= 1 << 0
+	SprotWrite	= 1 << 1
+	SprotExec	= 1 << 2
+	Sload		= 1 << 3
+	Sfile		= 1 << 4
+	Sabsolute	= 1 << 5
+	Sblob		= 1 << 6
+
+Blob section. This is not loaded into the program memory. It may be used
+for debug info, tagging the binary, and other similar uses.
+
+Metadata: Symbols
+-----------------
+
+The symbol table follows the string table. The symbol table contains an array
+of symbol defs. Each symbol has the following structure:
+
+
+	+== Sym =========+
+	| str name	 | 32 bits
+	+----------------+
+	| str type       | 32 bits
+	+----------------+
+	| section id     | 8 bits
+	+----------------+
+	| flags          | 8 bits
+	+----------------+
+	| offset         | MyroN bits
+	|                |
+	+----------------+
+	| len            | MyroN bits
+	|                |
+	+----------------+
+
+The string is an offset into the string table, pointing to the start
+of the string. The kind describes where in the output the data goes
+and what its role is. The offset describes where, relative to the start
+of the data, the symbol begins. The length describes how many bytes it is.
+
+Currently, there's one flag supported:
+
+	1 << 1:	Deduplicate the symbol.
+	1 << 2: Common storage for the symbol.
+	1 << 3: external symbol
+	1 << 4: undefined symbol
+
+Metadata: Relocations
+----------------------
+
+The relocations follow the symbol table. Each relocation has the
+following structure:
+
+
+	+== Reloc =======+
+	| 0 | symbol id  | 32 bits
+	| 1 | section id |
+	+----------------+
+	| flags          | 8 bits
+	+----------------+
+	| rel size       | 8 bits
+	+----------------+
+	| mask size      | 8 bits
+	+----------------+
+	| mask shift     | 8 bits
+	+----------------+
+	| offset         | MyroN bits
+	|                |
+	+----------------+
+
+Relocations write the appropriate value into the offset requested.
+The offset is relative to the base of the section where the symbol
+is defined.
+
+The flags may be:
+
+	Rabsolute   = 1 << 0
+	Roverflow   = 1 << 1
+
+Data
+----
+
+It's just data. What do you want?

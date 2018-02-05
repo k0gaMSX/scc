@@ -3,17 +3,13 @@
  * type of segment
  */
 enum symflags {
-	FTMASK   = 0x3,
-	FNTYPE  = 0,
-	FREG    = 1,
-	FSECT   = 2,
-	FSYM    = 3,
-
-	FCOMMON = 1 << 2,
-	FEXTERN = 1 << 3,
-	FUNDEF  = 1 << 4,
-	FGLOBAL = 1 << 5,
-	FRELOC  = 1 << 6,
+	FREG    = 1 << 0,
+	FSECT   = 1 << 1,
+	FSYM    = 1 << 2,
+	FCOMMON = 1 << 3,
+	FEXTERN = 1 << 4,
+	FDEF    = 1 << 5,
+	FGLOBAL = 1 << 6,
 	FABS    = 1 << 7,
 };
 
@@ -176,6 +172,8 @@ int next(void);
 extern void regctx(int mode);
 extern Node *getreg(void);
 extern Node *operand(char **s);
+extern void addinput(char *fname);
+extern int delinput(void);
 
 /* expr.c */
 extern Node *expr(void);

@@ -24,10 +24,10 @@ dep:
 	./gendep.sh $(TARGETS)
 
 clean:
-	rm -f *.o
-	rm -f target/*/*.o
+	rm -f *.o target/*/*.o
 	rm -f target/*/*tbl.c
 	rm -f as-*
+	rm -f *.log
 
 distclean: clean
 	rm -f makefile

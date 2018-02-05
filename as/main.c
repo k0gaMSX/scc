@@ -74,9 +74,7 @@ dopass(char *fname)
 	extern int nerrors;
 	extern jmp_buf recover;
 
-	/* TODO: reset line number */
-	if ((fp = fopen(fname, "r")) == NULL)
-		die("as: error opening '%s'", fname);
+	addinput(fname);
 	cleansecs();
 
 	endpass = 0;
@@ -93,8 +91,6 @@ dopass(char *fname)
 			error("arguments without an opcode");
 	}
 
-	if (fclose(fp))
-		die("as: error reading from input file '%s'", fname);
 	return nerrors == 0;
 }
 

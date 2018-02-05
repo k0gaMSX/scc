@@ -75,7 +75,7 @@ def(Node **args, int siz)
 	while (np = *args++) {
 		Symbol *sym = np->sym;
 
-		if (sym->flags & FRELOC)
+		if ((sym->flags & FABS) == 0)
 			reloc(sym, 0, siz, siz * 8, 0);
 		emit(tobytes(sym->value, siz, endian), siz);
 	}
@@ -131,10 +131,10 @@ symexp(int which, Op *op, Node **args)
 
 	switch (which) {
 	case EQU:
-		if (pass == 1 && (sym->flags & FUNDEF) == 0)
+		if (pass == 1 && (sym->flags & FDEF))
 			error("redefinition of symbol '%s'", sym->name.buf);
 		sym->value = exp->value;
-		sym->flags &= ~FUNDEF;
+		sym->flags |= FDEF;
 		break;
 	case COMMON:
 		sym->flags |= FCOMMON;
@@ -240,6 +240,12 @@ void
 end(Op *op, Node **args)
 {
 	endpass = 1;
+}
+
+void
+include(Op *op, Node **args)
+{
+	addinput(args[0]->sym->name.buf);
 }
 
 void
