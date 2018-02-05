@@ -121,7 +121,7 @@ main(int argc, char *argv[])
 		left2right = 1;
 		break;
 	case 'r':
-		left2right = 1;
+		left2right = 0;
 		break;
 	default:
 		usage();
