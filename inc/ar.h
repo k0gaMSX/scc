@@ -1,21 +1,14 @@
 
-#define ARMAGIC       "!<arch>\n"
-#define ARMAGIC_SIZ   8
+#define ARMAG      "!<arch>\n"     /* ar "magic number" */
+#define SARMAG     8               /* strlen(ARMAG); */
+#define ARFMAG     "`\n"
 
-struct arhdr {
-	char name[17];
-	unsigned long long time;
-	int uid;
-	int gid;
-	int mode;
-	unsigned long long size;
+struct ar_hdr {
+        char ar_name[16];               /* name */
+        char ar_date[12];               /* modification time */
+        char ar_uid[6];                 /* user id */
+        char ar_gid[6];                 /* group id */
+        char ar_mode[8];                /* octal file permissions */
+        char ar_size[10];               /* size in bytes */
+        char ar_fmag[2];                /* consistency check */
 };
-
-#define ARHDR_SIZ      60
-#define ARNAME_SIZ     16
-#define ARMAGIC        "!<arch>\n"
-#define ARMAGIC_SIZ    8
-
-extern int wrarhdr(FILE *fp, struct arhdr *hdr);
-extern int wrarfile(FILE *fp, struct arhdr *hdr);
-extern int rdarhdr(FILE *fp, struct arhdr *hdr);

@@ -38,6 +38,7 @@ object(char *fname, FILE *fp)
 	return 0;
 }
 
+#if 0
 static int
 archive(char *fname, FILE *fp)
 {
@@ -52,6 +53,7 @@ archive(char *fname, FILE *fp)
 		return 1;
 	return 0;
 }
+#endif
 
 static int
 cmp(const void *p1, const void *p2)
@@ -197,6 +199,7 @@ offset_overflow:
 	goto free_arrays;
 }
 
+#if 0
 static void
 ar(char *fname, FILE *fp)
 {
@@ -226,6 +229,7 @@ ar(char *fname, FILE *fp)
 		fseek(fp, pos, SEEK_SET);
 	}
 }
+#endif
 
 void
 doit(char *fname)
@@ -238,8 +242,8 @@ doit(char *fname)
 
 	if (object(fname, fp))
 		nm(fname, fname, fp);
-	else if (archive(fname, fp))
-		ar(fname, fp);
+//	else if (archive(fname, fp))
+//		ar(fname, fp);
 	else
 		fprintf(stderr, "nm: %s: File format not recognized\n", fname);
 
