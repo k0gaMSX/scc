@@ -23,6 +23,7 @@ struct arop {
 	FILE *dst;
 	struct ar_hdr hdr;
 	char *fname;
+	long size;
 };
 
 static void
@@ -138,7 +139,7 @@ append(FILE *fp, char *list[])
 }
 
 static void
-copymember(char *fname, struct ar_hdr *hdr, FILE *dst, FILE *src)
+copy(char *fname, struct ar_hdr *hdr, FILE *dst, FILE *src)
 {
 	int c;
 	long siz, n;
@@ -210,6 +211,37 @@ inlist(char *fname, char *list[])
 }
 
 static void
+extract(struct arop *op, char *files[])
+{
+	int c;
+	long siz;
+	FILE *fp;
+
+	if (*files && !inlist(op->fname, files))
+		return;
+	if (vflag)
+		printf("x - %s\n", op->fname);
+	siz = op->size;
+
+	if ((fp = fopen(op->fname, "wb")) == NULL)
+		goto error_file;
+	while (siz-- > 0 && (c = getc(op->src)) != EOF)
+		putc(c, fp);
+	fflush(fp);
+	if (ferror(op->src) || ferror(fp))
+		goto error_file;
+	fclose(fp);
+
+	/* TODO: set attributes */
+	return;
+
+
+error_file:
+	perror("ar:error extracting file");
+	exit(1);
+}
+
+static void
 print(struct arop *op, char *files[])
 {
 	long siz;
@@ -219,11 +251,7 @@ print(struct arop *op, char *files[])
 		return;
 	if (vflag)
 		printf("\n<%s>\n\n", op->fname);
-	siz = atol(op->hdr.ar_size);
-	if (siz < 0) {
-		fputs("ar:corrupted member\n", stderr);
-		exit(1);
-	}
+	siz = op->size;
 	while (siz-- > 0 && (c = getc(op->src)) != EOF)
 		putchar(c);
 }
@@ -264,7 +292,7 @@ del(struct arop *op, char *files[])
 {
 	if (inlist(op->fname, files))
 		return;
-	copymember(op->fname, &op->hdr, op->dst, op->src);
+	copy(op->fname, &op->hdr, op->dst, op->src);
 }
 
 static char *
@@ -292,11 +320,9 @@ run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]
 	op.dst = tmp;
 	while (!ferror(fp) && fread(&op.hdr, sizeof(op.hdr), 1, fp) == 1) {
 		fpos_t pos;
-		long len;
-		char *fname;
 
 		if (strncmp(op.hdr.ar_fmag, ARFMAG, sizeof(op.hdr.ar_fmag)) ||
-		    (len = atol(op.hdr.ar_size)) < 0) {
+		    (op.size = atol(op.hdr.ar_size)) < 0) {
 			fputs("ar:corrupted member\n", stderr);
 			exit(1);
 		}
@@ -304,7 +330,7 @@ run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]
 		fgetpos(fp, &pos);
 		(*fun)(&op, files);
 		fsetpos(fp, &pos);
-		fseek(fp, len+1 & ~1, SEEK_CUR);
+		fseek(fp, op.size+1 & ~1, SEEK_CUR);
 	}
 	if (ferror(fp)) {
 		perror("ar:reading members");
@@ -472,9 +498,13 @@ main(int argc, char *argv[])
 	case 'p':
 		tmp = NULL;
 		fun = print;
+		break;
+	case 'x':
+		tmp = NULL;
+		fun = extract;
+		break;
 	case 'r':
 	case 'm':
-	case 'x':
 		/* TODO */
 		;
 	}
