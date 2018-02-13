@@ -1,6 +1,7 @@
 static char sccsid[] = "@(#) ./ar/main.c";
 
 #include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,14 +16,27 @@ static char sccsid[] = "@(#) ./ar/main.c";
 char *argv0;
 
 static int bflag, iflag, vflag, cflag, lflag, uflag, aflag;
-static int done;
-static char *afile, *posname;
+static char *afile, *posname, *tmpafile;
+
+struct arop {
+	FILE *src;
+	FILE *dst;
+	struct ar_hdr hdr;
+	char *fname;
+};
 
 static void
 cleanup(void)
 {
-	if (!done)
-		remove(afile);
+	if (tmpafile)
+		remove(tmpafile);
+}
+
+static void
+sigfun(int signum)
+{
+	cleanup();
+	exit(1);
 }
 
 static void
@@ -42,14 +56,14 @@ openar(char *afile)
 	if ((fp = fopen(afile,"rb")) == NULL) {
 		if (!cflag)
 			fprintf(stderr, "ar: creating %s\n", afile);
-		if ((fopen(afile, "w+b")) == NULL)
+		if ((fp = fopen(afile, "w+b")) == NULL)
 			goto file_error;
 		fputs(ARMAG, fp);
 		fflush(fp);
 	} else {
 		if (fgets(magic, sizeof(magic), fp) == NULL)
 			goto file_error;
-		if (!strcmp(magic, ARMAG)) {
+		if (strcmp(magic, ARMAG)) {
 			fprintf(stderr,
 			        "ar:%s:invalid magic number '%s'\n",
 			        afile,
@@ -75,6 +89,8 @@ archieve(char *fname, FILE *to)
 	char mtime[13];
 	struct stat st;
 
+	if (vflag)
+		printf("a - %s\n", fname);
 	if (strlen(fname) > 16)
 		fprintf(stderr, "ar:%s: too long name\n", fname);
 	if (stat(fname, &st) < 0) {
@@ -119,10 +135,143 @@ append(FILE *fp, char *list[])
 		perror("ar:seeking archive");
 		exit(1);
 	}
-	while ((fname = *list++) != NULL) {
-		if (vflag)
-			printf("a - %s\n", fname);
+	while ((fname = *list++) != NULL)
 		archieve(fname, fp);
+	if (fclose(fp) == EOF) {
+		perror("ar:error writing archive");
+		exit(1);
+	}
+}
+
+static void
+copymember(char *fname, struct ar_hdr *hdr, FILE *dst, FILE *src)
+{
+	int c;
+	long siz, n;
+
+	if (vflag)
+		printf("a - %s\n", fname);
+	fwrite(&hdr, sizeof(hdr), 1, dst);
+	siz = atol(hdr->ar_size);
+	if (siz < 0) {
+		fprintf(stderr, "ar:corrupted member header '%s'\n", fname);
+		exit(1);
+	}
+	if ((siz & 1) == 1)
+		siz++;
+	while (siz--) {
+		if ((c = getc(src)) == EOF)
+			break;
+		fputc(c, dst);
+	}
+	if (ferror(src)) {
+		perror("ar:writing temporary");
+		exit(1);
+	}
+}
+
+static void
+delmembers(struct arop *op, char *files[])
+{
+	char **bp;
+
+	for (bp = files; *bp && strcmp(*bp, op->fname); ++bp)
+		;
+	if (*bp)
+		return;
+	copymember(op->fname, &op->hdr, op->dst, op->src);
+}
+
+static char *
+getfname(struct ar_hdr *hdr)
+{
+	static char fname[FILENAME_MAX];
+	size_t i;
+	char *bp = fname;
+
+	for (i = 0; i < sizeof(hdr->ar_name); i++) {
+		if ((*bp = hdr->ar_name[i]) == ' ')
+			break;
+		++bp;
+	}
+	*bp = '\0';
+	return fname;
+}
+
+static void
+run(FILE *fp, char *files[], void (*fun)(struct arop *, char *files[]))
+{
+	FILE *tmp;
+	struct arop op;
+
+	if (*files == NULL)
+		return;
+
+	if (lflag) {
+		tmpafile = "ar.tmp";
+		tmp = fopen(tmpafile, "wb");
+	} else {
+		tmp = tmpfile();
+	}
+	if (tmp == NULL) {
+		perror("ar:creating temporary");
+		exit(1);
+	}
+	fputs(ARMAG, tmp);
+
+	op.src = fp;
+	op.dst = tmp;
+	while (!ferror(fp) && fread(&op.hdr, sizeof(op.hdr), 1, fp) == 1) {
+		fpos_t pos;
+		long len;
+		char *fname;
+
+		if (strncmp(op.hdr.ar_fmag, ARFMAG, sizeof(op.hdr.ar_fmag)) ||
+		    (len = atol(op.hdr.ar_size)) < 0) {
+			fputs("ar:corrupted member\n", stderr);
+			exit(1);
+		}
+		op.fname = getfname(&op.hdr);
+		fgetpos(fp, &pos);
+		(*fun)(&op, files);
+		fsetpos(fp, &pos);
+		fseek(fp, len+1 & ~1, SEEK_CUR);
+	}
+	fflush(tmp);
+	if (ferror(fp)) {
+		perror("ar:reading members");
+		exit(1);
+	}
+	if (ferror(tmp)) {
+		perror("ar:writing members");
+		exit(1);
+	}
+
+	fclose(fp);
+	if (tmpafile) {
+		fclose(tmp);
+		if (rename(tmpafile, afile) < 0) {
+			perror("ar:renaming temporary");
+			exit(1);
+		}
+		tmpafile;
+	} else {
+		int c;
+
+		if ((fp = fopen(afile, "wb")) == NULL) {
+			perror("ar:reopening archive file");
+			exit(1);
+		}
+		rewind(tmp);
+		while ((c = getc(tmp)) != EOF)
+			fputc(c, tmp);
+		fflush(fp);
+		if (ferror(fp) || ferror(tmp)) {
+			perror("ar:copying from temporary");
+			exit(1);
+		}
+		fclose(fp);
+		fclose(tmp);
 	}
 }
 
@@ -161,7 +310,6 @@ main(int argc, char *argv[])
 		nkey++;
 		key = 'x';
 		break;
-
 	case 'a':
 		aflag = 1;
 		pos++;
@@ -195,6 +343,11 @@ main(int argc, char *argv[])
 
 	if (nkey == 0 || nkey > 1 || pos > 1 || argc == 0)
 		usage();
+
+	signal(SIGINT, sigfun);
+	signal(SIGQUIT, sigfun);
+	signal(SIGTERM, sigfun);
+
 	afile = *argv++;
 	fp = openar(afile);
 
@@ -203,6 +356,8 @@ main(int argc, char *argv[])
 		append(fp, argv);
 		break;
 	case 'd':
+		run(fp, argv, delmembers);
+		break;
 	case 'r':
 	case 't':
 	case 'p':
@@ -212,15 +367,5 @@ main(int argc, char *argv[])
 		;
 	}
 
-	if (ferror(fp)) {
-		perror("ar:error reading archive");
-		exit(1);
-	}
-
-
-	/* TODO: check status of stdout */
-	done = 1;
-
 	return 0;
-
 }
