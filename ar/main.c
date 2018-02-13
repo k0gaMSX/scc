@@ -16,7 +16,7 @@ static char sccsid[] = "@(#) ./ar/main.c";
 char *argv0;
 
 static int bflag, iflag, vflag, cflag, lflag, uflag, aflag;
-static char *afile, *posname, *tmpafile;
+static char *posname, *tmpafile;
 
 struct arop {
 	FILE *src;
@@ -199,25 +199,12 @@ getfname(struct ar_hdr *hdr)
 }
 
 static void
-run(FILE *fp, char *files[], void (*fun)(struct arop *, char *files[]))
+run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]))
 {
-	FILE *tmp;
 	struct arop op;
 
 	if (*files == NULL)
 		return;
-
-	if (lflag) {
-		tmpafile = "ar.tmp";
-		tmp = fopen(tmpafile, "wb");
-	} else {
-		tmp = tmpfile();
-	}
-	if (tmp == NULL) {
-		perror("ar:creating temporary");
-		exit(1);
-	}
-	fputs(ARMAG, tmp);
 
 	op.src = fp;
 	op.dst = tmp;
@@ -237,27 +224,31 @@ run(FILE *fp, char *files[], void (*fun)(struct arop *, char *files[]))
 		fsetpos(fp, &pos);
 		fseek(fp, len+1 & ~1, SEEK_CUR);
 	}
-	fflush(tmp);
 	if (ferror(fp)) {
 		perror("ar:reading members");
 		exit(1);
 	}
-	if (ferror(tmp)) {
+	fclose(fp);
+}
+
+static void
+closetmp(FILE *tmp, char *afile)
+{
+	int c;
+	FILE *fp;
+
+	if (fflush(tmp) == EOF) {
 		perror("ar:writing members");
 		exit(1);
 	}
-
-	fclose(fp);
 	if (tmpafile) {
 		fclose(tmp);
 		if (rename(tmpafile, afile) < 0) {
 			perror("ar:renaming temporary");
 			exit(1);
 		}
-		tmpafile;
+		tmpafile = NULL;
 	} else {
-		int c;
-
 		if ((fp = fopen(afile, "wb")) == NULL) {
 			perror("ar:reopening archive file");
 			exit(1);
@@ -275,11 +266,33 @@ run(FILE *fp, char *files[], void (*fun)(struct arop *, char *files[]))
 	}
 }
 
+static FILE *
+opentmp(void)
+{
+	FILE *tmp;
+
+	if (lflag) {
+		tmpafile = "ar.tmp";
+		tmp = fopen(tmpafile, "wb");
+	} else {
+		tmp = tmpfile();
+	}
+	if (tmp == NULL) {
+		perror("ar:creating temporary");
+		exit(1);
+	}
+	fputs(ARMAG, tmp);
+
+	return tmp;
+}
+
 int
 main(int argc, char *argv[])
 {
 	int key, nkey = 0, pos = 0;
-	FILE *fp;
+	char *afile;
+	FILE *fp, *tmp;;
+	void (*fun)(struct arop *, char *files[]);
 
 	atexit(cleanup);
 	ARGBEGIN {
@@ -356,7 +369,8 @@ main(int argc, char *argv[])
 		append(fp, argv);
 		break;
 	case 'd':
-		run(fp, argv, delmembers);
+		tmp = opentmp();
+		fun = delmembers;
 		break;
 	case 'r':
 	case 't':
@@ -366,6 +380,11 @@ main(int argc, char *argv[])
 		/* TODO */
 		;
 	}
+
+	if (fun)
+		run(fp, tmp, argv, fun);
+	if (tmp)
+		closetmp(tmp, afile);
 
 	return 0;
 }
