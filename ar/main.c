@@ -46,7 +46,7 @@ usage(void)
 	exit(1);
 }
 
-FILE *
+static FILE *
 openar(char *afile)
 {
 	FILE *fp;
@@ -186,21 +186,45 @@ perms(struct ar_hdr *hdr)
 	long val;
 	char *p, *q;
 	static char buf[10];
+	static char digits[] = "01234567";
 
 	siz = sizeof(hdr->ar_mode);
 	p = hdr->ar_mode;
-	for (val = 0; siz-- > 0; val += c - '0') {
+	for (val = 0; siz-- > 0; val += c) {
+		val *= 7;
 		c = *p++;
-		if ((q = strchr("01234567", c)) == NULL) {
+		if ((q = strchr(digits, c)) == NULL) {
 			fputs("ar: corrupted header\n", stderr);
 			exit(1);
 		}
+		c = q - digits;
 	}
 	letters(val >> 6, buf);
 	letters(val >> 3, buf+3);
 	letters(val, buf +6);
 	buf[9] = '\0';
 	return buf;
+}
+
+static long long
+unixtime(struct ar_hdr *hdr)
+{
+	long long t;
+	int c, siz = sizeof(hdr->ar_date);
+	char *p, *q;
+	static char digits[] = "0123456789";
+
+	p = hdr->ar_date;
+	for (t = 0; siz-- > 0; t += c) {
+		t *= 10;
+		c = *p++;
+		if ((q = strchr(digits, c)) == NULL) {
+			fputs("ar:corrupted header\n", stderr);
+			exit(1);
+		}
+		c = q - digits;
+	}
+	return t;
 }
 
 static void
@@ -223,10 +247,11 @@ list(struct arop *op, char *files[])
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
+		t = totime(unixtime(hdr)),
 		printf("%s %d/%d\t%s %s\n",
 		       perms(hdr),
 		       hdr->ar_uid, hdr->ar_gid,
-		       "", /* TODO: ctime(&hdr->ar_date), */
+		       ctime(&t),
 		       op->fname);
 	}
 }
