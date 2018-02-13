@@ -191,12 +191,13 @@ perms(struct ar_hdr *hdr)
 	siz = sizeof(hdr->ar_mode);
 	p = hdr->ar_mode;
 	for (val = 0; siz-- > 0; val += c) {
-		val *= 7;
-		c = *p++;
+		if ((c = *p++) == ' ')
+			break;
 		if ((q = strchr(digits, c)) == NULL) {
 			fputs("ar: corrupted header\n", stderr);
 			exit(1);
 		}
+		val *= 8;
 		c = q - digits;
 	}
 	letters(val >> 6, buf);
@@ -216,12 +217,13 @@ unixtime(struct ar_hdr *hdr)
 
 	p = hdr->ar_date;
 	for (t = 0; siz-- > 0; t += c) {
-		t *= 10;
-		c = *p++;
+		if ((c = *p++) == ' ')
+			break;
 		if ((q = strchr(digits, c)) == NULL) {
 			fputs("ar:corrupted header\n", stderr);
 			exit(1);
 		}
+		t *= 10;
 		c = q - digits;
 	}
 	return t;
@@ -234,6 +236,7 @@ list(struct arop *op, char *files[])
 	char **bp;
 	time_t t;
 	struct ar_hdr *hdr = &op->hdr;
+	char mtime[30];
 
 	if (*files == NULL) {
 		print = 1;
@@ -247,11 +250,12 @@ list(struct arop *op, char *files[])
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
-		t = totime(unixtime(hdr)),
+		t = totime(unixtime(hdr));
+		strftime(mtime, sizeof(mtime), "%c", localtime(&t));
 		printf("%s %d/%d\t%s %s\n",
 		       perms(hdr),
-		       hdr->ar_uid, hdr->ar_gid,
-		       ctime(&t),
+		       atol(hdr->ar_uid), atol(hdr->ar_gid),
+		       mtime,
 		       op->fname);
 	}
 }
@@ -288,9 +292,6 @@ static void
 run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]))
 {
 	struct arop op;
-
-	if (*files == NULL)
-		return;
 
 	op.src = fp;
 	op.dst = tmp;
@@ -457,6 +458,8 @@ main(int argc, char *argv[])
 		append(fp, argv);
 		break;
 	case 'd':
+		if (*argv == NULL)
+			return 0;
 		tmp = opentmp();
 		fun = del;
 		break;
