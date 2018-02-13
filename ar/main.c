@@ -39,13 +39,6 @@ sigfun(int signum)
 	exit(1);
 }
 
-static void
-usage(void)
-{
-	fputs("ar [-drqtpmx][posname] [-vuaibcl] [posname] afile name ...\n", stderr);
-	exit(1);
-}
-
 static FILE *
 openar(char *afile)
 {
@@ -372,6 +365,13 @@ opentmp(void)
 	fputs(ARMAG, tmp);
 
 	return tmp;
+}
+
+static void
+usage(void)
+{
+	fputs("ar [-drqtpmx][posname] [-vuaibcl] [posname] afile name ...\n", stderr);
+	exit(1);
 }
 
 int
