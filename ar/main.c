@@ -480,5 +480,10 @@ main(int argc, char *argv[])
 	if (tmp)
 		closetmp(tmp, afile);
 
+	if (fflush(stdout) == EOF) {
+		perror("ar:error writing to stdout");
+		exit(1);
+	}
+
 	return 0;
 }
