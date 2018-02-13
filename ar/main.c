@@ -49,13 +49,20 @@ openar(char *afile)
 	if ((fp = fopen(afile,"rb")) == NULL) {
 		if (!cflag)
 			fprintf(stderr, "ar: creating %s\n", afile);
-		if ((fp = fopen(afile, "w+b")) == NULL)
-			goto file_error;
+		if ((fp = fopen(afile, "w+b")) == NULL) {
+			perror("ar:opening archive");
+			exit(1);
+		}
 		fputs(ARMAG, fp);
-		fflush(fp);
+		if (fflush(fp) == EOF) {
+			perror("ar:writing magic number");
+			exit(1);
+		}
 	} else {
-		if (fgets(magic, sizeof(magic), fp) == NULL)
-			goto file_error;
+		if (fgets(magic, sizeof(magic), fp) == NULL) {
+			perror("ar:reading magic number");
+			exit(1);
+		}
 		if (strcmp(magic, ARMAG)) {
 			fprintf(stderr,
 			        "ar:%s:invalid magic number '%s'\n",
@@ -64,13 +71,7 @@ openar(char *afile)
 			exit(1);
 		}
 	}
-	if (ferror(fp))
-		goto file_error;
 	return fp;
-
-file_error:
-	perror("ar:opening archive");
-	exit(1);
 }
 
 static void
