@@ -24,6 +24,8 @@ struct arop {
 	struct ar_hdr hdr;
 	char *fname;
 	long size;
+	long mode;
+	long long date;
 };
 
 static void
@@ -168,31 +170,15 @@ letters(unsigned long val, char *s)
 }
 
 static char *
-perms(struct ar_hdr *hdr)
+perms(struct arop *op)
 {
-	size_t siz;
-	int c;
-	long val;
-	char *p, *q;
 	static char buf[10];
-	static char digits[] = "01234567";
 
-	siz = sizeof(hdr->ar_mode);
-	p = hdr->ar_mode;
-	for (val = 0; siz-- > 0; val += c) {
-		if ((c = *p++) == ' ')
-			break;
-		if ((q = strchr(digits, c)) == NULL) {
-			fputs("ar: corrupted header\n", stderr);
-			exit(1);
-		}
-		val *= 8;
-		c = q - digits;
-	}
-	letters(val >> 6, buf);
-	letters(val >> 3, buf+3);
-	letters(val, buf +6);
+	letters(op->mode >> 6, buf);
+	letters(op->mode >> 3, buf+3);
+	letters(op->mode, buf +6);
 	buf[9] = '\0';
+
 	return buf;
 }
 
@@ -265,15 +251,10 @@ list(struct arop *op, char *files[])
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
-		val = atoll(hdr->ar_date);
-		if (val < 0) {
-			fputs("ar:corrupted member\n", stderr);
-			exit(1);
-		}
-		t = totime(val);
+		t = totime(op->date);
 		strftime(mtime, sizeof(mtime), "%c", localtime(&t));
 		printf("%s %d/%d\t%s %s\n",
-		       perms(hdr),
+		       perms(op),
 		       atol(hdr->ar_uid),
 		       atol(hdr->ar_gid),
 		       mtime,
@@ -305,6 +286,48 @@ getfname(struct ar_hdr *hdr)
 	return fname;
 }
 
+static long long
+getnum(char *s, int size, int base)
+{
+	int c;
+	long long val;
+	char *p, *q;
+	static char digits[] = "0123456789";
+
+	for (val = 0; size-- > 0; val += c) {
+		if ((c = *p++) == ' ')
+			break;
+		if ((q = strchr(digits, c)) == NULL)
+			return -1;
+		if ((c = q - digits) >= base)
+			return -1;
+		val *= base;
+	}
+
+	if (size > 0) {
+		while (size-- > 0 && *p++ != ' ')
+			;
+	}
+	return (size == 0) ? val : -1;
+}
+
+static int
+valid(struct arop *op)
+{
+	struct ar_hdr *hdr = &op->hdr;
+
+	op->fname = getfname(&op->hdr);
+	op->size = getnum(hdr->ar_size, sizeof(hdr->ar_size), 10);
+	op->mode = getnum(hdr->ar_mode, sizeof(hdr->ar_mode), 8);
+	op->date = getnum(hdr->ar_date, sizeof(hdr->ar_date), 10);
+
+	if (strncmp(hdr->ar_fmag, ARFMAG, sizeof(hdr->ar_fmag)) ||
+	    op->size < 0 || op->mode < 0 || op->date < 0) {
+		return 0;
+	}
+	return 1;
+}
+
 static void
 run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]))
 {
@@ -315,12 +338,12 @@ run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]
 	while (!ferror(fp) && fread(&op.hdr, sizeof(op.hdr), 1, fp) == 1) {
 		fpos_t pos;
 
-		if (strncmp(op.hdr.ar_fmag, ARFMAG, sizeof(op.hdr.ar_fmag)) ||
-		    (op.size = atol(op.hdr.ar_size)) < 0) {
-			fputs("ar:corrupted member\n", stderr);
+		if (!valid(&op)) {
+			fprintf(stderr,
+			        "ar:corrupted member '%s'\n",
+			        op.fname);
 			exit(1);
 		}
-		op.fname = getfname(&op.hdr);
 		fgetpos(fp, &pos);
 		(*fun)(&op, files);
 		fsetpos(fp, &pos);
