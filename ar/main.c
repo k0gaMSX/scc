@@ -139,29 +139,23 @@ append(FILE *fp, char *list[])
 }
 
 static void
-copy(char *fname, struct ar_hdr *hdr, FILE *dst, FILE *src)
+copy(struct arop *op)
 {
 	int c;
 	long siz, n;
+	struct ar_hdr *hdr = &op->hdr;
 
 	if (vflag)
-		printf("a - %s\n", fname);
-	fwrite(&hdr, sizeof(hdr), 1, dst);
-	siz = atol(hdr->ar_size);
-	if (siz < 0) {
-		fprintf(stderr, "ar:corrupted member header '%s'\n", fname);
-		exit(1);
-	}
+		printf("a - %s\n", op->fname);
+
+	fwrite(&hdr, sizeof(hdr), 1, op->dst);
+	siz = op->size;
 	if ((siz & 1) == 1)
 		siz++;
 	while (siz--) {
-		if ((c = getc(src)) == EOF)
+		if ((c = getc(op->src)) == EOF)
 			break;
-		fputc(c, dst);
-	}
-	if (ferror(src)) {
-		perror("ar:writing temporary");
-		exit(1);
+		fputc(c, op->dst);
 	}
 }
 
@@ -292,7 +286,7 @@ del(struct arop *op, char *files[])
 {
 	if (inlist(op->fname, files))
 		return;
-	copy(op->fname, &op->hdr, op->dst, op->src);
+	copy(op);
 }
 
 static char *
@@ -346,7 +340,7 @@ closetmp(FILE *tmp, char *afile)
 	FILE *fp;
 
 	if (fflush(tmp) == EOF) {
-		perror("ar:writing members");
+		perror("ar:writing temporary");
 		exit(1);
 	}
 	if (tmpafile) {
