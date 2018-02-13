@@ -329,7 +329,8 @@ valid(struct arop *op)
 }
 
 static void
-run(FILE *fp, FILE *tmp, char *files[], void (*fun)(struct arop *, char *files[]))
+run(FILE *fp, FILE *tmp,
+    char *files[], void (*fun)(struct arop *, char *files[]))
 {
 	struct arop op;
 
