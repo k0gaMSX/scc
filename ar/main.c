@@ -207,54 +207,59 @@ perms(struct ar_hdr *hdr)
 	return buf;
 }
 
-static long long
-unixtime(struct ar_hdr *hdr)
+static int
+inlist(char *fname, char *list[])
 {
-	long long t;
-	int c, siz = sizeof(hdr->ar_date);
-	char *p, *q;
-	static char digits[] = "0123456789";
+	while (*list && strcmp(*list, fname))
+		++list;
+	return *list != NULL;
+}
 
-	p = hdr->ar_date;
-	for (t = 0; siz-- > 0; t += c) {
-		if ((c = *p++) == ' ')
-			break;
-		if ((q = strchr(digits, c)) == NULL) {
-			fputs("ar:corrupted header\n", stderr);
-			exit(1);
-		}
-		t *= 10;
-		c = q - digits;
+static void
+print(struct arop *op, char *files[])
+{
+	long siz;
+	int c;
+
+	if (*files && !inlist(op->fname, files))
+		return;
+	if (vflag)
+		printf("\n<%s>\n\n", op->fname);
+	siz = atol(op->hdr.ar_size);
+	if (siz < 0) {
+		fputs("ar:corrupted member\n", stderr);
+		exit(1);
 	}
-	return t;
+	while (siz-- > 0 && (c = getc(op->src)) != EOF)
+		putchar(c);
 }
 
 static void
 list(struct arop *op, char *files[])
 {
-	int print = 0;
-	char **bp;
+	long long val;
 	time_t t;
 	struct ar_hdr *hdr = &op->hdr;
 	char mtime[30];
 
-	if (*files == NULL) {
-		print = 1;
-	} else {
-		for (bp = files; *bp && strcmp(*bp, op->fname); ++bp)
-			;
-		print = *bp != NULL;
-	}
+	if (*files && !inlist(op->fname, files))
+		return;
 	if (!print)
 		return;
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
-		t = totime(unixtime(hdr));
+		val = atoll(hdr->ar_date);
+		if (val < 0) {
+			fputs("ar:corrupted member\n", stderr);
+			exit(1);
+		}
+		t = totime(val);
 		strftime(mtime, sizeof(mtime), "%c", localtime(&t));
 		printf("%s %d/%d\t%s %s\n",
 		       perms(hdr),
-		       atol(hdr->ar_uid), atol(hdr->ar_gid),
+		       atol(hdr->ar_uid),
+		       atol(hdr->ar_gid),
 		       mtime,
 		       op->fname);
 	}
@@ -263,11 +268,7 @@ list(struct arop *op, char *files[])
 static void
 del(struct arop *op, char *files[])
 {
-	char **bp;
-
-	for (bp = files; *bp && strcmp(*bp, op->fname); ++bp)
-		;
-	if (*bp)
+	if (inlist(op->fname, files))
 		return;
 	copymember(op->fname, &op->hdr, op->dst, op->src);
 }
@@ -467,8 +468,10 @@ main(int argc, char *argv[])
 		tmp = NULL;
 		fun = list;
 		break;
-	case 'r':
 	case 'p':
+		tmp = NULL;
+		fun = print;
+	case 'r':
 	case 'm':
 	case 'x':
 		/* TODO */
