@@ -171,7 +171,68 @@ copymember(char *fname, struct ar_hdr *hdr, FILE *dst, FILE *src)
 }
 
 static void
-delmembers(struct arop *op, char *files[])
+letters(unsigned long val, char *s)
+{
+	*s++ = (val & 04) ? 'r' : '-';
+	*s++ = (val & 02) ? 'w' : '-';
+	*s++ = (val & 01) ? 'x' : '-';
+}
+
+static char *
+perms(struct ar_hdr *hdr)
+{
+	size_t siz;
+	int c;
+	long val;
+	char *p, *q;
+	static char buf[10];
+
+	siz = sizeof(hdr->ar_mode);
+	p = hdr->ar_mode;
+	for (val = 0; siz-- > 0; val += c - '0') {
+		c = *p++;
+		if ((q = strchr("01234567", c)) == NULL) {
+			fputs("ar: corrupted header\n", stderr);
+			exit(1);
+		}
+	}
+	letters(val >> 6, buf);
+	letters(val >> 3, buf+3);
+	letters(val, buf +6);
+	buf[9] = '\0';
+	return buf;
+}
+
+static void
+list(struct arop *op, char *files[])
+{
+	int print = 0;
+	char **bp;
+	time_t t;
+	struct ar_hdr *hdr = &op->hdr;
+
+	if (*files == NULL) {
+		print = 1;
+	} else {
+		for (bp = files; *bp && strcmp(*bp, op->fname); ++bp)
+			;
+		print = *bp != NULL;
+	}
+	if (!print)
+		return;
+	if (!vflag) {
+		printf("%s\n", op->fname);
+	} else {
+		printf("%s %d/%d\t%s %s\n",
+		       perms(hdr),
+		       hdr->ar_uid, hdr->ar_gid,
+		       "", /* TODO: ctime(&hdr->ar_date), */
+		       op->fname);
+	}
+}
+
+static void
+del(struct arop *op, char *files[])
 {
 	char **bp;
 
@@ -366,14 +427,19 @@ main(int argc, char *argv[])
 
 	switch (key) {
 	case 'q':
+		tmp = NULL;
+		fun = NULL;
 		append(fp, argv);
 		break;
 	case 'd':
 		tmp = opentmp();
-		fun = delmembers;
+		fun = del;
+		break;
+	case 't':
+		tmp = NULL;
+		fun = list;
 		break;
 	case 'r':
-	case 't':
 	case 'p':
 	case 'm':
 	case 'x':
