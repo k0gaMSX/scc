@@ -65,7 +65,7 @@ openar(char *afile)
 		}
 	} else {
 		if (fgets(magic, sizeof(magic), fp) == NULL) {
-			perror("ar:reading magic number");
+			perror("ar:error reading magic number");
 			exit(1);
 		}
 		if (strcmp(magic, ARMAG)) {
@@ -150,10 +150,7 @@ copy(struct arop *op)
 	long siz, n;
 	struct ar_hdr *hdr = &op->hdr;
 
-	if (vflag)
-		printf("a - %s\n", op->fname);
-
-	fwrite(&hdr, sizeof(hdr), 1, op->dst);
+	fwrite(hdr, sizeof(*hdr), 1, op->dst);
 	siz = op->size;
 	if ((siz & 1) == 1)
 		siz++;
@@ -309,8 +306,11 @@ list(struct arop *op, char *files[])
 static void
 del(struct arop *op, char *files[])
 {
-	if (inlist(op->fname, files))
+	if (inlist(op->fname, files)) {
+		if (vflag)
+			printf("d - %s\n", op->fname);
 		return;
+	}
 	copy(op);
 }
 
@@ -335,23 +335,22 @@ getnum(char *s, int size, int base)
 {
 	int c;
 	long long val;
-	char *p, *q;
+	char *p;
 	static char digits[] = "0123456789";
 
-	for (val = 0; size-- > 0; val += c) {
-		if ((c = *p++) == ' ')
+	for (val = 0; size > 0; val += c) {
+		--size;
+		if ((c = *s++) == ' ')
 			break;
-		if ((q = strchr(digits, c)) == NULL)
+		if ((p = strchr(digits, c)) == NULL)
 			return -1;
-		if ((c = q - digits) >= base)
+		if ((c = p - digits) >= base)
 			return -1;
 		val *= base;
 	}
 
-	if (size > 0) {
-		while (size-- > 0 && *p++ != ' ')
-			;
-	}
+	while (size > 0 && *s++ == ' ')
+		--size;
 	return (size == 0) ? val : -1;
 }
 
