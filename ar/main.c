@@ -16,7 +16,7 @@ static char sccsid[] = "@(#) ./ar/main.c";
 char *argv0;
 
 static int bflag, iflag, vflag, cflag, lflag, uflag, aflag;
-static char *posname, *tmpafile;
+static char *posname, *tmpafile1, *tmpafile2;
 
 struct arop {
 	FILE *src;
@@ -31,8 +31,10 @@ struct arop {
 static void
 cleanup(void)
 {
-	if (tmpafile)
-		remove(tmpafile);
+	if (tmpafile1)
+		remove(tmpafile1);
+	if (tmpafile2)
+		remove(tmpafile2);
 }
 
 static void
@@ -78,7 +80,7 @@ openar(char *afile)
 }
 
 static void
-archieve(char *fname, FILE *to)
+archive(char *fname, FILE *to, char letter)
 {
 	int c;
 	size_t n;
@@ -87,7 +89,7 @@ archieve(char *fname, FILE *to)
 	struct stat st;
 
 	if (vflag)
-		printf("a - %s\n", fname);
+		printf("%c - %s\n", letter, fname);
 	if (strlen(fname) > 16)
 		fprintf(stderr, "ar:%s: too long name\n", fname);
 	if (stat(fname, &st) < 0) {
@@ -132,8 +134,9 @@ append(FILE *fp, char *list[])
 		perror("ar:seeking archive");
 		exit(1);
 	}
-	while ((fname = *list++) != NULL)
-		archieve(fname, fp);
+	while ((fname = *list++) != NULL) {
+		archive(fname, fp, 'a');
+	}
 	if (fclose(fp) == EOF) {
 		perror("ar:error writing archive");
 		exit(1);
@@ -182,12 +185,53 @@ perms(struct arop *op)
 	return buf;
 }
 
-static int
+static void
+rmlist(char *list[])
+{
+	for (; *list; ++list)
+		list[0] = list[1];
+}
+
+static char **
 inlist(char *fname, char *list[])
 {
 	while (*list && strcmp(*list, fname))
 		++list;
-	return *list != NULL;
+	if (*list == NULL)
+		return NULL;
+	return list;
+}
+
+static void
+insert(struct arop *op, char *list[])
+{
+	if (!posname || strcmp(op->fname, posname)) {
+		copy(op);
+		return;
+	}
+	if (bflag || iflag) {
+		for ( ; *list; ++list)
+			archive(*list, op->dst, 'a');
+		copy(op);
+	} else {
+		copy(op);
+		for ( ; *list; ++list)
+			archive(*list, op->dst, 'a');
+	}
+}
+
+static void
+update(struct arop *op, char *files[])
+{
+	char **l;
+
+	l = inlist(op->fname, files);
+	if (!l) {
+		copy(op);
+		return;
+	}
+	archive(op->fname, op->dst, 'r');
+	rmlist(l);
 }
 
 static void
@@ -345,6 +389,7 @@ run(FILE *fp, FILE *tmp,
 			        op.fname);
 			exit(1);
 		}
+		/* TODO: Implement early break */
 		fgetpos(fp, &pos);
 		(*fun)(&op, files);
 		fsetpos(fp, &pos);
@@ -355,26 +400,25 @@ run(FILE *fp, FILE *tmp,
 		exit(1);
 	}
 	fclose(fp);
+	if (tmp && fflush(tmp) == EOF) {
+		perror("ar:writing in temporary file");
+		exit(1);
+	}
 }
 
 static void
-closetmp(FILE *tmp, char *afile)
+closetmp(FILE *tmp, char **name, char *afile)
 {
 	int c;
 	FILE *fp;
 
-	if (fflush(tmp) == EOF) {
-		perror("ar:writing temporary");
-		exit(1);
-	}
-	if (tmpafile) {
-		fclose(tmp);
-		if (rename(tmpafile, afile) < 0) {
+	if (lflag) {
+		if (afile && rename(*name, afile) < 0) {
 			perror("ar:renaming temporary");
 			exit(1);
 		}
-		tmpafile = NULL;
-	} else {
+		*name = NULL;
+	} else if (afile) {
 		if ((fp = fopen(afile, "wb")) == NULL) {
 			perror("ar:reopening archive file");
 			exit(1);
@@ -388,18 +432,18 @@ closetmp(FILE *tmp, char *afile)
 			exit(1);
 		}
 		fclose(fp);
-		fclose(tmp);
 	}
+	fclose(tmp);
 }
 
 static FILE *
-opentmp(void)
+opentmp(char *fname, char **dst)
 {
 	FILE *tmp;
 
 	if (lflag) {
-		tmpafile = "ar.tmp";
-		tmp = fopen(tmpafile, "wb");
+		*dst = fname;
+		tmp = fopen(fname, "wb");
 	} else {
 		tmp = tmpfile();
 	}
@@ -424,8 +468,7 @@ main(int argc, char *argv[])
 {
 	int key, nkey = 0, pos = 0;
 	char *afile;
-	FILE *fp, *tmp;;
-	void (*fun)(struct arop *, char *files[]);
+	FILE *fp, *tmp1, *tmp2;;
 
 	atexit(cleanup);
 	ARGBEGIN {
@@ -498,39 +541,40 @@ main(int argc, char *argv[])
 	fp = openar(afile);
 
 	switch (key) {
+	case 'r':
+		if (*argv == NULL)
+			return 0;
+		tmp1 = opentmp("ar.tmp1", &tmpafile1);
+		tmp2 = opentmp("ar.tmp2", &tmpafile2);
+		run(fp, tmp1, argv, update);
+		rewind(tmp1);
+		run(tmp1, tmp2, argv, insert);
+		closetmp(tmp1, &tmpafile1, NULL);
+		closetmp(tmp2, &tmpafile2, afile);
+		break;
 	case 'q':
-		tmp = NULL;
-		fun = NULL;
 		append(fp, argv);
 		break;
 	case 'd':
 		if (*argv == NULL)
 			return 0;
-		tmp = opentmp();
-		fun = del;
+		tmp1 = opentmp("ar.tmp", &tmpafile1);
+		run(fp, tmp1, argv, del);
+		closetmp(tmp1, &tmpafile1, afile);
 		break;
 	case 't':
-		tmp = NULL;
-		fun = list;
+		run(fp, NULL, argv, list);
 		break;
 	case 'p':
-		tmp = NULL;
-		fun = print;
+		run(fp, NULL, argv, print);
 		break;
 	case 'x':
-		tmp = NULL;
-		fun = extract;
+		run(fp, NULL, argv, extract);
 		break;
-	case 'r':
 	case 'm':
 		/* TODO */
 		;
 	}
-
-	if (fun)
-		run(fp, tmp, argv, fun);
-	if (tmp)
-		closetmp(tmp, afile);
 
 	if (fflush(stdout) == EOF) {
 		perror("ar:error writing to stdout");
