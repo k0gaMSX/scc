@@ -11,5 +11,3 @@ LIB-OBJ = $(LIBDIR)/debug.o \
           $(LIBDIR)/lpack.o \
           $(LIBDIR)/wmyro.o \
           $(LIBDIR)/rmyro.o \
-          $(LIBDIR)/war.o \
-          $(LIBDIR)/rar.o \
