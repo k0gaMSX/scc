@@ -200,6 +200,16 @@ inlist(char *fname, char *list[])
 }
 
 static void
+filter(struct arop *op, char *list[])
+{
+}
+
+static void
+merge(struct arop *op, char *list[])
+{
+}
+
+static void
 insert(struct arop *op, char *list[])
 {
 	if (!posname || strcmp(op->fname, posname)) {
@@ -372,13 +382,13 @@ valid(struct arop *op)
 }
 
 static void
-run(FILE *fp, FILE *tmp,
+run(FILE *fp, FILE *tmp1, FILE *tmp2,
     char *files[], void (*fun)(struct arop *, char *files[]))
 {
 	struct arop op;
 
 	op.src = fp;
-	op.dst = tmp;
+	op.dst = tmp1;
 	while (!ferror(fp) && fread(&op.hdr, sizeof(op.hdr), 1, fp) == 1) {
 		fpos_t pos;
 
@@ -399,7 +409,11 @@ run(FILE *fp, FILE *tmp,
 		exit(1);
 	}
 	fclose(fp);
-	if (tmp && fflush(tmp) == EOF) {
+	if (tmp1 && fflush(tmp1) == EOF) {
+		perror("ar:writing in temporary file");
+		exit(1);
+	}
+	if (tmp2 && fflush(tmp2) == EOF) {
 		perror("ar:writing in temporary file");
 		exit(1);
 	}
@@ -540,46 +554,58 @@ main(int argc, char *argv[])
 	afile = *argv++;
 	fp = openar(afile);
 
+	if (*argv == NULL && (key == 'r' || key == 'd' || key == 'm')) {
+		if (fclose(fp) == EOF) {
+			perror("ar:early close of archive file");
+			exit(-1);
+		}
+		return 0;
+	}
+
 	switch (key) {
 	case 'r':
-		if (*argv == NULL)
-			return 0;
-
 		tmp1 = opentmp("ar.tmp1", &tmpafile1);
-		run(fp, tmp1, argv, update);
+		run(fp, tmp1, NULL, argv, update);
 
 		if (*argv == NULL) {
 			closetmp(tmp1, &tmpafile1, afile);
-		} else {
-			fseek(tmp1, SARMAG, SEEK_SET);
-			tmp2 = opentmp("ar.tmp2", &tmpafile2);
-			run(tmp1, tmp2, argv, insert);
-			closetmp(tmp1, &tmpafile1, NULL);
-			closetmp(tmp2, &tmpafile2, afile);
+			break;
 		}
+		if (!posname) {
+			append(tmp1, argv);
+			break;
+		}
+
+		fseek(tmp1, SARMAG, SEEK_SET);
+		tmp2 = opentmp("ar.tmp2", &tmpafile2);
+		run(tmp1, tmp2, NULL, argv, insert);
+		closetmp(tmp1, &tmpafile1, NULL);
+		closetmp(tmp2, &tmpafile2, afile);
 		break;
 	case 'q':
 		append(fp, argv);
 		break;
 	case 'd':
-		if (*argv == NULL)
-			return 0;
 		tmp1 = opentmp("ar.tmp", &tmpafile1);
-		run(fp, tmp1, argv, del);
+		run(fp, tmp1, NULL, argv, del);
 		closetmp(tmp1, &tmpafile1, afile);
 		break;
 	case 't':
-		run(fp, NULL, argv, list);
+		run(fp, NULL, NULL, argv, list);
 		break;
 	case 'p':
-		run(fp, NULL, argv, print);
+		run(fp, NULL, NULL, argv, print);
 		break;
 	case 'x':
-		run(fp, NULL, argv, extract);
+		run(fp, NULL, NULL, argv, extract);
 		break;
 	case 'm':
-		/* TODO */
-		;
+		tmp1 = opentmp("ar.tmp1", &tmpafile1);
+		tmp2 = opentmp("ar.tmp2", &tmpafile2);
+		run(fp, tmp1, NULL, argv, filter);
+		fseek(tmp1, SARMAG, SEEK_SET);
+		run(tmp1, tmp2, NULL, NULL, merge);
+		break;
 	}
 
 	if (fflush(stdout) == EOF) {
