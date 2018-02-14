@@ -476,6 +476,7 @@ main(int argc, char *argv[])
 		key = 'd';
 		break;
 	case 'r':
+		nkey++;
 		key = 'r';
 		break;
 	case 'q':
@@ -543,13 +544,19 @@ main(int argc, char *argv[])
 	case 'r':
 		if (*argv == NULL)
 			return 0;
+
 		tmp1 = opentmp("ar.tmp1", &tmpafile1);
-		tmp2 = opentmp("ar.tmp2", &tmpafile2);
 		run(fp, tmp1, argv, update);
-		rewind(tmp1);
-		run(tmp1, tmp2, argv, insert);
-		closetmp(tmp1, &tmpafile1, NULL);
-		closetmp(tmp2, &tmpafile2, afile);
+
+		if (*argv == NULL) {
+			closetmp(tmp1, &tmpafile1, afile);
+		} else {
+			fseek(tmp1, SARMAG, SEEK_SET);
+			tmp2 = opentmp("ar.tmp2", &tmpafile2);
+			run(tmp1, tmp2, argv, insert);
+			closetmp(tmp1, &tmpafile1, NULL);
+			closetmp(tmp2, &tmpafile2, afile);
+		}
 		break;
 	case 'q':
 		append(fp, argv);
