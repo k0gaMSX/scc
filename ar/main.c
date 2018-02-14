@@ -424,7 +424,7 @@ closetmp(FILE *tmp, char **name, char *afile)
 		}
 		rewind(tmp);
 		while ((c = getc(tmp)) != EOF)
-			fputc(c, tmp);
+			fputc(c, fp);
 		fflush(fp);
 		if (ferror(fp) || ferror(tmp)) {
 			perror("ar:copying from temporary");
