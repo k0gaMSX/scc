@@ -1,5 +1,6 @@
 #!/bin/sh
 
+file=${1?' empty input file'}
 ttyflags=`stty -g`
 trap "stty $ttyflags;tabs -8;rm -f a.out; exit 1" 0 1 2 3 15
 stty tabs
@@ -7,6 +8,7 @@ tabs 40
 ulimit -c 0
 rm -f test.log
 
+cat $file |
 while read i state
 do
 	echo $i >>test.log
