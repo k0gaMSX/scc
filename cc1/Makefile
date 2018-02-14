@@ -19,7 +19,7 @@ all:
 	cp cc1-* ../rootdir/libexec/scc/
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
+	cd $(LIBDIR) && $(MAKE) $(MFLAGS)
 
 dep:
 	./gendep.sh $(TARGETS)

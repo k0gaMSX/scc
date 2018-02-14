@@ -9,6 +9,6 @@ all dep clean distclean:
 	for i in $(DIRS); \
 	do \
 		cd $$i; \
-		$(MAKE) $@; \
+		$(MAKE) $(MFLAGS) $@; \
 		cd $$pwd; \
 	done

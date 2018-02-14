@@ -1,4 +1,4 @@
 .POSIX:
 
 all dep clean distclean:
-	cd target && $(MAKE) $@
+	cd target && $(MAKE) $(MFLAGS) $@

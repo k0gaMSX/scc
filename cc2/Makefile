@@ -20,7 +20,7 @@ dep:
 	MKQBE=${MKQBE} ./gendep.sh $(TARGETS)
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
+	cd $(LIBDIR) && $(MAKE) $(MFLAGS)
 
 main.o: error.h
 

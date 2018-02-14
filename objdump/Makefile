@@ -14,7 +14,7 @@ objdump: $(OBJ) $(LIBDIR)/libscc.a
 main.o: ../inc/scc.h ../inc/myro.h ../inc/arg.h
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
+	cd $(LIBDIR) && $(MAKE) $(MFLAGS)
 
 dep:
 clean:

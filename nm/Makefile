@@ -14,7 +14,7 @@ nm: $(OBJ) $(LIBDIR)/libscc.a
 main.o: ../inc/scc.h ../inc/ar.h ../inc/myro.h
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
+	cd $(LIBDIR) && $(MAKE) $(MFLAGS)
 
 dep:
 clean:
