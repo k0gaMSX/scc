@@ -50,7 +50,6 @@ openar(char *afile)
 {
 	FILE *fp;
 	char magic[SARMAG+1];
-	struct stat st;
 
 	if ((fp = fopen(afile,"rb")) == NULL) {
 		if (!cflag)
@@ -112,7 +111,7 @@ archive(char *fname, FILE *to, char letter)
 	        st.st_uid,
 	        st.st_gid,
 	        st.st_mode,
-	        st.st_size);
+	        (unsigned long long) st.st_size);
 	for (n = 0; (c = getc(from)) != EOF; n++)
 		putc(c, to);
 	if (n & 1)
@@ -163,7 +162,6 @@ static void
 copy(struct ar_hdr *hdr, long siz, FILE *src, FILE *dst)
 {
 	int c;
-	long n;
 
 	fwrite(hdr, sizeof(*hdr), 1, dst);
 	if ((siz & 1) == 1)
@@ -314,21 +312,18 @@ print(struct arop *op, char *files[])
 static void
 list(struct arop *op, char *files[])
 {
-	long long val;
 	time_t t;
 	struct ar_hdr *hdr = &op->hdr;
 	char mtime[30];
 
 	if (*files && !inlist(op->fname, files))
 		return;
-	if (!print)
-		return;
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
 		t = totime(op->date);
 		strftime(mtime, sizeof(mtime), "%c", localtime(&t));
-		printf("%s %d/%d\t%s %s\n",
+		printf("%s %ld/%ld\t%s %s\n",
 		       perms(op),
 		       atol(hdr->ar_uid),
 		       atol(hdr->ar_gid),
