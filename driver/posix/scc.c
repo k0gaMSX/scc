@@ -282,8 +282,12 @@ spawn(int tool)
 		if (!dflag && tool != CC1 && tool != LD)
 			dup2(devnullfd, 2);
 		execvp(t->cmd, t->args.s);
-		fprintf(stderr, "scc: execvp %s: %s\n",
-		        t->cmd, strerror(errno));
+		if (dflag) {
+			fprintf(stderr,
+			        "scc: execvp %s: %s\n",
+				t->cmd,
+			        strerror(errno));
+		}
 		abort();
 	default:
 		if (t->in > -1)
@@ -320,6 +324,25 @@ toolfor(char *file)
 }
 
 static int
+valid(int tool, struct tool *t)
+{
+	int st;
+
+	if (waitpid(t->pid, &st, 0) == -1 || WIFSIGNALED(st))
+		goto internal;
+	if (WIFEXITED(st) && WEXITSTATUS(st) == 0)
+		return 1;
+	if (!failure && (tool == CC1 || tool == LD))
+		goto fail;
+
+internal:
+	fprintf(stderr, "scc:%s: internal error\n", t->bin);
+fail:
+	failure = 1;
+	return 0;
+}
+
+static int
 validatetools(void)
 {
 	struct tool *t;
@@ -330,17 +353,8 @@ validatetools(void)
 		t = &tools[tool];
 		if (!t->pid)
 			continue;
-		if (waitpid(t->pid, &st, 0) < 0 ||
-		    !WIFEXITED(st) ||
-		    WEXITSTATUS(st) != 0) {
-			if (!WIFEXITED(st) ||
-			    !failure && tool != CC1 && tool != LD) {
-				fprintf(stderr,
-				        "scc:%s: internal error\n", t->bin);
-			}
-			failure = 1;
+		if (!valid(tool, t))
 			failed = tool;
-		}
 		if (tool >= failed && t->outfile)
 			unlink(t->outfile);
 		for (i = t->nparams; i < t->args.n; ++i)
