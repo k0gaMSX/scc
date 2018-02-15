@@ -476,12 +476,72 @@ usage(void)
 	exit(1);
 }
 
+static void
+doit(int key, char *afile, FILE *fp, char *flist[])
+{
+	FILE *tmp1, *tmp2;
+
+	if (*flist == NULL && (key == 'r' || key == 'd' || key == 'm')) {
+		if (fclose(fp) == EOF) {
+			perror("ar:early close of archive file");
+			exit(-1);
+		}
+		return;
+	}
+
+	switch (key) {
+	case 'r':
+		tmp1 = opentmp("ar.tmp1", &tmpafile1);
+		run(fp, tmp1, NULL, flist, update);
+
+		if (*flist == NULL) {
+			closetmp(tmp1, &tmpafile1, afile);
+			break;
+		}
+		if (!posname) {
+			append(tmp1, flist);
+			break;
+		}
+
+		fseek(tmp1, SARMAG, SEEK_SET);
+		tmp2 = opentmp("ar.tmp2", &tmpafile2);
+		run(tmp1, tmp2, NULL, flist, insert);
+		closetmp(tmp1, &tmpafile1, NULL);
+		closetmp(tmp2, &tmpafile2, afile);
+		break;
+	case 'q':
+		append(fp, flist);
+		break;
+	case 'd':
+		tmp1 = opentmp("ar.tmp", &tmpafile1);
+		run(fp, tmp1, NULL, flist, del);
+		closetmp(tmp1, &tmpafile1, afile);
+		break;
+	case 't':
+		run(fp, NULL, NULL, flist, list);
+		break;
+	case 'p':
+		run(fp, NULL, NULL, flist, print);
+		break;
+	case 'x':
+		run(fp, NULL, NULL, flist, extract);
+		break;
+	case 'm':
+		tmp1 = opentmp("ar.tmp1", &tmpafile1);
+		tmp2 = opentmp("ar.tmp2", &tmpafile2);
+		run(fp, tmp1, NULL, flist, filter);
+		fseek(tmp1, SARMAG, SEEK_SET);
+		run(tmp1, tmp2, NULL, NULL, merge);
+		break;
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
 	int key, nkey = 0, pos = 0;
 	char *afile;
-	FILE *fp, *tmp1, *tmp2;;
+	FILE *fp;
 
 	atexit(cleanup);
 	ARGBEGIN {
@@ -551,62 +611,8 @@ main(int argc, char *argv[])
 	signal(SIGQUIT, sigfun);
 	signal(SIGTERM, sigfun);
 
-	afile = *argv++;
-	fp = openar(afile);
-
-	if (*argv == NULL && (key == 'r' || key == 'd' || key == 'm')) {
-		if (fclose(fp) == EOF) {
-			perror("ar:early close of archive file");
-			exit(-1);
-		}
-		return 0;
-	}
-
-	switch (key) {
-	case 'r':
-		tmp1 = opentmp("ar.tmp1", &tmpafile1);
-		run(fp, tmp1, NULL, argv, update);
-
-		if (*argv == NULL) {
-			closetmp(tmp1, &tmpafile1, afile);
-			break;
-		}
-		if (!posname) {
-			append(tmp1, argv);
-			break;
-		}
-
-		fseek(tmp1, SARMAG, SEEK_SET);
-		tmp2 = opentmp("ar.tmp2", &tmpafile2);
-		run(tmp1, tmp2, NULL, argv, insert);
-		closetmp(tmp1, &tmpafile1, NULL);
-		closetmp(tmp2, &tmpafile2, afile);
-		break;
-	case 'q':
-		append(fp, argv);
-		break;
-	case 'd':
-		tmp1 = opentmp("ar.tmp", &tmpafile1);
-		run(fp, tmp1, NULL, argv, del);
-		closetmp(tmp1, &tmpafile1, afile);
-		break;
-	case 't':
-		run(fp, NULL, NULL, argv, list);
-		break;
-	case 'p':
-		run(fp, NULL, NULL, argv, print);
-		break;
-	case 'x':
-		run(fp, NULL, NULL, argv, extract);
-		break;
-	case 'm':
-		tmp1 = opentmp("ar.tmp1", &tmpafile1);
-		tmp2 = opentmp("ar.tmp2", &tmpafile2);
-		run(fp, tmp1, NULL, argv, filter);
-		fseek(tmp1, SARMAG, SEEK_SET);
-		run(tmp1, tmp2, NULL, NULL, merge);
-		break;
-	}
+	afile = *argv;
+	doit(key, afile, openar(afile), argv+1);
 
 	if (fflush(stdout) == EOF) {
 		perror("ar:error writing to stdout");
