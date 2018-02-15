@@ -17,7 +17,7 @@ main.o: ../inc/scc.h ../inc/ar.h
 $(DRIVER)/stat.o: $(DRIVER)/stat.h
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE)
+	+cd $(LIBDIR) && $(MAKE)
 
 main.o: $(DRIVER)/stat.h
 

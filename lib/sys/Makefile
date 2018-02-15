@@ -3,7 +3,7 @@
 include ../../config.mk
 
 all clean distclean:
-	pwd=$$PWD ;\
+	+@pwd=$$PWD ;\
 	for i in $(SYSS); \
 	do \
 		cd $$i; \

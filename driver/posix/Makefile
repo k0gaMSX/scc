@@ -32,7 +32,7 @@ scpp: cpp.sh config.h
 	mv $$$$.sh scpp
 
 $(LIBDIR)/libscc.a:
-	cd $(LIBDIR) && $(MAKE)
+	+cd $(LIBDIR) && $(MAKE)
 
 clean:
 	rm -f $(OBJ)
