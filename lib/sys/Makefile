@@ -7,6 +7,6 @@ all clean distclean:
 	for i in $(SYSS); \
 	do \
 		cd $$i; \
-		$(MAKE) $(MFLAGS) -e SYS=$i $@ ;\
+		$(MAKE) -e SYS=$i $@ ;\
 		cd $$pwd; \
 	done

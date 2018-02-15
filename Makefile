@@ -30,7 +30,7 @@ dep: config.mk
 	$(FORALL)
 
 tests: all
-	cd tests && $(MAKE) $(MFLAGS) -e all
+	cd tests && $(MAKE) -e all
 
 install: all
 	cp -r rootdir/* $(DESTDIR)$(PREFIX)/

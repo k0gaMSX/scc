@@ -18,7 +18,7 @@ as: $(OBJ)
 myro.o: ../inc/myro.h
 
 $(LIBDIR)/libscc.a: $(LIB-OBJ)
-	cd $(LIBDIR) && $(MAKE) $(MFLAGS)
+	cd $(LIBDIR) && $(MAKE)
 
 dep:
 	./gendep.sh $(TARGETS)

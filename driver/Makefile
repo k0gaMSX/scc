@@ -6,4 +6,4 @@ DRIVER = posix
 include ../config.mk
 
 all dep clean distclean:
-	cd $(DRIVER) && $(MAKE) $(MFLAGS) $@
+	cd $(DRIVER) && $(MAKE) $@
