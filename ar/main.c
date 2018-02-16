@@ -21,6 +21,7 @@ static char *posname, *tmpafile1, *tmpafile2;
 struct arop {
 	FILE *src;
 	FILE *dst;
+	FILE *tmp;
 	struct ar_hdr hdr;
 	char *fname;
 	long size;
@@ -49,7 +50,6 @@ openar(char *afile)
 {
 	FILE *fp;
 	char magic[SARMAG+1];
-	struct stat st;
 
 	if ((fp = fopen(afile,"rb")) == NULL) {
 		if (!cflag)
@@ -111,7 +111,7 @@ archive(char *fname, FILE *to, char letter)
 	        st.st_uid,
 	        st.st_gid,
 	        st.st_mode,
-	        st.st_size);
+	        (unsigned long long) st.st_size);
 	for (n = 0; (c = getc(from)) != EOF; n++)
 		putc(c, to);
 	if (n & 1)
@@ -144,20 +144,32 @@ append(FILE *fp, char *list[])
 }
 
 static void
-copy(struct arop *op)
+cat(FILE *src1, FILE *src2, FILE *dst)
 {
 	int c;
-	long siz, n;
-	struct ar_hdr *hdr = &op->hdr;
 
-	fwrite(hdr, sizeof(*hdr), 1, op->dst);
-	siz = op->size;
+	while ((c = getc(src1)) != EOF)
+		fputc(c, dst);
+	while ((c = getc(src2)) != EOF)
+		fputc(c, dst);
+	if (ferror(src1) || ferror(src2) || fclose(dst) == EOF) {
+		perror("ar:moving files in archive");
+		exit(1);
+	}
+}
+
+static void
+copy(struct ar_hdr *hdr, long siz, FILE *src, FILE *dst)
+{
+	int c;
+
+	fwrite(hdr, sizeof(*hdr), 1, dst);
 	if ((siz & 1) == 1)
 		siz++;
 	while (siz--) {
-		if ((c = getc(op->src)) == EOF)
+		if ((c = getc(src)) == EOF)
 			break;
-		fputc(c, op->dst);
+		fputc(c, dst);
 	}
 }
 
@@ -200,8 +212,18 @@ inlist(char *fname, char *list[])
 }
 
 static void
-filter(struct arop *op, char *list[])
+split(struct arop *op, char *files[])
 {
+	char **l;
+
+	l = inlist(op->fname, files);
+	if (!l) {
+		copy(&op->hdr, op->size, op->src, op->dst);
+		return;
+	} else {
+		copy(&op->hdr, op->size, op->src, op->tmp);
+		rmlist(l);
+	}
 }
 
 static void
@@ -213,15 +235,15 @@ static void
 insert(struct arop *op, char *list[])
 {
 	if (!posname || strcmp(op->fname, posname)) {
-		copy(op);
+		copy(&op->hdr, op->size, op->src, op->dst);
 		return;
 	}
 	if (bflag || iflag) {
 		for ( ; *list; ++list)
 			archive(*list, op->dst, 'a');
-		copy(op);
+		copy(&op->hdr, op->size, op->src, op->dst);
 	} else {
-		copy(op);
+		copy(&op->hdr, op->size, op->src, op->dst);
 		for ( ; *list; ++list)
 			archive(*list, op->dst, 'a');
 	}
@@ -234,7 +256,7 @@ update(struct arop *op, char *files[])
 
 	l = inlist(op->fname, files);
 	if (!l) {
-		copy(op);
+		copy(&op->hdr, op->size, op->src, op->dst);
 		return;
 	}
 	archive(op->fname, op->dst, 'r');
@@ -290,21 +312,18 @@ print(struct arop *op, char *files[])
 static void
 list(struct arop *op, char *files[])
 {
-	long long val;
 	time_t t;
 	struct ar_hdr *hdr = &op->hdr;
 	char mtime[30];
 
 	if (*files && !inlist(op->fname, files))
 		return;
-	if (!print)
-		return;
 	if (!vflag) {
 		printf("%s\n", op->fname);
 	} else {
 		t = totime(op->date);
 		strftime(mtime, sizeof(mtime), "%c", localtime(&t));
-		printf("%s %d/%d\t%s %s\n",
+		printf("%s %ld/%ld\t%s %s\n",
 		       perms(op),
 		       atol(hdr->ar_uid),
 		       atol(hdr->ar_gid),
@@ -321,7 +340,7 @@ del(struct arop *op, char *files[])
 			printf("d - %s\n", op->fname);
 		return;
 	}
-	copy(op);
+	copy(&op->hdr, op->size, op->src, op->dst);
 }
 
 static char *
@@ -389,6 +408,7 @@ run(FILE *fp, FILE *tmp1, FILE *tmp2,
 
 	op.src = fp;
 	op.dst = tmp1;
+	op.dst = tmp2;
 	while (!ferror(fp) && fread(&op.hdr, sizeof(op.hdr), 1, fp) == 1) {
 		fpos_t pos;
 
@@ -456,7 +476,7 @@ opentmp(char *fname, char **dst)
 
 	if (lflag) {
 		*dst = fname;
-		tmp = fopen(fname, "wb");
+		tmp = fopen(fname, "w+b");
 	} else {
 		tmp = tmpfile();
 	}
@@ -529,11 +549,25 @@ doit(int key, char *afile, FILE *fp, char *flist[])
 	case 'm':
 		tmp1 = opentmp("ar.tmp1", &tmpafile1);
 		tmp2 = opentmp("ar.tmp2", &tmpafile2);
-		run(fp, tmp1, NULL, flist, filter);
+		run(fp, tmp1, tmp2, flist, split);
+
+		if (*flist) {
+			fprintf(stderr, "ar: entry '%s' not found\n", *flist);
+			exit(1);
+		}
+		fp = openar(afile);
 		fseek(tmp1, SARMAG, SEEK_SET);
-		run(tmp1, tmp2, NULL, NULL, merge);
+		fseek(tmp2, SARMAG, SEEK_SET);
+		if (!posname) {
+			cat(tmp1, tmp2, fp);
+			break;
+		}
+		run(tmp1, fp, tmp2, NULL, merge);
+		closetmp(tmp1, &tmpafile1, NULL);
+		closetmp(tmp2, &tmpafile2, NULL);
 		break;
 	}
+
 }
 
 int
@@ -541,7 +575,6 @@ main(int argc, char *argv[])
 {
 	int key, nkey = 0, pos = 0;
 	char *afile;
-	FILE *fp;
 
 	atexit(cleanup);
 	ARGBEGIN {
