@@ -11,9 +11,9 @@ HDR = config.h \
       ../../inc/syslibs.h \
       ../../inc/ldflags.h
 
-all: scc scpp
+all: scc cpp
 	mkdir -p ../../rootdir/bin
-	cp scc scpp ../../rootdir/bin/
+	cp scc cpp ../../rootdir/bin/
 
 dep:
 	PREFIX=$(PREFIX) USEQBE=$(USEQBE) ./gendep.sh $(TARGETS)
@@ -23,13 +23,13 @@ $(OBJ): $(HDR)
 scc: $(OBJ) $(LIBDIR)/libscc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
 
-scpp: cpp.sh config.h
+cpp: cpp.sh config.h
 	set -x ;\
 	trap "rm -f $$$$.sh" 0 2 3;\
 	rm -f $@ ;\
 	sed "s%@PREFIX@%$(PREFIX)%" < cpp.sh > $$$$.sh && \
 	chmod +x $$$$.sh && \
-	mv $$$$.sh scpp
+	mv $$$$.sh $@
 
 $(LIBDIR)/libscc.a:
 	+cd $(LIBDIR) && $(MAKE)
