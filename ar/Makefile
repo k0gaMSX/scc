@@ -8,6 +8,8 @@ OBJ       = main.o $(DRIVER)/stat.c
 MOREFLAGS = -I$(DRIVER)
 
 all: ar-$(DRIVER)
+	mkdir -p ../../rootdir/bin
+	cp ar-$(DRIVER) ../rootdir/bin/ar
 
 ar-$(DRIVER): $(OBJ) $(LIBDIR)/libscc.a
 	$(CC) $(SCC_LDFLAGS) $(OBJ) -lscc -o $@
