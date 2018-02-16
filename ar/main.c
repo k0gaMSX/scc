@@ -229,6 +229,21 @@ split(struct arop *op, char *files[])
 static void
 merge(struct arop *op, char *list[])
 {
+	int c;
+
+	if (strcmp(op->fname, posname)) {
+		copy(&op->hdr, op->size, op->src, op->dst);
+		return;
+	}
+
+	if (aflag)
+		copy(&op->hdr, op->size, op->src, op->dst);
+
+	while ((c = getc(op->tmp)) != EOF)
+		putc(c, op->dst);
+
+	if (bflag || iflag)
+		copy(&op->hdr, op->size, op->src, op->dst);
 }
 
 static void
@@ -238,15 +253,15 @@ insert(struct arop *op, char *list[])
 		copy(&op->hdr, op->size, op->src, op->dst);
 		return;
 	}
-	if (bflag || iflag) {
-		for ( ; *list; ++list)
-			archive(*list, op->dst, 'a');
+
+	if (aflag)
 		copy(&op->hdr, op->size, op->src, op->dst);
-	} else {
+
+	for ( ; *list; ++list)
+		archive(*list, op->dst, 'a');
+
+	if (bflag || iflag)
 		copy(&op->hdr, op->size, op->src, op->dst);
-		for ( ; *list; ++list)
-			archive(*list, op->dst, 'a');
-	}
 }
 
 static void
